@@ -1,0 +1,8 @@
+To build this application run this commands in terminal (of course, in this folder):
+
+qmake
+make
+
+
+Project at google code:
+http://code.google.com/p/urtconnector/

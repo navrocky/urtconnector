@@ -1,4 +1,10 @@
 * text=auto !eol
+urt_connector/install -text
+urt_connector/main.cpp -text
+urt_connector/urt_connector.pro -text
+urt_connector/urtconnector.cpp -text
+urt_connector/urtconnector.h -text
+urt_connector/urtconnector.ui -text
 urtconnector/install -text
 urtconnector/main.cpp -text
 urtconnector/urt_connector.pro -text
