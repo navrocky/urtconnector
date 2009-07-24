@@ -2,6 +2,7 @@
 #define URTCONNECTOR_H
 
 #include <QWidget>
+#include <QProcess>
 
 namespace Ui
 {
@@ -18,6 +19,7 @@ public:
 
 private:
     Ui::urtconnectorClass *ui;
+    QProcess process;
 
 private slots:
     void launchUrbanTerror();

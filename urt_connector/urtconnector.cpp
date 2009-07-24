@@ -18,16 +18,12 @@ urtconnector::~urtconnector()
 
 void urtconnector::launchUrbanTerror()
 {
-    QString command;
-    command = this->ui->ioexeEdit->text();
-    if (this->ui->passwordCheckBox->isChecked())
-    {
-        command += " +password \"" + this->ui->passwordEdit->text() + "\"";
-    }
-    command += " +connect " + this->ui->serverEdit->text();
-    command += " +name \"" + this->ui->playernameEdit->text() + "\"";
+    QStringList arguments;
+    arguments << "+password" << "\"" + this->ui->passwordEdit->text() + "\"";
+    arguments << "+connect" << "\"" + this->ui->serverEdit->text() + "\"";
+    arguments << "+name" << "\"" + this->ui->playernameEdit->text() + "\"";
 
-    system(command.toAscii());
+    process.start(this->ui->ioexeEdit->text(), arguments);
 }
 
 void urtconnector::getUrTExe()
