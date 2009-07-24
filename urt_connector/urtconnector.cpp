@@ -19,7 +19,10 @@ urtconnector::~urtconnector()
 void urtconnector::launchUrbanTerror()
 {
     QStringList arguments;
-    arguments << "+password" << "\"" + this->ui->passwordEdit->text() + "\"";
+    if (this->ui->passwordCheckBox->isChecked())
+    {
+        arguments << "+password" << "\"" + this->ui->passwordEdit->text() + "\"";
+    }
     arguments << "+connect" << "\"" + this->ui->serverEdit->text() + "\"";
     arguments << "+name" << "\"" + this->ui->playernameEdit->text() + "\"";
 
