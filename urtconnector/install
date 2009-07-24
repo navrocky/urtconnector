@@ -1,4 +1,0 @@
-To build this application run this commands in terminal (of course, in this folder):
-
-qmake
-make
