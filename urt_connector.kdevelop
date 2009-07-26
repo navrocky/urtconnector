@@ -37,9 +37,7 @@
       <root>/usr/lib/qt4</root>
       <designerpluginpaths/>
     </qt>
-    <references>
-      <pcs>automatic_%2Fhome%2Fnw%2Fsuse%2Fprojects%2Fjobman%2Ftrunk</pcs>
-    </references>
+    <references/>
     <codecompletion>
       <automaticCodeCompletion>false</automaticCodeCompletion>
       <automaticArgumentsHint>true</automaticArgumentsHint>

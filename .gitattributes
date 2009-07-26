@@ -1,6 +1,7 @@
 * text=auto !eol
 /install -text
 src/main.cpp -text
+src/mainwindow.ui -text
 src/src.pro -text
 src/urtconnector.cpp -text
 src/urtconnector.h -text
