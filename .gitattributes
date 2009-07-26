@@ -1,9 +1,9 @@
 * text=auto !eol
-urt_connector/install -text
-urt_connector/src/main.cpp -text
-urt_connector/src/src.pro -text
-urt_connector/src/urtconnector.cpp -text
-urt_connector/src/urtconnector.h -text
-urt_connector/src/urtconnector.ui -text
-urt_connector/urt_connector.kdevelop -text
-urt_connector/urt_connector.pro -text
+/install -text
+src/main.cpp -text
+src/src.pro -text
+src/urtconnector.cpp -text
+src/urtconnector.h -text
+src/urtconnector.ui -text
+/urt_connector.kdevelop -text
+/urt_connector.pro -text
