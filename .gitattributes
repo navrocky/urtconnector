@@ -1,5 +1,6 @@
 * text=auto !eol
 /install -text
+src/endenis_concept.ui -text
 src/main.cpp -text
 src/mainwindow.ui -text
 src/src.pro -text
