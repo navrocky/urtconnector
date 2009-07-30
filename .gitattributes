@@ -7,5 +7,6 @@ src/src.pro -text
 src/urtconnector.cpp -text
 src/urtconnector.h -text
 src/urtconnector.ui -text
+think/class_model.xmi -text
 /urt_connector.kdevelop -text
 /urt_connector.pro -text
