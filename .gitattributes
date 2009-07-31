@@ -1,4 +1,5 @@
 * text=auto !eol
+doc/class_model.xmi -text
 /install -text
 src/endenis_concept.ui -text
 src/main.cpp -text
@@ -7,6 +8,5 @@ src/src.pro -text
 src/urtconnector.cpp -text
 src/urtconnector.h -text
 src/urtconnector.ui -text
-think/class_model.xmi -text
 /urt_connector.kdevelop -text
 /urt_connector.pro -text
