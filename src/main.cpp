@@ -1,12 +1,12 @@
 #include <QApplication>
-#include "urtconnector.h"
+#include "mainwindow.h"
 
 /* endenis@gmail.com */
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    urtconnector w;
+    MainWindow w;
     w.show();
     return a.exec();
 }

@@ -1,9 +1,12 @@
 * text=auto !eol
 doc/class_model.xmi -text
 /install -text
-src/endenis_concept.ui -text
 src/main.cpp -text
+src/mainwindow.cpp -text
+src/mainwindow.h -text
 src/mainwindow.ui -text
+src/serverid.cpp -text
+src/serverid.h -text
 src/src.pro -text
 src/urtconnector.cpp -text
 src/urtconnector.h -text

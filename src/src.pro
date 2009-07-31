@@ -4,6 +4,11 @@
 TARGET = ../bin/UrTConnector
 TEMPLATE = app
 SOURCES += main.cpp \
-    urtconnector.cpp
-HEADERS += urtconnector.h
-FORMS += urtconnector.ui
+    urtconnector.cpp \
+ mainwindow.cpp \
+ serverid.cpp
+HEADERS += urtconnector.h \
+ mainwindow.h \
+ serverid.h
+FORMS += urtconnector.ui \
+ mainwindow.ui
