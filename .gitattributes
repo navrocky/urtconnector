@@ -1,6 +1,8 @@
 * text=auto !eol
+/build -text
+/distclean -text
 doc/class_model.xmi -text
-/install -text
+/how_to_install -text
 src/main.cpp -text
 src/mainwindow.cpp -text
 src/mainwindow.h -text
