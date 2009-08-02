@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "appoptions.h"
+
 namespace Ui
 {
     class MainWindowClass;
@@ -14,8 +16,13 @@ Q_OBJECT
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    
+private slots:
+    void showOptions(bool);
+    
 private:
     Ui::MainWindowClass *ui;
+    AppOptionsPtr opts_;
 };
 
 #endif

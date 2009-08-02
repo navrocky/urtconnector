@@ -6,9 +6,16 @@ TEMPLATE = app
 SOURCES += main.cpp \
     urtconnector.cpp \
  mainwindow.cpp \
- serverid.cpp
+ serverid.cpp \
+ options.cpp \
+ appoptions.cpp \
+ optionsdialog.cpp
 HEADERS += urtconnector.h \
  mainwindow.h \
- serverid.h
+ serverid.h \
+ options.h \
+ appoptions.h \
+ optionsdialog.h
 FORMS += urtconnector.ui \
- mainwindow.ui
+ mainwindow.ui \
+ optionsdialog.ui

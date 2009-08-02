@@ -3,10 +3,17 @@
 /distclean -text
 doc/class_model.xmi -text
 /how_to_install -text
+src/appoptions.cpp -text
+src/appoptions.h -text
 src/main.cpp -text
 src/mainwindow.cpp -text
 src/mainwindow.h -text
 src/mainwindow.ui -text
+src/options.cpp -text
+src/options.h -text
+src/optionsdialog.cpp -text
+src/optionsdialog.h -text
+src/optionsdialog.ui -text
 src/serverid.cpp -text
 src/serverid.h -text
 src/src.pro -text
