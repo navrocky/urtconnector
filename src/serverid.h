@@ -14,12 +14,18 @@ class ServerID
 public:
     ServerID();
     ServerID(const QString& ip, const QString& hostName, int port);
+
+    /*! use address string, ex.: "myhostname:port" */
+    ServerID(const QString& address);
+    
     ServerID(const ServerID& src);
     ~ServerID();
 
     QString ip() const {return ip_;}
     QString hostName() const {return hostName_;}
     int port() const {return port_;}
+
+    QString address();
 
 private:
     QString ip_;

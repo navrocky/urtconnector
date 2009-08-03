@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
-    <height>354</height>
+    <width>529</width>
+    <height>468</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -164,11 +164,11 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>419</x>
-     <y>339</y>
+     <y>438</y>
     </hint>
     <hint type="destinationlabel">
-     <x>14</x>
-     <y>352</y>
+     <x>409</x>
+     <y>351</y>
     </hint>
    </hints>
   </connection>
@@ -180,7 +180,7 @@ p, li { white-space: pre-wrap; }
    <hints>
     <hint type="sourcelabel">
      <x>441</x>
-     <y>333</y>
+     <y>438</y>
     </hint>
     <hint type="destinationlabel">
      <x>452</x>

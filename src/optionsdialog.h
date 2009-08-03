@@ -23,6 +23,10 @@ protected:
     void accept();
 
 
+private slots:
+    void chooseBinary();
+    void insertFilePath();
+
 private:
     void updateDialog();
 

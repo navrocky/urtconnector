@@ -9,13 +9,19 @@ SOURCES += main.cpp \
  serverid.cpp \
  options.cpp \
  appoptions.cpp \
- optionsdialog.cpp
+ optionsdialog.cpp \
+ launcher.cpp
 HEADERS += urtconnector.h \
  mainwindow.h \
  serverid.h \
  options.h \
  appoptions.h \
- optionsdialog.h
+ optionsdialog.h \
+ launcher.h
 FORMS += urtconnector.ui \
  mainwindow.ui \
  optionsdialog.ui
+CONFIG -= release
+
+CONFIG += debug
+

@@ -18,7 +18,8 @@ public:
     ~MainWindow();
     
 private slots:
-    void showOptions(bool);
+    void showOptions();
+    void quickConnect();
     
 private:
     Ui::MainWindowClass *ui;

@@ -1,7 +1,10 @@
 #include "appoptions.h"
 
 AppOptions::AppOptions()
- : Options()
+ : Options(),
+   useAdvCmdLine_(false),
+   advCmdLine_(),
+   binaryPath_()
 {
 }
 
