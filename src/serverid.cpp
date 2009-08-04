@@ -1,7 +1,7 @@
 #include <QRegExp>
 #include <QObject>
-#include <stdexcept>
 
+#include "exception.h"
 #include "serverid.h"
 
 ServerID::ServerID()
@@ -18,7 +18,7 @@ ServerID::ServerID(const QString & address)
 {
     QRegExp rx("^((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|([^:]+)):\\d{1,5}$");
     if (!rx.exactMatch(address))
-        throw std::runtime_error(QObject::tr("Address syntax error").toStdString());
+        throw Exception(QObject::tr("Address syntax error"));
     ip_ = rx.cap(2);
     hostName_ = rx.cap(3);
     port_ = rx.cap(4).toInt();
@@ -69,19 +69,25 @@ bool operator >(const ServerID & a, const ServerID & b)
     }
 }
 
-QString ServerID::address()
+QString ServerID::address() const
 {
-    return QString("%1%2:%3").arg(ip_).arg(hostName_).arg(port_);
+    return QString("%1:%2").arg(ipOrHost()).arg(port_);
+}
+
+QString ServerID::ipOrHost() const
+{
+    if (ip_.isEmpty())
+        return hostName_;
+    else
+        return ip_;
 }
 
 // bool operator <=(const ServerID & a, const ServerID & b)
 // {
 // }
-// 
+//
 // bool operator >=(const ServerID & a, const ServerID & b)
 // {
 // }
-
-
 
 

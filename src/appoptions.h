@@ -2,7 +2,6 @@
 #define APPOPTIONS_H
 
 #include <QString>
-#include <QSharedPointer>
 
 #include <options.h>
 
@@ -26,7 +25,7 @@ public:
     /*! Path to UrT binary, used when not advanced command line. */
     QString binaryPath() const { return binaryPath_; }
     void setBinaryPath( const QString& value );
-    
+
 
 private:
     bool useAdvCmdLine_;
@@ -34,6 +33,6 @@ private:
     QString binaryPath_;
 };
 
-typedef QSharedPointer<AppOptions> AppOptionsPtr;
+typedef AppOptions* AppOptionsPtr;
 
 #endif

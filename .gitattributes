@@ -3,8 +3,12 @@
 /distclean -text
 doc/class_model.xmi -text
 /how_to_install -text
+src/application.cpp -text
+src/application.h -text
 src/appoptions.cpp -text
 src/appoptions.h -text
+src/exception.cpp -text
+src/exception.h -text
 src/launcher.cpp -text
 src/launcher.h -text
 src/main.cpp -text
@@ -19,8 +23,5 @@ src/optionsdialog.ui -text
 src/serverid.cpp -text
 src/serverid.h -text
 src/src.pro -text
-src/urtconnector.cpp -text
-src/urtconnector.h -text
-src/urtconnector.ui -text
 /urt_connector.kdevelop -text
 /urt_connector.pro -text

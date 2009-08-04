@@ -4,6 +4,7 @@
 #include "ui_mainwindow.h"
 #include "optionsdialog.h"
 #include "launcher.h"
+#include "exception.h"
 
 MainWindow::MainWindow(QWidget *parent)
  : QMainWindow(parent),
@@ -26,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete opts_;
 }
 
 void MainWindow::showOptions()

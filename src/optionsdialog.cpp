@@ -43,11 +43,12 @@ void OptionsDialog::accept()
 
 void OptionsDialog::chooseBinary()
 {
+    throw 1;
     QString fileName = QFileDialog::getOpenFileName(this,
       tr("Urban Terror executable"), "",
       tr("Executables (*.i386 *.x86_64 *.exe);;All Files (*)"));
     if (fileName.isEmpty()) return;
-    
+
     ui->binaryEdit->setText(fileName);
 }
 
@@ -57,7 +58,7 @@ void OptionsDialog::insertFilePath()
       tr("Select file to insert"), "",
       tr("All Files (*)"));
     if (fileName.isEmpty()) return;
-    
+
     ui->advCmdEdit->insert(fileName);
 }
 

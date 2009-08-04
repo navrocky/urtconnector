@@ -4,22 +4,23 @@
 TARGET = ../bin/UrTConnector
 TEMPLATE = app
 SOURCES += main.cpp \
-    urtconnector.cpp \
- mainwindow.cpp \
+    mainwindow.cpp \
  serverid.cpp \
  options.cpp \
  appoptions.cpp \
  optionsdialog.cpp \
- launcher.cpp
-HEADERS += urtconnector.h \
- mainwindow.h \
+ launcher.cpp \
+ exception.cpp \
+ application.cpp
+HEADERS += mainwindow.h \
  serverid.h \
  options.h \
  appoptions.h \
  optionsdialog.h \
- launcher.h
-FORMS += urtconnector.ui \
- mainwindow.ui \
+ launcher.h \
+ exception.h \
+ application.h
+FORMS += mainwindow.ui \
  optionsdialog.ui
 CONFIG -= release
 

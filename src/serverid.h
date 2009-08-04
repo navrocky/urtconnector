@@ -17,15 +17,17 @@ public:
 
     /*! use address string, ex.: "myhostname:port" */
     ServerID(const QString& address);
-    
+
     ServerID(const ServerID& src);
     ~ServerID();
 
     QString ip() const {return ip_;}
     QString hostName() const {return hostName_;}
+    QString ipOrHost() const;
+
     int port() const {return port_;}
 
-    QString address();
+    QString address() const;
 
 private:
     QString ip_;
