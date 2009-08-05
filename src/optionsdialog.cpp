@@ -43,7 +43,6 @@ void OptionsDialog::accept()
 
 void OptionsDialog::chooseBinary()
 {
-    throw 1;
     QString fileName = QFileDialog::getOpenFileName(this,
       tr("Urban Terror executable"), "",
       tr("Executables (*.i386 *.x86_64 *.exe);;All Files (*)"));

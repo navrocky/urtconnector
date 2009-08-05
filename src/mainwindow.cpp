@@ -6,22 +6,23 @@
 #include "launcher.h"
 #include "exception.h"
 
+#include <iostream>
+
+using namespace std;
+
 MainWindow::MainWindow(QWidget *parent)
  : QMainWindow(parent),
    ui(new Ui::MainWindowClass),
-   opts_( new AppOptions() )
+   opts_( new AppOptions() ),
+   launcher_(opts_)
 {
     ui->setupUi(this);
 
 
-
     connect(ui->actionOptions, SIGNAL( triggered() ), SLOT( showOptions() ) );
-
     connect(ui->quickConnectButton, SIGNAL( clicked() ), SLOT( quickConnect() ) );
-
-
-
-
+    connect(&launcher_, SIGNAL(started()), SLOT(launchStatusChanged()));
+    connect(&launcher_, SIGNAL(finished()), SLOT(launchStatusChanged()));
 }
 
 
@@ -39,11 +40,16 @@ void MainWindow::showOptions()
 
 void MainWindow::quickConnect()
 {
-    Launcher l(opts_);
-    l.setServerID( ServerID( ui->qlServerEdit->text() ) );
-    l.setUserName( ui->qlPlayerEdit->text() );
-    l.setPassword( ui->qlPasswordEdit->text() );
-    l.launch();
+    launcher_.setServerID( ServerID( ui->qlServerEdit->text() ) );
+    launcher_.setUserName( ui->qlPlayerEdit->text() );
+    launcher_.setPassword( ui->qlPasswordEdit->text() );
+    launcher_.launch();
+}
+
+void MainWindow::launchStatusChanged()
+{
+    cout << launcher_.executing() << endl;
+    ui->quickConnectButton->setEnabled( !launcher_.executing() );
 }
 
 

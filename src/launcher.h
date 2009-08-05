@@ -25,14 +25,23 @@ public:
     void setRcon(const QString& value);
     void setConfigURL(const QString& value);
 
+    /// Game is executing?
+    bool executing();
+
+    /// Launch string
+    QString launchString();
+
 public slots:
     void launch();
 
 signals:
+    void started();
     void finished();
 
 private slots:
     void procFinished( int exitCode, QProcess::ExitStatus exitStatus );
+    void procStarted();
+    void procError(QProcess::ProcessError error);
 
 private:
     void advancedLaunch();
@@ -44,6 +53,7 @@ private:
     QString configURL_;
     QString rcon_;
     QProcess proc_;
+    bool executing_;
 };
 
 #endif
