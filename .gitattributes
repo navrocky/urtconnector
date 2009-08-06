@@ -1,6 +1,8 @@
 * text=auto !eol
 /build -text
 /distclean -text
+doc/ExampleData/appdata.xml -text
+doc/ExampleData/servers.xml -text
 doc/class_model.xmi -text
 /how_to_install -text
 src/application.cpp -text

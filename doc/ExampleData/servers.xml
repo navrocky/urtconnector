@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<servers>
+ <folder name="Favourites">
+  <folder name="Cool">
+   <server id="1">
+    <host></host>
+    <ip>213.248.47.206</ip>
+    <port>27960</port>
+    <comment>Red*Army best</comment>
+    <player>
+     <name>TheShadowYo</name>
+     <profile></profile>
+    </player>
+    <passwords>
+     <password>123</password>
+     <rcon>321</rcon>
+     <refere>132</refere>
+    </passwords>
+   </server>
+  </folder>
+ </folder>
+</servers>

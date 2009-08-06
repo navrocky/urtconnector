@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appdata>
+ <window>
+  <width>800</width>
+  <height>600</height>
+  <dockWidgets></dockWidgets>
+ </window>
+ <options>
+  <binaryPath>/home/user/urt/ioUrbanTerror.i386</binaryPath>
+  <advCmdLine use="true">cd ...</advCmdLine>
+  <autoUpdateInterval>60</autoUpdateInterval>
+ </options>
+ <profiles>
+  <profile id="1">
+   <nickName>TheShadowYo</nickName>
+   <model>???</model>
+   <sensitivity>1</sensitivity>
+  </profile>
+ </profiles>
+</appdata>
