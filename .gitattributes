@@ -23,5 +23,7 @@ src/optionsdialog.ui -text
 src/serverid.cpp -text
 src/serverid.h -text
 src/src.pro -text
+src/xmlreaddata.cpp -text
+src/xmlreaddata.h -text
 /urt_connector.kdevelop -text
 /urt_connector.pro -text
