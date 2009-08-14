@@ -11,6 +11,10 @@ src/appoptions.cpp -text
 src/appoptions.h -text
 src/exception.cpp -text
 src/exception.h -text
+src/icons/add.png -text
+src/icons/edit.png -text
+src/icons/remove.png -text
+src/images.qrc -text
 src/launcher.cpp -text
 src/launcher.h -text
 src/main.cpp -text
@@ -22,8 +26,15 @@ src/options.h -text
 src/optionsdialog.cpp -text
 src/optionsdialog.h -text
 src/optionsdialog.ui -text
+src/pushbuttonactionlink.cpp -text
+src/pushbuttonactionlink.h -text
 src/serverid.cpp -text
 src/serverid.h -text
+src/serveroptions.cpp -text
+src/serveroptions.h -text
+src/servoptsdialog.cpp -text
+src/servoptsdialog.h -text
+src/servoptsdialog.ui -text
 src/src.pro -text
 src/xmlreaddata.cpp -text
 src/xmlreaddata.h -text

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <QAction>
 
 #include "mainwindow.h"
@@ -5,8 +7,9 @@
 #include "optionsdialog.h"
 #include "launcher.h"
 #include "exception.h"
+#include "servoptsdialog.h"
+#include "pushbuttonactionlink.h"
 
-#include <iostream>
 
 using namespace std;
 
@@ -18,11 +21,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-
     connect(ui->actionOptions, SIGNAL( triggered() ), SLOT( showOptions() ) );
     connect(ui->quickConnectButton, SIGNAL( clicked() ), SLOT( quickConnect() ) );
     connect(&launcher_, SIGNAL(started()), SLOT(launchStatusChanged()));
     connect(&launcher_, SIGNAL(finished()), SLOT(launchStatusChanged()));
+    connect(ui->actionFavAdd, SIGNAL(triggered()), SLOT(favAdd()));
+    connect(ui->actionFavDelete, SIGNAL(triggered()), SLOT(favDelete()));
+
+    new PushButtonActionLink(ui->favAddButton, ui->actionFavAdd);
+    new PushButtonActionLink(ui->favDeleteButton, ui->actionFavDelete);
 }
 
 
@@ -50,6 +57,17 @@ void MainWindow::launchStatusChanged()
 {
     cout << launcher_.executing() << endl;
     ui->quickConnectButton->setEnabled( !launcher_.executing() );
+}
+
+void MainWindow::favAdd()
+{
+    ServOptsDialog d;
+    d.setWindowTitle(tr("New server favorite"));
+    d.exec();
+}
+
+void MainWindow::favDelete()
+{
 }
 
 

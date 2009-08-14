@@ -22,6 +22,8 @@ private slots:
     void showOptions();
     void quickConnect();
     void launchStatusChanged();
+    void favAdd();
+    void favDelete();
 
 private:
     Ui::MainWindowClass *ui;

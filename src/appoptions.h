@@ -3,9 +3,9 @@
 
 #include <QString>
 
-#include <options.h>
+#include <serveroptions.h>
 
-class AppOptions : public Options
+class AppOptions
 {
 public:
     AppOptions();
@@ -26,11 +26,14 @@ public:
     QString binaryPath() const { return binaryPath_; }
     void setBinaryPath( const QString& value );
 
+    /*! Servers options list. */
+    ServerOptionsList& servers() {return servers_;}
 
 private:
     bool useAdvCmdLine_;
     QString advCmdLine_;
     QString binaryPath_;
+    ServerOptionsList servers_;
 };
 
 typedef AppOptions* AppOptionsPtr;

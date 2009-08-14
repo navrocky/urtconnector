@@ -33,7 +33,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5" >
           <item>
-           <widget class="QPushButton" name="pushButton_7" >
+           <widget class="QPushButton" name="favConnectButton" >
             <property name="font" >
              <font>
               <weight>75</weight>
@@ -53,14 +53,14 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_14" >
+           <widget class="QPushButton" name="favAddButton" >
             <property name="text" >
              <string>Add</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_8" >
+           <widget class="QPushButton" name="favDeleteButton" >
             <property name="text" >
              <string>Delete</string>
             </property>
@@ -193,7 +193,16 @@
     <addaction name="separator" />
     <addaction name="actionManage" />
    </widget>
+   <widget class="QMenu" name="menuFavorites" >
+    <property name="title" >
+     <string>Favorites</string>
+    </property>
+    <addaction name="actionFavAdd" />
+    <addaction name="actionFavEdit" />
+    <addaction name="actionFavDelete" />
+   </widget>
    <addaction name="menuUrbanConnector" />
+   <addaction name="menuFavorites" />
    <addaction name="menuPlayer_profile" />
    <addaction name="menuOptions" />
    <addaction name="menuHelp" />
@@ -434,6 +443,48 @@ p, li { white-space: pre-wrap; }
     <string>Profile2</string>
    </property>
   </action>
+  <action name="actionFavAdd" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Add</string>
+   </property>
+   <property name="toolTip" >
+    <string>Add server favorite to list</string>
+   </property>
+   <property name="statusTip" >
+    <string>Add server favorite to list</string>
+   </property>
+  </action>
+  <action name="actionFavDelete" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/icons/remove.png</normaloff>:/icons/icons/remove.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Delete</string>
+   </property>
+   <property name="toolTip" >
+    <string>Delete server favorite from list</string>
+   </property>
+  </action>
+  <action name="actionFavEdit" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Edit</string>
+   </property>
+   <property name="iconText" >
+    <string>Edit</string>
+   </property>
+   <property name="toolTip" >
+    <string>Edit server favorite</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
@@ -444,15 +495,17 @@ p, li { white-space: pre-wrap; }
   <tabstop>comboBox_3</tabstop>
   <tabstop>textBrowser</tabstop>
   <tabstop>tableView_2</tabstop>
-  <tabstop>pushButton_8</tabstop>
+  <tabstop>favDeleteButton</tabstop>
   <tabstop>pushButton_9</tabstop>
   <tabstop>pushButton_11</tabstop>
   <tabstop>pushButton_12</tabstop>
-  <tabstop>pushButton_14</tabstop>
-  <tabstop>pushButton_7</tabstop>
+  <tabstop>favAddButton</tabstop>
+  <tabstop>favConnectButton</tabstop>
   <tabstop>pushButton_13</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="images.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>actionQuit</sender>

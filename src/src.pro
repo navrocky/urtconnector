@@ -11,7 +11,10 @@ SOURCES += main.cpp \
  optionsdialog.cpp \
  launcher.cpp \
  exception.cpp \
- application.cpp
+ application.cpp \
+ serveroptions.cpp \
+ servoptsdialog.cpp \
+ pushbuttonactionlink.cpp
 HEADERS += mainwindow.h \
  serverid.h \
  options.h \
@@ -19,10 +22,16 @@ HEADERS += mainwindow.h \
  optionsdialog.h \
  launcher.h \
  exception.h \
- application.h
+ application.h \
+ serveroptions.h \
+ servoptsdialog.h \
+ pushbuttonactionlink.h
 FORMS += mainwindow.ui \
- optionsdialog.ui
+ optionsdialog.ui \
+ servoptsdialog.ui
 CONFIG -= release
 
 CONFIG += debug
+
+RESOURCES += images.qrc
 
