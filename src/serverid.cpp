@@ -4,14 +4,19 @@
 #include "exception.h"
 #include "serverid.h"
 
+const QString c_port_incorrect = QObject::tr("Port incorrect");
+const QString c_ip_incorrect = QObject::tr("IP incorrect");
+
 ServerID::ServerID()
     : ip_(), hostName_(), port_(0)
 {
 }
 
 ServerID::ServerID(const QString & ip, const QString & hostName, int port)
-    : ip_(ip), hostName_(hostName), port_(port)
 {
+    setIp(ip);
+    setHostName(hostName);
+    setPort(port);
 }
 
 ServerID::ServerID(const QString & address)
@@ -19,9 +24,9 @@ ServerID::ServerID(const QString & address)
     QRegExp rx("^((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|([^:]+)):(\\d{1,5})$");
     if (!rx.exactMatch(address))
         throw Exception(QObject::tr("Address syntax error"));
-    ip_ = rx.cap(2);
-    hostName_ = rx.cap(3);
-    port_ = rx.cap(4).toInt();
+    setIp(rx.cap(2));
+    setHostName(rx.cap(3));
+    setPort(rx.cap(4));
 }
 
 ServerID::ServerID(const ServerID & src)
@@ -89,5 +94,42 @@ QString ServerID::ipOrHost() const
 // bool operator >=(const ServerID & a, const ServerID & b)
 // {
 // }
+
+void ServerID::setPort(int val)
+{
+    if (val < 0 || val > 65535)
+        throw Exception(QObject::tr("Port must be in range 0-65335"));
+    port_ = val;
+}
+
+void ServerID::setPort(const QString & val)
+{
+    bool ok = false;
+    int port = val.toInt(&ok);
+    if (!ok)
+        throw Exception(c_port_incorrect);
+    setPort(port);
+}
+
+void ServerID::setIp(const QString & val)
+{
+    if (!val.isEmpty())
+    {
+        QRegExp rx("(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})");
+        if (!rx.exactMatch(val))
+            throw Exception(c_ip_incorrect);
+    }
+    ip_ = val;
+}
+
+void ServerID::setHostName(const QString & val)
+{
+    hostName_ = val;
+}
+
+bool ServerID::isEmpty()
+{
+    return hostName_.isEmpty() && ip_.isEmpty();
+}
 
 

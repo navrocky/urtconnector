@@ -1,17 +1,66 @@
 #include "ui_servoptsdialog.h"
 
 #include "servoptsdialog.h"
+#include "exception.h"
 
 ServOptsDialog::ServOptsDialog(QWidget *parent)
  : QDialog(parent),
    ui(new Ui::ServOptsDialogClass)
 {
     ui->setupUi(this);
+    setWindowTitle(tr("New server favorite"));
+
+    opts_.setUid( QUuid::createUuid() );
+
+    updateDialog();
+}
+
+ServOptsDialog::ServOptsDialog(QWidget * parent, const ServerOptions & src)
+  : QDialog(parent),
+    ui(new Ui::ServOptsDialogClass),
+    opts_(src)
+{
+    setWindowTitle(tr("Server favorite options"));
+    updateDialog();
 }
 
 
 ServOptsDialog::~ServOptsDialog()
 {
 }
+
+void ServOptsDialog::accept()
+{
+    ServerID id;
+    id.setHostName(ui->hostnameEdit->text());
+    id.setIp(ui->ipEdit->text());
+    id.setPort(ui->portEdit->text());
+    if (id.isEmpty())
+        throw Exception(tr("Server address must be non empty"));
+
+    opts_.setId(id);
+    opts_.setName(ui->nameEdit->text());
+    opts_.setRconPassword(ui->rconEdit->text());
+    opts_.setRefPassword(ui->refEdit->text());
+    opts_.setComment(ui->commentEdit->toPlainText());
+    QDialog::accept();
+}
+
+void ServOptsDialog::updateDialog()
+{
+    ui->hostnameEdit->setText(opts_.id().hostName());
+    ui->ipEdit->setText(opts_.id().ip());
+    int port = opts_.id().port();
+    if (port != 0)
+        ui->portEdit->setText(QString("%1").arg(port));
+    else
+        ui->portEdit->setText(QString::null);
+    ui->nameEdit->setText(opts_.name());
+    ui->rconEdit->setText(opts_.rconPassword());
+    ui->refEdit->setText(opts_.refPassword());
+    ui->commentEdit->setPlainText(opts_.comment());
+}
+
+
 
 

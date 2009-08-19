@@ -27,7 +27,14 @@ public:
 
     int port() const {return port_;}
 
+    void setIp(const QString& val);
+    void setHostName(const QString& val);
+    void setPort(int val);
+    void setPort(const QString& val);
+
     QString address() const;
+
+    bool isEmpty();
 
 private:
     QString ip_;

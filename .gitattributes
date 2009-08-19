@@ -12,7 +12,12 @@ src/appoptions.h -text
 src/exception.cpp -text
 src/exception.h -text
 src/icons/add.png -text
+src/icons/application-exit.png -text
+src/icons/configure.png -text
 src/icons/edit.png -text
+src/icons/help-about.png -text
+src/icons/help-contents.png -text
+src/icons/launch.png -text
 src/icons/remove.png -text
 src/images.qrc -text
 src/launcher.cpp -text

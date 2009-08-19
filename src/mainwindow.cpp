@@ -1,6 +1,8 @@
 #include <iostream>
 
 #include <QAction>
+#include <QMenu>
+#include <QTreeView>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -22,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     connect(ui->actionOptions, SIGNAL( triggered() ), SLOT( showOptions() ) );
-    connect(ui->quickConnectButton, SIGNAL( clicked() ), SLOT( quickConnect() ) );
+    connect(ui->actionQuickConnect, SIGNAL( triggered() ), SLOT( quickConnect() ) );
     connect(&launcher_, SIGNAL(started()), SLOT(launchStatusChanged()));
     connect(&launcher_, SIGNAL(finished()), SLOT(launchStatusChanged()));
     connect(ui->actionFavAdd, SIGNAL(triggered()), SLOT(favAdd()));
@@ -30,6 +32,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     new PushButtonActionLink(ui->favAddButton, ui->actionFavAdd);
     new PushButtonActionLink(ui->favDeleteButton, ui->actionFavDelete);
+    new PushButtonActionLink(ui->quickConnectButton, ui->actionQuickConnect);
+    new PushButtonActionLink(ui->favConnectButton, ui->actionConnectToFavorite);
+
+
+    //QMenu* menu = new QMenu(ui->favTree);
+    //connect()
 }
 
 
@@ -62,11 +70,17 @@ void MainWindow::launchStatusChanged()
 void MainWindow::favAdd()
 {
     ServOptsDialog d;
-    d.setWindowTitle(tr("New server favorite"));
-    d.exec();
+    if (d.exec() == QDialog::Rejected) return;
+    ServerOptionsList& list = opts_->servers();
+    list[d.options().uid()] = d.options();
+    syncFavList();
 }
 
 void MainWindow::favDelete()
+{
+}
+
+void MainWindow::syncFavList()
 {
 }
 

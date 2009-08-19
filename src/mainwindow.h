@@ -26,6 +26,8 @@ private slots:
     void favDelete();
 
 private:
+    void syncFavList();
+
     Ui::MainWindowClass *ui;
     AppOptionsPtr opts_;
     Launcher launcher_;
