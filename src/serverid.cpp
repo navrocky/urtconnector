@@ -104,6 +104,11 @@ void ServerID::setPort(int val)
 
 void ServerID::setPort(const QString & val)
 {
+    if (val.isEmpty())
+    {
+        setPort(0);
+        return;
+    }
     bool ok = false;
     int port = val.toInt(&ok);
     if (!ok)

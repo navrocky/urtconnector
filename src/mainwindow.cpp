@@ -12,7 +12,6 @@
 #include "servoptsdialog.h"
 #include "pushbuttonactionlink.h"
 
-
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent)
@@ -35,9 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     new PushButtonActionLink(ui->quickConnectButton, ui->actionQuickConnect);
     new PushButtonActionLink(ui->favConnectButton, ui->actionConnectToFavorite);
 
-
-    //QMenu* menu = new QMenu(ui->favTree);
-    //connect()
+    loadOptions();
 }
 
 
@@ -50,7 +47,8 @@ void MainWindow::showOptions()
 {
     OptionsDialog d;
     d.setOpts(opts_);
-    d.exec();
+    if (d.exec() == QDialog::Rejected) return;
+    saveOptions();
 }
 
 void MainWindow::quickConnect()
@@ -73,6 +71,8 @@ void MainWindow::favAdd()
     if (d.exec() == QDialog::Rejected) return;
     ServerOptionsList& list = opts_->servers();
     list[d.options().uid()] = d.options();
+    saveOptions();
+
     syncFavList();
 }
 
@@ -84,4 +84,12 @@ void MainWindow::syncFavList()
 {
 }
 
+void MainWindow::saveOptions()
+{
+    // TODO save options to XML
+}
 
+void MainWindow::loadOptions()
+{
+    // TODO load options from XML
+}

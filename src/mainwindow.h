@@ -18,6 +18,10 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void saveOptions();
+    void loadOptions();
+
 private slots:
     void showOptions();
     void quickConnect();
