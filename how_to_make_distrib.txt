@@ -1,0 +1,40 @@
+HOW TO MAKE DISTRIBUTION
+========================
+
+1. RPM 
+2. Debian
+3. Gentoo
+4. Windows
+
+
+1. RPM distribution
+===================
+
+    1) Requirements: make, g++, qt4-devel.
+    2) Take sources from svn repository, or download a tarball.
+    3) Extract sources. Note that root folder of sources must be named as "urtconnector".
+    4) In console run command: 
+        > cd urtconnector/distrib/rpm 
+        > ./build_rpm
+    5) Resulting RPM package placed near sources root folder.
+    6) Install package:
+        > sudo rpm -ivh urtconnector-x.x.x-x.xxx.rpm
+    7) Enjoy!
+
+
+2. Debian distribution
+======================
+
+    TODO
+
+
+3. Gentoo
+=========
+
+    TODO
+
+
+4. Windows distribution
+=======================
+
+    TODO

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+NAME=urtconnector
+ARC_NAME=$NAME.tar.gz
+DIR=`pwd`
+
+pushd ../../..
+
+if [ ! -d $NAME ]; then
+    echo "Programm folder name must be \"$NAME\"!"
+    exit 1
+fi
+
+echo "Make archive ..."
+tar -czf $ARC_NAME $NAME
+
+echo "Make RPM ..."
+rpmbuild --rmsource -ta $ARC_NAME
+
+mv /usr/src/*/RPMS/*/$NAME* . 2>/dev/null
+
+popd
+
