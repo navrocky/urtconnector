@@ -1,0 +1,29 @@
+> qstat -P -R -pa -ts -nh -q3m master.urbanterror.net 
+
+Q3M master.urbanterror.net 1113 servers   8035 / 0
+Q3S  91.121.119.63:27910    6/16  0/0  ut4_walljumps    995 / 0      q3ut4 MQCD.1 - Began a jumper [UAA]
+	game=q3ut4,pure=1,gametype=7,protocol=68,sv_allowdownload=0,g_matchmode=0,g_gametype=7,sv_floodprotect=1,g_warmup=1,capturelimit=0,sv_hostname=^4MQCD^7.1 - ^1Began a jumper [UAA],g_followstrict=0,fraglimit=0,timelimit=120,g_cahtime=60,g_swaproles=0,g_roundtime=3,g_bombexplodetime=40,g_bombdefusetime=10,g_hotpotato=2,g_waverespawns=0,g_redwave=1,g_bluewave=1,g_respawndelay=1,g_suddendeath=0,g_maxrounds=0,g_friendlyfire=0,g_allowvote=16,g_armbands=0,g_survivorrule=0,g_teamnameblue=iPapy,g_teamnamered=iBill,g_gear=63,g_deadchat=1,g_maxGameClients=16,dmflags=0,sv_minRate=0,sv_maxRate=0,sv_minPing=0,sv_maxPing=0,sv_dlURL=http://maps.mqcd.fr,g_enablePrecip=0,version=ioq3 1.35urt linux-i386 Jan 28 2009,sv_privateClients=6, Admin=kaviar, Email=mqcd@mqcd.fr,gamename=q3ut4,g_needpass=0,g_enableDust=0,g_enableBreath=0,g_antilagvis=0,g_survivor=0,g_modversion=4.1
+	  0 frags     86ms  -PTJ- davor[SRB]
+	  0 frags     23ms  cerbere
+	  0 frags     54ms  {SS}Patty
+	  0 frags    135ms  icuion1
+	  0 frags    136ms  picksomething
+	 -1 frags    100ms  MAN
+Q3S  85.25.5.31:27960       0/18  0/0  ut4_casa    984 / 0      q3ut4 Do Not And Friends
+	game=q3ut4,punkbuster=0,pure=1,gametype=4,protocol=68,g_matchmode=0,g_gametype=4,sv_floodprotect=1,g_warmup=15,capturelimit=0,sv_hostname=Do Not And Friends,g_followstrict=1,fraglimit=10,timelimit=20,g_cahtime=60,g_swaproles=0,g_roundtime=3,g_bombexplodetime=40,g_bombdefusetime=10,g_hotpotato=2,g_waverespawns=0,g_redwave=15,g_bluewave=15,g_respawndelay=8,g_suddendeath=1,g_maxrounds=0,g_friendlyfire=1,g_allowvote=536871039,g_armbands=1,sv_battleye=0,g_maxGameClients=0,g_deadchat=1,g_gear=0,g_survivorrule=0,sv_maxRate=0,sv_maxping=0,sv_minping=0,dmflags=0,sv_minRate=0, Admin=adminname, Email=xxx@xxx.xxx,sv_privateClients=0,version=ioQ3 1.33urt linux-i386 Apr  2 2007,sv_allowDownload=0,gamename=q3ut4,g_needpass=0,g_enableDust=0,g_enableBreath=0,g_antilagvis=0,g_survivor=1,g_enablePrecip=0,g_modversion=4.0
+Q3S  94.75.214.145:27965    0/12  0/0  ut4_casa   1029 / 1      q3ut4 New Unnamed Server
+	game=q3ut4,pure=1,gametype=4,protocol=68,game=q3ut4,pure=1,gametype=4,hostname=New Unnamed Server,protocol=68,sv_allowdownload=0,g_matchmode=0,g_gametype=4,sv_floodprotect=1,g_warmup=15,capturelimit=0,sv_hostname=New Unnamed Server,g_followstrict=1,fraglimit=10,timelimit=20,g_cahtime=60,g_swaproles=0,g_roundtime=3,g_bombexplodetime=40,g_bombdefusetime=10,g_hotpotato=2,g_waverespawns=0,g_redwave=15,g_bluewave=15,g_respawndelay=8,g_suddendeath=1,g_maxrounds=0,g_friendlyfire=1,g_allowvote=536871039,g_armbands=1,g_survivorrule=0,g_gear=0,g_deadchat=1,g_maxGameClients=0,sv_dlURL=urbanterror.net,sv_maxPing=0,sv_minPing=0,sv_maxRate=0,sv_minRate=0,dmflags=0,version=ioq3 1.35urt linux-i386 Dec 20 2007,sv_privateClients=0, Admin=adminname, Email=xxx@xxx.xxx,gamename=q3ut4,g_needpass=1,g_enableDust=0,g_enableBreath=0,g_antilagvis=0,g_survivor=1,g_enablePrecip=0,g_modversion=4.1
+Q3S  64.34.165.146:27960    0/20  0/0  ut4_turnpike   1105 / 1      q3ut4 Team*pRo Private Server
+	game=q3ut4,pure=1,gametype=7,protocol=68,game=q3ut4,pure=1,gametype=7,hostname=Team*pRo Private Server,protocol=68
+Q3S  64.34.165.146:27961    0/18  0/0  ut4_casa   1655 / 2      q3ut4 www.urtpug.com [East Coast]
+	game=q3ut4,pure=1,gametype=4,protocol=68
+Q3S  58.6.13.101:27960      0/20  0/0  ut4_abbey   1366 / 1      q3ut4 kp10 Urban Terror - Perth
+	game=q3ut4,pure=1,gametype=7,protocol=68
+Q3S  94.198.100.137:20026   3/10  0/0  ut4_platforms_b4   1908 / 2      q3ut4 sordatu FuNNy ITA SerVer by n1ping.com
+	game=q3ut4,pure=1,gametype=7,protocol=68
+Q3S  97.86.112.18:27961     0/12  0/0  ut4_casa   1307 / 1      q3ut4 Starks server
+	game=q3ut4,pure=1,gametype=0,protocol=68
+Q3S  8.12.68.20:27960      10/20  0/0  ut4_austria   1299 / 1      q3ut4 CLAN -DoRaDo- [UAA]
+	game=q3ut4,pure=1,gametype=4,protocol=68
+Q3S  77.44.82.101:27961 no response
+Q3S  64.34.165.146:27962    0/16  0/0  ut4_casa   1266 / 1      
