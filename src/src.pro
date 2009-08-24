@@ -14,7 +14,11 @@ SOURCES += main.cpp \
  application.cpp \
  serveroptions.cpp \
  servoptsdialog.cpp \
- pushbuttonactionlink.cpp
+ pushbuttonactionlink.cpp \
+ serverlistcustom.cpp \
+ serverinfo.cpp \
+ playerinfo.cpp \
+ serverlistqstat.cpp
 HEADERS += mainwindow.h \
  serverid.h \
  options.h \
@@ -25,7 +29,11 @@ HEADERS += mainwindow.h \
  application.h \
  serveroptions.h \
  servoptsdialog.h \
- pushbuttonactionlink.h
+ pushbuttonactionlink.h \
+ serverlistcustom.h \
+ serverinfo.h \
+ playerinfo.h \
+ serverlistqstat.h
 FORMS += mainwindow.ui \
  optionsdialog.ui \
  servoptsdialog.ui

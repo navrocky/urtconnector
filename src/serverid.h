@@ -1,6 +1,7 @@
 #ifndef SERVERID_H
 #define SERVERID_H
 
+#include <vector>
 #include <QString>
 
 /*! \brief Server ID.
@@ -47,5 +48,6 @@ bool operator<(const ServerID& a, const ServerID& b);
 bool operator>(const ServerID& a, const ServerID& b);
 // bool operator<=(const ServerID& a, const ServerID& b);
 // bool operator>=(const ServerID& a, const ServerID& b);
+typedef std::vector<ServerID> ServerIDList;
 
 #endif
