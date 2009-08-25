@@ -9,15 +9,18 @@
 class ServerListQStat : public ServerListCustom
 {
 public:
-    ServerListQStat();
+    ServerListQStat(QObject *parent = 0);
     ~ServerListQStat();
 
-
-    const ServerInfoList& list() const {return list_;}
+    virtual void refreshAll();
+    virtual void refreshServer(const ServerID& id);
+    virtual void refreshCancel();
 
 private:
     QProcess proc_;
-    ServerInfoList list_;
+    QString qstatPath_;
+    QString masterServer_;
+    int maxSim_;
 };
 
 #endif

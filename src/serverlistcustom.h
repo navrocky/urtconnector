@@ -2,6 +2,7 @@
 #define SERVERLISTCUSTOM_H
 
 #include <QObject>
+#include "serverinfo.h"
 #include "serverid.h"
 
 class ServerListCustom : public QObject
@@ -9,7 +10,7 @@ class ServerListCustom : public QObject
 Q_OBJECT
 public:
     ServerListCustom(QObject *parent = 0);
-    ~ServerListCustom();
+    virtual ~ServerListCustom();
 
     virtual void refreshAll() = 0;
     virtual void refreshServer(const ServerID& id) = 0;
@@ -21,14 +22,16 @@ public:
     /*! Custom server list, if empty then server list retrieved from master server */
     ServerIDList& customServList() {return customServList_;}
 
-
-protected:
-
+    /*! Resulting server info list */
+    const ServerInfoList& list() const {return list_;}
 
 signals:
     void serverChanged(const ServerID& id);
     void serverAdded(const ServerID& id);
     void serverRemoved(const ServerID& id);
+
+protected:
+    ServerInfoList list_;
 
 private:
     ServerIDList customServList_;
