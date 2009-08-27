@@ -1,12 +1,15 @@
 <RCC>
   <qresource prefix="icons" >
+    <file>icons/edit-clear-locationbar-rtl.png</file>
+    <file>icons/edit-find.png</file>
+    <file>icons/add.png</file>
     <file>icons/launch.png</file>
     <file>icons/application-exit.png</file>
     <file>icons/configure.png</file>
     <file>icons/help-about.png</file>
     <file>icons/help-contents.png</file>
     <file>icons/edit.png</file>
-    <file>icons/add.png</file>
     <file>icons/remove.png</file>
+    <file>icons/view-refresh.png</file>
   </qresource>
 </RCC>

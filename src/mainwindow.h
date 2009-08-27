@@ -1,10 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <memory>
 #include <QMainWindow>
 
 #include "appoptions.h"
 #include "launcher.h"
+#include "serverlistcustom.h"
 
 namespace Ui
 {
@@ -28,6 +30,7 @@ private slots:
     void launchStatusChanged();
     void favAdd();
     void favDelete();
+    void refreshAll();
 
 private:
     void syncFavList();
@@ -35,6 +38,10 @@ private:
     Ui::MainWindowClass *ui;
     AppOptionsPtr opts_;
     Launcher launcher_;
+    ServerListCustom* allList_;
+    ServerListCustom* favList_;
+
+
 };
 
 #endif

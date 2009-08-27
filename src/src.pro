@@ -18,7 +18,8 @@ SOURCES += main.cpp \
  serverlistcustom.cpp \
  serverinfo.cpp \
  playerinfo.cpp \
- serverlistqstat.cpp
+ serverlistqstat.cpp \
+ servlistwidget.cpp
 HEADERS += mainwindow.h \
  serverid.h \
  options.h \
@@ -33,10 +34,12 @@ HEADERS += mainwindow.h \
  serverlistcustom.h \
  serverinfo.h \
  playerinfo.h \
- serverlistqstat.h
+ serverlistqstat.h \
+ servlistwidget.h
 FORMS += mainwindow.ui \
  optionsdialog.ui \
- servoptsdialog.ui
+ servoptsdialog.ui \
+ servlistwidget.ui
 CONFIG -= release
 
 CONFIG += debug

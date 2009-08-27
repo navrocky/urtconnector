@@ -16,6 +16,10 @@ public:
     virtual void refreshServer(const ServerID& id);
     virtual void refreshCancel();
 
+private slots:
+    void error( QProcess::ProcessError error );
+    void finished ( int exitCode, QProcess::ExitStatus exitStatus );
+    void readyReadStandardOutput ();
 private:
     QProcess proc_;
     QString qstatPath_;

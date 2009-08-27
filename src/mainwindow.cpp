@@ -11,6 +11,7 @@
 #include "exception.h"
 #include "servoptsdialog.h"
 #include "pushbuttonactionlink.h"
+#include "serverlistqstat.h"
 
 using namespace std;
 
@@ -18,7 +19,10 @@ MainWindow::MainWindow(QWidget *parent)
  : QMainWindow(parent),
    ui(new Ui::MainWindowClass),
    opts_( new AppOptions() ),
-   launcher_(opts_)
+   launcher_(opts_),
+   allList_( new ServerListQStat(this) ),
+   favList_( new ServerListQStat(this) )
+
 {
     ui->setupUi(this);
 
@@ -28,11 +32,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&launcher_, SIGNAL(finished()), SLOT(launchStatusChanged()));
     connect(ui->actionFavAdd, SIGNAL(triggered()), SLOT(favAdd()));
     connect(ui->actionFavDelete, SIGNAL(triggered()), SLOT(favDelete()));
+    connect(ui->actionRefreshAll, SIGNAL(triggered()), SLOT(refreshAll()));
 
     new PushButtonActionLink(ui->favAddButton, ui->actionFavAdd);
     new PushButtonActionLink(ui->favDeleteButton, ui->actionFavDelete);
     new PushButtonActionLink(ui->quickConnectButton, ui->actionQuickConnect);
     new PushButtonActionLink(ui->favConnectButton, ui->actionConnectToFavorite);
+    new PushButtonActionLink(ui->refreshAllButton, ui->actionRefreshAll);
 
     loadOptions();
 }
@@ -92,4 +98,8 @@ void MainWindow::saveOptions()
 void MainWindow::loadOptions()
 {
     // TODO load options from XML
+}
+
+void MainWindow::refreshAll()
+{
 }

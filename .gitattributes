@@ -18,11 +18,14 @@ src/exception.h -text
 src/icons/add.png -text
 src/icons/application-exit.png -text
 src/icons/configure.png -text
+src/icons/edit-clear-locationbar-rtl.png -text
+src/icons/edit-find.png -text
 src/icons/edit.png -text
 src/icons/help-about.png -text
 src/icons/help-contents.png -text
 src/icons/launch.png -text
 src/icons/remove.png -text
+src/icons/view-refresh.png -text
 src/images.qrc -text
 src/launcher.cpp -text
 src/launcher.h -text
@@ -49,6 +52,9 @@ src/serverlistqstat.cpp -text
 src/serverlistqstat.h -text
 src/serveroptions.cpp -text
 src/serveroptions.h -text
+src/servlistwidget.cpp -text
+src/servlistwidget.h -text
+src/servlistwidget.ui -text
 src/servoptsdialog.cpp -text
 src/servoptsdialog.h -text
 src/servoptsdialog.ui -text
