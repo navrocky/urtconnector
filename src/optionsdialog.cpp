@@ -2,19 +2,16 @@
 #include <QGroupBox>
 #include <QFileDialog>
 
-#include "ui_optionsdialog.h"
 #include "optionsdialog.h"
 
 OptionsDialog::OptionsDialog(QWidget *parent)
- : QDialog(parent),
-   ui(new Ui::OptionsDialogClass)
+ : QDialog(parent)
 {
-    ui->setupUi(this);
+    ui.setupUi(this);
 
-    connect( ui->selectBinButton, SIGNAL( clicked() ), SLOT( chooseBinary() ));
-    connect( ui->insertFileButton, SIGNAL( clicked() ), SLOT( insertFilePath() ));
+    connect( ui.selectBinButton, SIGNAL( clicked() ), SLOT( chooseBinary() ));
+    connect( ui.insertFileButton, SIGNAL( clicked() ), SLOT( insertFilePath() ));
 }
-
 
 OptionsDialog::~OptionsDialog()
 {
@@ -28,17 +25,17 @@ void OptionsDialog::setOpts(AppOptionsPtr value)
 
 void OptionsDialog::updateDialog()
 {
-    ui->binaryEdit->setText( opts_->binaryPath() );
-    ui->advCmdEdit->setText( opts_->advCmdLine() );
-    ui->advCmdBox->setChecked( opts_->useAdvCmdLine() );
+    ui.binaryEdit->setText( opts_->binaryPath() );
+    ui.advCmdEdit->setText( opts_->advCmdLine() );
+    ui.advCmdBox->setChecked( opts_->useAdvCmdLine() );
 }
 
 void OptionsDialog::accept()
 {
     QDialog::accept();
-    opts_->setBinaryPath( ui->binaryEdit->text() );
-    opts_->setAdvCmdLine( ui->advCmdEdit->text() );
-    opts_->setUseAdvCmdLine( ui->advCmdBox->isChecked() );
+    opts_->setBinaryPath( ui.binaryEdit->text() );
+    opts_->setAdvCmdLine( ui.advCmdEdit->text() );
+    opts_->setUseAdvCmdLine( ui.advCmdBox->isChecked() );
 }
 
 void OptionsDialog::chooseBinary()
@@ -48,7 +45,7 @@ void OptionsDialog::chooseBinary()
       tr("Executables (*.i386 *.x86_64 *.exe);;All Files (*)"));
     if (fileName.isEmpty()) return;
 
-    ui->binaryEdit->setText(fileName);
+    ui.binaryEdit->setText(fileName);
 }
 
 void OptionsDialog::insertFilePath()
@@ -58,7 +55,5 @@ void OptionsDialog::insertFilePath()
       tr("All Files (*)"));
     if (fileName.isEmpty()) return;
 
-    ui->advCmdEdit->insert(fileName);
+    ui.advCmdEdit->insert(fileName);
 }
-
-

@@ -2,12 +2,9 @@
 #define SERVOPTSDIALOG_H
 
 #include <QDialog>
-#include "serveroptions.h"
 
-namespace Ui
-{
-    class ServOptsDialogClass;
-}
+#include "ui_servoptsdialog.h"
+#include "serveroptions.h"
 
 class ServOptsDialog : public QDialog
 {
@@ -23,7 +20,7 @@ protected:
 private:
     void updateDialog();
 
-    Ui::ServOptsDialogClass *ui;
+    Ui::ServOptsDialogClass ui;
     ServerOptions opts_;
 };
 

@@ -4,14 +4,10 @@
 #include <memory>
 #include <QMainWindow>
 
+#include "ui_mainwindow.h"
 #include "appoptions.h"
 #include "launcher.h"
-#include "serverlistcustom.h"
-
-namespace Ui
-{
-    class MainWindowClass;
-}
+#include "servlistwidget.h"
 
 class MainWindow : public QMainWindow
 {
@@ -35,12 +31,11 @@ private slots:
 private:
     void syncFavList();
 
-    Ui::MainWindowClass *ui;
+    Ui::MainWindowClass ui;
     AppOptionsPtr opts_;
     Launcher launcher_;
-    ServerListCustom* allList_;
-    ServerListCustom* favList_;
-
+    ServListWidget* allList_;
+    ServListWidget* favList_;
 
 };
 

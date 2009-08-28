@@ -41,9 +41,7 @@
       <root>/usr/lib/qt4</root>
       <designerpluginpaths/>
     </qt>
-    <references>
-      <pcs>Qt4</pcs>
-    </references>
+    <references/>
     <codecompletion>
       <automaticCodeCompletion>false</automaticCodeCompletion>
       <automaticArgumentsHint>false</automaticArgumentsHint>

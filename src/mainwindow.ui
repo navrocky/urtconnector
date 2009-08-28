@@ -21,22 +21,13 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabFav">
        <attribute name="title">
         <string>Favourites</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QTreeWidget" name="favTree">
-          <column>
-           <property name="text">
-            <string>1</string>
-           </property>
-          </column>
-         </widget>
-        </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
@@ -165,7 +156,7 @@
      <x>0</x>
      <y>0</y>
      <width>889</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuUrbanConnector">

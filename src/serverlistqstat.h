@@ -8,13 +8,14 @@
 
 class ServerListQStat : public ServerListCustom
 {
+Q_OBJECT
 public:
     ServerListQStat(QObject *parent = 0);
     ~ServerListQStat();
 
-    virtual void refreshAll();
-    virtual void refreshServer(const ServerID& id);
-    virtual void refreshCancel();
+    void refreshAll();
+    void refreshServer(const ServerID& id);
+    void refreshCancel();
 
 private slots:
     void error( QProcess::ProcessError error );

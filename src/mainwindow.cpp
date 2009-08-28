@@ -3,9 +3,9 @@
 #include <QAction>
 #include <QMenu>
 #include <QTreeView>
+#include <QBoxLayout>
 
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "optionsdialog.h"
 #include "launcher.h"
 #include "exception.h"
@@ -17,28 +17,30 @@ using namespace std;
 
 MainWindow::MainWindow(QWidget *parent)
  : QMainWindow(parent),
-   ui(new Ui::MainWindowClass),
    opts_( new AppOptions() ),
-   launcher_(opts_),
-   allList_( new ServerListQStat(this) ),
-   favList_( new ServerListQStat(this) )
-
+   launcher_(opts_)
 {
-    ui->setupUi(this);
+    ui.setupUi(this);
 
-    connect(ui->actionOptions, SIGNAL( triggered() ), SLOT( showOptions() ) );
-    connect(ui->actionQuickConnect, SIGNAL( triggered() ), SLOT( quickConnect() ) );
+    allList_ = new ServListWidget(ui.tabAll);
+    dynamic_cast<QBoxLayout*>(ui.tabAll->layout())->insertWidget(0, allList_);
+
+    favList_ = new ServListWidget(ui.tabFav);
+    dynamic_cast<QBoxLayout*>(ui.tabFav->layout())->insertWidget(0, favList_);
+
+    connect(ui.actionOptions, SIGNAL( triggered() ), SLOT( showOptions() ) );
+    connect(ui.actionQuickConnect, SIGNAL( triggered() ), SLOT( quickConnect() ) );
     connect(&launcher_, SIGNAL(started()), SLOT(launchStatusChanged()));
     connect(&launcher_, SIGNAL(finished()), SLOT(launchStatusChanged()));
-    connect(ui->actionFavAdd, SIGNAL(triggered()), SLOT(favAdd()));
-    connect(ui->actionFavDelete, SIGNAL(triggered()), SLOT(favDelete()));
-    connect(ui->actionRefreshAll, SIGNAL(triggered()), SLOT(refreshAll()));
+    connect(ui.actionFavAdd, SIGNAL(triggered()), SLOT(favAdd()));
+    connect(ui.actionFavDelete, SIGNAL(triggered()), SLOT(favDelete()));
+    connect(ui.actionRefreshAll, SIGNAL(triggered()), SLOT(refreshAll()));
 
-    new PushButtonActionLink(ui->favAddButton, ui->actionFavAdd);
-    new PushButtonActionLink(ui->favDeleteButton, ui->actionFavDelete);
-    new PushButtonActionLink(ui->quickConnectButton, ui->actionQuickConnect);
-    new PushButtonActionLink(ui->favConnectButton, ui->actionConnectToFavorite);
-    new PushButtonActionLink(ui->refreshAllButton, ui->actionRefreshAll);
+    new PushButtonActionLink(ui.favAddButton, ui.actionFavAdd);
+    new PushButtonActionLink(ui.favDeleteButton, ui.actionFavDelete);
+    new PushButtonActionLink(ui.quickConnectButton, ui.actionQuickConnect);
+    new PushButtonActionLink(ui.favConnectButton, ui.actionConnectToFavorite);
+    new PushButtonActionLink(ui.refreshAllButton, ui.actionRefreshAll);
 
     loadOptions();
 }
@@ -59,16 +61,16 @@ void MainWindow::showOptions()
 
 void MainWindow::quickConnect()
 {
-    launcher_.setServerID( ServerID( ui->qlServerEdit->text() ) );
-    launcher_.setUserName( ui->qlPlayerEdit->text() );
-    launcher_.setPassword( ui->qlPasswordEdit->text() );
+    launcher_.setServerID( ServerID( ui.qlServerEdit->text() ) );
+    launcher_.setUserName( ui.qlPlayerEdit->text() );
+    launcher_.setPassword( ui.qlPasswordEdit->text() );
     launcher_.launch();
 }
 
 void MainWindow::launchStatusChanged()
 {
     cout << launcher_.executing() << endl;
-    ui->quickConnectButton->setEnabled( !launcher_.executing() );
+    ui.quickConnectButton->setEnabled( !launcher_.executing() );
 }
 
 void MainWindow::favAdd()
