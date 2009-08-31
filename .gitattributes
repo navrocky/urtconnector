@@ -6,6 +6,7 @@ distrib/rpm/urtconnector.spec -text
 doc/ExampleData/appdata.xml -text
 doc/ExampleData/servers.xml -text
 doc/class_model.xmi -text
+doc/logo.svg -text
 doc/qstat_out.txt -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text

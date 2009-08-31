@@ -38,4 +38,6 @@ private:
     bool autoRefresh_;
 };
 
+
+
 #endif

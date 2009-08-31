@@ -22,10 +22,16 @@ private slots:
     void finished ( int exitCode, QProcess::ExitStatus exitStatus );
     void readyReadStandardOutput ();
 private:
+
+    void processLine(const QString& line);
+    void applyInfo();
+
     QProcess proc_;
     QString qstatPath_;
     QString masterServer_;
     int maxSim_;
+    ServerInfo curInfo_;
+    bool infoFilled_;
 };
 
 #endif

@@ -43,6 +43,11 @@ MainWindow::MainWindow(QWidget *parent)
     new PushButtonActionLink(ui.refreshAllButton, ui.actionRefreshAll);
 
     loadOptions();
+
+    allSL_ = new ServerListQStat(this);
+    favSL_ = new ServerListQStat(this);
+
+    allList_->setServerList(allSL_);
 }
 
 
@@ -104,4 +109,5 @@ void MainWindow::loadOptions()
 
 void MainWindow::refreshAll()
 {
+    allSL_->refreshAll();
 }

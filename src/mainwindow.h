@@ -8,6 +8,7 @@
 #include "appoptions.h"
 #include "launcher.h"
 #include "servlistwidget.h"
+#include "serverlistcustom.h"
 
 class MainWindow : public QMainWindow
 {
@@ -36,7 +37,8 @@ private:
     Launcher launcher_;
     ServListWidget* allList_;
     ServListWidget* favList_;
-
+    ServerListCustom* allSL_;
+    ServerListCustom* favSL_;
 };
 
 #endif

@@ -1,11 +1,18 @@
 #include <QStringList>
+#include <QRegExp>
 
 #include "exception.h"
 #include "serverlistqstat.h"
 #include "serverid.h"
 
+#include <iostream>
+
+using namespace std;
+
 ServerListQStat::ServerListQStat(QObject *parent)
-    : ServerListCustom(parent)
+    : ServerListCustom(parent),
+      maxSim_(10),
+      infoFilled_(false)
 {
     connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
     connect(&proc_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
@@ -22,17 +29,21 @@ void ServerListQStat::refreshAll()
     if (proc_.state() != QProcess::NotRunning) return;
 
     QStringList sl;
-    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh";
 
-    if (customServList().empty())
-    {
-        sl << "-q3m" << masterServer_;
-    } else
-    {
+    sl << "-c" << "cat ../doc/qstat_out.txt | awk '{print $0; system(\"usleep 50000\");}'";
+    proc_.start("/bin/bash", sl);
 
-    }
+//     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh";
+//
+//     if (customServList().empty())
+//     {
+//         sl << "-q3m" << masterServer_;
+//     } else
+//     {
+//
+//     }
 
-    proc_.start(qstatPath_, sl);
+//     proc_.start(qstatPath_, sl);
 }
 
 void ServerListQStat::refreshServer(const ServerID & id)
@@ -71,7 +82,53 @@ void ServerListQStat::finished(int exitCode, QProcess::ExitStatus exitStatus)
 
 void ServerListQStat::readyReadStandardOutput()
 {
-//     proc_.
+    while (proc_.canReadLine())
+    {
+        QString str = QString(proc_.readLine());
+        processLine(str);
+    }
+}
+
+void ServerListQStat::processLine(const QString & line)
+{
+    try
+    {
+        QRegExp ServerRx ("^Q3S\\s+(\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}:\\d{1,5})\\s+(\\d+)/(\\d+)\\s+(\\d+/\\d+)\\s+([^\\s]+)\\s+(\\d+)/(\\d+)\\s+([^\\s]+)\\s+(.+)");
+        if (ServerRx.indexIn(line) != -1)
+        {
+            applyInfo();
+
+            // fill info
+            curInfo_ = ServerInfo();
+            curInfo_.id = ServerID(ServerRx.cap(1));
+            curInfo_.maxPlayerCount = ServerRx.cap(3).toInt();
+            curInfo_.map = ServerRx.cap(5);
+            curInfo_.ping = ServerRx.cap(6).toInt();
+            curInfo_.name = ServerRx.cap(9);
+
+            //cout << curInfo_.id.address().toLocal8Bit().data() << curInfo_.map.toLocal8Bit().data() << endl;
+
+        }
+    }
+    catch(...)
+    {}
+}
+
+void ServerListQStat::applyInfo()
+{
+    if (!infoFilled_) return;
+
+    if (list_.find(curInfo_.id) == list_.end())
+    {
+        list_[curInfo_.id] = curInfo_;
+        emit serverAdded(curInfo_.id);
+    } else
+    {
+        list_[curInfo_.id] = curInfo_;
+        emit serverChanged(curInfo_.id);
+    }
+
+    infoFilled_ = false;
 }
 
 

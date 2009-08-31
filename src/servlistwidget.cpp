@@ -11,4 +11,9 @@ ServListWidget::~ServListWidget()
 {
 }
 
+void ServListWidget::setServerList(ServerListCustom * ptr)
+{
+    servList_ = ptr;
+}
+
 
