@@ -152,13 +152,13 @@
       <autokdesu>false</autokdesu>
       <envvars/>
       <runarguments>
-        <urtconnector></urtconnector>
+        <urtconnector/>
       </runarguments>
       <cwd>
-        <urtconnector></urtconnector>
+        <urtconnector/>
       </cwd>
       <debugarguments>
-        <urtconnector></urtconnector>
+        <urtconnector/>
       </debugarguments>
     </run>
     <general>

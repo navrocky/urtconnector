@@ -1,3 +1,5 @@
+#include <QObject>
+
 #include "serverinfo.h"
 
 ServerInfo::ServerInfo()
@@ -8,6 +10,21 @@ ServerInfo::ServerInfo()
     blueScore(0),
     updateStamp(0)
 {
+}
+
+QString ServerInfo::modeName() const
+{
+    switch (mode)
+    {
+        case FreeForAll: return QObject::tr("Free For All");
+        case TeamDeathMatch: return QObject::tr("Team DeathMatch");
+        case TeamSurvivor: return QObject::tr("Team Survivor");
+        case FollowTheLeader: return QObject::tr("Follow The Leader");
+        case CaptureAndHold: return QObject::tr("Capture And Hold");
+        case CaptureTheFlag: return QObject::tr("Capture The Flag");
+        case Bombmode: return QObject::tr("Bomb Mode");
+    }
+    return QObject::tr("Unknown");
 }
 
 

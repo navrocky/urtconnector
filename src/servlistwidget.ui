@@ -89,12 +89,12 @@
      </column>
      <column>
       <property name="text">
-       <string>Game mode</string>
+       <string>Ping</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>New Column</string>
+       <string>Game mode</string>
       </property>
      </column>
      <column>

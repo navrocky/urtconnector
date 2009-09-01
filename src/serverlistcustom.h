@@ -26,9 +26,9 @@ public:
     const ServerInfoList& list() const {return list_;}
 
 signals:
-    void serverChanged(const ServerID& id);
-    void serverAdded(const ServerID& id);
-    void serverRemoved(const ServerID& id);
+        void serverChanged ( const ServerID& id );
+        void serverAdded ( const ServerID& id );
+        void serverRemoved ( const ServerID& id );
 
 protected:
     ServerInfoList list_;

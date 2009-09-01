@@ -30,20 +30,21 @@ void ServerListQStat::refreshAll()
 
     QStringList sl;
 
-    sl << "-c" << "cat ../doc/qstat_out.txt | awk '{print $0; system(\"usleep 50000\");}'";
-    proc_.start("/bin/bash", sl);
+//     sl << "-c" << "cat ../doc/qstat_out.txt | awk '{print $0; system(\"usleep 50000\");}'";
+//     proc_.start("/bin/bash", sl);
 
-//     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh";
-//
-//     if (customServList().empty())
-//     {
-//         sl << "-q3m" << masterServer_;
-//     } else
-//     {
-//
-//     }
+    qstatPath_ = "/usr/bin/qstat";
+    masterServer_ = "master.urbanterror.net";
 
-//     proc_.start(qstatPath_, sl);
+    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh";
+    if (customServList().empty())
+    {
+        sl << "-q3m" << masterServer_;
+    } else
+    {
+
+    }
+    proc_.start(qstatPath_, sl);
 }
 
 void ServerListQStat::refreshServer(const ServerID & id)
@@ -91,9 +92,10 @@ void ServerListQStat::readyReadStandardOutput()
 
 void ServerListQStat::processLine(const QString & line)
 {
+    cout << line.trimmed().toLocal8Bit().data() << endl;
     try
     {
-        QRegExp ServerRx ("^Q3S\\s+(\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}:\\d{1,5})\\s+(\\d+)/(\\d+)\\s+(\\d+/\\d+)\\s+([^\\s]+)\\s+(\\d+)/(\\d+)\\s+([^\\s]+)\\s+(.+)");
+        QRegExp ServerRx ("^Q3S\\s+(\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}:\\d{1,5})\\s+(\\d+)/(\\d+)\\s+(\\d+/\\d+)\\s+([^\\s]+)\\s+(\\d+)\\s*/\\s*(\\d+)\\s+([^\\s]+)\\s+(.+)");
         if (ServerRx.indexIn(line) != -1)
         {
             applyInfo();
@@ -102,10 +104,10 @@ void ServerListQStat::processLine(const QString & line)
             curInfo_ = ServerInfo();
             curInfo_.id = ServerID(ServerRx.cap(1));
             curInfo_.maxPlayerCount = ServerRx.cap(3).toInt();
-            curInfo_.map = ServerRx.cap(5);
+            curInfo_.map = ServerRx.cap(5).trimmed();
             curInfo_.ping = ServerRx.cap(6).toInt();
-            curInfo_.name = ServerRx.cap(9);
-
+            curInfo_.name = ServerRx.cap(9).trimmed();
+            infoFilled_ = true;
             //cout << curInfo_.id.address().toLocal8Bit().data() << curInfo_.map.toLocal8Bit().data() << endl;
 
         }
