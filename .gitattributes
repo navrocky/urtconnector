@@ -1,4 +1,8 @@
 * text=auto !eol
+artwork/logo.png -text
+artwork/logo.svg -text
+artwork/q3ut_logo.png -text
+artwork/q3ut_logo.svg -text
 /build -text
 /distclean -text
 distrib/rpm/build_rpm -text
@@ -6,7 +10,6 @@ distrib/rpm/urtconnector.spec -text
 doc/ExampleData/appdata.xml -text
 doc/ExampleData/servers.xml -text
 doc/class_model.xmi -text
-doc/logo.svg -text
 doc/qstat_out.txt -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text
