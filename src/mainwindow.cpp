@@ -116,6 +116,6 @@ void MainWindow::refreshAll()
 
 void MainWindow::showAbout()
 {
-    AboutDialog wind;
-    if (wind.exec() == QDialog::Rejected) return;
-    }
+    AboutDialog d;
+    d.exec();
+}

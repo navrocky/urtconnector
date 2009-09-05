@@ -92,7 +92,7 @@ void ServerListQStat::readyReadStandardOutput()
 
 void ServerListQStat::processLine(const QString & line)
 {
-    cout << line.trimmed().toLocal8Bit().data() << endl;
+    cout << line.trimmed().toStdString() << endl;
     try
     {
         QRegExp ServerRx ("^Q3S\\s+(\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}:\\d{1,5})\\s+(\\d+)/(\\d+)\\s+(\\d+/\\d+)\\s+([^\\s]+)\\s+(\\d+)\\s*/\\s*(\\d+)\\s+([^\\s]+)\\s+(.+)");
@@ -123,11 +123,13 @@ void ServerListQStat::applyInfo()
     if (list_.find(curInfo_.id) == list_.end())
     {
         list_[curInfo_.id] = curInfo_;
-        emit serverAdded(curInfo_.id);
+        state_++;
     } else
     {
+        const ServerInfo& old = list_[curInfo_.id];
+        curInfo_.updateStamp = old.updateStamp + 1;
         list_[curInfo_.id] = curInfo_;
-        emit serverChanged(curInfo_.id);
+        state_++;
     }
 
     infoFilled_ = false;

@@ -21,15 +21,17 @@ public:
     void setServerList(ServerListCustom* ptr);
 
 private slots:
-    void serverChanged(const ServerID& id);
-    void serverAdded(const ServerID& id);
-    void serverRemoved(const ServerID& id);
-
+    void timerEvent(QTimerEvent *event);
 private:
     void updateItem(ServListItem*);
+    void updateList();
     Ui_ServListWidgetClass ui_;
     QPointer<ServerListCustom> servList_;
-    std::map<ServerID, ServListItem*> items_;
+
+    typedef std::map<ServerID, ServListItem*> ServItems;
+    ServItems items_;
+
+    int oldState_;
 };
 
 #endif

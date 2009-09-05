@@ -25,13 +25,12 @@ public:
     /*! Resulting server info list */
     const ServerInfoList& list() const {return list_;}
 
-signals:
-        void serverChanged ( const ServerID& id );
-        void serverAdded ( const ServerID& id );
-        void serverRemoved ( const ServerID& id );
+    /*! List state. Changed always after list change. */
+    int state() const {return state_;}
 
 protected:
     ServerInfoList list_;
+    int state_;
 
 private:
     ServerIDList customServList_;
