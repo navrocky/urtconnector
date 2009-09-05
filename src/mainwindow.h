@@ -23,6 +23,7 @@ public slots:
 
 private slots:
     void showOptions();
+    void showAbout();
     void quickConnect();
     void launchStatusChanged();
     void favAdd();

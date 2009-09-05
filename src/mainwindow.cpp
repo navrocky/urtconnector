@@ -12,6 +12,7 @@
 #include "servoptsdialog.h"
 #include "pushbuttonactionlink.h"
 #include "serverlistqstat.h"
+#include "aboutdialog.h"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui.actionFavAdd, SIGNAL(triggered()), SLOT(favAdd()));
     connect(ui.actionFavDelete, SIGNAL(triggered()), SLOT(favDelete()));
     connect(ui.actionRefreshAll, SIGNAL(triggered()), SLOT(refreshAll()));
+    connect(ui.actionAbout, SIGNAL(triggered()), SLOT(showAbout()));
 
     new PushButtonActionLink(ui.favAddButton, ui.actionFavAdd);
     new PushButtonActionLink(ui.favDeleteButton, ui.actionFavDelete);
@@ -111,3 +113,9 @@ void MainWindow::refreshAll()
 {
     allSL_->refreshAll();
 }
+
+void MainWindow::showAbout()
+{
+    AboutDialog wind;
+    if (wind.exec() == QDialog::Rejected) return;
+    }

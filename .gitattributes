@@ -13,6 +13,9 @@ doc/class_model.xmi -text
 doc/qstat_out.txt -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text
+src/aboutdialog.cpp -text
+src/aboutdialog.h -text
+src/aboutdialog.ui -text
 src/application.cpp -text
 src/application.h -text
 src/appoptions.cpp -text
