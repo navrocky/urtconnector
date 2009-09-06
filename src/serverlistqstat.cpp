@@ -96,9 +96,14 @@ void ServerListQStat::processLine(const QString & line)
     try
     {
         QRegExp ServerRx ("^Q3S\\s+(\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}:\\d{1,5})\\s+(\\d+)/(\\d+)\\s+(\\d+/\\d+)\\s+([^\\s]+)\\s+(\\d+)\\s*/\\s*(\\d+)\\s+([^\\s]+)\\s+(.+)");
+        QRegExp ServInfoRx("^\t([\\w]+=[^,]+,)*([\\w]+=.+)$");
+        QRegExp PlayerRx("^\t\\s*(-?\\d+)\\s+frags\\s+(\\d+)ms\\s+(.+)$");
         if (ServerRx.indexIn(line) != -1)
         {
             applyInfo();
+
+            // filter other then q3ut4 games
+            if (ServerRx.cap(8) != "q3ut4") return;
 
             // fill info
             curInfo_ = ServerInfo();
@@ -110,6 +115,27 @@ void ServerListQStat::processLine(const QString & line)
             infoFilled_ = true;
             //cout << curInfo_.id.address().toLocal8Bit().data() << curInfo_.map.toLocal8Bit().data() << endl;
 
+        } else
+        if (ServInfoRx.indexIn(line) != -1)
+        {
+            if (!infoFilled_) return;
+            QStringList sl = line.trimmed().split(',');
+            QRegExp rx("^([^=]+)=(.+)$");
+            for (QStringList::iterator it = sl.begin(); it != sl.end(); it++)
+                if (rx.exactMatch(*it))
+                    curInfo_.info[rx.cap(1)] = rx.cap(2);
+
+            curInfo_.mode = static_cast<ServerInfo::GameMode>(curInfo_.info["g_gametype"].toInt());
+
+        } else
+        if (PlayerRx.indexIn(line) != -1)
+        {
+            if (!infoFilled_) return;
+            PlayerInfo pi;
+            pi.score = PlayerRx.cap(1).toInt();
+            pi.ping = PlayerRx.cap(2).toInt();
+            pi.nickName = PlayerRx.cap(3).trimmed();
+            curInfo_.players.push_back(pi);
         }
     }
     catch(...)

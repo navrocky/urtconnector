@@ -34,7 +34,14 @@ public:
     int blueScore;
     QString map;
     QString mapURL;
+
+    /*! additional server info */
+    typedef std::map<QString, QString> Info;
+    Info info;
+
+    /*! Info update stamp. Changed after each update. */
     int updateStamp;
+
 private:
 
 };
