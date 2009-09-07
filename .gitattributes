@@ -8,6 +8,7 @@ artwork/q3ut_logo.svg -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
 doc/ExampleData/appdata.xml -text
+doc/ExampleData/qstat_out.xml -text
 doc/ExampleData/servers.xml -text
 doc/class_model.xmi -text
 doc/qstat_out.txt -text
