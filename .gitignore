@@ -1,0 +1,10 @@
+src/moc_aboutdialog.cpp
+src/moc_application.cpp
+src/moc_launcher.cpp
+src/moc_mainwindow.cpp
+src/moc_optionsdialog.cpp
+src/moc_pushbuttonactionlink.cpp
+src/moc_serverlistcustom.cpp
+src/moc_serverlistqstat.cpp
+src/moc_servlistwidget.cpp
+src/moc_servoptsdialog.cpp

@@ -30,10 +30,10 @@ void ServerListQStat::refreshAll()
 
     QStringList sl;
 
-//     sl << "-c" << "cat ../doc/qstat_out.txt | awk '{print $0; system(\"usleep 50000\");}'";
-//     proc_.start("/bin/bash", sl);
+    sl << "-c" << "cat ../doc/qstat_out.txt | awk '{print $0; system(\"usleep 50000\");}'";
+    proc_.start("/bin/bash", sl);
 
-    qstatPath_ = "/usr/bin/qstat";
+/*    qstatPath_ = "/usr/bin/qstat";
     masterServer_ = "master.urbanterror.net";
 
     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh";
@@ -44,7 +44,7 @@ void ServerListQStat::refreshAll()
     {
 
     }
-    proc_.start(qstatPath_, sl);
+    proc_.start(qstatPath_, sl);*/
 }
 
 void ServerListQStat::refreshServer(const ServerID & id)

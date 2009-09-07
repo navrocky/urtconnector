@@ -1,7 +1,10 @@
 #include <vector>
 #include <QTreeWidgetItem>
+#include <QtCore/qobject.h>
 
 #include "servlistwidget.h"
+
+const int cFilterInfoColumn = 100;
 
 class ServListItem: public QTreeWidgetItem
 {
@@ -17,12 +20,15 @@ private:
 
 
 ServListWidget::ServListWidget(QWidget *parent)
- : QWidget(parent),
-   servList_(0),
-   oldState_(0)
+    : QWidget(parent),
+      servList_(0),
+      oldState_(0),
+      updateTimer_(0),
+      filterTimer_(0)
 {
     ui_.setupUi(this);
-    startTimer(500);
+    updateTimer_ = startTimer(500);
+    connect(ui_.filterEdit, SIGNAL(textChanged(const QString&)), SLOT(filterTextChanged(const QString&)));
 }
 
 ServListWidget::~ServListWidget()
@@ -46,14 +52,33 @@ void ServListWidget::updateItem(ServListItem* item)
     item->setText(4, si.modeName());
     item->setText(5, si.map);
     item->setText(6, QString("%1/%2").arg(si.players.size()).arg(si.maxPlayerCount));
+    item->setText(cFilterInfoColumn, QString("%1 %2 %3 %4 %5").arg(si.name)
+        .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.modeName()));
+    item->setHidden(!filterItem(item));
 }
 
-void ServListWidget::timerEvent(QTimerEvent *)
+bool ServListWidget::filterItem(ServListItem* item)
+{
+    return filterRx_.isEmpty() ||
+            filterRx_.indexIn(item->text(cFilterInfoColumn)) != -1;
+}
+
+void ServListWidget::timerEvent(QTimerEvent *te)
 {
     if (!servList_) return;
-    if (servList_->state() == oldState_) return;
-    oldState_ = servList_->state();
-    updateList();
+
+    if (te->timerId() == updateTimer_)
+    {
+        if (servList_->state() == oldState_) return;
+        oldState_ = servList_->state();
+        updateList();
+    } else
+    if (te->timerId() == filterTimer_)
+    {
+        updateList();
+        killTimer(filterTimer_);
+        filterTimer_ = 0;
+    }
 }
 
 void ServListWidget::updateList()
@@ -99,6 +124,15 @@ void ServListWidget::updateList()
     {
         setUpdatesEnabled(true);
     }
+}
+
+void ServListWidget::filterTextChanged(const QString& val)
+{
+    filterRx_ = QRegExp(val);
+    filterRx_.setCaseSensitivity(Qt::CaseInsensitive);
+    if (filterTimer_ != 0)
+        killTimer(filterTimer_);
+    filterTimer_ = startTimer(1000);
 }
 
 
