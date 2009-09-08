@@ -29,6 +29,7 @@ private slots:
     void favAdd();
     void favDelete();
     void refreshAll();
+    void refreshAllStopped();
 
 private:
     void syncFavList();

@@ -30,13 +30,22 @@ void ServerListQStat::refreshAll()
 
     QStringList sl;
 
-    sl << "-c" << "cat ../doc/qstat_out.txt | awk '{print $0; system(\"usleep 50000\");}'";
+#ifdef QSTAT_FAKE
+    #ifdef QSTAT_XML
+        sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
+    #else
+        sl << "-c" << "cat ../doc/qstat_out.txt | awk '{print $0; system(\"usleep 50000\");}'";
+    #endif
     proc_.start("/bin/bash", sl);
 
-/*    qstatPath_ = "/usr/bin/qstat";
+#else
+    qstatPath_ = "/usr/bin/qstat";
     masterServer_ = "master.urbanterror.net";
 
     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh";
+    #ifdef QSTAT_XML
+        sl << "-xml"
+    #endif
     if (customServList().empty())
     {
         sl << "-q3m" << masterServer_;
@@ -44,7 +53,8 @@ void ServerListQStat::refreshAll()
     {
 
     }
-    proc_.start(qstatPath_, sl);*/
+    proc_.start(qstatPath_, sl);
+#endif
 }
 
 void ServerListQStat::refreshServer(const ServerID & id)
@@ -59,6 +69,7 @@ void ServerListQStat::refreshCancel()
 
 void ServerListQStat::error(QProcess::ProcessError error)
 {
+    emit refreshStopped();
     switch (error)
     {
         case QProcess::FailedToStart:
@@ -79,6 +90,7 @@ void ServerListQStat::error(QProcess::ProcessError error)
 
 void ServerListQStat::finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+    emit refreshStopped();
 }
 
 void ServerListQStat::readyReadStandardOutput()
@@ -86,13 +98,17 @@ void ServerListQStat::readyReadStandardOutput()
     while (proc_.canReadLine())
     {
         QString str = QString(proc_.readLine());
+        #ifdef QSTAT_XML
+        processLineXml(str);
+        #else
         processLine(str);
+        #endif
     }
 }
 
 void ServerListQStat::processLine(const QString & line)
 {
-    cout << line.trimmed().toStdString() << endl;
+//     cout << line.trimmed().toStdString() << endl;
     try
     {
         QRegExp ServerRx ("^Q3S\\s+(\\d{1,3}.\\d{1,3}.\\d{1,3}.\\d{1,3}:\\d{1,5})\\s+(\\d+)/(\\d+)\\s+(\\d+/\\d+)\\s+([^\\s]+)\\s+(\\d+)\\s*/\\s*(\\d+)\\s+([^\\s]+)\\s+(.+)");
@@ -113,8 +129,6 @@ void ServerListQStat::processLine(const QString & line)
             curInfo_.ping = ServerRx.cap(6).toInt();
             curInfo_.name = ServerRx.cap(9).trimmed();
             infoFilled_ = true;
-            //cout << curInfo_.id.address().toLocal8Bit().data() << curInfo_.map.toLocal8Bit().data() << endl;
-
         } else
         if (ServInfoRx.indexIn(line) != -1)
         {
@@ -160,6 +174,12 @@ void ServerListQStat::applyInfo()
 
     infoFilled_ = false;
 }
+
+void ServerListQStat::processLineXml(const QString & line)
+{
+
+}
+
 
 
 

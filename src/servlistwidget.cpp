@@ -132,7 +132,7 @@ void ServListWidget::filterTextChanged(const QString& val)
     filterRx_.setCaseSensitivity(Qt::CaseInsensitive);
     if (filterTimer_ != 0)
         killTimer(filterTimer_);
-    filterTimer_ = startTimer(1000);
+    filterTimer_ = startTimer(500);
 }
 
 

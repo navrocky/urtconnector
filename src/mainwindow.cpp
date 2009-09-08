@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
     favSL_ = new ServerListQStat(this);
 
     allList_->setServerList(allSL_);
+    connect(allSL_, SIGNAL(refreshStopped()), SLOT(refreshAllStopped()));
 }
 
 
@@ -112,6 +113,12 @@ void MainWindow::loadOptions()
 void MainWindow::refreshAll()
 {
     allSL_->refreshAll();
+    ui.actionRefreshAll->setEnabled(false);
+}
+
+void MainWindow::refreshAllStopped()
+{
+    ui.actionRefreshAll->setEnabled(true);
 }
 
 void MainWindow::showAbout()
@@ -119,3 +126,5 @@ void MainWindow::showAbout()
     AboutDialog d;
     d.exec();
 }
+
+

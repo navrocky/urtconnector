@@ -28,6 +28,9 @@ public:
     /*! List state. Changed always after list change. */
     int state() const {return state_;}
 
+signals:
+    void refreshStopped();
+
 protected:
     ServerInfoList list_;
     int state_;

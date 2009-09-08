@@ -6,6 +6,12 @@
 #include "serverinfo.h"
 #include "serverlistcustom.h"
 
+// qstat emulation, otherwise using real qstat
+#define QSTAT_FAKE
+
+// qstat out in XML
+//#define QSTAT_XML
+
 class ServerListQStat : public ServerListCustom
 {
 Q_OBJECT
@@ -24,6 +30,7 @@ private slots:
 private:
 
     void processLine(const QString& line);
+    void processLineXml(const QString& line);
     void applyInfo();
 
     QProcess proc_;
