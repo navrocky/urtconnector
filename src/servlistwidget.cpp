@@ -42,7 +42,8 @@ void ServListWidget::setServerList(ServerListCustom * ptr)
 
 void ServListWidget::updateItem(ServListItem* item)
 {
-    const ServerInfoList& list = servList_->list();
+    ServerListAccess sla(servList_);
+    const ServerInfoList& list = sla.list();
     ServerInfoList::const_iterator it = list.find(item->id());
     if (it == list.end()) return;
     const ServerInfo& si = (*it).second;
@@ -52,8 +53,15 @@ void ServListWidget::updateItem(ServListItem* item)
     item->setText(4, si.modeName());
     item->setText(5, si.map);
     item->setText(6, QString("%1/%2").arg(si.players.size()).arg(si.maxPlayerCount));
-    item->setText(cFilterInfoColumn, QString("%1 %2 %3 %4 %5").arg(si.name)
-        .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.modeName()));
+
+    QString info = QString("%1 %2 %3 %4 %5").arg(si.name)
+        .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.modeName());
+
+    for (PlayerInfoList::const_iterator it = si.players.begin(); it != si.players.end(); it++)
+        info += QString(" ") + (*it).nickName;
+
+    item->setText(cFilterInfoColumn, info);
+
     item->setHidden(!filterItem(item));
 }
 
@@ -86,36 +94,39 @@ void ServListWidget::updateList()
     setUpdatesEnabled(false);
     try
     {
-        const ServerInfoList& list = servList_->list();
-
-        // who changed, appeared?
-        for (ServerInfoList::const_iterator it = list.begin(); it != list.end(); it++)
         {
-            const ServerID& id = (*it).first;
-            ServItems::iterator it2 = items_.find(id);
-            if (it2 != items_.end())
+            ServerListAccess sla(servList_);
+            const ServerInfoList& list = sla.list();
+
+            // who changed, appeared?
+            for (ServerInfoList::const_iterator it = list.begin(); it != list.end(); it++)
             {
-                updateItem((*it2).second);
-            } else
-            {
-                ServListItem* item = new ServListItem(ui_.treeWidget, id);
-                items_[id] = item;
-                updateItem(item);
+                const ServerID& id = (*it).first;
+                ServItems::iterator it2 = items_.find(id);
+                if (it2 != items_.end())
+                {
+                    updateItem((*it2).second);
+                } else
+                {
+                    ServListItem* item = new ServListItem(ui_.treeWidget, id);
+                    items_[id] = item;
+                    updateItem(item);
+                }
             }
-        }
 
-        // who removed ?
-        std::vector<ServerID> to_remove;
-        for (ServItems::iterator it = items_.begin(); it != items_.end(); it++)
-        {
-            const ServerID& id = (*it).first;
-            if (list.find(id) == list.end())
-                to_remove.push_back(id);
-        }
-        for (std::vector<ServerID>::iterator it = to_remove.begin(); it != to_remove.end(); it++)
-        {
-            delete items_[*it];
-            items_.erase(*it);
+            // who removed ?
+            std::vector<ServerID> to_remove;
+            for (ServItems::iterator it = items_.begin(); it != items_.end(); it++)
+            {
+                const ServerID& id = (*it).first;
+                if (list.find(id) == list.end())
+                    to_remove.push_back(id);
+            }
+            for (std::vector<ServerID>::iterator it = to_remove.begin(); it != to_remove.end(); it++)
+            {
+                delete items_[*it];
+                items_.erase(*it);
+            }
         }
 
         setUpdatesEnabled(true);

@@ -9,6 +9,43 @@
 
 using namespace std;
 
+class QStatThread : public QThread
+{
+public:
+    QStatThread(const QString& qstatPath, const QStringList& args, ServerInfoList& list, QMutex* listMutex, QObject * parent = 0);
+protected:
+    virtual void run ();
+private:
+    const QString& qstatPath_;
+    const QStringList& args_;
+    ServerInfoList& list_;
+    QMutex* listMutex_;
+};
+
+QStatThread::QStatThread(const QString& qstatPath, const QStringList& args, ServerInfoList& list, QMutex* listMutex, QObject * parent) :
+    QThread(parent),
+    qstatPath_(qstatPath),
+    args_(args),
+    list_(list),
+    listMutex_(listMutex)
+{
+}
+
+void QStatThread::run ()
+{
+    QProcess proc;
+    proc.start(qstatPath_, args_);
+    while (proc.state() != QProcess::NotRunning)
+    {
+
+
+
+
+
+    }
+}
+
+
 ServerListQStat::ServerListQStat(QObject *parent)
     : ServerListCustom(parent),
       maxSim_(10),
@@ -179,6 +216,7 @@ void ServerListQStat::processLineXml(const QString & line)
 {
 
 }
+
 
 
 

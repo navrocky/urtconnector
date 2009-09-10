@@ -2,8 +2,22 @@
 #define SERVERLISTCUSTOM_H
 
 #include <QObject>
+#include <QMutex>
 #include "serverinfo.h"
 #include "serverid.h"
+
+class ServerListCustom;
+
+/*! Thread safe access to server info list */
+class ServerListAccess
+{
+public:
+    ServerListAccess(ServerListCustom*);
+    const ServerInfoList& list() const {return list_;}
+private:
+    QMutexLocker lock_;
+    const ServerInfoList& list_;
+};
 
 class ServerListCustom : public QObject
 {
@@ -22,9 +36,6 @@ public:
     /*! Custom server list, if empty then server list retrieved from master server */
     ServerIDList& customServList() {return customServList_;}
 
-    /*! Resulting server info list */
-    const ServerInfoList& list() const {return list_;}
-
     /*! List state. Changed always after list change. */
     int state() const {return state_;}
 
@@ -34,8 +45,10 @@ signals:
 protected:
     ServerInfoList list_;
     int state_;
+    QMutex listMutex_;
 
 private:
+    friend class ServerListAccess;
     ServerIDList customServList_;
     bool autoRefresh_;
 };

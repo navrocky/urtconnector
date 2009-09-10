@@ -23,6 +23,8 @@ public:
     void refreshServer(const ServerID& id);
     void refreshCancel();
 
+
+
 private slots:
     void error( QProcess::ProcessError error );
     void finished ( int exitCode, QProcess::ExitStatus exitStatus );
