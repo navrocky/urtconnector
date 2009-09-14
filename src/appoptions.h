@@ -29,11 +29,16 @@ public:
     /*! Servers options list. */
     ServerOptionsList& servers() {return servers_;}
 
+    /*! Path to QStat binary */
+    QString qstatPath() const {return qstatPath_;}
+    void setQStatPath(const QString&);
+
 private:
     bool useAdvCmdLine_;
     QString advCmdLine_;
     QString binaryPath_;
     ServerOptionsList servers_;
+    QString qstatPath_;
 };
 
 typedef AppOptions* AppOptionsPtr;

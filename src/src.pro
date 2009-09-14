@@ -20,7 +20,8 @@ SOURCES += main.cpp \
  playerinfo.cpp \
  aboutdialog.cpp \
  serverlistqstat.cpp \
- servlistwidget.cpp
+ servlistwidget.cpp \
+ qstatreadthread.cpp
 HEADERS += mainwindow.h \
  serverid.h \
  options.h \
@@ -37,7 +38,8 @@ HEADERS += mainwindow.h \
  serverinfo.h \
  playerinfo.h \
  serverlistqstat.h \
- servlistwidget.h
+ servlistwidget.h \
+ qstatreadthread.h
 FORMS += mainwindow.ui \
  optionsdialog.ui \
  servoptsdialog.ui \

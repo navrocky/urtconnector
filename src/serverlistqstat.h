@@ -5,12 +5,13 @@
 
 #include "serverinfo.h"
 #include "serverlistcustom.h"
+#include "qstatreadthread.h"
 
 // qstat emulation, otherwise using real qstat
 #define QSTAT_FAKE
 
 // qstat out in XML
-//#define QSTAT_XML
+#define QSTAT_XML
 
 class ServerListQStat : public ServerListCustom
 {
@@ -27,12 +28,12 @@ public:
 
 private slots:
     void error( QProcess::ProcessError error );
+    void threadError( const QString& );
     void finished ( int exitCode, QProcess::ExitStatus exitStatus );
     void readyReadStandardOutput ();
 private:
 
     void processLine(const QString& line);
-    void processLineXml(const QString& line);
     void applyInfo();
 
     QProcess proc_;
@@ -41,6 +42,7 @@ private:
     int maxSim_;
     ServerInfo curInfo_;
     bool infoFilled_;
+    QStatReadThread rd_th_;
 };
 
 #endif

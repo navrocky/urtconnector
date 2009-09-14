@@ -31,3 +31,7 @@ void AppOptions::operator =(const AppOptions & src)
     setUseAdvCmdLine( src.useAdvCmdLine() );
 }
 
+void AppOptions::setQStatPath(const QString &val)
+{
+    qstatPath_ = val;
+}

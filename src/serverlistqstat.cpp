@@ -9,43 +9,6 @@
 
 using namespace std;
 
-class QStatThread : public QThread
-{
-public:
-    QStatThread(const QString& qstatPath, const QStringList& args, ServerInfoList& list, QMutex* listMutex, QObject * parent = 0);
-protected:
-    virtual void run ();
-private:
-    const QString& qstatPath_;
-    const QStringList& args_;
-    ServerInfoList& list_;
-    QMutex* listMutex_;
-};
-
-QStatThread::QStatThread(const QString& qstatPath, const QStringList& args, ServerInfoList& list, QMutex* listMutex, QObject * parent) :
-    QThread(parent),
-    qstatPath_(qstatPath),
-    args_(args),
-    list_(list),
-    listMutex_(listMutex)
-{
-}
-
-void QStatThread::run ()
-{
-    QProcess proc;
-    proc.start(qstatPath_, args_);
-    while (proc.state() != QProcess::NotRunning)
-    {
-
-
-
-
-
-    }
-}
-
-
 ServerListQStat::ServerListQStat(QObject *parent)
     : ServerListCustom(parent),
       maxSim_(10),
@@ -54,6 +17,12 @@ ServerListQStat::ServerListQStat(QObject *parent)
     connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
     connect(&proc_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
     connect(&proc_, SIGNAL(readyReadStandardOutput()), SLOT(readyReadStandardOutput()));
+
+    connect(&rd_th_, SIGNAL(error(const QStrin&)), SLOT(threadError(const QString&)));
+
+    rd_th_.setServerInfoList(&list_);
+    rd_th_.setListMutex(&listMutex_);
+    //rd_th_.
 }
 
 
@@ -70,10 +39,11 @@ void ServerListQStat::refreshAll()
 #ifdef QSTAT_FAKE
     #ifdef QSTAT_XML
         sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
+
     #else
         sl << "-c" << "cat ../doc/qstat_out.txt | awk '{print $0; system(\"usleep 50000\");}'";
+        proc_.start("/bin/bash", sl);
     #endif
-    proc_.start("/bin/bash", sl);
 
 #else
     qstatPath_ = "/usr/bin/qstat";
@@ -90,7 +60,11 @@ void ServerListQStat::refreshAll()
     {
 
     }
-    proc_.start(qstatPath_, sl);
+    #ifdef QSTAT_XML
+
+    #else
+        proc_.start(qstatPath_, sl);
+    #endif
 #endif
 }
 
@@ -136,7 +110,6 @@ void ServerListQStat::readyReadStandardOutput()
     {
         QString str = QString(proc_.readLine());
         #ifdef QSTAT_XML
-        processLineXml(str);
         #else
         processLine(str);
         #endif
@@ -212,11 +185,11 @@ void ServerListQStat::applyInfo()
     infoFilled_ = false;
 }
 
-void ServerListQStat::processLineXml(const QString & line)
+
+void ServerListQStat::threadError(const QString &str)
 {
-
+    throw Exception(str);
 }
-
 
 
 

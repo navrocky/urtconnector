@@ -50,6 +50,8 @@ src/playerinfo.cpp -text
 src/playerinfo.h -text
 src/pushbuttonactionlink.cpp -text
 src/pushbuttonactionlink.h -text
+src/qstatreadthread.cpp -text
+src/qstatreadthread.h -text
 src/serverid.cpp -text
 src/serverid.h -text
 src/serverinfo.cpp -text
