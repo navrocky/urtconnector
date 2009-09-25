@@ -25,17 +25,17 @@ void OptionsDialog::setOpts(AppOptionsPtr value)
 
 void OptionsDialog::updateDialog()
 {
-    ui.binaryEdit->setText( opts_->binaryPath() );
-    ui.advCmdEdit->setText( opts_->advCmdLine() );
-    ui.advCmdBox->setChecked( opts_->useAdvCmdLine() );
+    ui.binaryEdit->setText( opts_->binaryPath );
+    ui.advCmdEdit->setText( opts_->advCmdLine );
+    ui.advCmdBox->setChecked( opts_->useAdvCmdLine );
 }
 
 void OptionsDialog::accept()
 {
     QDialog::accept();
-    opts_->setBinaryPath( ui.binaryEdit->text() );
-    opts_->setAdvCmdLine( ui.advCmdEdit->text() );
-    opts_->setUseAdvCmdLine( ui.advCmdBox->isChecked() );
+    opts_->binaryPath = ui.binaryEdit->text();
+    opts_->advCmdLine = ui.advCmdEdit->text();
+    opts_->useAdvCmdLine = ui.advCmdBox->isChecked();
 }
 
 void OptionsDialog::chooseBinary()

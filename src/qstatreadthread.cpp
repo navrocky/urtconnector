@@ -15,7 +15,7 @@ void QStatReadThread::run ()
 {
     try
     {
-        proc_.start(qstatPath_, args_);
+        proc_.start(opts_.qstatPath, args_);
 
         QXmlStreamReader rd;
         rd.setDevice(&proc_);
@@ -46,11 +46,6 @@ void QStatReadThread::run ()
     }
 }
 
-void QStatReadThread::setQStatPath(const QString & val)
-{
-    qstatPath_ = val;
-}
-
 void QStatReadThread::setArgs(const QStringList &val)
 {
     args_ = val;
@@ -64,6 +59,10 @@ void QStatReadThread::setServerInfoList(ServerInfoList *val)
 void QStatReadThread::setListMutex(QMutex *val)
 {
     listMutex_ = val;
+}
+
+void QStatReadThread::setQStatOpts(const QStatOptions&)
+{
 }
 
 

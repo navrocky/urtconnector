@@ -12,46 +12,22 @@ class ServerOptions
 {
 public:
     ServerOptions();
-    ServerOptions(const ServerOptions& src);
-    ~ServerOptions();
 
-    ServerOptions& operator= (const ServerOptions& src);
+    QUuid uid;
 
-    const QUuid& uid() const {return uid_;}
-    void setUid(const QUuid& val);
+    ServerID id;
 
-    const ServerID& id() const {return id_;}
-    void setId(const ServerID& val);
+    QString name;
 
-    QString name() const {return name_;}
-    void setName(const QString& val);
+    QString comment;
 
-    QString comment() const {return comment_;}
-    void setComment(const QString& val);
+    bool favorite;
 
-    bool favorite() const {return favorite_;}
-    void setFavorite(bool val);
+    QString rconPassword;
 
-    QString rconPassword() const {return rconPassword_;}
-    void setRconPassword(const QString& val);
+    QString refPassword;
 
-    QString refPassword() const {return refPassword_;}
-    void setRefPassword(const QString& val);
-
-    QString folder() const {return folder_;}
-    void setFolder(const QString& val);
-
-private:
-    void assign(const ServerOptions& src);
-
-    QUuid uid_;
-    ServerID id_;
-    QString name_;
-    QString comment_;
-    bool favorite_;
-    QString rconPassword_;
-    QString refPassword_;
-    QString folder_;
+    QString folder;
 };
 
 

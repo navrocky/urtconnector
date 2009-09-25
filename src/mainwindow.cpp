@@ -13,6 +13,7 @@
 #include "pushbuttonactionlink.h"
 #include "serverlistqstat.h"
 #include "aboutdialog.h"
+#include "qstatoptions.h"
 
 using namespace std;
 
@@ -48,6 +49,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     allSL_ = new ServerListQStat(this);
     favSL_ = new ServerListQStat(this);
+
+    dynamic_cast<ServerListQStat*>(allSL_)->setQStatOpts(&(opts_->qstatOpts));
 
     allList_->setServerList(allSL_);
     connect(allSL_, SIGNAL(refreshStopped()), SLOT(refreshAllStopped()));
@@ -85,8 +88,8 @@ void MainWindow::favAdd()
 {
     ServOptsDialog d;
     if (d.exec() == QDialog::Rejected) return;
-    ServerOptionsList& list = opts_->servers();
-    list[d.options().uid()] = d.options();
+    ServerOptionsList& list = opts_->servers;
+    list[d.options().uid] = d.options();
     saveOptions();
 
     syncFavList();
@@ -108,6 +111,12 @@ void MainWindow::saveOptions()
 void MainWindow::loadOptions()
 {
     // TODO load options from XML
+
+    opts_->useAdvCmdLine = true;
+    opts_->advCmdLine = "";
+    opts_->qstatOpts.masterServer = "master.urbanterror.net";
+    opts_->qstatOpts.qstatPath = "/usr/bin/qstat";
+
 }
 
 void MainWindow::refreshAll()

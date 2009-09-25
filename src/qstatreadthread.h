@@ -6,6 +6,7 @@
 #include <QMutex>
 #include <QProcess>
 
+#include "qstatoptions.h"
 #include "serverinfo.h"
 
 class QStatReadThread : public QThread
@@ -14,10 +15,11 @@ Q_OBJECT
 public:
     QStatReadThread(QObject * parent = 0);
 
-    void setQStatPath(const QString&);
     void setArgs(const QStringList&);
     void setServerInfoList(ServerInfoList*);
     void setListMutex(QMutex*);
+
+    void setQStatOpts(const QStatOptions&);
 
 protected:
     virtual void run ();
@@ -25,8 +27,8 @@ protected:
 signals:
     void error(const QString& msg);
 private:
-    const QString& qstatPath_;
-    const QStringList& args_;
+    QStatOptions opts_;
+    QStringList args_;
     ServerInfoList* list_;
     QMutex* listMutex_;
     QProcess proc_;
