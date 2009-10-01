@@ -11,12 +11,9 @@ class AboutDialog : public QDialog
 {
 Q_OBJECT
 public:
-    AboutDialog(QWidget *parent = 0);
-    //AboutDialog(QWidget *parent, const ServerOptions& src);
+    AboutDialog(QWidget *parent = 0);    
     ~AboutDialog();
-
     Ui::AboutDialogClass *ui;
-
 };
 
 #endif // ABOUTDIALOG_H

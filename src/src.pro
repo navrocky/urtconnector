@@ -54,4 +54,8 @@ bin.path = /usr/bin
 INSTALLS += target
 
 target.path = /usr/bin
+TRANSLATIONS    = superapp_ru.ts \
+                   superapp_ua.ts \
+                   superapp_fi.ts \
+                   superapp_de.ts
 
