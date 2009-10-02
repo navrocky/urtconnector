@@ -1,7 +1,6 @@
 # -------------------------------------------------
 # Project created by QtCreator 2009-07-11T13:11:32
 # -------------------------------------------------
-TARGET = ../bin/urtconnector
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -58,4 +57,8 @@ bin.path = /usr/bin
 INSTALLS += target
 
 target.path = /usr/bin
+
+TARGET = urtconnector
+
+DESTDIR = ../bin/
 

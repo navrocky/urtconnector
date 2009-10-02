@@ -31,7 +31,7 @@ private:
     QStringList args_;
     ServerInfoList* list_;
     QMutex* listMutex_;
-    QProcess proc_;
+//    QProcess proc;
 };
 
 #endif

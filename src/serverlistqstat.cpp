@@ -31,11 +31,8 @@ ServerListQStat::~ServerListQStat()
 
 void ServerListQStat::refreshAll()
 {
-    rd_th_.setQStatOpts(*opts_);
-    
-    
     QStringList args;
-    args << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-q3m" << opts_->masterServer;
+    args << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";
 
     if (customServList().empty())
         args << "-q3m" << opts_->masterServer;
@@ -49,6 +46,7 @@ void ServerListQStat::refreshAll()
     opts_->qstatPath = "/bin/bash";
     //
 
+    rd_th_.setQStatOpts(*opts_);
     rd_th_.setArgs(args);
     rd_th_.start();
 }

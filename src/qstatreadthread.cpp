@@ -4,6 +4,11 @@
 #include "qstatreadthread.h"
 #include "exception.h"
 
+#include <iostream>
+
+using namespace std;
+
+
 QStatReadThread::QStatReadThread(QObject * parent) :
     QThread(parent),
     list_(0),
@@ -15,33 +20,42 @@ void QStatReadThread::run ()
 {
     try
     {
-        proc_.start(opts_.qstatPath, args_);
+        QProcess proc;
+        proc.setReadChannel(QProcess::StandardOutput);
+        proc.start(opts_.qstatPath, args_);
 
         QXmlStreamReader rd;
-        rd.setDevice(&proc_);
-
-        while (!rd.atEnd())
+        while (proc.state() != QProcess::NotRunning)
         {
-            rd.readNext();
-            if (rd.isStartElement() && (rd.name() == "qstat"))
-            {
-                //parseQStat();
-            } else
-                throw Exception(tr("Error in qstat xml output"));
-        }
-        if (rd.hasError())
-            throw Exception(rd.errorString());
+            proc.waitForReadyRead(1000);
+            rd.addData(proc.readAll());
 
-        proc_.kill();
+            while (!rd.atEnd())
+            {
+                if (rd.readNext() != QXmlStreamReader::Invalid)
+                {
+
+                    /// здесь обрабатываем очередной элемент XML
+                    if (rd.isStartElement())
+                        cout << rd.name().toString().toStdString() << endl;
+                } else
+
+                if (rd.hasError() && (rd.error() != QXmlStreamReader::PrematureEndOfDocumentError))
+                    throw Exception(rd.errorString());
+            }
+
+        }
+
+//        proc.kill();
     }
     catch(const Exception& e)
     {
-        proc_.kill();
+//        proc.kill();
         emit error(QString::fromLocal8Bit(e.what()));
     }
     catch(...)
     {
-        proc_.kill();
+//        proc.kill();
         emit error(tr("Unknown error"));
     }
 }
@@ -61,8 +75,9 @@ void QStatReadThread::setListMutex(QMutex *val)
     listMutex_ = val;
 }
 
-void QStatReadThread::setQStatOpts(const QStatOptions&)
+void QStatReadThread::setQStatOpts(const QStatOptions& val)
 {
+    opts_ = val;
 }
 
 
