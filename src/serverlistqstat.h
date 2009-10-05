@@ -2,6 +2,7 @@
 #define SERVERLISTQSTAT_H
 
 #include <QProcess>
+#include <QXmlStreamReader>
 
 #include "serverinfo.h"
 #include "serverlistcustom.h"
@@ -29,16 +30,25 @@ private slots:
     void readyReadStandardOutput ();
 private:
 
-    void processLine(const QString& line);
-    void processLineXml(const QString& line);
-    void applyInfo();
+    void processXml();
 
     QProcess proc_;
     QString qstatPath_;
     QString masterServer_;
     int maxSim_;
-    ServerInfo curInfo_;
-    bool infoFilled_;
+
+    QXmlStreamReader rd_;
+
+    enum State
+    {
+        Init, QStat, MasterServer, Server, HostName, Name, GameType, Map, NumPlayers, MaxPlayers, Ping,
+        Retries, Rules, Rule, Players, Player, PlayerName, PlayerScore, PlayerPing
+    };
+    State curState_;
+    ServerInfo curServerInfo_;
+    PlayerInfo curPlayerInfo_;
+    typedef std::pair<QString, QString> RuleInfo;
+    RuleInfo curRule_;
 };
 
 #endif

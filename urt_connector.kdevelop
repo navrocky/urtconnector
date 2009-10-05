@@ -29,6 +29,7 @@
     <tree>
       <hidenonprojectfiles>false</hidenonprojectfiles>
       <hidepatterns>*.o,*.lo,CVS</hidepatterns>
+      <showvcsfields>false</showvcsfields>
     </tree>
   </kdevfileview>
   <kdevcppsupport>
@@ -42,7 +43,9 @@
       <root>/usr/lib/qt4</root>
       <designerpluginpaths/>
     </qt>
-    <references/>
+    <references>
+      <pcs>Qt4</pcs>
+    </references>
     <codecompletion>
       <automaticCodeCompletion>false</automaticCodeCompletion>
       <automaticArgumentsHint>false</automaticArgumentsHint>
@@ -141,11 +144,11 @@
   </kdevdebugger>
   <kdevtrollproject>
     <run>
-      <mainprogram></mainprogram>
+      <mainprogram>/home/nw/projects/urtconnector</mainprogram>
       <programargs></programargs>
       <directoryradio>executable</directoryradio>
       <globaldebugarguments></globaldebugarguments>
-      <globalcwd></globalcwd>
+      <globalcwd>/home/nw/projects/urtconnector</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
@@ -201,7 +204,7 @@
     <projectdoc>
       <docsystem>Doxygen Documentation Collection</docsystem>
       <docurl>urt_connector.tag</docurl>
-      <usermanualurl></usermanualurl>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
   <substmap>
@@ -226,7 +229,7 @@
     </filetemplates>
   </cppsupportpart>
   <ctagspart>
-    <customArguments></customArguments>
+    <customArguments/>
     <customTagfilePath>/home/dmitro/programming/qt/urtconnector/tags</customTagfilePath>
     <activeTagsFiles/>
   </ctagspart>
