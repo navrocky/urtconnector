@@ -21,6 +21,8 @@ public:
 
     void setServerList(ServerListCustom* ptr);
 
+    QTreeWidget* tree() const {return ui_.treeWidget;}
+
 private slots:
     void timerEvent(QTimerEvent *event);
     void filterTextChanged(const QString&);

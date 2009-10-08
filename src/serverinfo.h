@@ -20,16 +20,26 @@ public:
         Bombmode = 8
     };
 
+    enum Status
+    {
+        Up,
+        Down,
+        Updating
+    };
+
     ServerInfo();
 
     ServerID id;
+    Status status;
     QString name;
+    QString gameType; /* q3ut4 */
     PlayerInfoList players;
     int maxPlayerCount;
     QString country;
     GameMode mode;
     QString modeName() const;
     int ping;
+    int retries;
     int redScore;
     int blueScore;
     QString map;

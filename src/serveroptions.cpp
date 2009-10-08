@@ -72,6 +72,14 @@ void ServerOptions::setFolder(const QString & val)
     folder_ = val;
 }
 
+ServerOptions* find_options_by_id(ServerOptionsList* list, const ServerID& id)
+{
+    for (ServerOptionsList::iterator it = list->begin(); it != list->end(); it++)
+        if ((*it).second.id() == id)
+            return &((*it).second);
+    return 0;
+}
+
 
 
 

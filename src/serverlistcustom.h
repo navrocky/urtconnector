@@ -4,6 +4,7 @@
 #include <QObject>
 #include "serverinfo.h"
 #include "serverid.h"
+#include "serveroptions.h"
 
 class ServerListCustom : public QObject
 {
@@ -12,6 +13,13 @@ public:
     ServerListCustom(QObject *parent = 0);
     virtual ~ServerListCustom();
 
+    // servers options
+    void setOpts(ServerOptionsList* opts);
+
+    // update list from internal data without checking online status
+    virtual void update() = 0;
+
+    // refresh online status servers from list
     virtual void refreshAll() = 0;
     virtual void refreshServer(const ServerID& id) = 0;
     virtual void refreshCancel() = 0;
@@ -34,6 +42,7 @@ signals:
 protected:
     ServerInfoList list_;
     int state_;
+    ServerOptionsList* opts_;
 
 private:
     ServerIDList customServList_;

@@ -2,12 +2,13 @@
 #define SERVERLISTQSTAT_H
 
 #include <QProcess>
+#include <QXmlStreamReader>
 
 #include "serverinfo.h"
 #include "serverlistcustom.h"
 
 // qstat emulation, otherwise using real qstat
-#define QSTAT_FAKE
+//#define QSTAT_FAKE
 
 // qstat out in XML
 //#define QSTAT_XML
@@ -19,6 +20,8 @@ public:
     ServerListQStat(QObject *parent = 0);
     ~ServerListQStat();
 
+    void update();
+
     void refreshAll();
     void refreshServer(const ServerID& id);
     void refreshCancel();
@@ -29,16 +32,25 @@ private slots:
     void readyReadStandardOutput ();
 private:
 
-    void processLine(const QString& line);
-    void processLineXml(const QString& line);
-    void applyInfo();
+    void processXml();
 
     QProcess proc_;
     QString qstatPath_;
     QString masterServer_;
     int maxSim_;
-    ServerInfo curInfo_;
-    bool infoFilled_;
+
+    QXmlStreamReader rd_;
+
+    enum State
+    {
+        Init, QStat, MasterServer, Server, HostName, Name, GameType, Map, NumPlayers, MaxPlayers, Ping,
+        Retries, Rules, Rule, Players, Player, PlayerName, PlayerScore, PlayerPing
+    };
+    State curState_;
+    ServerInfo curServerInfo_;
+    PlayerInfo curPlayerInfo_;
+    typedef std::pair<QString, QString> RuleInfo;
+    RuleInfo curRule_;
 };
 
 #endif

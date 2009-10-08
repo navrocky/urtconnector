@@ -55,7 +55,10 @@ private:
 };
 
 
-/// List of ServerOptions
+// List of ServerOptions
 typedef std::map<QUuid, ServerOptions> ServerOptionsList;
+
+// find server options by id
+ServerOptions* find_options_by_id(ServerOptionsList* list, const ServerID& id);
 
 #endif

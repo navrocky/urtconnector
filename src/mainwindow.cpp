@@ -47,10 +47,15 @@ MainWindow::MainWindow(QWidget *parent)
     loadOptions();
 
     allSL_ = new ServerListQStat(this);
+    allSL_->setOpts(&(opts_->servers()));
+
     favSL_ = new ServerListQStat(this);
+    favSL_->setOpts(&(opts_->servers()));
 
     allList_->setServerList(allSL_);
     connect(allSL_, SIGNAL(refreshStopped()), SLOT(refreshAllStopped()));
+    allList_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
+    allList_->tree()->addAction(ui.actionAddToFav);
 }
 
 
@@ -98,6 +103,15 @@ void MainWindow::favDelete()
 
 void MainWindow::syncFavList()
 {
+    ServerOptionsList& srclist = opts_->servers();
+    ServerIDList& dstlist = favSL_->customServList();
+    dstlist.clear();
+
+    for (ServerOptionsList::iterator it = srclist.begin(); it != srclist.end(); it++)
+    {
+        dstlist.push_back((*it).second.id());
+    }
+    favSL_->update();
 }
 
 void MainWindow::saveOptions()
