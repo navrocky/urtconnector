@@ -39,7 +39,6 @@ public:
 
 ServerListQStat::ServerListQStat(QObject *parent)
     : ServerListCustom(parent),
-      maxSim_(10),
       curState_(Init)
 {
     connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
@@ -65,13 +64,10 @@ void ServerListQStat::refreshAll()
     sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0;}'";
     proc_.start("/bin/bash", sl);
 #else
-    qstatPath_ = "/usr/bin/qstat";
-    masterServer_ = "master.urbanterror.net";
-
     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";
     if (customServList().empty())
     {
-        sl << "-q3m" << masterServer_;
+        sl << "-q3m" << qstatOpts_->masterServer;
     } else
     {
         ServerIDList& list = customServList();
@@ -79,12 +75,26 @@ void ServerListQStat::refreshAll()
             sl << (*it).address();
     }
 
-    proc_.start(qstatPath_, sl);
+    proc_.start(qstatOpts_->qstatPath, sl);
 #endif
 }
 
 void ServerListQStat::refreshServer(const ServerID & id)
 {
+    if (proc_.state() != QProcess::NotRunning) return;
+
+    rd_.clear();
+
+    QStringList sl;
+    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << id.address();
+
+    ServerInfo info = list_[id];
+    info.status = ServerInfo::Updating;
+    list_[id] = info;
+
+    state_++;
+
+    proc_.start(qstatOpts_->qstatPath, sl);
 }
 
 void ServerListQStat::refreshCancel()
@@ -226,7 +236,7 @@ void ServerListQStat::processXml()
         else if (curState_ == Retries)
             curServerInfo_.retries = rd_.text().toString().toInt();
         else if (curState_ == Rule)
-            curRule_.second = rd_.text().toString().toInt();
+            curRule_.second = rd_.text().toString();
         else if (curState_ == PlayerName)
             curPlayerInfo_.nickName = rd_.text().toString();
         else if (curState_ == PlayerScore)
@@ -241,28 +251,38 @@ void ServerListQStat::processXml()
         {
             if (curState_ == Server)
             {
+                prepareInfo();
                 list_[curServerInfo_.id] = curServerInfo_;
                 state_++;
             }
             curState_ = QStat;
         }
-        else if (rd_.name() == c_qstat)
+        else if (rd_.name() == c_qstat && curState_ == QStat)
             curState_ = Init;
-        else if (rd_.name() == c_hostname || rd_.name() == c_name || rd_.name() == c_gametype
-          || rd_.name() == c_map || rd_.name() == c_numplayers || rd_.name() == c_maxplayers
-          || rd_.name() == c_ping || rd_.name() == c_retries || rd_.name() == c_rules || rd_.name() == c_players )
+        else if ((rd_.name() == c_hostname && curState_ == HostName) ||
+                (rd_.name() == c_name && curState_ == Name) ||
+                (rd_.name() == c_gametype && curState_ == GameType) ||
+                (rd_.name() == c_map && curState_ == Map) ||
+                (rd_.name() == c_numplayers && curState_ == NumPlayers) ||
+                (rd_.name() == c_maxplayers && curState_ == MaxPlayers) ||
+                (rd_.name() == c_ping && curState_ == Ping) ||
+                (rd_.name() == c_retries && curState_ == Retries) ||
+                (rd_.name() == c_rules && curState_ == Rules) ||
+                (rd_.name() == c_players && curState_ == Players) )
             curState_ = Server;
-        else if (rd_.name() == c_rule)
+        else if (rd_.name() == c_rule && curState_ == Rule)
         {
             curServerInfo_.info[curRule_.first] = curRule_.second;
             curState_ = Rules;
         }
-        else if (rd_.name() == c_player)
+        else if (rd_.name() == c_player && curState_ == Player)
         {
             curServerInfo_.players.push_back(curPlayerInfo_);
             curState_ = Players;
         }
-        else if (rd_.name() == c_player_name || rd_.name() == c_player_ping || rd_.name() == c_player_score)
+        else if ((rd_.name() == c_player_name && curState_ == PlayerName) ||
+                (rd_.name() == c_player_ping && curState_ == PlayerPing) ||
+                (rd_.name() == c_player_score && curState_ == PlayerScore))
             curState_ = Player;
     }
 //     throw XmlParseError();
@@ -272,6 +292,7 @@ void ServerListQStat::processXml()
 void ServerListQStat::update()
 {
     ServerIDList& list = customServList();
+    ServerInfoList newlist;
     for (ServerIDList::iterator it = list.begin(); it != list.end(); it++)
     {
         ServerID id = *it;
@@ -279,16 +300,28 @@ void ServerListQStat::update()
 
         info.id = id;
 
-        ServerOptions* opt = find_options_by_id(opts_, id);
+        ServerOptions* opt = &((*opts_)[id]);
         if (opt)
         {
-            info.name = opt->name();
+            info.name = opt->name;
         }
-        list_[id] = info;
+        newlist[id] = info;
     }
+    list_ = newlist;
     state_++;
 }
 
+void ServerListQStat::prepareInfo()
+{
+    if (curServerInfo_.status == ServerInfo::Down)
+        curServerInfo_.mode = ServerInfo::None;
+    else
+        curServerInfo_.mode = (ServerInfo::GameMode)(curServerInfo_.info["gametype"].toInt() + 1);
+}
 
+void ServerListQStat::setQStatOpts(QStatOptions* opts)
+{
+    qstatOpts_ = opts;
+}
 
 

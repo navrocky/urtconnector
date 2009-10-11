@@ -23,6 +23,11 @@ public:
 
     QTreeWidget* tree() const {return ui_.treeWidget;}
 
+    // current selection
+    ServerIDList selection();
+
+    void forceUpdate();
+
 private slots:
     void timerEvent(QTimerEvent *event);
     void filterTextChanged(const QString&);

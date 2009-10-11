@@ -156,7 +156,7 @@
      <x>0</x>
      <y>0</y>
      <width>889</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuUrbanConnector">
@@ -537,6 +537,15 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="toolTip">
     <string>Add selected server to favorites list</string>
+   </property>
+  </action>
+  <action name="actionRefreshSelectedFav">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/icons/view-refresh.png</normaloff>:/icons/icons/view-refresh.png</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh selected</string>
    </property>
   </action>
  </widget>

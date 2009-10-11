@@ -1,5 +1,8 @@
 <RCC>
   <qresource prefix="icons" >
+    <file>icons/status-offline.png</file>
+    <file>icons/status-online.png</file>
+    <file>icons/status-update.png</file>
     <file>icons/edit-clear-locationbar-rtl.png</file>
     <file>icons/edit-find.png</file>
     <file>icons/add.png</file>

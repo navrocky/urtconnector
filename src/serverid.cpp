@@ -42,36 +42,31 @@ ServerID::~ServerID()
 
 bool operator ==(const ServerID & a, const ServerID & b)
 {
-    if ( a.hostName().isEmpty() )
-        return a.ip() == b.ip() && a.port() == b.port();
-    else
-        return a.hostName() == b.hostName() && a.port() == b.port();
+    return a.hostName() == b.hostName() && a.ip() == b.ip() && a.port() == b.port();
 }
 
 bool operator <(const ServerID & a, const ServerID & b)
 {
-    if ( a.hostName().isEmpty() )
+    if (a.hostName() == b.hostName())
     {
-        if (a.ip() == b.ip()) return a.port() < b.port();
-            else return a.ip() < b.ip();
+        if (a.ip() == b.ip())
+            return a.port() < b.port();
+        else
+            return a.ip() < b.ip();
     } else
-    {
-        if (a.hostName() == b.hostName()) return a.port() < b.port();
-            else return a.hostName() < b.hostName();
-    }
+        return a.hostName() < b.hostName();
 }
 
 bool operator >(const ServerID & a, const ServerID & b)
 {
-    if ( a.hostName().isEmpty() )
+    if (a.hostName() == b.hostName())
     {
-        if (a.ip() == b.ip()) return a.port() > b.port();
-            else return a.ip() > b.ip();
+        if (a.ip() == b.ip())
+            return a.port() > b.port();
+        else
+            return a.ip() > b.ip();
     } else
-    {
-        if (a.hostName() == b.hostName()) return a.port() > b.port();
-            else return a.hostName() > b.hostName();
-    }
+        return a.hostName() > b.hostName();
 }
 
 QString ServerID::address() const

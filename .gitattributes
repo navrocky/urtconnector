@@ -21,10 +21,13 @@ src/application.cpp -text
 src/application.h -text
 src/appoptions.cpp -text
 src/appoptions.h -text
+src/debughelp.cpp -text
+src/debughelp.h -text
 src/exception.cpp -text
 src/exception.h -text
 src/icons/add.png -text
 src/icons/application-exit.png -text
+src/icons/bookmarks.png -text
 src/icons/configure.png -text
 src/icons/edit-clear-locationbar-rtl.png -text
 src/icons/edit-find.png -text
@@ -33,6 +36,9 @@ src/icons/help-about.png -text
 src/icons/help-contents.png -text
 src/icons/launch.png -text
 src/icons/remove.png -text
+src/icons/status-offline.png -text
+src/icons/status-online.png -text
+src/icons/status-update.png -text
 src/icons/view-refresh.png -text
 src/images.qrc -text
 src/launcher.cpp -text
@@ -50,6 +56,8 @@ src/playerinfo.cpp -text
 src/playerinfo.h -text
 src/pushbuttonactionlink.cpp -text
 src/pushbuttonactionlink.h -text
+src/qstatoptions.cpp -text
+src/qstatoptions.h -text
 src/serverid.cpp -text
 src/serverid.h -text
 src/serverinfo.cpp -text

@@ -6,6 +6,7 @@
 
 const int cFilterInfoColumn = 100;
 
+
 class ServListItem: public QTreeWidgetItem
 {
 public:
@@ -46,14 +47,37 @@ void ServListWidget::updateItem(ServListItem* item)
     ServerInfoList::const_iterator it = list.find(item->id());
     if (it == list.end()) return;
     const ServerInfo& si = (*it).second;
+
+    static QIcon icon_online(":/icons/icons/status-online.png");
+    static QIcon icon_offline(":/icons/icons/status-offline.png");
+    static QIcon icon_updating(":/icons/icons/status-update.png");
+
+    switch (si.status)
+    {
+        case ServerInfo::Up:
+            item->setIcon(0, icon_online);
+            break;
+        case ServerInfo::Down:
+            item->setIcon(0, icon_offline);
+            break;
+        case ServerInfo::Updating:
+            item->setIcon(0, icon_updating);
+            break;
+    }
+
     item->setText(1, si.name);
     item->setText(2, si.id.address());
     item->setText(3, QString("%1").arg(si.ping, 5));
     item->setText(4, si.modeName());
     item->setText(5, si.map);
     item->setText(6, QString("%1/%2").arg(si.players.size()).arg(si.maxPlayerCount));
-    item->setText(cFilterInfoColumn, QString("%1 %2 %3 %4 %5").arg(si.name)
-        .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.modeName()));
+
+    QString players;
+    for (PlayerInfoList::const_iterator it = si.players.begin(); it != si.players.end(); it++)
+        players += (*it).nickName + " ";
+
+    item->setText(cFilterInfoColumn, QString("%1 %2 %3 %4 %5 %6").arg(si.name)
+        .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.modeName()).arg(players));
     item->setHidden(!filterItem(item));
 }
 
@@ -79,6 +103,12 @@ void ServListWidget::timerEvent(QTimerEvent *te)
         killTimer(filterTimer_);
         filterTimer_ = 0;
     }
+}
+
+void ServListWidget::forceUpdate()
+{
+    oldState_ = servList_->state();
+    updateList();
 }
 
 void ServListWidget::updateList()
@@ -135,4 +165,16 @@ void ServListWidget::filterTextChanged(const QString& val)
     filterTimer_ = startTimer(500);
 }
 
+ServerIDList ServListWidget::selection()
+{
+    ServerIDList res;
+    QList<QTreeWidgetItem*> list = tree()->selectedItems();
+    for (int i = 0; i < list.size(); i++)
+    {
+        ServListItem* it = dynamic_cast<ServListItem*>(list[i]);
+        if (it)
+            res.push_back(it->id());
+    }
+    return res;
+}
 

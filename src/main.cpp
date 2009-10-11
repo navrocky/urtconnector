@@ -2,11 +2,15 @@
 #include "mainwindow.h"
 #include "application.h"
 #include "exception.h"
+#include "debughelp.h"
 
 /* endenis@gmail.com */
 
 int main(int argc, char *argv[])
 {
+    // this needed to link debug functions
+    debug_help_init();
+
     Application a(argc, argv);
     try
     {

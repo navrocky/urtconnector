@@ -11,20 +11,21 @@ class ServerInfo
 public:
     enum GameMode
     {
-        FreeForAll = 0,
-        TeamDeathMatch = 3,
-        TeamSurvivor = 4,
-        FollowTheLeader = 5,
-        CaptureAndHold = 6,
-        CaptureTheFlag = 7,
-        Bombmode = 8
+        None = 0,
+        FreeForAll = 1,
+        TeamDeathMatch = 4,
+        TeamSurvivor = 5,
+        FollowTheLeader = 6,
+        CaptureAndHold = 7,
+        CaptureTheFlag = 8,
+        Bombmode = 9
     };
 
     enum Status
     {
+        Updating = 0,
         Up,
-        Down,
-        Updating
+        Down
     };
 
     ServerInfo();

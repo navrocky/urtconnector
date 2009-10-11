@@ -6,6 +6,7 @@
 
 #include "serverinfo.h"
 #include "serverlistcustom.h"
+#include "qstatoptions.h"
 
 // qstat emulation, otherwise using real qstat
 //#define QSTAT_FAKE
@@ -22,6 +23,8 @@ public:
 
     void update();
 
+    void setQStatOpts(QStatOptions* opts);
+
     void refreshAll();
     void refreshServer(const ServerID& id);
     void refreshCancel();
@@ -33,11 +36,9 @@ private slots:
 private:
 
     void processXml();
+    void prepareInfo();
 
     QProcess proc_;
-    QString qstatPath_;
-    QString masterServer_;
-    int maxSim_;
 
     QXmlStreamReader rd_;
 
@@ -49,6 +50,7 @@ private:
     State curState_;
     ServerInfo curServerInfo_;
     PlayerInfo curPlayerInfo_;
+    QStatOptions* qstatOpts_;
     typedef std::pair<QString, QString> RuleInfo;
     RuleInfo curRule_;
 };

@@ -4,6 +4,8 @@
 #include <QMenu>
 #include <QTreeView>
 #include <QBoxLayout>
+#include <QTreeWidget>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "optionsdialog.h"
@@ -35,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&launcher_, SIGNAL(finished()), SLOT(launchStatusChanged()));
     connect(ui.actionFavAdd, SIGNAL(triggered()), SLOT(favAdd()));
     connect(ui.actionFavDelete, SIGNAL(triggered()), SLOT(favDelete()));
+    connect(ui.actionRefreshSelectedFav, SIGNAL(triggered()), SLOT(favRefreshSelected()));
     connect(ui.actionRefreshAll, SIGNAL(triggered()), SLOT(refreshAll()));
     connect(ui.actionAbout, SIGNAL(triggered()), SLOT(showAbout()));
 
@@ -46,16 +49,27 @@ MainWindow::MainWindow(QWidget *parent)
 
     loadOptions();
 
-    allSL_ = new ServerListQStat(this);
-    allSL_->setOpts(&(opts_->servers()));
+    ServerListQStat* allSL = new ServerListQStat(this);
+    allSL_ = allSL;
+    allSL->setOpts(&(opts_->servers()));
+    allSL->setQStatOpts(&(opts_->qstatOpts));
 
-    favSL_ = new ServerListQStat(this);
-    favSL_->setOpts(&(opts_->servers()));
+    ServerListQStat* favSL = new ServerListQStat(this);
+    favSL_ = favSL;
+    favSL->setOpts(&(opts_->servers()));
+    favSL->setQStatOpts(&(opts_->qstatOpts));
 
     allList_->setServerList(allSL_);
     connect(allSL_, SIGNAL(refreshStopped()), SLOT(refreshAllStopped()));
     allList_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     allList_->tree()->addAction(ui.actionAddToFav);
+    
+    favList_->setServerList(favSL_);
+    favList_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
+    favList_->tree()->addAction(ui.actionFavAdd);
+    favList_->tree()->addAction(ui.actionFavDelete);
+    favList_->tree()->addAction(ui.actionRefreshSelectedFav);
+
 }
 
 
@@ -91,14 +105,24 @@ void MainWindow::favAdd()
     ServOptsDialog d;
     if (d.exec() == QDialog::Rejected) return;
     ServerOptionsList& list = opts_->servers();
-    list[d.options().uid()] = d.options();
+    list[d.options().id] = d.options();
     saveOptions();
-
     syncFavList();
+    favList_->forceUpdate();
 }
 
 void MainWindow::favDelete()
 {
+    if (QMessageBox::question(this, tr("Delete a favorite"),
+            tr("Continue to delete a favorite"), QMessageBox::Ok | QMessageBox::Cancel) != QMessageBox::Ok)
+        return;
+    ServerIDList sel = favList_->selection();
+    ServerOptionsList& list = opts_->servers();
+    for (ServerIDList::iterator it = sel.begin(); it != sel.end(); it++)
+        list.erase(*it);
+    saveOptions();
+    syncFavList();
+    favList_->forceUpdate();
 }
 
 void MainWindow::syncFavList()
@@ -109,7 +133,7 @@ void MainWindow::syncFavList()
 
     for (ServerOptionsList::iterator it = srclist.begin(); it != srclist.end(); it++)
     {
-        dstlist.push_back((*it).second.id());
+        dstlist.push_back((*it).second.id);
     }
     favSL_->update();
 }
@@ -122,6 +146,9 @@ void MainWindow::saveOptions()
 void MainWindow::loadOptions()
 {
     // TODO load options from XML
+
+    opts_->qstatOpts.qstatPath = "/usr/bin/qstat";
+    opts_->qstatOpts.masterServer = "master.urbanterror.net";
 }
 
 void MainWindow::refreshAll()
@@ -141,4 +168,9 @@ void MainWindow::showAbout()
     d.exec();
 }
 
-
+void MainWindow::favRefreshSelected()
+{
+    ServerIDList sel = favList_->selection();
+    if (sel.size() == 0) return;
+    favSL_->refreshServer(sel.front());
+}

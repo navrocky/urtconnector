@@ -7,7 +7,7 @@ ServOptsDialog::ServOptsDialog(QWidget *parent)
     ui.setupUi(this);
     setWindowTitle(tr("New server favorite"));
 
-    opts_.setUid( QUuid::createUuid() );
+//    opts_.setUid( QUuid::createUuid() );
 
     updateDialog();
 }
@@ -35,27 +35,27 @@ void ServOptsDialog::accept()
     if (id.isEmpty())
         throw Exception(tr("Server address must be non empty"));
 
-    opts_.setId(id);
-    opts_.setName(ui.nameEdit->text());
-    opts_.setRconPassword(ui.rconEdit->text());
-    opts_.setRefPassword(ui.refEdit->text());
-    opts_.setComment(ui.commentEdit->toPlainText());
+    opts_.id = id;
+    opts_.name = ui.nameEdit->text();
+    opts_.rconPassword = ui.rconEdit->text();
+    opts_.refPassword = ui.refEdit->text();
+    opts_.comment = ui.commentEdit->toPlainText();
     QDialog::accept();
 }
 
 void ServOptsDialog::updateDialog()
 {
-    ui.hostnameEdit->setText(opts_.id().hostName());
-    ui.ipEdit->setText(opts_.id().ip());
-    int port = opts_.id().port();
+    ui.hostnameEdit->setText(opts_.id.hostName());
+    ui.ipEdit->setText(opts_.id.ip());
+    int port = opts_.id.port();
     if (port != 0)
         ui.portEdit->setText(QString("%1").arg(port));
     else
         ui.portEdit->setText(QString::null);
-    ui.nameEdit->setText(opts_.name());
-    ui.rconEdit->setText(opts_.rconPassword());
-    ui.refEdit->setText(opts_.refPassword());
-    ui.commentEdit->setPlainText(opts_.comment());
+    ui.nameEdit->setText(opts_.name);
+    ui.rconEdit->setText(opts_.rconPassword);
+    ui.refEdit->setText(opts_.refPassword);
+    ui.commentEdit->setPlainText(opts_.comment);
 }
 
 

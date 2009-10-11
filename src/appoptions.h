@@ -3,7 +3,8 @@
 
 #include <QString>
 
-#include <serveroptions.h>
+#include "serveroptions.h"
+#include "qstatoptions.h"
 
 class AppOptions
 {
@@ -28,6 +29,8 @@ public:
 
     /*! Servers options list. */
     ServerOptionsList& servers() {return servers_;}
+    
+    QStatOptions qstatOpts;
 
 private:
     bool useAdvCmdLine_;

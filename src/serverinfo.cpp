@@ -18,6 +18,7 @@ QString ServerInfo::modeName() const
 {
     switch (mode)
     {
+        case None: return QString();
         case FreeForAll: return QObject::tr("Free For All");
         case TeamDeathMatch: return QObject::tr("Team DeathMatch");
         case TeamSurvivor: return QObject::tr("Team Survivor");

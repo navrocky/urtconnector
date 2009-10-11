@@ -20,6 +20,8 @@ SOURCES += main.cpp \
  playerinfo.cpp \
  aboutdialog.cpp \
  serverlistqstat.cpp \
+ debughelp.cpp \
+ qstatoptions.cpp \
  servlistwidget.cpp
 HEADERS += mainwindow.h \
  serverid.h \
@@ -37,6 +39,8 @@ HEADERS += mainwindow.h \
  serverinfo.h \
  playerinfo.h \
  serverlistqstat.h \
+ debughelp.h \
+ qstatoptions.h \
  servlistwidget.h
 FORMS += mainwindow.ui \
  optionsdialog.ui \
