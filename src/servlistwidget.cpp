@@ -123,6 +123,7 @@ void ServListWidget::updateList()
         {
             const ServerID& id = (*it).first;
             ServItems::iterator it2 = items_.find(id);
+
             if (it2 != items_.end())
             {
                 updateItem((*it2).second);

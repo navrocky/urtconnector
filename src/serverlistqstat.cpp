@@ -86,7 +86,7 @@ void ServerListQStat::refreshServer(const ServerID & id)
     rd_.clear();
 
     QStringList sl;
-    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << id.address();
+    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-retry" << "10" << "-q3s" << id.address();
 
     ServerInfo info = list_[id];
     info.status = ServerInfo::Updating;
