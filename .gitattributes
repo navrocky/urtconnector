@@ -77,7 +77,11 @@ src/servoptsdialog.ui -text
 src/src.pro -text
 src/superapp_ru.qm -text
 src/superapp_ru.ts -text
+src/xmlfile.cpp -text
+src/xmlfile.h -text
 src/xmlreaddata.cpp -text
 src/xmlreaddata.h -text
+src/xmlservers.cpp -text
+src/xmlservers.h -text
 /urt_connector.kdevelop -text
 /urt_connector.pro -text
