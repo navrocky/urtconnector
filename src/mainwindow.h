@@ -25,15 +25,19 @@ private slots:
     void showOptions();
     void showAbout();
     void quickConnect();
+    void connectSelected();
     void launchStatusChanged();
     void favAdd();
     void favDelete();
     void refreshAll();
     void refreshAllStopped();
-    void favRefreshSelected();
+    void refreshSelected();
 
 private:
     void syncFavList();
+
+    ServerID* selected();
+    ServListWidget* selectedListWidget();
 
     Ui::MainWindowClass ui;
     AppOptionsPtr opts_;

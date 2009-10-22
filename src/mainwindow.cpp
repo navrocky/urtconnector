@@ -37,15 +37,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&launcher_, SIGNAL(finished()), SLOT(launchStatusChanged()));
     connect(ui.actionFavAdd, SIGNAL(triggered()), SLOT(favAdd()));
     connect(ui.actionFavDelete, SIGNAL(triggered()), SLOT(favDelete()));
-    connect(ui.actionRefreshSelectedFav, SIGNAL(triggered()), SLOT(favRefreshSelected()));
+    connect(ui.actionRefreshSelected, SIGNAL(triggered()), SLOT(refreshSelected()));
     connect(ui.actionRefreshAll, SIGNAL(triggered()), SLOT(refreshAll()));
     connect(ui.actionAbout, SIGNAL(triggered()), SLOT(showAbout()));
+    connect(ui.actionConnect, SIGNAL(triggered()), SLOT(connectSelected()));
 
-    new PushButtonActionLink(ui.favAddButton, ui.actionFavAdd);
-    new PushButtonActionLink(ui.favDeleteButton, ui.actionFavDelete);
+//    new PushButtonActionLink(ui.favAddButton, ui.actionFavAdd);
+//    new PushButtonActionLink(ui.favDeleteButton, ui.actionFavDelete);
     new PushButtonActionLink(ui.quickConnectButton, ui.actionQuickConnect);
-    new PushButtonActionLink(ui.favConnectButton, ui.actionConnectToFavorite);
-    new PushButtonActionLink(ui.refreshAllButton, ui.actionRefreshAll);
+//    new PushButtonActionLink(ui.favConnectButton, ui.actionConnectToFavorite);
+//    new PushButtonActionLink(ui.refreshAllButton, ui.actionRefreshAll);
 
     loadOptions();
 
@@ -62,13 +63,18 @@ MainWindow::MainWindow(QWidget *parent)
     allList_->setServerList(allSL_);
     connect(allSL_, SIGNAL(refreshStopped()), SLOT(refreshAllStopped()));
     allList_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
+    allList_->tree()->addAction(ui.actionConnect);
     allList_->tree()->addAction(ui.actionAddToFav);
+    allList_->tree()->addAction(ui.actionRefreshAll);
+    allList_->tree()->addAction(ui.actionRefreshSelected);
     
     favList_->setServerList(favSL_);
     favList_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
+    favList_->tree()->addAction(ui.actionConnect);
     favList_->tree()->addAction(ui.actionFavAdd);
     favList_->tree()->addAction(ui.actionFavDelete);
-    favList_->tree()->addAction(ui.actionRefreshSelectedFav);
+    favList_->tree()->addAction(ui.actionRefreshSelected);
+    favList_->tree()->addAction(ui.actionRefreshAll);
 
 }
 
@@ -153,7 +159,10 @@ void MainWindow::loadOptions()
 
 void MainWindow::refreshAll()
 {
-    allSL_->refreshAll();
+    ServListWidget* list = dynamic_cast<ServListWidget*>(ui.tabWidget->currentWidget());
+    if (!list) return;
+    ServerListCustom* sl = list->serverList();
+    sl->refreshAll();
     ui.actionRefreshAll->setEnabled(false);
 }
 
@@ -168,9 +177,38 @@ void MainWindow::showAbout()
     d.exec();
 }
 
-void MainWindow::favRefreshSelected()
+void MainWindow::refreshSelected()
 {
-    ServerIDList sel = favList_->selection();
-    if (sel.size() == 0) return;
-    favSL_->refreshServer(sel.front());
+    ServerID* id = selected();
+    if (!id) return;
+    ServListWidget* list = dynamic_cast<ServListWidget*>(ui.tabWidget->currentWidget());
+    if (!list) return;
+    list->serverList()->refreshServer(*id);
+}
+
+ServerID* MainWindow::selected()
+{
+    ServListWidget* list = dynamic_cast<ServListWidget*>(ui.tabWidget->currentWidget());
+    if (!list) return 0;
+    ServerIDList sel = list->selection();
+    if (sel.size() == 0) return 0;
+    return &(sel.front());
+}
+
+void MainWindow::connectSelected()
+{
+    ServerID* id = selected();
+    if (!id) return;
+    favSL_->refreshServer(*id);
+
+    launcher_.setServerID( ServerID( ui.qlServerEdit->text() ) );
+    launcher_.setUserName( ui.qlPlayerEdit->text() );
+    launcher_.setPassword( ui.qlPasswordEdit->text() );
+    launcher_.launch();
+
+}
+
+ServListWidget* MainWindow::selectedListWidget()
+{
+    
 }

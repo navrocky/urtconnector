@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>803</width>
+    <width>889</width>
     <height>569</height>
    </rect>
   </property>
@@ -27,13 +27,124 @@
        <attribute name="title">
         <string>Favourites</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QPushButton" name="favConnectButton">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="favAddButton">
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="favDeleteButton">
+            <property name="text">
+             <string>Delete</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_9">
+            <property name="text">
+             <string>Find</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="tabAll">
        <attribute name="title">
         <string>All</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QPushButton" name="pushButton_12">
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Connect</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="refreshAllButton">
+            <property name="text">
+             <string>Refresh</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_11">
+            <property name="text">
+             <string>Find</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -44,8 +155,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>803</width>
-     <height>25</height>
+     <width>889</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuUrbanConnector">
@@ -66,6 +177,16 @@
      <string>Settings</string>
     </property>
     <addaction name="actionOptions"/>
+    <addaction name="actionShortcuts"/>
+   </widget>
+   <widget class="QMenu" name="menuPlayer_profile">
+    <property name="title">
+     <string>Player profile</string>
+    </property>
+    <addaction name="actionProfile1"/>
+    <addaction name="actionProfile2"/>
+    <addaction name="separator"/>
+    <addaction name="actionManage"/>
    </widget>
    <widget class="QMenu" name="menuFavorites">
     <property name="title">
@@ -77,6 +198,7 @@
    </widget>
    <addaction name="menuUrbanConnector"/>
    <addaction name="menuFavorites"/>
+   <addaction name="menuPlayer_profile"/>
    <addaction name="menuOptions"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -89,9 +211,6 @@
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_8">
     <layout class="QVBoxLayout" name="verticalLayout_3">
-     <property name="margin">
-      <number>0</number>
-     </property>
      <item>
       <widget class="QTextBrowser" name="textBrowser">
        <property name="html">
@@ -104,6 +223,82 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;server&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Edit</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="dockWidget_6">
+   <property name="windowTitle">
+    <string>Player profile</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_9">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QComboBox" name="comboBox_3">
+         <item>
+          <property name="text">
+           <string>NewPlayer</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Player2</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Edit</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QTextBrowser" name="textBrowser_2"/>
      </item>
     </layout>
    </widget>
@@ -228,6 +423,32 @@ p, li { white-space: pre-wrap; }
     <string>Options</string>
    </property>
   </action>
+  <action name="actionShortcuts">
+   <property name="text">
+    <string>Shortcuts</string>
+   </property>
+  </action>
+  <action name="actionManage">
+   <property name="text">
+    <string>Manage</string>
+   </property>
+  </action>
+  <action name="actionProfile1">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Profile1</string>
+   </property>
+  </action>
+  <action name="actionProfile2">
+   <property name="text">
+    <string>Profile2</string>
+   </property>
+  </action>
   <action name="actionFavAdd">
    <property name="icon">
     <iconset resource="images.qrc">
@@ -270,7 +491,7 @@ p, li { white-space: pre-wrap; }
     <string>Edit server favorite</string>
    </property>
   </action>
-  <action name="actionConnect">
+  <action name="actionConnectToFavorite">
    <property name="icon">
     <iconset resource="images.qrc">
      <normaloff>:/icons/icons/launch.png</normaloff>:/icons/icons/launch.png</iconset>
@@ -279,7 +500,7 @@ p, li { white-space: pre-wrap; }
     <string>Connect</string>
    </property>
    <property name="toolTip">
-    <string>Connect to selected server</string>
+    <string>Connect to selected favorite</string>
    </property>
   </action>
   <action name="actionQuickConnect">
@@ -303,7 +524,7 @@ p, li { white-space: pre-wrap; }
     <string>Refresh</string>
    </property>
    <property name="toolTip">
-    <string>Refresh all servers in list</string>
+    <string>Refresh server list</string>
    </property>
   </action>
   <action name="actionAddToFav">
@@ -318,16 +539,13 @@ p, li { white-space: pre-wrap; }
     <string>Add selected server to favorites list</string>
    </property>
   </action>
-  <action name="actionRefreshSelected">
+  <action name="actionRefreshSelectedFav">
    <property name="icon">
     <iconset resource="images.qrc">
      <normaloff>:/icons/icons/view-refresh.png</normaloff>:/icons/icons/view-refresh.png</iconset>
    </property>
    <property name="text">
     <string>Refresh selected</string>
-   </property>
-   <property name="toolTip">
-    <string>Refresh selected server</string>
    </property>
   </action>
  </widget>
@@ -336,7 +554,15 @@ p, li { white-space: pre-wrap; }
   <tabstop>qlServerEdit</tabstop>
   <tabstop>qlPlayerEdit</tabstop>
   <tabstop>qlPasswordEdit</tabstop>
+  <tabstop>comboBox_3</tabstop>
   <tabstop>textBrowser</tabstop>
+  <tabstop>favDeleteButton</tabstop>
+  <tabstop>pushButton_9</tabstop>
+  <tabstop>pushButton_11</tabstop>
+  <tabstop>pushButton_12</tabstop>
+  <tabstop>favAddButton</tabstop>
+  <tabstop>favConnectButton</tabstop>
+  <tabstop>refreshAllButton</tabstop>
  </tabstops>
  <resources>
   <include location="images.qrc"/>

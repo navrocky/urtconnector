@@ -20,6 +20,7 @@ public:
     ~ServListWidget();
 
     void setServerList(ServerListCustom* ptr);
+    ServerListCustom* serverList() const {return servList_;}
 
     QTreeWidget* tree() const {return ui_.treeWidget;}
 

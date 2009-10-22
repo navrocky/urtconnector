@@ -47,6 +47,7 @@ src/main.cpp -text
 src/mainwindow.cpp -text
 src/mainwindow.h -text
 src/mainwindow.ui -text
+src/mainwindow_concept.ui -text
 src/options.cpp -text
 src/options.h -text
 src/optionsdialog.cpp -text
