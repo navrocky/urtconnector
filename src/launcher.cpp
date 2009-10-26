@@ -50,6 +50,11 @@ void Launcher::setRcon(const QString & value)
     rcon_ = value;
 }
 
+void Launcher::setReferee(const QString& value)
+{
+    referee_ = value;
+}
+
 void Launcher::launch()
 {
     if (!opts_->useAdvCmdLine())

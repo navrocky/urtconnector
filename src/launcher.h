@@ -23,6 +23,7 @@ public:
     void setUserName(const QString& value);
     void setPassword(const QString& value);
     void setRcon(const QString& value);
+    void setReferee(const QString& value);
     void setConfigURL(const QString& value);
 
     /// Game is executing?
@@ -52,6 +53,7 @@ private:
     ServerID id_;
     QString configURL_;
     QString rcon_;
+    QString referee_;
     QProcess proc_;
     bool executing_;
 };

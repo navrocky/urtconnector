@@ -6,6 +6,7 @@
 #include <QBoxLayout>
 #include <QTreeWidget>
 #include <QMessageBox>
+#include <qobjectdefs.h>
 
 #include "mainwindow.h"
 #include "optionsdialog.h"
@@ -75,7 +76,6 @@ MainWindow::MainWindow(QWidget *parent)
     favList_->tree()->addAction(ui.actionFavDelete);
     favList_->tree()->addAction(ui.actionRefreshSelected);
     favList_->tree()->addAction(ui.actionRefreshAll);
-
 }
 
 
@@ -138,9 +138,7 @@ void MainWindow::syncFavList()
     dstlist.clear();
 
     for (ServerOptionsList::iterator it = srclist.begin(); it != srclist.end(); it++)
-    {
         dstlist.push_back((*it).second.id);
-    }
     favSL_->update();
 }
 
@@ -159,7 +157,7 @@ void MainWindow::loadOptions()
 
 void MainWindow::refreshAll()
 {
-    ServListWidget* list = dynamic_cast<ServListWidget*>(ui.tabWidget->currentWidget());
+    ServListWidget* list = selectedListWidget();
     if (!list) return;
     ServerListCustom* sl = list->serverList();
     sl->refreshAll();
@@ -181,14 +179,14 @@ void MainWindow::refreshSelected()
 {
     ServerID* id = selected();
     if (!id) return;
-    ServListWidget* list = dynamic_cast<ServListWidget*>(ui.tabWidget->currentWidget());
+    ServListWidget* list = selectedListWidget();
     if (!list) return;
     list->serverList()->refreshServer(*id);
 }
 
 ServerID* MainWindow::selected()
 {
-    ServListWidget* list = dynamic_cast<ServListWidget*>(ui.tabWidget->currentWidget());
+    ServListWidget* list = selectedListWidget();
     if (!list) return 0;
     ServerIDList sel = list->selection();
     if (sel.size() == 0) return 0;
@@ -199,16 +197,24 @@ void MainWindow::connectSelected()
 {
     ServerID* id = selected();
     if (!id) return;
-    favSL_->refreshServer(*id);
 
-    launcher_.setServerID( ServerID( ui.qlServerEdit->text() ) );
-    launcher_.setUserName( ui.qlPlayerEdit->text() );
-    launcher_.setPassword( ui.qlPasswordEdit->text() );
+    ServerOptions& opts = opts_->servers()[*id];
+
+    launcher_.setServerID( *id );
+    launcher_.setUserName("");
+    launcher_.setPassword(opts.password);
+    launcher_.setReferee(opts.refPassword);
+    launcher_.setRcon(opts.rconPassword);
     launcher_.launch();
 
 }
 
 ServListWidget* MainWindow::selectedListWidget()
 {
-    
+    QWidget* curw = ui.tabWidget->currentWidget();
+    if (curw == ui.tabFav)
+        return favList_;
+    else if (curw == ui.tabAll)
+        return allList_;
+    else return 0;
 }

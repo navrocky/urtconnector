@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>ServOptsDialogClass</class>
- <widget class="QDialog" name="ServOptsDialogClass" >
-  <property name="geometry" >
+ <widget class="QDialog" name="ServOptsDialogClass">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,120 +10,102 @@
     <height>372</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout_2" >
-     <item row="0" column="0" >
-      <widget class="QLabel" name="label_8" >
-       <property name="text" >
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
         <string>Address</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="0" column="1" >
-      <layout class="QGridLayout" name="gridLayout" >
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label" >
-         <property name="text" >
-          <string>Hostname</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" >
-        <widget class="QLabel" name="label_2" >
-         <property name="text" >
-          <string>IP</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2" >
-        <widget class="QLabel" name="label_3" >
-         <property name="text" >
-          <string>Port</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QLineEdit" name="hostnameEdit" />
-       </item>
-       <item row="1" column="1" >
-        <widget class="QLineEdit" name="ipEdit" />
-       </item>
-       <item row="1" column="2" >
-        <widget class="QLineEdit" name="portEdit" />
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="label_4" >
-       <property name="text" >
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
         <string>Name</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QLineEdit" name="nameEdit" />
+     <item row="1" column="2">
+      <widget class="QLineEdit" name="nameEdit"/>
      </item>
-     <item row="2" column="0" >
-      <widget class="QLabel" name="label_6" >
-       <property name="text" >
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
         <string>RCON password</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="2" column="1" >
-      <widget class="QLineEdit" name="rconEdit" />
+     <item row="4" column="2">
+      <widget class="QLineEdit" name="rconEdit"/>
      </item>
-     <item row="3" column="0" >
-      <widget class="QLabel" name="label_7" >
-       <property name="text" >
-        <string>Referee password</string>
-       </property>
-       <property name="alignment" >
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
+     <item row="6" column="2">
+      <widget class="QLineEdit" name="refEdit"/>
      </item>
-     <item row="3" column="1" >
-      <widget class="QLineEdit" name="refEdit" />
-     </item>
-     <item row="4" column="0" >
-      <widget class="QLabel" name="label_5" >
-       <property name="text" >
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
         <string>Comment</string>
        </property>
-       <property name="alignment" >
+       <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
-     <item row="4" column="1" >
-      <widget class="QTextEdit" name="commentEdit" />
+     <item row="7" column="2">
+      <widget class="QTextEdit" name="commentEdit"/>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLineEdit" name="addressEdit"/>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Referee password</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLineEdit" name="passwordEdit"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Password</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="Line" name="line" >
-     <property name="orientation" >
+    <widget class="Line" name="line">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="standardButtons" >
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -137,11 +120,11 @@
    <receiver>ServOptsDialogClass</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>454</x>
      <y>348</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>451</x>
      <y>369</y>
     </hint>
@@ -153,11 +136,11 @@
    <receiver>ServOptsDialogClass</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>482</x>
      <y>350</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>496</x>
      <y>370</y>
     </hint>

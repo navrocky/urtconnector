@@ -15,6 +15,7 @@ public:
     ServerID id;
     QString name;
     QString comment;
+    QString password;
     QString rconPassword;
     QString refPassword;
     QString folder;
