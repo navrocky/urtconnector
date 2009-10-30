@@ -10,33 +10,21 @@ class AppOptions
 {
 public:
     AppOptions();
-    ~AppOptions();
-
-    void operator =( const AppOptions& src );
 
     /*! Use advanced command line advCmdLine() to launch UrT binary instead of binaryPath(). */
-    bool useAdvCmdLine() const { return useAdvCmdLine_; }
-    void setUseAdvCmdLine( bool value );
+    bool useAdvCmdLine;
 
     /*! Advanced command line to launch UrT binary. Use followed substitutions:
         %host% %port% %user% %password% %rcon% and so on.*/
-    QString advCmdLine() const { return advCmdLine_; }
-    void setAdvCmdLine( const QString& value );
+    QString advCmdLine;
 
     /*! Path to UrT binary, used when not advanced command line. */
-    QString binaryPath() const { return binaryPath_; }
-    void setBinaryPath( const QString& value );
+    QString binaryPath;
 
     /*! Servers options list. */
-    ServerOptionsList& servers() {return servers_;}
+    ServerOptionsList servers;
     
     QStatOptions qstatOpts;
-
-private:
-    bool useAdvCmdLine_;
-    QString advCmdLine_;
-    QString binaryPath_;
-    ServerOptionsList servers_;
 };
 
 typedef AppOptions* AppOptionsPtr;

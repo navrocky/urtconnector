@@ -6,9 +6,6 @@ ServOptsDialog::ServOptsDialog(QWidget *parent)
 {
     ui.setupUi(this);
     setWindowTitle(tr("New server favorite"));
-
-//    opts_.setUid( QUuid::createUuid() );
-
     updateDialog();
 }
 
@@ -20,7 +17,6 @@ ServOptsDialog::ServOptsDialog(QWidget * parent, const ServerOptions & src)
     setWindowTitle(tr("Server favorite options"));
     updateDialog();
 }
-
 
 ServOptsDialog::~ServOptsDialog()
 {
@@ -43,7 +39,11 @@ void ServOptsDialog::accept()
 
 void ServOptsDialog::updateDialog()
 {
-    ui.addressEdit->setText(opts_.id.address());
+    if (!(opts_.id.isEmpty()))
+        ui.addressEdit->setText(opts_.id.address());
+    else
+        ui.addressEdit->setText(QString());
+
     ui.nameEdit->setText(opts_.name);
     ui.passwordEdit->setText(opts_.password);
     ui.rconEdit->setText(opts_.rconPassword);

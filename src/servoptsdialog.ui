@@ -112,6 +112,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>addressEdit</tabstop>
+  <tabstop>nameEdit</tabstop>
+  <tabstop>passwordEdit</tabstop>
+  <tabstop>rconEdit</tabstop>
+  <tabstop>refEdit</tabstop>
+  <tabstop>commentEdit</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

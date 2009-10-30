@@ -57,7 +57,7 @@ void Launcher::setReferee(const QString& value)
 
 void Launcher::launch()
 {
-    if (!opts_->useAdvCmdLine())
+    if (!opts_->useAdvCmdLine)
         simpleLaunch();
     else
         advancedLaunch();
@@ -92,7 +92,7 @@ void Launcher::simpleLaunch()
 
     arguments << QString("+set fs_game q3ut4");
 
-    proc_.start(opts_->binaryPath(), arguments);
+    proc_.start(opts_->binaryPath, arguments);
 }
 
 void Launcher::procStarted()
@@ -109,10 +109,10 @@ bool Launcher::executing()
 QString Launcher::launchString()
 {
     QString res;
-    if (!opts_->useAdvCmdLine())
+    if (!opts_->useAdvCmdLine)
     {
-        res = opts_->advCmdLine()
-            .replace("%bin%", opts_->binaryPath(), Qt::CaseInsensitive)
+        res = opts_->advCmdLine
+            .replace("%bin%", opts_->binaryPath, Qt::CaseInsensitive)
             .replace("%name%", userName_, Qt::CaseInsensitive)
             .replace("%pwd%", password_, Qt::CaseInsensitive)
             .replace("%addr%", id_.address(), Qt::CaseInsensitive)
@@ -120,7 +120,7 @@ QString Launcher::launchString()
             .replace("%config%", configURL_, Qt::CaseInsensitive);
     } else
     {
-        res = opts_->binaryPath();
+        res = opts_->binaryPath;
         if (!userName_.isEmpty())
             res += QString(" +name \"%1\"").arg(userName_);
 

@@ -28,10 +28,13 @@ private slots:
     void connectSelected();
     void launchStatusChanged();
     void favAdd();
+    void favEdit();
     void favDelete();
     void refreshAll();
     void refreshAllStopped();
     void refreshSelected();
+    void updateActions();
+    void currentTabChanged(int);
 
 private:
     void syncFavList();
