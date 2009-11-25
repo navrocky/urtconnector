@@ -22,7 +22,7 @@ ServerID::ServerID(const QString & ip, const QString & hostName, int port)
 ServerID::ServerID(const QString & address)
 {
     QRegExp rx("^((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|([^:]+)):(\\d{1,5})$");
-    if (!rx.exactMatch(address))
+    if (!(rx.exactMatch(address)))
         throw Exception(QObject::tr("Address syntax error"));
     setIp(rx.cap(2));
     setHostName(rx.cap(3));

@@ -10,8 +10,6 @@
 class ServerOptions
 {
 public:
-    ServerOptions();
-
     ServerID id;
     QString name;
     QString comment;

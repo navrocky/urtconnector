@@ -14,7 +14,7 @@ class PushButtonActionLink : public QObject
 {
 Q_OBJECT
 public:
-    PushButtonActionLink(QPushButton *button, QAction* action);
+    PushButtonActionLink(QObject* parent, QPushButton *button, QAction* action);
 private slots:
     void assign();
 private:

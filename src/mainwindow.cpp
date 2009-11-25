@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 //    new PushButtonActionLink(ui.favAddButton, ui.actionFavAdd);
 //    new PushButtonActionLink(ui.favDeleteButton, ui.actionFavDelete);
-    new PushButtonActionLink(ui.quickConnectButton, ui.actionQuickConnect);
+    new PushButtonActionLink(this, ui.quickConnectButton, ui.actionQuickConnect);
 //    new PushButtonActionLink(ui.favConnectButton, ui.actionConnectToFavorite);
 //    new PushButtonActionLink(ui.refreshAllButton, ui.actionRefreshAll);
 
@@ -187,36 +187,35 @@ void MainWindow::showAbout()
 
 void MainWindow::refreshSelected()
 {
-    ServerID* id = selected();
-    if (!id) return;
+    ServerID id = selected();
+    if (id.isEmpty()) return;
     ServListWidget* list = selectedListWidget();
     if (!list) return;
-    list->serverList()->refreshServer(*id);
+    list->serverList()->refreshServer(id);
 }
 
-ServerID* MainWindow::selected()
+ServerID MainWindow::selected()
 {
     ServListWidget* list = selectedListWidget();
-    if (!list) return 0;
+    if (!list) return ServerID();
     ServerIDList sel = list->selection();
-    if (sel.size() == 0) return 0;
-    return &(sel.front());
+    if (sel.size() == 0) return ServerID();
+    return sel.front();
 }
 
 void MainWindow::connectSelected()
 {
-    ServerID* id = selected();
-    if (!id) return;
+    ServerID id = selected();
+    if (id.isEmpty()) return;
 
-    ServerOptions& opts = opts_->servers[*id];
+    ServerOptions& opts = opts_->servers[id];
 
-    launcher_.setServerID( *id );
+    launcher_.setServerID( id );
     launcher_.setUserName("");
     launcher_.setPassword(opts.password);
     launcher_.setReferee(opts.refPassword);
     launcher_.setRcon(opts.rconPassword);
     launcher_.launch();
-
 }
 
 ServListWidget* MainWindow::selectedListWidget()
@@ -232,7 +231,7 @@ ServListWidget* MainWindow::selectedListWidget()
 void MainWindow::updateActions()
 {
     QWidget* curw = selectedListWidget();
-    ServerID* sel = selected();
+    bool sel = !(selected().isEmpty());
 
     ui.actionAddToFav->setEnabled(curw == allList_ && sel);
     ui.actionConnect->setEnabled(sel);
@@ -244,16 +243,14 @@ void MainWindow::updateActions()
 
 void MainWindow::favEdit()
 {
-    ServerID* id = selected();
-    if (!id) return;
-
-    // FIXME i dont know why AV here, need to valgrind check
-    ServerOptions opts = opts_->servers[*id];
+    ServerID id = selected();
+    if (id.isEmpty()) return;
+    ServerOptions opts = opts_->servers[id];
 
     ServOptsDialog d(this, opts);
     if (d.exec() == QDialog::Rejected) return;
 
-    opts_->servers[*id] = d.options();
+    opts_->servers[id] = d.options();
     saveOptions();
     syncFavList();
     favList_->forceUpdate();

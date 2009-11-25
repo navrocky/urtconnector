@@ -39,7 +39,7 @@ private slots:
 private:
     void syncFavList();
 
-    ServerID* selected();
+    ServerID selected();
     ServListWidget* selectedListWidget();
 
     Ui::MainWindowClass ui;

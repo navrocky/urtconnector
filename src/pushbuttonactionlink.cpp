@@ -3,8 +3,9 @@
 
 #include "pushbuttonactionlink.h"
 
-PushButtonActionLink::PushButtonActionLink(QPushButton * button, QAction * action)
-    : button_(button),
+PushButtonActionLink::PushButtonActionLink(QObject* parent, QPushButton * button, QAction * action)
+    : QObject(parent),
+      button_(button),
       action_(action)
 {
     connect(button, SIGNAL(clicked()), action, SLOT(trigger()));
