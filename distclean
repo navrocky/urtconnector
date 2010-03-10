@@ -1,5 +1,4 @@
 #!/bin/sh
-make distclean
-rm urt_connector.kdevses
-rm urt_connector.kdevelop.pcs
-rm -rf bin
+rm -rf debug
+rm -rf release
+

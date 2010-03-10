@@ -1,7 +1,10 @@
-To build this application run this commands in terminal (of course, in this folder):
+To build and install this application run this commands in terminal (of course, in this folder):
 
-qmake
-make
+In linux/unix you have to:
+
+$ ./build_gcc_linux_release
+$ cd release
+$ make install
 
 
 Project at google code:

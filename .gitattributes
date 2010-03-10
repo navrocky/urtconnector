@@ -1,9 +1,12 @@
 * text=auto !eol
+/CMakeLists.txt -text
 artwork/logo.png -text
 artwork/logo.svg -text
 artwork/q3ut_logo.png -text
 artwork/q3ut_logo.svg -text
-/build -text
+/build_gcc_linux_debug -text
+/build_gcc_linux_release -text
+/build_mingw_release.bat -text
 /distclean -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
@@ -14,6 +17,7 @@ doc/class_model.xmi -text
 doc/qstat_out.txt -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text
+src/CMakeLists.txt -text
 src/aboutdialog.cpp -text
 src/aboutdialog.h -text
 src/aboutdialog.ui -text
@@ -75,10 +79,8 @@ src/servlistwidget.ui -text
 src/servoptsdialog.cpp -text
 src/servoptsdialog.h -text
 src/servoptsdialog.ui -text
-src/src.pro -text
-src/superapp_ru.qm -text
-src/superapp_ru.ts -text
 src/xmlreaddata.cpp -text
 src/xmlreaddata.h -text
-/urt_connector.kdevelop -text
-/urt_connector.pro -text
+translations/CMakeLists.txt -text
+translations/urtconnector_ru.ts -text
+/update_translations -text
