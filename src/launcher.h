@@ -12,25 +12,25 @@
     Take options, username, server address and launch game.
 */
 
-class Launcher: public QObject
+class launcher: public QObject
 {
 Q_OBJECT
 public:
-    Launcher(AppOptionsPtr opts);
-    ~Launcher();
+    launcher(app_options_ptr opts);
+    ~launcher();
 
-    void setServerID(const ServerID& id);
-    void setUserName(const QString& value);
-    void setPassword(const QString& value);
-    void setRcon(const QString& value);
-    void setReferee(const QString& value);
-    void setConfigURL(const QString& value);
+    void set_server_id(const server_id& id);
+    void set_user_name(const QString& value);
+    void set_password(const QString& value);
+    void set_rcon(const QString& value);
+    void set_referee(const QString& value);
+    void set_config_url(const QString& value);
 
     /// Game is executing?
     bool executing();
 
     /// Launch string
-    QString launchString();
+    QString launch_string();
 
 public slots:
     void launch();
@@ -47,10 +47,10 @@ private slots:
 private:
     void advancedLaunch();
     void simpleLaunch();
-    AppOptionsPtr opts_;
+    app_options_ptr opts_;
     QString userName_;
     QString password_;
-    ServerID id_;
+    server_id id_;
     QString configURL_;
     QString rcon_;
     QString referee_;

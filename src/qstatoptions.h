@@ -3,13 +3,13 @@
 
 #include <QString>
 
-class QStatOptions
+class qstat_options
 {
 public:
-    QStatOptions();
+    qstat_options();
 
-    QString qstatPath;
-    QString masterServer;
+    QString qstat_path;
+    QString master_server;
 
 };
 

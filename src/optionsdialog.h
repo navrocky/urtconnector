@@ -6,27 +6,27 @@
 #include "ui_optionsdialog.h"
 #include "appoptions.h"
 
-class OptionsDialog : public QDialog
+class options_dialog : public QDialog
 {
 Q_OBJECT
 public:
-    OptionsDialog(QWidget *parent = 0);
-    ~OptionsDialog();
+    options_dialog(QWidget *parent = 0);
+    ~options_dialog();
 
-    void setOpts(AppOptionsPtr value);
+    void set_opts(app_options_ptr value);
 protected:
     void accept();
 
 
 private slots:
-    void chooseBinary();
-    void insertFilePath();
+    void choose_binary();
+    void insert_file_path();
 
 private:
-    void updateDialog();
+    void update_dialog();
 
     Ui::OptionsDialogClass ui;
-    AppOptionsPtr opts_;
+    app_options_ptr opts_;
 };
 
 #endif

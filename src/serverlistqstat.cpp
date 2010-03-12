@@ -31,14 +31,14 @@ const char* c_player_name = "name";
 const char* c_player_score = "score";
 const char* c_player_ping = "ping";
 
-class XmlParseError: public Exception
+class XmlParseError: public qexception
 {
 public:
-    XmlParseError(): Exception("Xml parse error") {}
+    XmlParseError(): qexception("Xml parse error") {}
 };
 
 ServerListQStat::ServerListQStat(QObject *parent)
-    : ServerListCustom(parent),
+    : serv_list_custom(parent),
       curState_(Init)
 {
     connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
@@ -67,7 +67,7 @@ void ServerListQStat::refreshAll()
     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";
     if (customServList().empty())
     {
-        sl << "-q3m" << qstatOpts_->masterServer;
+        sl << "-q3m" << qstatOpts_->master_server;
     } else
     {
         ServerIDList& list = customServList();
@@ -75,11 +75,11 @@ void ServerListQStat::refreshAll()
             sl << (*it).address();
     }
 
-    proc_.start(qstatOpts_->qstatPath, sl);
+    proc_.start(qstatOpts_->qstat_path, sl);
 #endif
 }
 
-void ServerListQStat::refreshServer(const ServerID & id)
+void ServerListQStat::refreshServer(const server_id & id)
 {
     if (proc_.state() != QProcess::NotRunning) return;
 
@@ -88,13 +88,13 @@ void ServerListQStat::refreshServer(const ServerID & id)
     QStringList sl;
     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-retry" << "10" << "-q3s" << id.address();
 
-    ServerInfo info = list_[id];
-    info.status = ServerInfo::Updating;
+    server_info info = list_[id];
+    info.status = server_info::Updating;
     list_[id] = info;
 
     state_++;
 
-    proc_.start(qstatOpts_->qstatPath, sl);
+    proc_.start(qstatOpts_->qstat_path, sl);
 }
 
 void ServerListQStat::refreshCancel()
@@ -109,19 +109,19 @@ void ServerListQStat::error(QProcess::ProcessError error)
     switch (error)
     {
         case QProcess::FailedToStart:
-            throw Exception(tr("QStat failed to start"));
+            throw qexception(tr("QStat failed to start"));
         case QProcess::Crashed:
-            throw Exception(tr("QStat crashed"));
+            throw qexception(tr("QStat crashed"));
         case QProcess::Timedout:
-            throw Exception(tr("QStat timed out"));
+            throw qexception(tr("QStat timed out"));
         case QProcess::ReadError:
-            throw Exception(tr("QStat read error"));
+            throw qexception(tr("QStat read error"));
         case QProcess::WriteError:
-            throw Exception(tr("QStat write error"));
+            throw qexception(tr("QStat write error"));
         case QProcess::UnknownError:
-            throw Exception(tr("QStat unknown error"));
+            throw qexception(tr("QStat unknown error"));
     }
-    throw Exception(tr("QStat unknown error"));
+    throw qexception(tr("QStat unknown error"));
 }
 
 void ServerListQStat::finished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -140,7 +140,7 @@ void ServerListQStat::readyReadStandardOutput()
         else
 
         if (rd_.hasError() && (rd_.error() != QXmlStreamReader::PrematureEndOfDocumentError))
-            throw Exception(rd_.errorString());
+            throw qexception(rd_.errorString());
     }
 }
 
@@ -158,11 +158,11 @@ void ServerListQStat::processXml()
                 curState_ = MasterServer;
             } else
             {
-                curServerInfo_ = ServerInfo();
+                curServerInfo_ = server_info();
                 if (rd_.attributes().value(c_server_status) == "UP")
-                    curServerInfo_.status = ServerInfo::Up;
+                    curServerInfo_.status = server_info::Up;
                 else
-                    curServerInfo_.status = ServerInfo::Down;
+                    curServerInfo_.status = server_info::Down;
 
                 curState_ = Server;
             }
@@ -206,7 +206,7 @@ void ServerListQStat::processXml()
 
         else if (curState_ == Players && rd_.name() == c_player)
         {
-            curPlayerInfo_ = PlayerInfo();
+            curPlayerInfo_ = player_info();
             curState_ = Player;
         }
 
@@ -222,7 +222,7 @@ void ServerListQStat::processXml()
     if (rd_.isCharacters())
     {
         if (curState_ == HostName)
-            curServerInfo_.id = ServerID(rd_.text().toString());
+            curServerInfo_.id = server_id(rd_.text().toString());
         else if (curState_ == Name)
             curServerInfo_.name = rd_.text().toString();
         else if (curState_ == GameType)
@@ -238,7 +238,7 @@ void ServerListQStat::processXml()
         else if (curState_ == Rule)
             curRule_.second = rd_.text().toString();
         else if (curState_ == PlayerName)
-            curPlayerInfo_.nickName = rd_.text().toString();
+            curPlayerInfo_.nick_name = rd_.text().toString();
         else if (curState_ == PlayerScore)
             curPlayerInfo_.score = rd_.text().toString().toInt();
         else if (curState_ == PlayerPing)
@@ -295,8 +295,8 @@ void ServerListQStat::update()
     ServerInfoList newlist;
     for (ServerIDList::iterator it = list.begin(); it != list.end(); it++)
     {
-        ServerID id = *it;
-        ServerInfo info = list_[id];
+        server_id id = *it;
+        server_info info = list_[id];
 
         info.id = id;
 
@@ -313,13 +313,13 @@ void ServerListQStat::update()
 
 void ServerListQStat::prepareInfo()
 {
-    if (curServerInfo_.status == ServerInfo::Down)
-        curServerInfo_.mode = ServerInfo::None;
+    if (curServerInfo_.status == server_info::Down)
+        curServerInfo_.mode = server_info::None;
     else
-        curServerInfo_.mode = (ServerInfo::GameMode)(curServerInfo_.info["gametype"].toInt() + 1);
+        curServerInfo_.mode = (server_info::game_mode)(curServerInfo_.info["gametype"].toInt() + 1);
 }
 
-void ServerListQStat::setQStatOpts(QStatOptions* opts)
+void ServerListQStat::setQStatOpts(qstat_options* opts)
 {
     qstatOpts_ = opts;
 }

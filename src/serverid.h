@@ -10,17 +10,17 @@
 
     \author Navrocky Vladislaw (navrocky@visualdata.ru)
 */
-class ServerID
+class server_id
 {
 public:
-    ServerID();
-    ServerID(const QString& ip, const QString& hostName, int port);
+    server_id();
+    server_id(const QString& ip, const QString& hostName, int port);
 
     /*! use address string, ex.: "myhostname:port" */
-    ServerID(const QString& address);
+    server_id(const QString& address);
 
-    ServerID(const ServerID& src);
-    ~ServerID();
+    server_id(const server_id& src);
+    ~server_id();
 
     QString ip() const {return ip_;}
     QString hostName() const {return hostName_;}
@@ -43,11 +43,11 @@ private:
     int port_;
 };
 
-bool operator==(const ServerID& a, const ServerID& b);
-bool operator<(const ServerID& a, const ServerID& b);
-bool operator>(const ServerID& a, const ServerID& b);
+bool operator==(const server_id& a, const server_id& b);
+bool operator<(const server_id& a, const server_id& b);
+bool operator>(const server_id& a, const server_id& b);
 // bool operator<=(const ServerID& a, const ServerID& b);
 // bool operator>=(const ServerID& a, const ServerID& b);
-typedef std::vector<ServerID> ServerIDList;
+typedef std::vector<server_id> ServerIDList;
 
 #endif

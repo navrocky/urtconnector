@@ -6,12 +6,12 @@
 #include "serverid.h"
 #include "serveroptions.h"
 
-class ServerListCustom : public QObject
+class serv_list_custom : public QObject
 {
 Q_OBJECT
 public:
-    ServerListCustom(QObject *parent = 0);
-    virtual ~ServerListCustom();
+    serv_list_custom(QObject *parent = 0);
+    virtual ~serv_list_custom();
 
     // servers options
     void setOpts(ServerOptionsList* opts);
@@ -21,7 +21,7 @@ public:
 
     // refresh online status servers from list
     virtual void refreshAll() = 0;
-    virtual void refreshServer(const ServerID& id) = 0;
+    virtual void refreshServer(const server_id& id) = 0;
     virtual void refreshCancel() = 0;
 
     bool autoRefresh() const {return autoRefresh_;}

@@ -16,7 +16,6 @@ set(HEADERS
     launcher.h
     mainwindow.h
     optionsdialog.h
-    options.h
     playerinfo.h
     pushbuttonactionlink.h
     qstatoptions.h
@@ -28,6 +27,8 @@ set(HEADERS
     servlistwidget.h
     servoptsdialog.h
     xmlreaddata.h
+    strconvert.h
+    app_options_saver.h
 )
 
 set(MOC_HEADERS
@@ -53,7 +54,6 @@ set(SOURCES
     launcher.cpp
     mainwindow.cpp
     optionsdialog.cpp
-    options.cpp
     playerinfo.cpp
     pushbuttonactionlink.cpp
     qstatoptions.cpp
@@ -65,6 +65,7 @@ set(SOURCES
     servlistwidget.cpp
     servoptsdialog.cpp
     xmlreaddata.cpp
+    app_options_saver.cpp
 )
 
 set(IFACES

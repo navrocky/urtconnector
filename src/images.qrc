@@ -1,5 +1,5 @@
 <RCC>
-  <qresource prefix="icons" >
+  <qresource prefix="icons">
     <file>icons/status-offline.png</file>
     <file>icons/status-online.png</file>
     <file>icons/status-update.png</file>
@@ -15,5 +15,8 @@
     <file>icons/edit.png</file>
     <file>icons/remove.png</file>
     <file>icons/view-refresh.png</file>
+  </qresource>
+  <qresource prefix="images">
+    <file>icons/logo.png</file>
   </qresource>
 </RCC>

@@ -14,7 +14,7 @@
 // qstat out in XML
 //#define QSTAT_XML
 
-class ServerListQStat : public ServerListCustom
+class ServerListQStat : public serv_list_custom
 {
 Q_OBJECT
 public:
@@ -23,10 +23,10 @@ public:
 
     void update();
 
-    void setQStatOpts(QStatOptions* opts);
+    void setQStatOpts(qstat_options* opts);
 
     void refreshAll();
-    void refreshServer(const ServerID& id);
+    void refreshServer(const server_id& id);
     void refreshCancel();
 
 private slots:
@@ -48,9 +48,9 @@ private:
         Retries, Rules, Rule, Players, Player, PlayerName, PlayerScore, PlayerPing
     };
     State curState_;
-    ServerInfo curServerInfo_;
-    PlayerInfo curPlayerInfo_;
-    QStatOptions* qstatOpts_;
+    server_info curServerInfo_;
+    player_info curPlayerInfo_;
+    qstat_options* qstatOpts_;
     typedef std::pair<QString, QString> RuleInfo;
     RuleInfo curRule_;
 };

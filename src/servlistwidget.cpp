@@ -10,17 +10,17 @@ const int cFilterInfoColumn = 100;
 class ServListItem: public QTreeWidgetItem
 {
 public:
-    ServListItem(QTreeWidget* parent, const ServerID& id)
+    ServListItem(QTreeWidget* parent, const server_id& id)
       : QTreeWidgetItem(parent), id_(id) {};
-    ServListItem(QTreeWidgetItem* parent, const ServerID& id)
+    ServListItem(QTreeWidgetItem* parent, const server_id& id)
       : QTreeWidgetItem(parent), id_(id) {};
-    const ServerID& id() const {return id_;}
+    const server_id& id() const {return id_;}
 private:
-    ServerID id_;
+    server_id id_;
 };
 
 
-ServListWidget::ServListWidget(QWidget *parent)
+serv_list_widget::serv_list_widget(QWidget *parent)
     : QWidget(parent),
       servList_(0),
       oldState_(0),
@@ -32,21 +32,21 @@ ServListWidget::ServListWidget(QWidget *parent)
     connect(ui_.filterEdit, SIGNAL(textChanged(const QString&)), SLOT(filterTextChanged(const QString&)));
 }
 
-ServListWidget::~ServListWidget()
+serv_list_widget::~serv_list_widget()
 {
 }
 
-void ServListWidget::setServerList(ServerListCustom * ptr)
+void serv_list_widget::setServerList(serv_list_custom * ptr)
 {
     servList_ = ptr;
 }
 
-void ServListWidget::updateItem(ServListItem* item)
+void serv_list_widget::updateItem(ServListItem* item)
 {
     const ServerInfoList& list = servList_->list();
     ServerInfoList::const_iterator it = list.find(item->id());
     if (it == list.end()) return;
-    const ServerInfo& si = (*it).second;
+    const server_info& si = (*it).second;
 
     static QIcon icon_online(":/icons/icons/status-online.png");
     static QIcon icon_offline(":/icons/icons/status-offline.png");
@@ -54,13 +54,13 @@ void ServListWidget::updateItem(ServListItem* item)
 
     switch (si.status)
     {
-        case ServerInfo::Up:
+        case server_info::Up:
             item->setIcon(0, icon_online);
             break;
-        case ServerInfo::Down:
+        case server_info::Down:
             item->setIcon(0, icon_offline);
             break;
-        case ServerInfo::Updating:
+        case server_info::Updating:
             item->setIcon(0, icon_updating);
             break;
     }
@@ -73,21 +73,21 @@ void ServListWidget::updateItem(ServListItem* item)
     item->setText(6, QString("%1/%2").arg(si.players.size()).arg(si.maxPlayerCount));
 
     QString players;
-    for (PlayerInfoList::const_iterator it = si.players.begin(); it != si.players.end(); it++)
-        players += (*it).nickName + " ";
+    for (player_info_list::const_iterator it = si.players.begin(); it != si.players.end(); it++)
+        players += (*it).nick_name + " ";
 
     item->setText(cFilterInfoColumn, QString("%1 %2 %3 %4 %5 %6").arg(si.name)
         .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.modeName()).arg(players));
     item->setHidden(!filterItem(item));
 }
 
-bool ServListWidget::filterItem(ServListItem* item)
+bool serv_list_widget::filterItem(ServListItem* item)
 {
     return filterRx_.isEmpty() ||
             filterRx_.indexIn(item->text(cFilterInfoColumn)) != -1;
 }
 
-void ServListWidget::timerEvent(QTimerEvent *te)
+void serv_list_widget::timerEvent(QTimerEvent *te)
 {
     if (!servList_) return;
 
@@ -105,13 +105,13 @@ void ServListWidget::timerEvent(QTimerEvent *te)
     }
 }
 
-void ServListWidget::forceUpdate()
+void serv_list_widget::forceUpdate()
 {
     oldState_ = servList_->state();
     updateList();
 }
 
-void ServListWidget::updateList()
+void serv_list_widget::updateList()
 {
     setUpdatesEnabled(false);
     try
@@ -121,7 +121,7 @@ void ServListWidget::updateList()
         // who changed, appeared?
         for (ServerInfoList::const_iterator it = list.begin(); it != list.end(); it++)
         {
-            const ServerID& id = (*it).first;
+            const server_id& id = (*it).first;
             ServItems::iterator it2 = items_.find(id);
 
             if (it2 != items_.end())
@@ -136,14 +136,14 @@ void ServListWidget::updateList()
         }
 
         // who removed ?
-        std::vector<ServerID> to_remove;
+        std::vector<server_id> to_remove;
         for (ServItems::iterator it = items_.begin(); it != items_.end(); it++)
         {
-            const ServerID& id = (*it).first;
+            const server_id& id = (*it).first;
             if (list.find(id) == list.end())
                 to_remove.push_back(id);
         }
-        for (std::vector<ServerID>::iterator it = to_remove.begin(); it != to_remove.end(); it++)
+        for (std::vector<server_id>::iterator it = to_remove.begin(); it != to_remove.end(); it++)
         {
             delete items_[*it];
             items_.erase(*it);
@@ -157,7 +157,7 @@ void ServListWidget::updateList()
     }
 }
 
-void ServListWidget::filterTextChanged(const QString& val)
+void serv_list_widget::filterTextChanged(const QString& val)
 {
     filterRx_ = QRegExp(val);
     filterRx_.setCaseSensitivity(Qt::CaseInsensitive);
@@ -166,7 +166,7 @@ void ServListWidget::filterTextChanged(const QString& val)
     filterTimer_ = startTimer(500);
 }
 
-ServerIDList ServListWidget::selection()
+ServerIDList serv_list_widget::selection()
 {
     ServerIDList res;
     QList<QTreeWidgetItem*> list = tree()->selectedItems();

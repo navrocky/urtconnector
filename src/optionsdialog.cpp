@@ -4,41 +4,41 @@
 
 #include "optionsdialog.h"
 
-OptionsDialog::OptionsDialog(QWidget *parent)
+options_dialog::options_dialog(QWidget *parent)
  : QDialog(parent)
 {
     ui.setupUi(this);
 
-    connect( ui.selectBinButton, SIGNAL( clicked() ), SLOT( chooseBinary() ));
-    connect( ui.insertFileButton, SIGNAL( clicked() ), SLOT( insertFilePath() ));
+    connect( ui.selectBinButton, SIGNAL( clicked() ), SLOT( choose_binary() ));
+    connect( ui.insertFileButton, SIGNAL( clicked() ), SLOT( insert_file_path() ));
 }
 
-OptionsDialog::~OptionsDialog()
+options_dialog::~options_dialog()
 {
 }
 
-void OptionsDialog::setOpts(AppOptionsPtr value)
+void options_dialog::set_opts(app_options_ptr value)
 {
     opts_ = value;
-    updateDialog();
+    update_dialog();
 }
 
-void OptionsDialog::updateDialog()
+void options_dialog::update_dialog()
 {
-    ui.binaryEdit->setText( opts_->binaryPath );
-    ui.advCmdEdit->setText( opts_->advCmdLine );
-    ui.advCmdBox->setChecked( opts_->useAdvCmdLine );
+    ui.binaryEdit->setText( opts_->binary_path );
+    ui.advCmdEdit->setText( opts_->adv_cmd_line );
+    ui.advCmdBox->setChecked( opts_->use_adv_cmd_line );
 }
 
-void OptionsDialog::accept()
+void options_dialog::accept()
 {
     QDialog::accept();
-    opts_->binaryPath = ui.binaryEdit->text();
-    opts_->advCmdLine = ui.advCmdEdit->text();
-    opts_->useAdvCmdLine = ui.advCmdBox->isChecked();
+    opts_->binary_path = ui.binaryEdit->text();
+    opts_->adv_cmd_line = ui.advCmdEdit->text();
+    opts_->use_adv_cmd_line = ui.advCmdBox->isChecked();
 }
 
-void OptionsDialog::chooseBinary()
+void options_dialog::choose_binary()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
       tr("Urban Terror executable"), "",
@@ -48,7 +48,7 @@ void OptionsDialog::chooseBinary()
     ui.binaryEdit->setText(fileName);
 }
 
-void OptionsDialog::insertFilePath()
+void options_dialog::insert_file_path()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
       tr("Select file to insert"), "",

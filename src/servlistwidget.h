@@ -12,15 +12,15 @@
 
 class ServListItem;
 
-class ServListWidget : public QWidget
+class serv_list_widget : public QWidget
 {
 Q_OBJECT
 public:
-    ServListWidget(QWidget *parent = 0);
-    ~ServListWidget();
+    serv_list_widget(QWidget *parent = 0);
+    ~serv_list_widget();
 
-    void setServerList(ServerListCustom* ptr);
-    ServerListCustom* serverList() const {return servList_;}
+    void setServerList(serv_list_custom* ptr);
+    serv_list_custom* serverList() const {return servList_;}
 
     QTreeWidget* tree() const {return ui_.treeWidget;}
 
@@ -37,9 +37,9 @@ private:
     void updateList();
     bool filterItem(ServListItem*);
     Ui_ServListWidgetClass ui_;
-    QPointer<ServerListCustom> servList_;
+    QPointer<serv_list_custom> servList_;
 
-    typedef std::map<ServerID, ServListItem*> ServItems;
+    typedef std::map<server_id, ServListItem*> ServItems;
     ServItems items_;
 
     int oldState_;

@@ -3,7 +3,7 @@
 
 #include "pushbuttonactionlink.h"
 
-PushButtonActionLink::PushButtonActionLink(QObject* parent, QPushButton * button, QAction * action)
+push_button_action_link::push_button_action_link(QObject* parent, QPushButton * button, QAction * action)
     : QObject(parent),
       button_(button),
       action_(action)
@@ -13,7 +13,7 @@ PushButtonActionLink::PushButtonActionLink(QObject* parent, QPushButton * button
     assign();
 }
 
-void PushButtonActionLink::assign()
+void push_button_action_link::assign()
 {
     button_->setEnabled(action_->isEnabled());
     button_->setVisible(action_->isVisible());

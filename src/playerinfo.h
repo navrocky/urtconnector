@@ -4,14 +4,14 @@
 #include <vector>
 #include <QString>
 
-class PlayerInfo
+class player_info
 {
 public:
-    QString nickName;
+    QString nick_name;
     int score;
     int ping;
 };
 
-typedef std::vector<PlayerInfo> PlayerInfoList;
+typedef std::vector<player_info> player_info_list;
 
 #endif

@@ -1,6 +1,6 @@
 #include "appoptions.h"
 
-AppOptions::AppOptions()
- : useAdvCmdLine(false)
+app_options::app_options()
+ : use_adv_cmd_line(false)
 {
 }

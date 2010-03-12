@@ -1,6 +1,6 @@
 #include "qstatoptions.h"
 
-QStatOptions::QStatOptions()
+qstat_options::qstat_options()
 {
 }
 

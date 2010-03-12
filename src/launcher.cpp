@@ -3,7 +3,7 @@
 #include "exception.h"
 #include "launcher.h"
 
-Launcher::Launcher(AppOptionsPtr opts)
+launcher::launcher(app_options_ptr opts)
     : opts_(opts),
       executing_(false)
 {
@@ -12,60 +12,60 @@ Launcher::Launcher(AppOptionsPtr opts)
     connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(procError(QProcess::ProcessError)));
 }
 
-Launcher::~Launcher()
+launcher::~launcher()
 {
 }
 
-void Launcher::setServerID(const ServerID & id)
+void launcher::set_server_id(const server_id & id)
 {
     id_ = id;
 }
 
-void Launcher::setUserName(const QString & value)
+void launcher::set_user_name(const QString & value)
 {
     userName_ = value;
 }
 
-void Launcher::setPassword(const QString & value)
+void launcher::set_password(const QString & value)
 {
     password_ = value;
 }
 
-void Launcher::procFinished(int, QProcess::ExitStatus exitStat)
+void launcher::procFinished(int, QProcess::ExitStatus exitStat)
 {
     executing_ = false;
     if (exitStat == QProcess::CrashExit)
-        throw Exception(tr("Game crashed"));
+        throw qexception(tr("Game crashed"));
 
     emit finished();
 }
 
-void Launcher::setConfigURL(const QString & value)
+void launcher::set_config_url(const QString & value)
 {
     configURL_ = value;
 }
 
-void Launcher::setRcon(const QString & value)
+void launcher::set_rcon(const QString & value)
 {
     rcon_ = value;
 }
 
-void Launcher::setReferee(const QString& value)
+void launcher::set_referee(const QString& value)
 {
     referee_ = value;
 }
 
-void Launcher::launch()
+void launcher::launch()
 {
-    if (!opts_->useAdvCmdLine)
+    if (!opts_->use_adv_cmd_line)
         simpleLaunch();
     else
         advancedLaunch();
 }
 
-void Launcher::advancedLaunch()
+void launcher::advancedLaunch()
 {
-    QString cmdLine = launchString();
+    QString cmdLine = launch_string();
 
 #ifdef Q_WS_X11
     QStringList args;
@@ -78,7 +78,7 @@ void Launcher::advancedLaunch()
 #endif
 }
 
-void Launcher::simpleLaunch()
+void launcher::simpleLaunch()
 {
     QStringList arguments;
 
@@ -92,27 +92,27 @@ void Launcher::simpleLaunch()
 
     arguments << QString("+set fs_game q3ut4");
 
-    proc_.start(opts_->binaryPath, arguments);
+    proc_.start(opts_->binary_path, arguments);
 }
 
-void Launcher::procStarted()
+void launcher::procStarted()
 {
     executing_ = true;
     emit started();
 }
 
-bool Launcher::executing()
+bool launcher::executing()
 {
     return executing_;
 }
 
-QString Launcher::launchString()
+QString launcher::launch_string()
 {
     QString res;
-    if (!opts_->useAdvCmdLine)
+    if (!opts_->use_adv_cmd_line)
     {
-        res = opts_->advCmdLine
-            .replace("%bin%", opts_->binaryPath, Qt::CaseInsensitive)
+        res = opts_->adv_cmd_line
+            .replace("%bin%", opts_->binary_path, Qt::CaseInsensitive)
             .replace("%name%", userName_, Qt::CaseInsensitive)
             .replace("%pwd%", password_, Qt::CaseInsensitive)
             .replace("%addr%", id_.address(), Qt::CaseInsensitive)
@@ -120,7 +120,7 @@ QString Launcher::launchString()
             .replace("%config%", configURL_, Qt::CaseInsensitive);
     } else
     {
-        res = opts_->binaryPath;
+        res = opts_->binary_path;
         if (!userName_.isEmpty())
             res += QString(" +name \"%1\"").arg(userName_);
 
@@ -134,7 +134,7 @@ QString Launcher::launchString()
     return res;
 }
 
-void Launcher::procError(QProcess::ProcessError)
+void launcher::procError(QProcess::ProcessError)
 {
-    throw Exception(tr("Launch error. Check launch parameters."));
+    throw qexception(tr("Launch error. Check launch parameters."));
 }

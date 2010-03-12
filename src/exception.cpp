@@ -1,21 +1,21 @@
 #include <string>
 #include "exception.h"
 
-Exception::Exception( const QString & msg )
+qexception::qexception( const QString & msg )
   : std::runtime_error(std::string(msg.toLocal8Bit()))
 {
 }
 
-Exception::Exception( const char * msg )
+qexception::qexception( const char * msg )
   : std::runtime_error(msg)
 {
 }
 
-Exception::~Exception( ) throw ()
+qexception::~qexception( ) throw ()
 {
 }
 
-QString Exception::message() const
+QString qexception::message() const
 {
     return QString::fromLocal8Bit(what());
 }

@@ -10,7 +10,7 @@
 class ServerOptions
 {
 public:
-    ServerID id;
+    server_id id;
     QString name;
     QString comment;
     QString password;
@@ -20,6 +20,6 @@ public:
 };
 
 // List of ServerOptions
-typedef std::map<ServerID, ServerOptions> ServerOptionsList;
+typedef std::map<server_id, ServerOptions> ServerOptionsList;
 
 #endif

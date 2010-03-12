@@ -1,19 +1,23 @@
 #ifndef ABOUTDIALOG_H
 #define ABOUTDIALOG_H
+
+#include <memory>
+
 #include <QDialog>
 
 namespace Ui
 {
-    class AboutDialogClass;
+class AboutDialogClass;
 }
 
-class AboutDialog : public QDialog
+class about_dialog : public QDialog
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    AboutDialog(QWidget *parent = 0);    
-    ~AboutDialog();
-    Ui::AboutDialogClass *ui;
+    about_dialog(QWidget *parent = 0);
+    ~about_dialog();
+private:
+    std::auto_ptr<Ui::AboutDialogClass> ui_;
 };
 
 #endif // ABOUTDIALOG_H

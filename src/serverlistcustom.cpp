@@ -1,6 +1,6 @@
 #include "serverlistcustom.h"
 
-ServerListCustom::ServerListCustom(QObject *parent)
+serv_list_custom::serv_list_custom(QObject *parent)
  : QObject(parent),
    state_(0),
    autoRefresh_(false)
@@ -8,11 +8,11 @@ ServerListCustom::ServerListCustom(QObject *parent)
 }
 
 
-ServerListCustom::~ServerListCustom()
+serv_list_custom::~serv_list_custom()
 {
 }
 
-void ServerListCustom::setOpts(ServerOptionsList * opts)
+void serv_list_custom::setOpts(ServerOptionsList * opts)
 {
   opts_ = opts;
 }

@@ -2,17 +2,18 @@
 
 #include "application.h"
 #include "exception.h"
+#include "strconvert.h"
 
-Application::Application(int &argc, char * argv[])
+application::application(int &argc, char * argv[])
     : QApplication(argc, argv)
 {
 }
 
-Application::~Application()
+application::~application()
 {
 }
 
-bool Application::notify(QObject * receiver, QEvent * event)
+bool application::notify(QObject * receiver, QEvent * event)
 {
     try
     {
@@ -20,16 +21,16 @@ bool Application::notify(QObject * receiver, QEvent * event)
     }
     catch(const std::exception& e)
     {
-        showError(QString::fromLocal8Bit(e.what()));
+        show_error(to_qstr(e.what()));
     }
     catch(...)
     {
-        showError(QObject::tr("Unknown error"));
+        show_error(QObject::tr("Unknown error"));
     }
     return false;
 }
 
-void Application::showError(const QString & msg)
+void application::show_error(const QString & msg)
 {
     QMessageBox::critical(NULL, QObject::tr("Error"), msg);
 }

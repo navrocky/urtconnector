@@ -3,21 +3,15 @@
 
 #include <QApplication>
 
-/*! Needed to catch exceptions.
-
-    \author Navrocky Vladislaw (navrocky@visualdata.ru)
-*/
-class Application : public QApplication
+class application : public QApplication
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    Application(int &argc, char *argv[]);
-    ~Application();
+    application(int &argc, char *argv[]);
+    ~application();
 
-    bool notify ( QObject * receiver, QEvent * event );
-
-    void showError(const QString& msg);
-
+    bool notify(QObject * receiver, QEvent * event);
+    void show_error(const QString& msg);
 };
 
 #endif

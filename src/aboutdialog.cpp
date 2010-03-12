@@ -1,13 +1,13 @@
 #include "ui_aboutdialog.h"
 #include "aboutdialog.h"
-AboutDialog::AboutDialog(QWidget *parent)
+about_dialog::about_dialog(QWidget *parent)
  : QDialog(parent),
-   ui(new Ui::AboutDialogClass)
+   ui_(new Ui::AboutDialogClass)
 {
-    ui->setupUi(this);
+    ui_->setupUi(this);
     setWindowTitle(tr("About UrTConnector"));
 
     //updateDialog();
 }
 
-AboutDialog::~AboutDialog() {}
+about_dialog::~about_dialog() {}

@@ -4,12 +4,12 @@
 #include <stdexcept>
 #include <QString>
 
-class Exception: public std::runtime_error
+class qexception: public std::runtime_error
 {
 public:
-    explicit Exception(const QString& msg);
-    explicit Exception(const char* msg);
-    virtual ~Exception() throw ();
+    explicit qexception(const QString& msg);
+    explicit qexception(const char* msg);
+    virtual ~qexception() throw ();
 
     QString message() const;
 };

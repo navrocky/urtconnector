@@ -2,7 +2,7 @@
 
 #include "serverinfo.h"
 
-ServerInfo::ServerInfo()
+server_info::server_info()
   : status(Up),
     maxPlayerCount(0),
     mode(FreeForAll),
@@ -14,7 +14,7 @@ ServerInfo::ServerInfo()
 {
 }
 
-QString ServerInfo::modeName() const
+QString server_info::modeName() const
 {
     switch (mode)
     {

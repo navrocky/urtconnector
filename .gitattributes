@@ -21,6 +21,8 @@ src/CMakeLists.txt -text
 src/aboutdialog.cpp -text
 src/aboutdialog.h -text
 src/aboutdialog.ui -text
+src/app_options_saver.cpp -text
+src/app_options_saver.h -text
 src/application.cpp -text
 src/application.h -text
 src/appoptions.cpp -text
@@ -39,6 +41,7 @@ src/icons/edit.png -text
 src/icons/help-about.png -text
 src/icons/help-contents.png -text
 src/icons/launch.png -text
+src/icons/logo.png -text
 src/icons/remove.png -text
 src/icons/status-offline.png -text
 src/icons/status-online.png -text
@@ -51,9 +54,6 @@ src/main.cpp -text
 src/mainwindow.cpp -text
 src/mainwindow.h -text
 src/mainwindow.ui -text
-src/mainwindow_concept.ui -text
-src/options.cpp -text
-src/options.h -text
 src/optionsdialog.cpp -text
 src/optionsdialog.h -text
 src/optionsdialog.ui -text
@@ -79,6 +79,7 @@ src/servlistwidget.ui -text
 src/servoptsdialog.cpp -text
 src/servoptsdialog.h -text
 src/servoptsdialog.ui -text
+src/strconvert.h -text
 src/xmlreaddata.cpp -text
 src/xmlreaddata.h -text
 translations/CMakeLists.txt -text

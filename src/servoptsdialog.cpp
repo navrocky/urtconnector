@@ -24,9 +24,9 @@ ServOptsDialog::~ServOptsDialog()
 
 void ServOptsDialog::accept()
 {
-    ServerID id(ui.addressEdit->text());
+    server_id id(ui.addressEdit->text());
     if (id.isEmpty())
-        throw Exception(tr("Server address must be non empty"));
+        throw qexception(tr("Server address must be non empty"));
 
     opts_.id = id;
     opts_.name = ui.nameEdit->text();

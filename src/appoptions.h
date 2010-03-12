@@ -2,31 +2,32 @@
 #define APPOPTIONS_H
 
 #include <QString>
+#include <QSharedPointer>
 
 #include "serveroptions.h"
 #include "qstatoptions.h"
 
-class AppOptions
+class app_options
 {
 public:
-    AppOptions();
+    app_options();
 
     /*! Use advanced command line advCmdLine() to launch UrT binary instead of binaryPath(). */
-    bool useAdvCmdLine;
+    bool use_adv_cmd_line;
 
     /*! Advanced command line to launch UrT binary. Use followed substitutions:
         %host% %port% %user% %password% %rcon% and so on.*/
-    QString advCmdLine;
+    QString adv_cmd_line;
 
     /*! Path to UrT binary, used when not advanced command line. */
-    QString binaryPath;
+    QString binary_path;
 
     /*! Servers options list. */
     ServerOptionsList servers;
     
-    QStatOptions qstatOpts;
+    qstat_options qstat_opts;
 };
 
-typedef AppOptions* AppOptionsPtr;
+typedef QSharedPointer<app_options> app_options_ptr;
 
 #endif

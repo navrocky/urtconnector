@@ -6,10 +6,10 @@
 #include "serverid.h"
 #include "playerinfo.h"
 
-class ServerInfo
+class server_info
 {
 public:
-    enum GameMode
+    enum game_mode
     {
         None = 0,
         FreeForAll = 1,
@@ -21,23 +21,23 @@ public:
         Bombmode = 9
     };
 
-    enum Status
+    enum status_t
     {
         Updating = 0,
         Up,
         Down
     };
 
-    ServerInfo();
+    server_info();
 
-    ServerID id;
-    Status status;
+    server_id id;
+    status_t status;
     QString name;
     QString gameType; /* q3ut4 */
-    PlayerInfoList players;
+    player_info_list players;
     int maxPlayerCount;
     QString country;
-    GameMode mode;
+    game_mode mode;
     QString modeName() const;
     int ping;
     int retries;
@@ -57,6 +57,6 @@ private:
 
 };
 
-typedef std::map<ServerID, ServerInfo> ServerInfoList;
+typedef std::map<server_id, server_info> ServerInfoList;
 
 #endif
