@@ -9,7 +9,7 @@ ServOptsDialog::ServOptsDialog(QWidget *parent)
     updateDialog();
 }
 
-ServOptsDialog::ServOptsDialog(QWidget * parent, const ServerOptions & src)
+ServOptsDialog::ServOptsDialog(QWidget * parent, const server_options & src)
   : QDialog(parent),
     opts_(src)
 {
@@ -31,8 +31,8 @@ void ServOptsDialog::accept()
     opts_.id = id;
     opts_.name = ui.nameEdit->text();
     opts_.password = ui.passwordEdit->text();
-    opts_.rconPassword = ui.rconEdit->text();
-    opts_.refPassword = ui.refEdit->text();
+    opts_.rcon_password = ui.rconEdit->text();
+    opts_.ref_password = ui.refEdit->text();
     opts_.comment = ui.commentEdit->toPlainText();
     QDialog::accept();
 }
@@ -46,8 +46,8 @@ void ServOptsDialog::updateDialog()
 
     ui.nameEdit->setText(opts_.name);
     ui.passwordEdit->setText(opts_.password);
-    ui.rconEdit->setText(opts_.rconPassword);
-    ui.refEdit->setText(opts_.refPassword);
+    ui.rconEdit->setText(opts_.rcon_password);
+    ui.refEdit->setText(opts_.ref_password);
     ui.commentEdit->setPlainText(opts_.comment);
 }
 

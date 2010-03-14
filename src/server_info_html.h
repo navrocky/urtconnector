@@ -1,0 +1,10 @@
+#ifndef _SERVER_INFO_HTML_H
+#define	_SERVER_INFO_HTML_H
+
+#include <QString>
+#include "serverinfo.h"
+
+QString get_server_info_html(const server_info& si);
+
+#endif	/* _SERVER_INFO_HTML_H */
+

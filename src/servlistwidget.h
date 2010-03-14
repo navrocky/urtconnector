@@ -32,6 +32,7 @@ public:
 private slots:
     void timerEvent(QTimerEvent *event);
     void filterTextChanged(const QString&);
+    void filter_clear();
 private:
     void updateItem(ServListItem*);
     void updateList();

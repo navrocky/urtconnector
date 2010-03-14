@@ -14,7 +14,7 @@ public:
     virtual ~serv_list_custom();
 
     // servers options
-    void setOpts(ServerOptionsList* opts);
+    void setOpts(server_fav_list* opts);
 
     // update list from internal data without checking online status
     virtual void update() = 0;
@@ -42,7 +42,7 @@ signals:
 protected:
     ServerInfoList list_;
     int state_;
-    ServerOptionsList* opts_;
+    server_fav_list* opts_;
 
 private:
     ServerIDList customServList_;

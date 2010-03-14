@@ -7,19 +7,19 @@
 
 #include "serverid.h"
 
-class ServerOptions
+class server_options
 {
 public:
     server_id id;
     QString name;
     QString comment;
     QString password;
-    QString rconPassword;
-    QString refPassword;
+    QString rcon_password;
+    QString ref_password;
     QString folder;
 };
 
 // List of ServerOptions
-typedef std::map<server_id, ServerOptions> ServerOptionsList;
+typedef std::map<server_id, server_options> server_fav_list;
 
 #endif

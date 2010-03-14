@@ -72,7 +72,7 @@ void ServerListQStat::refreshAll()
     {
         ServerIDList& list = customServList();
         for (ServerIDList::iterator it = list.begin(); it != list.end(); it++)
-            sl << (*it).address();
+            sl << "-q3s" << (*it).address();
     }
 
     proc_.start(qstatOpts_->qstat_path, sl);
@@ -300,7 +300,7 @@ void ServerListQStat::update()
 
         info.id = id;
 
-        ServerOptions* opt = &((*opts_)[id]);
+        server_options* opt = &((*opts_)[id]);
         if (opt)
         {
             info.name = opt->name;

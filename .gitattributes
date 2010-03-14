@@ -63,6 +63,8 @@ src/pushbuttonactionlink.cpp -text
 src/pushbuttonactionlink.h -text
 src/qstatoptions.cpp -text
 src/qstatoptions.h -text
+src/server_info_html.cpp -text
+src/server_info_html.h -text
 src/serverid.cpp -text
 src/serverid.h -text
 src/serverinfo.cpp -text

@@ -23,7 +23,7 @@ public:
     QString binary_path;
 
     /*! Servers options list. */
-    ServerOptionsList servers;
+    server_fav_list servers;
     
     qstat_options qstat_opts;
 };

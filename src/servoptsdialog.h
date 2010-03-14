@@ -11,17 +11,17 @@ class ServOptsDialog : public QDialog
 Q_OBJECT
 public:
     ServOptsDialog(QWidget *parent = 0);
-    ServOptsDialog(QWidget *parent, const ServerOptions& src);
+    ServOptsDialog(QWidget *parent, const server_options& src);
     ~ServOptsDialog();
 
-    const ServerOptions& options() const {return opts_;}
+    const server_options& options() const {return opts_;}
 protected:
     void accept();
 private:
     void updateDialog();
 
     Ui::ServOptsDialogClass ui;
-    ServerOptions opts_;
+    server_options opts_;
 };
 
 #endif

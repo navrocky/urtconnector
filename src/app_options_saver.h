@@ -8,5 +8,8 @@
 void save_app_options(const app_options& opts);
 void load_app_options(app_options& opts);
 
+void save_server_favs(const app_options& opts);
+void load_server_favs(app_options& opts);
+
 #endif	/* _APP_OPTIONS_SAVER_H */
 

@@ -88,6 +88,9 @@ void launcher::simpleLaunch()
     if (!password_.isEmpty())
         arguments << QString("+password \"%1\"").arg(password_);
 
+    if (!rcon_.isEmpty())
+        arguments << QString("+rconpassword \"%1\"").arg(rcon_);
+
     arguments << QString("+connect \"%1\"").arg(id_.address());
 
     arguments << QString("+set fs_game q3ut4");

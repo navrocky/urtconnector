@@ -20,6 +20,7 @@ protected:
 
 private slots:
     void choose_binary();
+    void choose_qstat_binary();
     void insert_file_path();
 
 private:

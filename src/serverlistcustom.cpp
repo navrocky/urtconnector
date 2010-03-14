@@ -12,7 +12,7 @@ serv_list_custom::~serv_list_custom()
 {
 }
 
-void serv_list_custom::setOpts(ServerOptionsList * opts)
+void serv_list_custom::setOpts(server_fav_list * opts)
 {
   opts_ = opts;
 }

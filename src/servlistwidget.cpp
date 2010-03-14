@@ -30,6 +30,7 @@ serv_list_widget::serv_list_widget(QWidget *parent)
     ui_.setupUi(this);
     updateTimer_ = startTimer(500);
     connect(ui_.filterEdit, SIGNAL(textChanged(const QString&)), SLOT(filterTextChanged(const QString&)));
+    connect(ui_.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
 }
 
 serv_list_widget::~serv_list_widget()
@@ -46,7 +47,7 @@ void serv_list_widget::updateItem(ServListItem* item)
     const ServerInfoList& list = servList_->list();
     ServerInfoList::const_iterator it = list.find(item->id());
     if (it == list.end()) return;
-    const server_info& si = (*it).second;
+    const server_info& si = it->second;
 
     static QIcon icon_online(":/icons/icons/status-online.png");
     static QIcon icon_offline(":/icons/icons/status-offline.png");
@@ -179,3 +180,7 @@ ServerIDList serv_list_widget::selection()
     return res;
 }
 
+void serv_list_widget::filter_clear()
+{
+    ui_.filterEdit->clear();
+}

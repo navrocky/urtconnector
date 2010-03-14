@@ -29,6 +29,7 @@ set(HEADERS
     xmlreaddata.h
     strconvert.h
     app_options_saver.h
+    server_info_html.h
 )
 
 set(MOC_HEADERS
@@ -66,6 +67,7 @@ set(SOURCES
     servoptsdialog.cpp
     xmlreaddata.cpp
     app_options_saver.cpp
+    server_info_html.cpp
 )
 
 set(IFACES
