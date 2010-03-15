@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QSharedPointer>
+#include <boost/shared_ptr.hpp>
 
 #include "serveroptions.h"
 #include "qstatoptions.h"
@@ -28,6 +29,6 @@ public:
     qstat_options qstat_opts;
 };
 
-typedef QSharedPointer<app_options> app_options_ptr;
+typedef boost::shared_ptr<app_options> app_options_ptr;
 
 #endif
