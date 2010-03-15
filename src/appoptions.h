@@ -2,7 +2,6 @@
 #define APPOPTIONS_H
 
 #include <QString>
-#include <QSharedPointer>
 #include <boost/shared_ptr.hpp>
 
 #include "serveroptions.h"
