@@ -10,7 +10,7 @@ HOW TO MAKE DISTRIBUTION
 1. RPM distribution
 ===================
 
-    1) Requirements: make, g++, qt4-devel.
+    1) Requirements to build: make, cmake >= 2.6-patch6, g++, qt4 >= 4.3, qt4-devel, boost, boost-devel >= 1.36.
     2) Take sources from svn repository, or download a tarball.
     3) Extract sources. Note that root folder of sources must be named as "urtconnector".
     4) In console run command: 

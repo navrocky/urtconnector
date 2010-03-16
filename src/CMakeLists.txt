@@ -94,3 +94,5 @@ qt4_wrap_ui(SOURCES ${IFACES})
 add_executable(${TARGET} WIN32 ${HEADERS} ${SOURCES})
 
 target_link_libraries(${TARGET} ${QT_LIBRARIES})
+
+install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
