@@ -7,6 +7,7 @@ artwork/q3ut_logo.svg -text
 /build_gcc_linux_debug -text
 /build_gcc_linux_release -text
 /build_mingw_release.bat -text
+/build_msys_release.bat -text
 /distclean -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
