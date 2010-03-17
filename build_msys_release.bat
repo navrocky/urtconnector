@@ -1,5 +1,5 @@
-mkdir msys-release
-cd msys-release
+mkdir release
+cd release
 cmake -G "MSYS Makefiles" ..
 make
 cd ..

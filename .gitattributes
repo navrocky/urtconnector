@@ -11,6 +11,7 @@ artwork/q3ut_logo.svg -text
 /distclean -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
+distrib/windows/urtconnector.nsi -text
 doc/ExampleData/appdata.xml -text
 doc/ExampleData/qstat_out.xml -text
 doc/ExampleData/servers.xml -text

@@ -1,5 +1,5 @@
-mkdir mingw
-cd mingw
+mkdir release
+cd release
 cmake -G "MinGW Makefiles" ..
 mingw32-make
 cd ..
