@@ -65,7 +65,6 @@ main_window::main_window(QWidget *parent)
 //    new PushButtonActionLink(ui.refreshAllButton, ui.actionRefreshAll);
 
     load_options();
-    load_geometry();
     load_server_favs(*opts_);
 
     ServerListQStat* allSL = new ServerListQStat(this);
@@ -99,6 +98,7 @@ main_window::main_window(QWidget *parent)
     update_actions();
     sync_fav_list();
     update_server_info();
+    load_geometry();
 }
 
 
@@ -317,6 +317,7 @@ void main_window::load_geometry()
 {
     qsettings_p s = get_app_options_settings();
     restoreGeometry(s->value("geometry").toByteArray());
+    qApp->processEvents();
     restoreState(s->value("window_state").toByteArray());
 }
 

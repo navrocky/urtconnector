@@ -93,13 +93,13 @@ QString launcher::launch_string()
     QString res;
     if (opts_->use_adv_cmd_line)
     {
-        res = opts_->adv_cmd_line
-            .replace("%bin%", opts_->binary_path, Qt::CaseInsensitive)
-            .replace("%name%", userName_, Qt::CaseInsensitive)
-            .replace("%pwd%", password_, Qt::CaseInsensitive)
-            .replace("%addr%", id_.address(), Qt::CaseInsensitive)
-            .replace("%rcon%", rcon_, Qt::CaseInsensitive)
-            .replace("%config%", configURL_, Qt::CaseInsensitive);
+        res = opts_->adv_cmd_line;
+        res.replace("%bin%", opts_->binary_path, Qt::CaseInsensitive)
+           .replace("%name%", userName_, Qt::CaseInsensitive)
+           .replace("%pwd%", password_, Qt::CaseInsensitive)
+           .replace("%addr%", id_.address(), Qt::CaseInsensitive)
+           .replace("%rcon%", rcon_, Qt::CaseInsensitive)
+           .replace("%config%", configURL_, Qt::CaseInsensitive);
     } else
     {
         res = opts_->binary_path;
