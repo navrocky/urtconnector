@@ -303,16 +303,16 @@ void main_window::closeEvent(QCloseEvent *event)
 
 void main_window::save_geometry()
 {
-    QSettings s;
-    s.setValue("geometry", saveGeometry());
-    s.setValue("windowState", saveState());
+    qsettings_p s = get_app_options_settings();
+    s->setValue("geometry", saveGeometry());
+    s->setValue("windowState", saveState());
 }
 
 void main_window::load_geometry()
 {
-    QSettings s;
-    restoreGeometry(s.value("geometry").toByteArray());
-    restoreState(s.value("windowState").toByteArray());
+    qsettings_p s = get_app_options_settings();
+    restoreGeometry(s->value("geometry").toByteArray());
+    restoreState(s->value("windowState").toByteArray());
 }
 
 void main_window::update_server_info()
