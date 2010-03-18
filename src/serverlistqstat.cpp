@@ -109,7 +109,7 @@ void ServerListQStat::error(QProcess::ProcessError error)
     switch (error)
     {
         case QProcess::FailedToStart:
-            throw qexception(tr("QStat failed to start"));
+            throw qexception(tr("QStat failed to start. Check QStat binary path in options dialog."));
         case QProcess::Crashed:
             throw qexception(tr("QStat crashed"));
         case QProcess::Timedout:

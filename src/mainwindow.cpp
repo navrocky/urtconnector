@@ -174,7 +174,12 @@ void main_window::save_options()
 
 void main_window::load_options()
 {
+#if defined(Q_OS_WIN)
+    opts_->qstat_opts.qstat_path = "qstat\qstat.exe";
+#elif defined(Q_OS_UNIX)
     opts_->qstat_opts.qstat_path = "/usr/bin/qstat";
+#endif
+    
     opts_->qstat_opts.master_server = "master.urbanterror.net";
 
     load_app_options(*opts_);
@@ -305,14 +310,14 @@ void main_window::save_geometry()
 {
     qsettings_p s = get_app_options_settings();
     s->setValue("geometry", saveGeometry());
-    s->setValue("windowState", saveState());
+    s->setValue("window_state", saveState());
 }
 
 void main_window::load_geometry()
 {
     qsettings_p s = get_app_options_settings();
     restoreGeometry(s->value("geometry").toByteArray());
-    restoreState(s->value("windowState").toByteArray());
+    restoreState(s->value("window_state").toByteArray());
 }
 
 void main_window::update_server_info()

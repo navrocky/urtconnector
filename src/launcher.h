@@ -26,10 +26,10 @@ public:
     void set_referee(const QString& value);
     void set_config_url(const QString& value);
 
-    /// Game is executing?
+    // Game is executing?
     bool executing();
 
-    /// Launch string
+    // Launch string
     QString launch_string();
 
 public slots:
@@ -45,8 +45,7 @@ private slots:
     void procError(QProcess::ProcessError error);
 
 private:
-    void advancedLaunch();
-    void simpleLaunch();
+    QString get_work_dir();
     app_options_ptr opts_;
     QString userName_;
     QString password_;

@@ -1,4 +1,6 @@
 #include <QStringList>
+#include <QDir>
+#include <QFileInfo>
 
 #include "exception.h"
 #include "launcher.h"
@@ -14,6 +16,11 @@ launcher::launcher(app_options_ptr opts)
 
 launcher::~launcher()
 {
+}
+
+QString launcher::get_work_dir()
+{
+    return QFileInfo(opts_->binary_path).absoluteDir().absolutePath();
 }
 
 void launcher::set_server_id(const server_id & id)
@@ -34,10 +41,19 @@ void launcher::set_password(const QString & value)
 void launcher::procFinished(int, QProcess::ExitStatus exitStat)
 {
     executing_ = false;
+    emit finished();
     if (exitStat == QProcess::CrashExit)
         throw qexception(tr("Game crashed"));
+}
 
-    emit finished();
+void launcher::procError(QProcess::ProcessError)
+{
+    if (executing_)
+    {
+        executing_ = false;
+        emit finished();
+    }
+    throw qexception(tr("Launch error. Check launch parameters."));
 }
 
 void launcher::set_config_url(const QString & value)
@@ -57,45 +73,8 @@ void launcher::set_referee(const QString& value)
 
 void launcher::launch()
 {
-    if (!opts_->use_adv_cmd_line)
-        simpleLaunch();
-    else
-        advancedLaunch();
-}
-
-void launcher::advancedLaunch()
-{
-    QString cmdLine = launch_string();
-
-#ifdef Q_WS_X11
-    QStringList args;
-    args << "-c" << cmdLine;
-    proc_.start("/bin/sh", args);
-#else
-    // TODO needed to write advanced launch for windows and mac
-
-
-#endif
-}
-
-void launcher::simpleLaunch()
-{
-    QStringList arguments;
-
-    if (!userName_.isEmpty())
-        arguments << QString("+name \"%1\"").arg(userName_);
-
-    if (!password_.isEmpty())
-        arguments << QString("+password \"%1\"").arg(password_);
-
-    if (!rcon_.isEmpty())
-        arguments << QString("+rconpassword \"%1\"").arg(rcon_);
-
-    arguments << QString("+connect \"%1\"").arg(id_.address());
-
-    arguments << QString("+set fs_game q3ut4");
-
-    proc_.start(opts_->binary_path, arguments);
+    proc_.setWorkingDirectory(get_work_dir());
+    proc_.start(launch_string());
 }
 
 void launcher::procStarted()
@@ -112,7 +91,7 @@ bool launcher::executing()
 QString launcher::launch_string()
 {
     QString res;
-    if (!opts_->use_adv_cmd_line)
+    if (opts_->use_adv_cmd_line)
     {
         res = opts_->adv_cmd_line
             .replace("%bin%", opts_->binary_path, Qt::CaseInsensitive)
@@ -130,14 +109,12 @@ QString launcher::launch_string()
         if (!password_.isEmpty())
             res += QString(" +password \"%1\"").arg(password_);
 
+        if (!rcon_.isEmpty())
+            res += QString(" +rconpassword \"%1\"").arg(rcon_);
+
         res += QString(" +connect \"%1\"").arg(id_.address());
 
-        res += QString("+set fs_game q3ut4");
+        res += QString(" +set fs_game q3ut4");
     }
     return res;
-}
-
-void launcher::procError(QProcess::ProcessError)
-{
-    throw qexception(tr("Launch error. Check launch parameters."));
 }
