@@ -9,7 +9,6 @@ artwork/q3ut_logo.svg -text
 /build_mingw_release.bat -text
 /build_msys_release.bat -text
 /distclean -text
-distrib/arch/.PKGINFO -text
 distrib/arch/PKGBUILD -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
