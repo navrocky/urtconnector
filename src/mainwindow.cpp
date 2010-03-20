@@ -46,8 +46,6 @@ main_window::main_window(QWidget *parent)
     connect(ui_.tabWidget, SIGNAL(currentChanged(int)), SLOT(current_tab_changed(int)));
     connect(ui_.actionOptions, SIGNAL( triggered() ), SLOT( show_options() ) );
     connect(ui_.actionQuickConnect, SIGNAL( triggered() ), SLOT( quick_connect() ) );
-    connect(&launcher_, SIGNAL(started()), SLOT(launch_status_changed()));
-    connect(&launcher_, SIGNAL(finished()), SLOT(launch_status_changed()));
     connect(ui_.actionFavAdd, SIGNAL(triggered()), SLOT(fav_add()));
     connect(ui_.actionFavEdit, SIGNAL(triggered()), SLOT(fav_edit()));
     connect(ui_.actionFavDelete, SIGNAL(triggered()), SLOT(fav_delete()));
@@ -120,12 +118,6 @@ void main_window::quick_connect()
     launcher_.set_user_name( ui_.qlPlayerEdit->text() );
     launcher_.set_password( ui_.qlPasswordEdit->text() );
     launcher_.launch();
-}
-
-void main_window::launch_status_changed()
-{
-    cout << launcher_.executing() << endl;
-    ui_.quickConnectButton->setEnabled( !launcher_.executing() );
 }
 
 void main_window::fav_add()

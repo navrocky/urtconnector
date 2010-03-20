@@ -31,7 +31,6 @@ private slots:
     void show_about();
     void quick_connect();
     void connect_selected();
-    void launch_status_changed();
     void fav_add();
     void fav_edit();
     void fav_delete();

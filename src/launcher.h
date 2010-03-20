@@ -2,7 +2,6 @@
 #define LAUNCHER_H
 
 #include <QObject>
-#include <QProcess>
 
 #include "appoptions.h"
 #include "serverid.h"
@@ -17,7 +16,6 @@ class launcher: public QObject
 Q_OBJECT
 public:
     launcher(app_options_ptr opts);
-    ~launcher();
 
     void set_server_id(const server_id& id);
     void set_user_name(const QString& value);
@@ -26,23 +24,11 @@ public:
     void set_referee(const QString& value);
     void set_config_url(const QString& value);
 
-    // Game is executing?
-    bool executing();
-
     // Launch string
     QString launch_string();
 
 public slots:
     void launch();
-
-signals:
-    void started();
-    void finished();
-
-private slots:
-    void procFinished( int exitCode, QProcess::ExitStatus exitStatus );
-    void procStarted();
-    void procError(QProcess::ProcessError error);
 
 private:
     QString get_work_dir();
@@ -53,8 +39,6 @@ private:
     QString configURL_;
     QString rcon_;
     QString referee_;
-    QProcess proc_;
-    bool executing_;
 };
 
 #endif

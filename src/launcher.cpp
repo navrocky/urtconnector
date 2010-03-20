@@ -1,20 +1,62 @@
 #include <QStringList>
 #include <QDir>
 #include <QFileInfo>
+#include <QProcess>
 
 #include "exception.h"
 #include "launcher.h"
 
-launcher::launcher(app_options_ptr opts)
-    : opts_(opts),
-      executing_(false)
+// it's code from qprocess.cpp
+static QStringList parseCombinedArgString(const QString &program)
 {
-    connect(&proc_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(procFinished(int,QProcess::ExitStatus)));
-    connect(&proc_, SIGNAL(started()), SLOT(procStarted()));
-    connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(procError(QProcess::ProcessError)));
+    QStringList args;
+    QString tmp;
+    int quoteCount = 0;
+    bool inQuote = false;
+
+    // handle quoting. tokens can be surrounded by double quotes
+    // "hello world". three consecutive double quotes represent
+    // the quote character itself.
+    for (int i = 0; i < program.size(); ++i)
+    {
+        if (program.at(i) == QLatin1Char('"'))
+        {
+            ++quoteCount;
+            if (quoteCount == 3)
+            {
+                // third consecutive quote
+                quoteCount = 0;
+                tmp += program.at(i);
+            }
+            continue;
+        }
+        if (quoteCount)
+        {
+            if (quoteCount == 1)
+                inQuote = !inQuote;
+            quoteCount = 0;
+        }
+        if (!inQuote && program.at(i).isSpace())
+        {
+            if (!tmp.isEmpty())
+            {
+                args += tmp;
+                tmp.clear();
+            }
+        }
+        else
+        {
+            tmp += program.at(i);
+        }
+    }
+    if (!tmp.isEmpty())
+        args += tmp;
+
+    return args;
 }
 
-launcher::~launcher()
+launcher::launcher(app_options_ptr opts)
+: opts_(opts)
 {
 }
 
@@ -38,24 +80,6 @@ void launcher::set_password(const QString & value)
     password_ = value;
 }
 
-void launcher::procFinished(int, QProcess::ExitStatus exitStat)
-{
-    executing_ = false;
-    emit finished();
-    if (exitStat == QProcess::CrashExit)
-        throw qexception(tr("Game crashed"));
-}
-
-void launcher::procError(QProcess::ProcessError)
-{
-    if (executing_)
-    {
-        executing_ = false;
-        emit finished();
-    }
-    throw qexception(tr("Launch error. Check launch parameters."));
-}
-
 void launcher::set_config_url(const QString & value)
 {
     configURL_ = value;
@@ -73,19 +97,12 @@ void launcher::set_referee(const QString& value)
 
 void launcher::launch()
 {
-    proc_.setWorkingDirectory(get_work_dir());
-    proc_.start(launch_string());
-}
+    QStringList args = parseCombinedArgString(launch_string());
+    QString prog = args.first();
+    args.removeFirst();
 
-void launcher::procStarted()
-{
-    executing_ = true;
-    emit started();
-}
-
-bool launcher::executing()
-{
-    return executing_;
+    if (!QProcess::startDetached(prog, args, get_work_dir()))
+        throw qexception(tr("Failed to start UrbanTerror. Check launch parameters in options dialog."));
 }
 
 QString launcher::launch_string()
@@ -95,12 +112,13 @@ QString launcher::launch_string()
     {
         res = opts_->adv_cmd_line;
         res.replace("%bin%", opts_->binary_path, Qt::CaseInsensitive)
-           .replace("%name%", userName_, Qt::CaseInsensitive)
-           .replace("%pwd%", password_, Qt::CaseInsensitive)
-           .replace("%addr%", id_.address(), Qt::CaseInsensitive)
-           .replace("%rcon%", rcon_, Qt::CaseInsensitive)
-           .replace("%config%", configURL_, Qt::CaseInsensitive);
-    } else
+                .replace("%name%", userName_, Qt::CaseInsensitive)
+                .replace("%pwd%", password_, Qt::CaseInsensitive)
+                .replace("%addr%", id_.address(), Qt::CaseInsensitive)
+                .replace("%rcon%", rcon_, Qt::CaseInsensitive)
+                .replace("%config%", configURL_, Qt::CaseInsensitive);
+    }
+    else
     {
         res = opts_->binary_path;
         if (!userName_.isEmpty())
