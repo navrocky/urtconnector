@@ -66,7 +66,7 @@ void serv_list_widget::updateItem(ServListItem* item)
             break;
     }
 
-    item->setText(1, si.name);
+    item->setText(1, si.name.trimmed());
     item->setText(2, si.id.address());
     item->setText(3, QString("%1").arg(si.ping, 5));
     item->setText(4, si.modeName());
