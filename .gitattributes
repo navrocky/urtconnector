@@ -49,6 +49,7 @@ src/icons/remove.png -text
 src/icons/status-offline.png -text
 src/icons/status-online.png -text
 src/icons/status-update.png -text
+src/icons/urtconnector.png -text
 src/icons/view-refresh.png -text
 src/icons/visible-on.png -text
 src/images.qrc -text
@@ -86,6 +87,7 @@ src/servoptsdialog.cpp -text
 src/servoptsdialog.h -text
 src/servoptsdialog.ui -text
 src/strconvert.h -text
+src/urtconnector.desktop -text
 src/xmlreaddata.cpp -text
 src/xmlreaddata.h -text
 translations/CMakeLists.txt -text

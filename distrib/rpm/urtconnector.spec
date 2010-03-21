@@ -45,3 +45,5 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 /usr/bin/*
+/usr/share/icons/*
+/usr/share/applications/*
