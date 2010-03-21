@@ -38,9 +38,6 @@
          <property name="title">
           <string>UrbanTerror binary file name with path</string>
          </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QLineEdit" name="binary_edit"/>
@@ -65,9 +62,6 @@
          </property>
          <property name="title">
           <string>Advanced launch command</string>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -165,18 +159,22 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string>QStat</string>
+       <string>Application</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QCheckBox" name="hide_mainwindow_check">
+         <property name="text">
+          <string>Hide main window on startup</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
           <string>QStat binary path</string>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
@@ -200,7 +198,7 @@ p, li { white-space: pre-wrap; }
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>183</height>
+           <height>164</height>
           </size>
          </property>
         </spacer>

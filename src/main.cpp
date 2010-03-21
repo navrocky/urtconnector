@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
         a.setApplicationName("urtconnector");
 
         main_window w;
-        w.show();
+//        w.show();
         return a.exec();
     }
     catch(const std::exception& e)

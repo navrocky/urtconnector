@@ -50,6 +50,7 @@ src/icons/status-offline.png -text
 src/icons/status-online.png -text
 src/icons/status-update.png -text
 src/icons/view-refresh.png -text
+src/icons/visible-on.png -text
 src/images.qrc -text
 src/launcher.cpp -text
 src/launcher.h -text

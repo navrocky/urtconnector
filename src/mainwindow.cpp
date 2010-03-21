@@ -8,7 +8,7 @@
 #include <QBoxLayout>
 #include <QTreeWidget>
 #include <QMessageBox>
-#include <qobjectdefs.h>
+#include <QCloseEvent>
 
 #include "mainwindow.h"
 #include "optionsdialog.h"
@@ -29,6 +29,19 @@ main_window::main_window(QWidget *parent)
    launcher_(opts_)
 {
     ui_.setupUi(this);
+
+    tray_menu_ = new QMenu(this);
+    tray_menu_->addAction(ui_.actionShow);
+    tray_menu_->addSeparator();
+    tray_menu_->addAction(ui_.actionQuit);
+
+    tray_ = new QSystemTrayIcon(this);
+    tray_->setIcon(QIcon(":/images/icons/logo.png"));
+    tray_->show();
+    tray_->setContextMenu(tray_menu_);
+
+    connect(tray_, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+            SLOT(tray_activated(QSystemTrayIcon::ActivationReason)));
 
     serv_info_update_timer_ = new QTimer(this);
     serv_info_update_timer_->setInterval(1000);
@@ -54,6 +67,8 @@ main_window::main_window(QWidget *parent)
     connect(ui_.actionAbout, SIGNAL(triggered()), SLOT(show_about()));
     connect(ui_.actionConnect, SIGNAL(triggered()), SLOT(connect_selected()));
     connect(ui_.actionAddToFav, SIGNAL(triggered()), SLOT(add_selected_to_fav()));
+    connect(ui_.actionQuit, SIGNAL(triggered()), SLOT(quit_action()));
+    connect(ui_.actionShow, SIGNAL(triggered()), SLOT(show_action()));
 
 
 //    new PushButtonActionLink(ui.favAddButton, ui.actionFavAdd);
@@ -97,6 +112,7 @@ main_window::main_window(QWidget *parent)
     sync_fav_list();
     update_server_info();
     load_geometry();
+    setVisible(!(opts_->start_hidden));
 }
 
 
@@ -167,7 +183,7 @@ void main_window::save_options()
 void main_window::load_options()
 {
 #if defined(Q_OS_WIN)
-    opts_->qstat_opts.qstat_path = "qstat\qstat.exe";
+    opts_->qstat_opts.qstat_path = "qstat\\qstat.exe";
 #elif defined(Q_OS_UNIX)
     opts_->qstat_opts.qstat_path = "/usr/bin/qstat";
 #endif
@@ -294,8 +310,8 @@ void main_window::current_tab_changed(int)
 
 void main_window::closeEvent(QCloseEvent *event)
 {
-    save_geometry();
-    QMainWindow::closeEvent(event);
+    hide();
+    event->ignore();
 }
 
 void main_window::save_geometry()
@@ -351,4 +367,23 @@ void main_window::add_selected_to_fav()
     fav_list_->forceUpdate();
     update_actions();
     save_server_favs(*opts_);
+}
+
+void main_window::show_action()
+{
+    setVisible(!isVisible());
+}
+
+void main_window::quit_action()
+{
+    save_geometry();
+    qApp->quit();
+}
+
+void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::Trigger)
+    {
+        ui_.actionShow->trigger();
+    }
 }

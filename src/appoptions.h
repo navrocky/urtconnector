@@ -12,6 +12,9 @@ class app_options
 public:
     app_options();
 
+    // start with hidden main window
+    bool start_hidden;
+
     /*! Use advanced command line advCmdLine() to launch UrT binary instead of binaryPath(). */
     bool use_adv_cmd_line;
 

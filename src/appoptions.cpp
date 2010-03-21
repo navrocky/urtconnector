@@ -1,6 +1,7 @@
 #include "appoptions.h"
 
 app_options::app_options()
- : use_adv_cmd_line(false)
+ : start_hidden(false)
+ , use_adv_cmd_line(false)
 {
 }

@@ -13,6 +13,7 @@ void save_app_options(const app_options& opts)
 {
     qsettings_p s = get_app_options_settings();
     s->beginGroup("app_opts");
+    s->setValue("start_hidden", opts.start_hidden);
     s->setValue("use_adv_cmd_line", opts.use_adv_cmd_line);
     s->setValue("adv_cmd_line", opts.adv_cmd_line);
     s->setValue("binary_path", opts.binary_path);
@@ -29,6 +30,7 @@ void load_app_options(app_options& opts)
     qsettings_p s = get_app_options_settings();
 
     s->beginGroup("app_opts");
+    opts.start_hidden = s->value("start_hidden", false).toBool();
     opts.use_adv_cmd_line = s->value("use_adv_cmd_line", opts.use_adv_cmd_line).toBool();
     opts.adv_cmd_line = s->value("adv_cmd_line", opts.adv_cmd_line).toString();
     opts.binary_path = s->value("binary_path", opts.binary_path).toString();

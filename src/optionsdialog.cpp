@@ -32,6 +32,8 @@ void options_dialog::update_dialog()
     ui.advCmdEdit->setText( opts_->adv_cmd_line );
     ui.advCmdBox->setChecked( opts_->use_adv_cmd_line );
     ui.qstat_binary_edit->setText( opts_->qstat_opts.qstat_path );
+    ui.hide_mainwindow_check->setChecked(opts_->start_hidden);
+    
 }
 
 void options_dialog::accept()
@@ -41,6 +43,7 @@ void options_dialog::accept()
     opts_->adv_cmd_line = ui.advCmdEdit->text();
     opts_->use_adv_cmd_line = ui.advCmdBox->isChecked();
     opts_->qstat_opts.qstat_path = ui.qstat_binary_edit->text();
+    opts_->start_hidden = ui.hide_mainwindow_check->isChecked();
 }
 
 void options_dialog::choose_binary()

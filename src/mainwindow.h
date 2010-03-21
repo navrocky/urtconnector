@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <memory>
+
 #include <QMainWindow>
+#include <QSystemTrayIcon>
 
 #include "ui_mainwindow.h"
 #include "appoptions.h"
@@ -11,6 +13,7 @@
 #include "serverlistcustom.h"
 
 class QTimer;
+class QSystemTrayIcon;
 
 class main_window : public QMainWindow
 {
@@ -42,6 +45,9 @@ private slots:
     void update_server_info();
     void selection_changed();
     void add_selected_to_fav();
+    void tray_activated(QSystemTrayIcon::ActivationReason reason);
+    void show_action();
+    void quit_action();
 private:
     void sync_fav_list();
 
@@ -61,6 +67,8 @@ private:
     serv_list_custom* fav_sl_;
     QTimer* serv_info_update_timer_;
     QString old_info_;
+    QSystemTrayIcon* tray_;
+    QMenu* tray_menu_;
 };
 
 #endif
