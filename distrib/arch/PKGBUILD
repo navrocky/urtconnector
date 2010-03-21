@@ -1,7 +1,7 @@
 # Created By Thief (escsunarcher@gmail.com)
 
 pkgname=urtconnector-svn
-pkgver=98
+pkgver=LATEST
 pkgrel=1
 pkgdesc="Advanced UrbanTerror launcher program. Developed by members of russian clans =Xaoc=, Red*Army and Rus Devils Team. 
 This program uses Qt4 and is written in C++."
