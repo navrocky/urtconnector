@@ -47,3 +47,4 @@ rm -rf $RPM_BUILD_ROOT
 /usr/bin/*
 /usr/share/icons/*
 /usr/share/applications/*
+/usr/share/urtconnector/translations/*
