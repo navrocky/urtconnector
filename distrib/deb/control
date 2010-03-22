@@ -1,0 +1,8 @@
+Package: urtconnector
+Version: 0.2
+Maintainer: =XaoC=dmitro <dtsyss@gmail.com>
+Description: UrbanTerror stats, find friends, favourite servers list
+Section: utils
+Priority: optional
+Depends: qstat,libqtgui4 (>=4.4.3),libqtcore4 (>=4.4.3)
+Architecture: amd64

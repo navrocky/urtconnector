@@ -10,6 +10,8 @@ artwork/q3ut_logo.svg -text
 /build_msys_release.bat -text
 /distclean -text
 distrib/arch/PKGBUILD -text
+distrib/deb/build_deb.sh -text
+distrib/deb/control -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
 distrib/windows/urtconnector.nsi -text
