@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<!DOCTYPE TS><TS version="1.1" language="ru">
 <context>
     <name>AboutDialog</name>
     <message>
+        <location filename="" line="0"/>
         <source>About UrTConnector</source>
         <translation type="obsolete">О программе UrTConnector</translation>
     </message>
@@ -16,6 +16,7 @@
         <translation>Диалог</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -29,7 +30,8 @@ p, li { white-space: pre-wrap; }
         <source>&amp;About</source>
         <translation>&amp;О программе</translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
+        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -86,7 +88,7 @@ p, li { white-space: pre-wrap; }
         <source>&amp;License Egreement</source>
         <translation>&amp;Лицензия</translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
         <location filename="../src/aboutdialog.ui" line="197"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -241,7 +243,8 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;No translators at this moment&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
+        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -392,6 +395,7 @@ p, li { white-space: pre-wrap; }
         <translation>П&amp;еревод</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -404,10 +408,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Launcher</name>
     <message>
+        <location filename="" line="0"/>
         <source>Game crashed</source>
         <translation type="obsolete">Сбой при запуске игры</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Launch error. Check launch parameters.</source>
         <translation type="obsolete">ошибка при запуске. Проверьте установленные параметры запуска</translation>
     </message>
@@ -425,8 +431,6 @@ p, li { white-space: pre-wrap; }
         <translation>Любимые</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="178"/>
-        <location filename="../src/mainwindow.ui" line="302"/>
         <location filename="../src/mainwindow.ui" line="314"/>
         <source>Connect</source>
         <translation>Соединение</translation>
@@ -442,6 +446,7 @@ p, li { white-space: pre-wrap; }
         <translation>Удалить</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Find</source>
         <translation type="obsolete">Найти</translation>
     </message>
@@ -475,7 +480,6 @@ p, li { white-space: pre-wrap; }
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="64"/>
         <location filename="../src/mainwindow.ui" line="242"/>
         <source>Help</source>
         <translation>Помощь</translation>
@@ -486,6 +490,7 @@ p, li { white-space: pre-wrap; }
         <translation>Настройки</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Player profile</source>
         <translation type="obsolete">Игровой профиль</translation>
     </message>
@@ -500,6 +505,7 @@ p, li { white-space: pre-wrap; }
         <translation>Информация о сервере</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -510,21 +516,21 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;Информация&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;О программе&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;Сервер&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="287"/>
         <location filename="../src/mainwindow.ui" line="290"/>
         <source>Edit</source>
         <translation>Редактировать</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>NewPlayer</source>
         <translation type="obsolete">Новый игрок</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Player2</source>
         <translation type="obsolete">Игрок2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="116"/>
         <location filename="../src/mainwindow.ui" line="317"/>
         <source>Quick connect</source>
         <translation>Быстрое соединение</translation>
@@ -590,23 +596,26 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Shortcuts</source>
         <translation type="obsolete">Сокращённо</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Manage</source>
         <translation type="obsolete">Управление</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Profile1</source>
         <translation type="obsolete">Профиль1</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Profile2</source>
         <translation type="obsolete">Профиль2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="263"/>
         <location filename="../src/mainwindow.ui" line="266"/>
         <source>Add server favorite to list</source>
         <translation>Добавить сервер в любимые</translation>
@@ -622,10 +631,12 @@ p, li { white-space: pre-wrap; }
         <translation>Редактировать любимые сервера</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Connect to selected favorite</source>
         <translation type="obsolete">Соединиться с выбранным любимым сервером</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Refresh server list</source>
         <translation type="obsolete">Обновить список серверов</translation>
     </message>
@@ -633,18 +644,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OptionsDialog</name>
     <message>
+        <location filename="" line="0"/>
         <source>Urban Terror executable</source>
         <translation type="obsolete">Бинарники UrbanTerror</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Executables (*.i386 *.x86_64 *.exe);;All Files (*)</source>
         <translation type="obsolete">Бинарники (*.i386 *.x86_64 *.exe);;Все файлы (*)</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Select file to insert</source>
         <translation type="obsolete">Выберите файл для вставки</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>All Files (*)</source>
         <translation type="obsolete">Все файлы</translation>
     </message>
@@ -667,7 +682,6 @@ p, li { white-space: pre-wrap; }
         <translation>Папка с бинарниками UrbanTerror</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.ui" line="54"/>
         <location filename="../src/optionsdialog.ui" line="174"/>
         <source>Choose</source>
         <translation>Выбор</translation>
@@ -703,6 +717,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -725,7 +740,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/application.cpp" line="28"/>
         <location filename="../src/main.cpp" line="29"/>
         <source>Unknown error</source>
         <translation>Неизвестная ошибка</translation>
@@ -910,14 +924,17 @@ p, li { white-space: pre-wrap; }
         <translation>Адреса</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Hostname</source>
         <translation type="obsolete">Имя хоста</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>IP</source>
         <translation type="obsolete">IP</translation>
     </message>
     <message>
+        <location filename="" line="0"/>
         <source>Port</source>
         <translation type="obsolete">Порт</translation>
     </message>
@@ -975,7 +992,6 @@ p, li { white-space: pre-wrap; }
         <translation>QStat ошибка записи</translation>
     </message>
     <message>
-        <location filename="../src/serverlistqstat.cpp" line="122"/>
         <location filename="../src/serverlistqstat.cpp" line="124"/>
         <source>QStat unknown error</source>
         <translation>QStat неизвестная ошибка</translation>
@@ -1051,7 +1067,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>server_info_html</name>
     <message>
-        <location filename="../src/server_info_html.cpp" line="20"/>
+        <location filename="../src/server_info_html.cpp" line="21"/>
         <source>&lt;hr&gt;%1 players:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Nick&lt;/td&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;Score&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1061,17 +1077,17 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="39"/>
+        <location filename="../src/server_info_html.cpp" line="48"/>
         <source>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Max players count&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="51"/>
+        <location filename="../src/server_info_html.cpp" line="52"/>
         <source>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;Offline&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="57"/>
+        <location filename="../src/server_info_html.cpp" line="59"/>
         <source>&lt;hr&gt;Extended info:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Key&lt;/td&gt;&lt;td&gt;Value&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished"></translation>
     </message>
