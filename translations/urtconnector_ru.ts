@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ru">
+<!DOCTYPE TS>
+<TS version="2.0" language="ru">
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="" line="0"/>
         <source>About UrTConnector</source>
         <translation type="obsolete">О программе UrTConnector</translation>
     </message>
@@ -16,7 +16,6 @@
         <translation>Диалог</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -30,8 +29,7 @@ p, li { white-space: pre-wrap; }
         <source>&amp;About</source>
         <translation>&amp;О программе</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="" line="0"/>
+    <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -68,7 +66,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/aboutdialog.ui" line="148"/>
         <source>D&amp;evelopers</source>
-        <translation>Ра&amp;разработчики</translation>
+        <translation>&amp;Разработчики</translation>
     </message>
     <message>
         <location filename="../src/aboutdialog.ui" line="158"/>
@@ -81,14 +79,14 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Developed by members of two best russian &lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;clans &lt;a href=&quot;http://the-red-army.ru/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Red*Army&lt;/span&gt;&lt;/a&gt; and &lt;a href=&quot;http://urt-rus.com/page.php?4&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Rus Devils Team&lt;/span&gt;&lt;/a&gt;. &lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://code.google.com/p/urtconnector/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;http://code.google.com/p/urtconnector/&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Разработана двумя лучшими российскими кланами &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;clans &lt;a href=&quot;http://the-red-army.ru/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Red*Army&lt;/span&gt;&lt;/a&gt; and &lt;a href=&quot;http://urt-rus.com/page.php?4&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Rus Devils Team&lt;/span&gt;&lt;/a&gt;. &lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/aboutdialog.ui" line="187"/>
         <source>&amp;License Egreement</source>
         <translation>&amp;Лицензия</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="../src/aboutdialog.ui" line="197"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -243,8 +241,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;No translators at this moment&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="" line="0"/>
+    <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -395,7 +392,6 @@ p, li { white-space: pre-wrap; }
         <translation>П&amp;еревод</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -408,12 +404,10 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Launcher</name>
     <message>
-        <location filename="" line="0"/>
         <source>Game crashed</source>
         <translation type="obsolete">Сбой при запуске игры</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Launch error. Check launch parameters.</source>
         <translation type="obsolete">ошибка при запуске. Проверьте установленные параметры запуска</translation>
     </message>
@@ -426,86 +420,81 @@ p, li { white-space: pre-wrap; }
         <translation>UrTConnector</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="29"/>
         <source>Favourites</source>
-        <translation>Любимые</translation>
+        <translation type="obsolete">Любимые</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="314"/>
+        <location filename="../src/mainwindow.ui" line="200"/>
+        <location filename="../src/mainwindow.ui" line="311"/>
+        <location filename="../src/mainwindow.ui" line="323"/>
         <source>Connect</source>
         <translation>Соединение</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="260"/>
+        <location filename="../src/mainwindow.ui" line="269"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="275"/>
+        <location filename="../src/mainwindow.ui" line="284"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Find</source>
         <translation type="obsolete">Найти</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="39"/>
+        <location filename="../src/mainwindow.ui" line="46"/>
         <source>All</source>
         <translation>Все</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="103"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Tahoma&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow.ui" line="305"/>
+        <location filename="../src/mainwindow.ui" line="314"/>
         <source>Connect to selected server</source>
-        <translation type="unfinished"></translation>
+        <translation>Соединиться с выбранным сервером</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="326"/>
+        <location filename="../src/mainwindow.ui" line="335"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="58"/>
         <source>FIle</source>
-        <translation>Файл</translation>
+        <translation type="obsolete">Файл</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="242"/>
+        <location filename="../src/mainwindow.ui" line="65"/>
+        <location filename="../src/mainwindow.ui" line="251"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="71"/>
+        <location filename="../src/mainwindow.ui" line="72"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Player profile</source>
         <translation type="obsolete">Игровой профиль</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="77"/>
+        <location filename="../src/mainwindow.ui" line="36"/>
+        <location filename="../src/mainwindow.ui" line="78"/>
         <source>Favorites</source>
-        <translation>Любимые</translation>
+        <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="90"/>
+        <location filename="../src/mainwindow.ui" line="86"/>
+        <source>File</source>
+        <translation>Файл</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="97"/>
         <source>Server info</source>
         <translation>Информация о сервере</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -516,127 +505,136 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;Информация&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;О программе&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;Сервер&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="290"/>
+        <location filename="../src/mainwindow.ui" line="296"/>
+        <location filename="../src/mainwindow.ui" line="299"/>
         <source>Edit</source>
         <translation>Редактировать</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>NewPlayer</source>
         <translation type="obsolete">Новый игрок</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Player2</source>
         <translation type="obsolete">Игрок2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="317"/>
+        <location filename="../src/mainwindow.ui" line="110"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Tahoma&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="123"/>
+        <location filename="../src/mainwindow.ui" line="326"/>
         <source>Quick connect</source>
         <translation>Быстрое соединение</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="131"/>
+        <location filename="../src/mainwindow.ui" line="144"/>
         <source>Server host:port</source>
         <translation>Сервер адрес:порт</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="144"/>
+        <location filename="../src/mainwindow.ui" line="160"/>
         <source>Player name</source>
         <translation>Ник игрока</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="157"/>
+        <location filename="../src/mainwindow.ui" line="176"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="200"/>
+        <location filename="../src/mainwindow.ui" line="209"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Тулбар</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="224"/>
+        <location filename="../src/mainwindow.ui" line="233"/>
         <source>Quit</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="233"/>
+        <location filename="../src/mainwindow.ui" line="242"/>
         <source>About UrTConnector</source>
         <translation>О программе UrTConnector</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="251"/>
+        <location filename="../src/mainwindow.ui" line="260"/>
         <source>Options</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="329"/>
-        <source>Refresh all servers in list</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.ui" line="338"/>
-        <source>Add to favorites</source>
-        <translation type="unfinished"></translation>
+        <source>Refresh all servers in list</source>
+        <translation>Обновить все сервера в списке</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="341"/>
-        <source>Add selected server to favorites list</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/mainwindow.ui" line="347"/>
+        <source>Add to favorites</source>
+        <translation>Добавить в закладки</translation>
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="350"/>
+        <source>Add selected server to favorites list</source>
+        <translation>Добавить выбранный сервер в закладки</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="359"/>
         <source>Refresh selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить выделенный</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="353"/>
+        <location filename="../src/mainwindow.ui" line="362"/>
         <source>Refresh selected server</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить выделенный сервер</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
+        <location filename="../src/mainwindow.ui" line="371"/>
+        <source>Show/hide urtconnector</source>
+        <translation>Показать/скрыть UrTConnector</translation>
+    </message>
+    <message>
         <source>Shortcuts</source>
         <translation type="obsolete">Сокращённо</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Manage</source>
         <translation type="obsolete">Управление</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Profile1</source>
         <translation type="obsolete">Профиль1</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Profile2</source>
         <translation type="obsolete">Профиль2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="266"/>
+        <location filename="../src/mainwindow.ui" line="272"/>
+        <location filename="../src/mainwindow.ui" line="275"/>
         <source>Add server favorite to list</source>
         <translation>Добавить сервер в любимые</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="278"/>
+        <location filename="../src/mainwindow.ui" line="287"/>
         <source>Delete server favorite from list</source>
         <translation>Удалить сервер из любимых</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="293"/>
+        <location filename="../src/mainwindow.ui" line="302"/>
         <source>Edit server favorite</source>
         <translation>Редактировать любимые сервера</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Connect to selected favorite</source>
         <translation type="obsolete">Соединиться с выбранным любимым сервером</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Refresh server list</source>
         <translation type="obsolete">Обновить список серверов</translation>
     </message>
@@ -644,22 +642,18 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="" line="0"/>
         <source>Urban Terror executable</source>
         <translation type="obsolete">Бинарники UrbanTerror</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Executables (*.i386 *.x86_64 *.exe);;All Files (*)</source>
         <translation type="obsolete">Бинарники (*.i386 *.x86_64 *.exe);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Select file to insert</source>
         <translation type="obsolete">Выберите файл для вставки</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>All Files (*)</source>
         <translation type="obsolete">Все файлы</translation>
     </message>
@@ -672,52 +666,72 @@ p, li { white-space: pre-wrap; }
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.ui" line="30"/>
+        <location filename="../src/optionsdialog.ui" line="27"/>
         <source>Launch</source>
         <translation>Запуск</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.ui" line="42"/>
-        <source>UrbanTerror binary path</source>
-        <translation>Папка с бинарниками UrbanTerror</translation>
+        <location filename="../src/optionsdialog.ui" line="39"/>
+        <source>UrbanTerror binary file name with path</source>
+        <translation>Полное имя файла бинарника Urban Terror</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.ui" line="174"/>
+        <location filename="../src/optionsdialog.ui" line="79"/>
+        <source>Command line preview</source>
+        <translation>Предпросмотр командной строки</translation>
+    </message>
+    <message>
+        <location filename="../src/optionsdialog.ui" line="100"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%bin%&lt;/span&gt; - UrbanTerror binary path&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%name%&lt;/span&gt; - player name&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%pwd%&lt;/span&gt; - password&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%addr%&lt;/span&gt; - hostname or ip and port&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%rcon%&lt;/span&gt; - RCON password&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%bin%&lt;/span&gt; - бинарник UrbanTerror&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%name%&lt;/span&gt; - имя игрока&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%pwd%&lt;/span&gt; - пароль&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%addr%&lt;/span&gt; - адрес сервера&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%rcon%&lt;/span&gt; - пароль к RCON&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/optionsdialog.ui" line="164"/>
+        <source>Application</source>
+        <translation>Приложение</translation>
+    </message>
+    <message>
+        <location filename="../src/optionsdialog.ui" line="170"/>
+        <source>Hide main window on startup</source>
+        <translation>Скрывать главное окно программы при запуске</translation>
+    </message>
+    <message>
+        <source>UrbanTerror binary path</source>
+        <translation type="obsolete">Папка с бинарниками UrbanTerror</translation>
+    </message>
+    <message>
+        <location filename="../src/optionsdialog.ui" line="48"/>
+        <location filename="../src/optionsdialog.ui" line="186"/>
         <source>Choose</source>
-        <translation>Выбор</translation>
+        <translation>Указать</translation>
     </message>
     <message>
         <location filename="../src/optionsdialog.ui" line="64"/>
         <source>Advanced launch command</source>
-        <translation>Продвинутые команды запуска</translation>
+        <translation>Расширенная строка запуска</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.ui" line="84"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Tahoma&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;%bin%&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt; - UrbanTerror binary path&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;%name%&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt; - player name&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;%pwd%&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt; - password&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;%host%&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt; - hostname or ip&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;%port%&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt; - port&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;%rcon%&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt; - RCON password&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/optionsdialog.ui" line="150"/>
-        <source>QStat</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/optionsdialog.ui" line="162"/>
+        <location filename="../src/optionsdialog.ui" line="177"/>
         <source>QStat binary path</source>
-        <translation type="unfinished"></translation>
+        <translation>Путь к утилите QStat</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -732,15 +746,16 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%bin%&lt;/span&gt; - Папка с бинарниками UrbanTerror&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%name%&lt;/span&gt; - ник игрока&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%pwd%&lt;/span&gt; - пароль&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%host%&lt;/span&gt; -адрес или ip&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%port%&lt;/span&gt; - порт&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%rcon%&lt;/span&gt; -пароль RCON&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.ui" line="109"/>
+        <location filename="../src/optionsdialog.ui" line="123"/>
         <source>Insert file path</source>
-        <translation>Вставить путь к папке</translation>
+        <translation>Вставить имя файла</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/main.cpp" line="29"/>
+        <location filename="../src/application.cpp" line="28"/>
+        <location filename="../src/main.cpp" line="49"/>
         <source>Unknown error</source>
         <translation>Неизвестная ошибка</translation>
     </message>
@@ -752,12 +767,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/serverid.cpp" line="7"/>
         <source>Port incorrect</source>
-        <translation>Порт не верен</translation>
+        <translation>Неверный порт</translation>
     </message>
     <message>
         <location filename="../src/serverid.cpp" line="8"/>
         <source>IP incorrect</source>
-        <translation>Неверный ip</translation>
+        <translation>Неверный IP</translation>
     </message>
     <message>
         <location filename="../src/serverid.cpp" line="26"/>
@@ -812,7 +827,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/xmlreaddata.cpp" line="28"/>
         <source>Error! Not a valid appdata.xml file: missing &lt;appdata&gt; element.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -825,7 +840,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/servlistwidget.ui" line="35"/>
         <source>Filter line. You can use here a regular expressions.</source>
-        <translation>Фильтр. Вы можете указать регулярное выражение</translation>
+        <translation>Строка фильтра. Здесь вы можете указать регулярное выражение.</translation>
     </message>
     <message>
         <location filename="../src/servlistwidget.ui" line="42"/>
@@ -835,17 +850,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/servlistwidget.ui" line="77"/>
         <source>Status</source>
-        <translation>Статус</translation>
+        <translation>Состояние</translation>
     </message>
     <message>
         <location filename="../src/servlistwidget.ui" line="80"/>
         <source>Server status</source>
-        <translation>Статус сервера</translation>
+        <translation>Состояние сервера</translation>
     </message>
     <message>
         <location filename="../src/servlistwidget.ui" line="85"/>
         <source>Name</source>
-        <translation>Ник</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../src/servlistwidget.ui" line="88"/>
@@ -921,27 +936,24 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/servoptsdialog.ui" line="22"/>
         <source>Address</source>
-        <translation>Адреса</translation>
+        <translation>Адрес</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Hostname</source>
         <translation type="obsolete">Имя хоста</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>IP</source>
         <translation type="obsolete">IP</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Port</source>
         <translation type="obsolete">Порт</translation>
     </message>
     <message>
         <location filename="../src/servoptsdialog.ui" line="32"/>
         <source>Name</source>
-        <translation>Ник</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../src/servoptsdialog.ui" line="45"/>
@@ -956,20 +968,24 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/servoptsdialog.ui" line="90"/>
         <source>Password</source>
-        <translation type="unfinished">Пароль</translation>
+        <translation>Пароль</translation>
     </message>
     <message>
         <location filename="../src/servoptsdialog.ui" line="61"/>
         <source>Comment</source>
-        <translation>Комментарии</translation>
+        <translation>Комментарий</translation>
     </message>
 </context>
 <context>
     <name>ServerListQStat</name>
     <message>
-        <location filename="../src/serverlistqstat.cpp" line="112"/>
         <source>QStat failed to start</source>
-        <translation>Сбой при запуске QStat</translation>
+        <translation type="obsolete">Сбой при запуске QStat</translation>
+    </message>
+    <message>
+        <location filename="../src/serverlistqstat.cpp" line="112"/>
+        <source>QStat failed to start. Check QStat binary path in options dialog.</source>
+        <translation>Не удалось запустить QStat. Проверьте корректность пути к файлу в диалоге настройки программы.</translation>
     </message>
     <message>
         <location filename="../src/serverlistqstat.cpp" line="114"/>
@@ -992,6 +1008,7 @@ p, li { white-space: pre-wrap; }
         <translation>QStat ошибка записи</translation>
     </message>
     <message>
+        <location filename="../src/serverlistqstat.cpp" line="122"/>
         <location filename="../src/serverlistqstat.cpp" line="124"/>
         <source>QStat unknown error</source>
         <translation>QStat неизвестная ошибка</translation>
@@ -1002,94 +1019,97 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/aboutdialog.cpp" line="8"/>
         <source>About UrTConnector</source>
-        <translation type="unfinished">О программе UrTConnector</translation>
+        <translation>О программе UrTConnector</translation>
     </message>
 </context>
 <context>
     <name>launcher</name>
     <message>
-        <location filename="../src/launcher.cpp" line="38"/>
         <source>Game crashed</source>
-        <translation type="unfinished">Сбой при запуске игры</translation>
+        <translation type="obsolete">Сбой при запуске игры</translation>
     </message>
     <message>
-        <location filename="../src/launcher.cpp" line="142"/>
         <source>Launch error. Check launch parameters.</source>
-        <translation type="unfinished">ошибка при запуске. Проверьте установленные параметры запуска</translation>
+        <translation type="obsolete">ошибка при запуске. Проверьте установленные параметры запуска</translation>
+    </message>
+    <message>
+        <location filename="../src/launcher.cpp" line="105"/>
+        <source>Failed to start UrbanTerror. Check launch parameters in options dialog.</source>
+        <translation>Ошибка при запуске UrbanTerror. Проверьте настройки запуска игры в диалоге настройки программы.</translation>
     </message>
 </context>
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="146"/>
+        <location filename="../src/mainwindow.cpp" line="154"/>
         <source>Delete a favorite</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить закладку</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="147"/>
+        <location filename="../src/mainwindow.cpp" line="155"/>
         <source>Continue to delete a favorite</source>
-        <translation type="unfinished"></translation>
+        <translation>Продолжить удаление?</translation>
     </message>
 </context>
 <context>
     <name>options_dialog</name>
     <message>
-        <location filename="../src/optionsdialog.cpp" line="47"/>
+        <location filename="../src/optionsdialog.cpp" line="52"/>
         <source>Urban Terror executable</source>
-        <translation type="unfinished">Бинарники UrbanTerror</translation>
+        <translation>Бинарник UrbanTerror</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.cpp" line="48"/>
+        <location filename="../src/optionsdialog.cpp" line="53"/>
         <source>Executables (*.i386 *.x86_64 *.exe);;All Files (*)</source>
-        <translation type="unfinished">Бинарники (*.i386 *.x86_64 *.exe);;Все файлы (*)</translation>
+        <translation>Бинарники (*.i386 *.x86_64 *.exe);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.cpp" line="57"/>
+        <location filename="../src/optionsdialog.cpp" line="62"/>
         <source>QStat binary</source>
-        <translation type="unfinished"></translation>
+        <translation>Бинарник QStat</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.cpp" line="58"/>
+        <location filename="../src/optionsdialog.cpp" line="63"/>
         <source>Executables (*);;All Files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Бинарники (*);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.cpp" line="67"/>
+        <location filename="../src/optionsdialog.cpp" line="72"/>
         <source>Select file to insert</source>
-        <translation type="unfinished">Выберите файл для вставки</translation>
+        <translation>Выберите файл для вставки</translation>
     </message>
     <message>
-        <location filename="../src/optionsdialog.cpp" line="68"/>
+        <location filename="../src/optionsdialog.cpp" line="73"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Все файлы</translation>
+        <translation>Все файлы</translation>
     </message>
 </context>
 <context>
     <name>server_info_html</name>
     <message>
-        <location filename="../src/server_info_html.cpp" line="21"/>
+        <location filename="../src/server_info_html.cpp" line="20"/>
         <source>&lt;hr&gt;%1 players:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Nick&lt;/td&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;Score&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;hr&gt;%1 игрок(а,ов):&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Имя&lt;/td&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;Счет&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_html.cpp" line="34"/>
         <source>* Unnamed *</source>
-        <translation type="unfinished"></translation>
+        <translation>* Без названия *</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="48"/>
+        <location filename="../src/server_info_html.cpp" line="39"/>
         <source>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Max players count&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Тип игры&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Карта&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Макс. кол-во игроков&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="52"/>
+        <location filename="../src/server_info_html.cpp" line="51"/>
         <source>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;Offline&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Состояние&lt;/td&gt;&lt;td&gt;Не доступен&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="59"/>
+        <location filename="../src/server_info_html.cpp" line="57"/>
         <source>&lt;hr&gt;Extended info:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Key&lt;/td&gt;&lt;td&gt;Value&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;hr&gt;Расширенная информация:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Ключ&lt;/td&gt;&lt;td&gt;Значение&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
 </context>
 </TS>
