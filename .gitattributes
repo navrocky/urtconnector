@@ -32,6 +32,7 @@ src/application.cpp -text
 src/application.h -text
 src/appoptions.cpp -text
 src/appoptions.h -text
+src/config.h.in -text
 src/debughelp.cpp -text
 src/debughelp.h -text
 src/exception.cpp -text
@@ -95,3 +96,4 @@ src/xmlreaddata.h -text
 translations/CMakeLists.txt -text
 translations/urtconnector_ru.ts -text
 /update_translations -text
+/version -text

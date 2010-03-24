@@ -3,12 +3,15 @@ set(TARGET urtconnector)
 project(${TARGET})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+include_directories(${CMAKE_BINARY_DIR})
 
 find_package( Boost COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})
 
 find_package(Qt4 REQUIRED QtCore QtGui QtXml)
 include(${QT_USE_FILE})
+
+configure_file(config.h.in config.h)
 
 set(HEADERS
     aboutdialog.h
@@ -33,6 +36,7 @@ set(HEADERS
     strconvert.h
     app_options_saver.h
     server_info_html.h
+    config.h
 )
 
 set(MOC_HEADERS

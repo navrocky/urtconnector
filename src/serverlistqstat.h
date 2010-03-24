@@ -11,9 +11,6 @@
 // qstat emulation, otherwise using real qstat
 //#define QSTAT_FAKE
 
-// qstat out in XML
-//#define QSTAT_XML
-
 class ServerListQStat : public serv_list_custom
 {
 Q_OBJECT

@@ -1,0 +1,8 @@
+#ifndef _CONFIG_H
+#define	_CONFIG_H
+
+#define URT_VERSION "@URT_VERSION@"
+#define URT_CODENAME "@URT_CODENAME@"
+
+#endif	/* _CONFIG_H */
+

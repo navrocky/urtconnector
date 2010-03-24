@@ -1,8 +1,9 @@
 [Desktop Entry]
 Name=urtconnector
+GenericName=UrbanTerror connector
 Comment=UrbanTerror connector
 Exec=urtconnector
-Icon=urtconnector.png
+Icon=/usr/share/icons/urtconnector.png
 Terminal=false
 Type=Application
 Categories=Game;Tools;

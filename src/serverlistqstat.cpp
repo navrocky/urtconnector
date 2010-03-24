@@ -31,11 +31,11 @@ const char* c_player_name = "name";
 const char* c_player_score = "score";
 const char* c_player_ping = "ping";
 
-class XmlParseError: public qexception
-{
-public:
-    XmlParseError(): qexception("Xml parse error") {}
-};
+//class XmlParseError: public qexception
+//{
+//public:
+//    XmlParseError(): qexception("Xml parse error") {}
+//};
 
 ServerListQStat::ServerListQStat(QObject *parent)
     : serv_list_custom(parent),
