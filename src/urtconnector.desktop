@@ -1,11 +1,8 @@
-
 [Desktop Entry]
-Version=1.0
 Name=urtconnector
-GenericName=UrbanTerror connector
+Comment=UrbanTerror connector
 Exec=urtconnector
+Icon=urtconnector.png
 Terminal=false
-Icon=/usr/share/icons/urtconnector.png
 Type=Application
-Categories=Game;ActionGame;
-MimeType=text/html;text/xml;application/xhtml_xml;
+Categories=Game;Tools;

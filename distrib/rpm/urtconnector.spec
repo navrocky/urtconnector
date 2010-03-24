@@ -46,5 +46,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 /usr/bin/*
 /usr/share/icons/*
+/usr/share/pixmaps/*
 /usr/share/applications/*
 /usr/share/urtconnector/translations/*

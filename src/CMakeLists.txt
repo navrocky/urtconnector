@@ -97,4 +97,5 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES})
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 install(FILES icons/urtconnector.png DESTINATION share/icons)
+install(FILES icons/urtconnector.png DESTINATION share/pixmaps)
 install(FILES urtconnector.desktop DESTINATION share/applications)
