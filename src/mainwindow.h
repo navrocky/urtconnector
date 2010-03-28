@@ -66,7 +66,8 @@ private:
     serv_list_custom* all_sl_;
     serv_list_custom* fav_sl_;
     QTimer* serv_info_update_timer_;
-    QString old_info_;
+    server_id old_id_;
+    int old_state_;
     QSystemTrayIcon* tray_;
     QMenu* tray_menu_;
 };

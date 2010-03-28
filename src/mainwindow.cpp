@@ -24,9 +24,10 @@
 using namespace std;
 
 main_window::main_window(QWidget *parent)
- : QMainWindow(parent),
-   opts_( new app_options() ),
-   launcher_(opts_)
+ : QMainWindow(parent)
+ , opts_( new app_options() )
+ , launcher_(opts_)
+ , old_state_(0)
 {
     ui_.setupUi(this);
 
@@ -239,9 +240,9 @@ const server_info* main_window::selected_info()
     server_id id = selected();
     if (id.isEmpty())
         return 0;
-    const ServerInfoList& sil = list->serverList()->list();
+    const server_info_list_t& sil = list->serverList()->list();
 
-    ServerInfoList::const_iterator it = sil.find(id);
+    server_info_list_t::const_iterator it = sil.find(id);
     if (it == sil.end())
         return 0;
     const server_info& si = it->second;
@@ -331,15 +332,24 @@ void main_window::load_geometry()
 
 void main_window::update_server_info()
 {
-    const server_info* si = selected_info();
-    QString html;
-    if (si)
-        html = get_server_info_html(*si);
+    if (!ui_.server_info_dock->isVisible())
+        return;
 
-    if (old_info_ != html)
+    const server_info* si = selected_info();
+    if (si)
     {
-        ui_.server_info_browser->setHtml(html);
-        old_info_ = html;
+        if (old_id_ == si->id && old_state_ == si->update_stamp)
+            return;
+
+        old_state_ = si->update_stamp;
+        old_id_ = si->id;
+
+        ui_.server_info_browser->setHtml(get_server_info_html(*si));
+    } else
+    {
+        old_id_ = server_id();
+        old_state_ = 0;
+        ui_.server_info_browser->clear();
     }
 }
 

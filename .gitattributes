@@ -49,6 +49,7 @@ src/icons/help-contents.png -text
 src/icons/launch.png -text
 src/icons/logo.png -text
 src/icons/remove.png -text
+src/icons/status-none.png -text
 src/icons/status-offline.png -text
 src/icons/status-online.png -text
 src/icons/status-update.png -text

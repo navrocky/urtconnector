@@ -89,7 +89,7 @@ void ServerListQStat::refreshServer(const server_id & id)
     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-retry" << "10" << "-q3s" << id.address();
 
     server_info info = list_[id];
-    info.status = server_info::Updating;
+    info.status = server_info::s_updating;
     list_[id] = info;
 
     state_++;
@@ -160,9 +160,9 @@ void ServerListQStat::processXml()
             {
                 curServerInfo_ = server_info();
                 if (rd_.attributes().value(c_server_status) == "UP")
-                    curServerInfo_.status = server_info::Up;
+                    curServerInfo_.status = server_info::s_up;
                 else
-                    curServerInfo_.status = server_info::Down;
+                    curServerInfo_.status = server_info::s_down;
 
                 curState_ = Server;
             }
@@ -226,11 +226,11 @@ void ServerListQStat::processXml()
         else if (curState_ == Name)
             curServerInfo_.name = rd_.text().toString();
         else if (curState_ == GameType)
-            curServerInfo_.gameType = rd_.text().toString();
+            curServerInfo_.game_type = rd_.text().toString();
         else if (curState_ == Map)
             curServerInfo_.map = rd_.text().toString();
         else if (curState_ == MaxPlayers)
-            curServerInfo_.maxPlayerCount = rd_.text().toString().toInt();
+            curServerInfo_.max_player_count = rd_.text().toString().toInt();
         else if (curState_ == Ping)
             curServerInfo_.ping = rd_.text().toString().toInt();
         else if (curState_ == Retries)
@@ -252,6 +252,8 @@ void ServerListQStat::processXml()
             if (curState_ == Server)
             {
                 prepareInfo();
+                server_info& old_si = list_[curServerInfo_.id];
+                curServerInfo_.update_stamp = old_si.update_stamp + 1;
                 list_[curServerInfo_.id] = curServerInfo_;
                 state_++;
             }
@@ -292,7 +294,7 @@ void ServerListQStat::processXml()
 void ServerListQStat::update()
 {
     ServerIDList& list = customServList();
-    ServerInfoList newlist;
+    server_info_list_t newlist;
     for (ServerIDList::iterator it = list.begin(); it != list.end(); it++)
     {
         server_id id = *it;
@@ -313,8 +315,8 @@ void ServerListQStat::update()
 
 void ServerListQStat::prepareInfo()
 {
-    if (curServerInfo_.status == server_info::Down)
-        curServerInfo_.mode = server_info::None;
+    if (curServerInfo_.status == server_info::s_down)
+        curServerInfo_.mode = server_info::gm_none;
     else
         curServerInfo_.mode = (server_info::game_mode)(curServerInfo_.info["gametype"].toInt() + 1);
 }

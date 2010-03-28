@@ -44,24 +44,28 @@ void serv_list_widget::setServerList(serv_list_custom * ptr)
 
 void serv_list_widget::updateItem(ServListItem* item)
 {
-    const ServerInfoList& list = servList_->list();
-    ServerInfoList::const_iterator it = list.find(item->id());
+    const server_info_list_t& list = servList_->list();
+    server_info_list_t::const_iterator it = list.find(item->id());
     if (it == list.end()) return;
     const server_info& si = it->second;
 
+    static QIcon icon_none(":/icons/icons/status-none.png");
     static QIcon icon_online(":/icons/icons/status-online.png");
     static QIcon icon_offline(":/icons/icons/status-offline.png");
     static QIcon icon_updating(":/icons/icons/status-update.png");
 
     switch (si.status)
     {
-        case server_info::Up:
+        case server_info::s_none:
+            item->setIcon(0, icon_none);
+            break;
+        case server_info::s_up:
             item->setIcon(0, icon_online);
             break;
-        case server_info::Down:
+        case server_info::s_down:
             item->setIcon(0, icon_offline);
             break;
-        case server_info::Updating:
+        case server_info::s_updating:
             item->setIcon(0, icon_updating);
             break;
     }
@@ -69,16 +73,16 @@ void serv_list_widget::updateItem(ServListItem* item)
     item->setText(1, si.name.trimmed());
     item->setText(2, si.id.address());
     item->setText(3, QString("%1").arg(si.ping, 5));
-    item->setText(4, si.modeName());
+    item->setText(4, si.mode_name());
     item->setText(5, si.map);
-    item->setText(6, QString("%1/%2").arg(si.players.size()).arg(si.maxPlayerCount));
+    item->setText(6, QString("%1/%2").arg(si.players.size()).arg(si.max_player_count));
 
     QString players;
     for (player_info_list::const_iterator it = si.players.begin(); it != si.players.end(); it++)
         players += (*it).nick_name + " ";
 
     item->setText(cFilterInfoColumn, QString("%1 %2 %3 %4 %5 %6").arg(si.name)
-        .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.modeName()).arg(players));
+        .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.mode_name()).arg(players));
     item->setHidden(!filterItem(item));
 }
 
@@ -117,10 +121,10 @@ void serv_list_widget::updateList()
     setUpdatesEnabled(false);
     try
     {
-        const ServerInfoList& list = servList_->list();
+        const server_info_list_t& list = servList_->list();
 
         // who changed, appeared?
-        for (ServerInfoList::const_iterator it = list.begin(); it != list.end(); it++)
+        for (server_info_list_t::const_iterator it = list.begin(); it != list.end(); it++)
         {
             const server_id& id = (*it).first;
             ServItems::iterator it2 = items_.find(id);

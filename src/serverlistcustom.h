@@ -31,7 +31,7 @@ public:
     ServerIDList& customServList() {return customServList_;}
 
     /*! Resulting server info list */
-    const ServerInfoList& list() const {return list_;}
+    const server_info_list_t& list() const {return list_;}
 
     /*! List state. Changed always after list change. */
     int state() const {return state_;}
@@ -40,7 +40,7 @@ signals:
     void refreshStopped();
 
 protected:
-    ServerInfoList list_;
+    server_info_list_t list_;
     int state_;
     server_fav_list* opts_;
 
