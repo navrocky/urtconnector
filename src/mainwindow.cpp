@@ -143,7 +143,6 @@ void main_window::fav_add()
     if (d.exec() == QDialog::Rejected) return;
     server_fav_list& list = opts_->servers;
     list[d.options().id] = d.options();
-    save_options();
     sync_fav_list();
     fav_list_->forceUpdate();
     update_actions();
@@ -159,10 +158,10 @@ void main_window::fav_delete()
     server_fav_list& list = opts_->servers;
     for (ServerIDList::iterator it = sel.begin(); it != sel.end(); it++)
         list.erase(*it);
-    save_options();
     sync_fav_list();
     fav_list_->forceUpdate();
     update_actions();
+    save_server_favs(*opts_);
 }
 
 void main_window::sync_fav_list()
