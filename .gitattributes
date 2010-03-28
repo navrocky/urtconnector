@@ -57,6 +57,8 @@ src/icons/urtconnector.png -text
 src/icons/view-refresh.png -text
 src/icons/visible-on.png -text
 src/images.qrc -text
+src/item_view_dblclick_action_link.cpp -text
+src/item_view_dblclick_action_link.h -text
 src/launcher.cpp -text
 src/launcher.h -text
 src/main.cpp -text

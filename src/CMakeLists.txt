@@ -37,6 +37,7 @@ set(HEADERS
     app_options_saver.h
     server_info_html.h
     config.h
+    item_view_dblclick_action_link.h
 )
 
 set(MOC_HEADERS
@@ -50,6 +51,7 @@ set(MOC_HEADERS
     servlistwidget.h
     servoptsdialog.h
     launcher.h
+    item_view_dblclick_action_link.h
 )
 
 set(SOURCES
@@ -75,6 +77,7 @@ set(SOURCES
     xmlreaddata.cpp
     app_options_saver.cpp
     server_info_html.cpp
+    item_view_dblclick_action_link.cpp
 )
 
 set(IFACES

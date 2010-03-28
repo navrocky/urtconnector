@@ -20,6 +20,7 @@
 #include "aboutdialog.h"
 #include "app_options_saver.h"
 #include "server_info_html.h"
+#include "item_view_dblclick_action_link.h"
 
 using namespace std;
 
@@ -98,6 +99,8 @@ main_window::main_window(QWidget *parent)
     all_list_->tree()->addAction(ui_.actionAddToFav);
     all_list_->tree()->addAction(ui_.actionRefreshAll);
     all_list_->tree()->addAction(ui_.actionRefreshSelected);
+
+    new item_view_dblclick_action_link(this, all_list_->tree(), ui_.actionConnect);
     
     fav_list_->setServerList(fav_sl_);
     connect(fav_sl_, SIGNAL(refreshStopped()), SLOT(refresh_all_stopped()));
@@ -108,6 +111,8 @@ main_window::main_window(QWidget *parent)
     fav_list_->tree()->addAction(ui_.actionFavDelete);
     fav_list_->tree()->addAction(ui_.actionRefreshSelected);
     fav_list_->tree()->addAction(ui_.actionRefreshAll);
+
+    new item_view_dblclick_action_link(this, fav_list_->tree(), ui_.actionConnect);
 
     update_actions();
     sync_fav_list();
