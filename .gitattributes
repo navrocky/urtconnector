@@ -11,7 +11,8 @@ artwork/urtconnector.ico -text
 /build_mingw_release.bat -text
 /build_msys_release.bat -text
 /distclean -text
-distrib/arch/PKGBUILD -text
+distrib/arch/stable/PKGBUILD -text
+distrib/arch/svn/PKGBUILD -text
 distrib/deb/build_deb.sh -text
 distrib/deb/control -text
 distrib/rpm/build_rpm -text
