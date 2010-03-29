@@ -1,9 +1,11 @@
 * text=auto !eol
 /CMakeLists.txt -text
+artwork/install-header.bmp -text
 artwork/logo.png -text
 artwork/logo.svg -text
 artwork/q3ut_logo.png -text
 artwork/q3ut_logo.svg -text
+artwork/urtconnector.ico -text
 /build_gcc_linux_debug -text
 /build_gcc_linux_release -text
 /build_mingw_release.bat -text

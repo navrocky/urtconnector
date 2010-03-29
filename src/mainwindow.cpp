@@ -188,7 +188,7 @@ void main_window::save_options()
 void main_window::load_options()
 {
 #if defined(Q_OS_WIN)
-    opts_->qstat_opts.qstat_path = "qstat\\qstat.exe";
+    opts_->qstat_opts.qstat_path = "qstat.exe";
 #elif defined(Q_OS_UNIX)
     opts_->qstat_opts.qstat_path = "/usr/bin/qstat";
 #endif
