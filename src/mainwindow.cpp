@@ -324,6 +324,8 @@ void main_window::save_geometry()
     qsettings_p s = get_app_options_settings();
     s->setValue("geometry", saveGeometry());
     s->setValue("window_state", saveState());
+    s->setValue("fav_list_state", fav_list_->tree()->header()->saveState());
+    s->setValue("all_list_state", all_list_->tree()->header()->saveState());
 }
 
 void main_window::load_geometry()
@@ -332,6 +334,8 @@ void main_window::load_geometry()
     restoreGeometry(s->value("geometry").toByteArray());
     qApp->processEvents();
     restoreState(s->value("window_state").toByteArray());
+    fav_list_->tree()->header()->restoreState(s->value("fav_list_state").toByteArray());
+    all_list_->tree()->header()->restoreState(s->value("all_list_state").toByteArray());
 }
 
 void main_window::update_server_info()

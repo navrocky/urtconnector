@@ -60,8 +60,7 @@ void ServerListQStat::refreshAll()
     rd_.clear();
 
 #ifdef QSTAT_FAKE
-    //sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
-    sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0;}'";
+    sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
     proc_.start("/bin/bash", sl);
 #else
     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";
@@ -86,7 +85,6 @@ void ServerListQStat::refreshServer(const server_id & id)
     rd_.clear();
 
     QStringList sl;
-    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-retry" << "10" << "-q3s" << id.address();
 
     server_info info = list_[id];
     info.status = server_info::s_updating;
@@ -94,7 +92,14 @@ void ServerListQStat::refreshServer(const server_id & id)
 
     state_++;
 
+#ifdef QSTAT_FAKE
+    //sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
+    sl << "-c" << "sleep 1; cat ../doc/bug1.txt | awk '{print $0;}'";
+    proc_.start("/bin/bash", sl);
+#else
+    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-retry" << "10" << "-q3s" << id.address();
     proc_.start(qstatOpts_->qstat_path, sl);
+#endif
 }
 
 void ServerListQStat::refreshCancel()
