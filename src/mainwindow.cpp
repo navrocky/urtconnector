@@ -9,6 +9,7 @@
 #include <QTreeWidget>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QHeaderView>
 
 #include "mainwindow.h"
 #include "optionsdialog.h"
