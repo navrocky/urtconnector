@@ -38,6 +38,8 @@ set(HEADERS
     server_info_html.h
     config.h
     item_view_dblclick_action_link.h
+    jobs/job.h
+    jobs/job_queue.h
 )
 
 set(MOC_HEADERS
@@ -52,6 +54,8 @@ set(MOC_HEADERS
     servoptsdialog.h
     launcher.h
     item_view_dblclick_action_link.h
+    jobs/job.h
+    jobs/job_queue.h
 )
 
 set(SOURCES
@@ -78,6 +82,8 @@ set(SOURCES
     app_options_saver.cpp
     server_info_html.cpp
     item_view_dblclick_action_link.cpp
+    jobs/job.cpp
+    jobs/job_queue.cpp
 )
 
 set(IFACES

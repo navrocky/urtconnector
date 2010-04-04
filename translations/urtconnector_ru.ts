@@ -433,8 +433,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="200"/>
-        <location filename="../src/mainwindow.ui" line="311"/>
-        <location filename="../src/mainwindow.ui" line="323"/>
+        <location filename="../src/mainwindow.ui" line="312"/>
+        <location filename="../src/mainwindow.ui" line="324"/>
         <source>Connect</source>
         <translation>Соединение</translation>
     </message>
@@ -444,12 +444,12 @@ p, li { white-space: pre-wrap; }
         <translation>Панель инструментов</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="269"/>
+        <location filename="../src/mainwindow.ui" line="270"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="284"/>
+        <location filename="../src/mainwindow.ui" line="285"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
@@ -463,12 +463,21 @@ p, li { white-space: pre-wrap; }
         <translation>Все</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="314"/>
+        <location filename="../src/mainwindow.ui" line="110"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Tahoma&apos;;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="315"/>
         <source>Connect to selected server</source>
         <translation>Соединиться с выбранным сервером</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="335"/>
+        <location filename="../src/mainwindow.ui" line="336"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
@@ -478,7 +487,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/mainwindow.ui" line="65"/>
-        <location filename="../src/mainwindow.ui" line="251"/>
+        <location filename="../src/mainwindow.ui" line="252"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
@@ -518,8 +527,8 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;Информация&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;О программе&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;Сервер&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="296"/>
-        <location filename="../src/mainwindow.ui" line="299"/>
+        <location filename="../src/mainwindow.ui" line="297"/>
+        <location filename="../src/mainwindow.ui" line="300"/>
         <source>Edit</source>
         <translation>Редактировать</translation>
     </message>
@@ -532,17 +541,8 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Игрок2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="110"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Tahoma&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow.ui" line="123"/>
-        <location filename="../src/mainwindow.ui" line="326"/>
+        <location filename="../src/mainwindow.ui" line="327"/>
         <source>Quick connect</source>
         <translation>Быстрое соединение</translation>
     </message>
@@ -566,47 +566,62 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Тулбар</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="233"/>
+        <location filename="../src/mainwindow.ui" line="234"/>
         <source>Quit</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="242"/>
+        <location filename="../src/mainwindow.ui" line="243"/>
         <source>About UrTConnector</source>
         <translation>О программе UrTConnector</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="260"/>
+        <location filename="../src/mainwindow.ui" line="261"/>
         <source>Options</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="338"/>
+        <location filename="../src/mainwindow.ui" line="273"/>
+        <source>Add favorite server to list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="288"/>
+        <source>Delete favorite server from list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="303"/>
+        <source>Edit favorite server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="339"/>
         <source>Refresh all servers in list</source>
         <translation>Обновить все сервера в списке</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="347"/>
+        <location filename="../src/mainwindow.ui" line="348"/>
         <source>Add to favorites</source>
         <translation>Добавить в закладки</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="350"/>
+        <location filename="../src/mainwindow.ui" line="351"/>
         <source>Add selected server to favorites list</source>
         <translation>Добавить выбранный сервер в закладки</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="359"/>
+        <location filename="../src/mainwindow.ui" line="360"/>
         <source>Refresh selected</source>
         <translation>Обновить выделенный</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="362"/>
+        <location filename="../src/mainwindow.ui" line="363"/>
         <source>Refresh selected server</source>
         <translation>Обновить выделенный сервер</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="371"/>
+        <location filename="../src/mainwindow.ui" line="372"/>
         <source>Show/hide urtconnector</source>
         <translation>Показать/скрыть UrTConnector</translation>
     </message>
@@ -627,20 +642,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Профиль2</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="272"/>
-        <location filename="../src/mainwindow.ui" line="275"/>
+        <location filename="../src/mainwindow.ui" line="276"/>
         <source>Add server favorite to list</source>
         <translation>Добавить сервер в любимые</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="287"/>
         <source>Delete server favorite from list</source>
-        <translation>Удалить сервер из любимых</translation>
+        <translation type="obsolete">Удалить сервер из любимых</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="302"/>
         <source>Edit server favorite</source>
-        <translation>Редактировать любимые сервера</translation>
+        <translation type="obsolete">Редактировать любимые сервера</translation>
     </message>
     <message>
         <source>Connect to selected favorite</source>
@@ -946,7 +958,7 @@ p, li { white-space: pre-wrap; }
         <translation>Диалог</translation>
     </message>
     <message>
-        <location filename="../src/servoptsdialog.ui" line="22"/>
+        <location filename="../src/servoptsdialog.ui" line="26"/>
         <source>Address</source>
         <translation>Адрес</translation>
     </message>
@@ -963,27 +975,27 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Порт</translation>
     </message>
     <message>
-        <location filename="../src/servoptsdialog.ui" line="32"/>
+        <location filename="../src/servoptsdialog.ui" line="36"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../src/servoptsdialog.ui" line="45"/>
+        <location filename="../src/servoptsdialog.ui" line="49"/>
         <source>RCON password</source>
         <translation>Пароль RCON</translation>
     </message>
     <message>
-        <location filename="../src/servoptsdialog.ui" line="77"/>
+        <location filename="../src/servoptsdialog.ui" line="81"/>
         <source>Referee password</source>
         <translation>Пароль Referee</translation>
     </message>
     <message>
-        <location filename="../src/servoptsdialog.ui" line="90"/>
+        <location filename="../src/servoptsdialog.ui" line="94"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="../src/servoptsdialog.ui" line="61"/>
+        <location filename="../src/servoptsdialog.ui" line="65"/>
         <source>Comment</source>
         <translation>Комментарий</translation>
     </message>
@@ -995,33 +1007,33 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Сбой при запуске QStat</translation>
     </message>
     <message>
-        <location filename="../src/serverlistqstat.cpp" line="112"/>
+        <location filename="../src/serverlistqstat.cpp" line="117"/>
         <source>QStat failed to start. Check QStat binary path in options dialog.</source>
         <translation>Не удалось запустить QStat. Проверьте корректность пути к файлу в диалоге настройки программы.</translation>
     </message>
     <message>
-        <location filename="../src/serverlistqstat.cpp" line="114"/>
+        <location filename="../src/serverlistqstat.cpp" line="119"/>
         <source>QStat crashed</source>
         <translation>Сбой QStat</translation>
     </message>
     <message>
-        <location filename="../src/serverlistqstat.cpp" line="116"/>
+        <location filename="../src/serverlistqstat.cpp" line="121"/>
         <source>QStat timed out</source>
         <translation>QStat время вышло</translation>
     </message>
     <message>
-        <location filename="../src/serverlistqstat.cpp" line="118"/>
+        <location filename="../src/serverlistqstat.cpp" line="123"/>
         <source>QStat read error</source>
         <translation>QStat ошибка чтения</translation>
     </message>
     <message>
-        <location filename="../src/serverlistqstat.cpp" line="120"/>
+        <location filename="../src/serverlistqstat.cpp" line="125"/>
         <source>QStat write error</source>
         <translation>QStat ошибка записи</translation>
     </message>
     <message>
-        <location filename="../src/serverlistqstat.cpp" line="122"/>
-        <location filename="../src/serverlistqstat.cpp" line="124"/>
+        <location filename="../src/serverlistqstat.cpp" line="127"/>
+        <location filename="../src/serverlistqstat.cpp" line="129"/>
         <source>QStat unknown error</source>
         <translation>QStat неизвестная ошибка</translation>
     </message>
@@ -1057,12 +1069,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/mainwindow.cpp" line="159"/>
+        <location filename="../src/mainwindow.cpp" line="160"/>
         <source>Delete a favorite</source>
         <translation>Удалить закладку</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="160"/>
+        <location filename="../src/mainwindow.cpp" line="161"/>
         <source>Continue to delete a favorite</source>
         <translation>Продолжить удаление</translation>
     </message>
@@ -1134,8 +1146,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/server_info_html.cpp" line="79"/>
+        <source>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Max players&lt;/td&gt;&lt;td&gt;%5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Max players count&lt;/td&gt;&lt;td&gt;%5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Состояние&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Тип игры&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Карта&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Макс. кол-во игроков&lt;/td&gt;&lt;td&gt;%5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
+        <translation type="obsolete">&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Состояние&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Тип игры&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Карта&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Макс. кол-во игроков&lt;/td&gt;&lt;td&gt;%5&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
         <source>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Max players count&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>

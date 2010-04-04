@@ -82,7 +82,7 @@ QString get_server_info_html(const server_info& si)
                                 "<tr class=\"line2\"><td>Game mode</td><td>%2</td></tr>"
                                 "<tr class=\"line1\"><td>Map</td><td>%3</td></tr>"
                                 "<tr class=\"line2\"><td>Ping</td><td>%4</td></tr>"
-                                "<tr class=\"line1\"><td>Max players count</td><td>%5</td></tr>"
+                                "<tr class=\"line1\"><td>Max players</td><td>%5</td></tr>"
                                 "</table>"
                                 )
             .arg(status_str).arg(si.mode_name()).arg(si.map).arg(si.ping).arg(si.max_player_count);

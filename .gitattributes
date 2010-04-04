@@ -62,6 +62,10 @@ src/icons/visible-on.png -text
 src/images.qrc -text
 src/item_view_dblclick_action_link.cpp -text
 src/item_view_dblclick_action_link.h -text
+src/jobs/job.cpp -text
+src/jobs/job.h -text
+src/jobs/job_queue.cpp -text
+src/jobs/job_queue.h -text
 src/launcher.cpp -text
 src/launcher.h -text
 src/main.cpp -text
