@@ -42,7 +42,7 @@ public:
     static bool state_is_stopped(state_t state);
 
 signals:
-    void state_changed(state_t state);
+    void state_changed(job_t::state_t state);
 
 protected:
     void set_state(state_t state);
@@ -53,7 +53,7 @@ private:
 };
 
 typedef boost::shared_ptr<job_t> job_p;
-typedef boost::shared_ptr<job_t> job_weak_p;
+typedef boost::weak_ptr<job_t> job_weak_p;
 
 #endif	/* _JOB_H */
 

@@ -23,15 +23,29 @@
 #include "server_info_html.h"
 #include "item_view_dblclick_action_link.h"
 
+#include "jobs/job_monitor.h"
+
+#include "job_update_selected.h"
+
 using namespace std;
 
 main_window::main_window(QWidget *parent)
- : QMainWindow(parent)
- , opts_( new app_options() )
- , launcher_(opts_)
- , old_state_(0)
+: QMainWindow(parent)
+, opts_(new app_options())
+, launcher_(opts_)
+, old_state_(0)
 {
     ui_.setupUi(this);
+
+    que_ = new job_queue(this);
+    job_monitor* jm = new job_monitor(que_, this);
+    ui_.status_bar->addPermanentWidget(jm);
+//    job_monitor* jm2 = new job_monitor(que_, this);
+//    ui_.status_bar->addWidget(jm2);
+
+//#if (QT_VERSION >= QT_VERSION_CHECK(4, 5, 0))
+//    ui_.tabWidget->setDocumentMode(true);
+//#endif
 
     tray_menu_ = new QMenu(this);
     tray_menu_->addAction(ui_.actionShow);
@@ -52,16 +66,17 @@ main_window::main_window(QWidget *parent)
     serv_info_update_timer_->start();
 
     all_list_ = new serv_list_widget(ui_.tabAll);
-    dynamic_cast<QBoxLayout*>(ui_.tabAll->layout())->insertWidget(0, all_list_);
+    QBoxLayout* tab_all_lay = dynamic_cast<QBoxLayout*> (ui_.tabAll->layout());
+    tab_all_lay->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
     fav_list_ = new serv_list_widget(ui_.tabFav);
-    dynamic_cast<QBoxLayout*>(ui_.tabFav->layout())->insertWidget(0, fav_list_);
+    dynamic_cast<QBoxLayout*> (ui_.tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
     connect(ui_.tabWidget, SIGNAL(currentChanged(int)), SLOT(current_tab_changed(int)));
-    connect(ui_.actionOptions, SIGNAL( triggered() ), SLOT( show_options() ) );
-    connect(ui_.actionQuickConnect, SIGNAL( triggered() ), SLOT( quick_connect() ) );
+    connect(ui_.actionOptions, SIGNAL(triggered()), SLOT(show_options()));
+    connect(ui_.actionQuickConnect, SIGNAL(triggered()), SLOT(quick_connect()));
     connect(ui_.actionFavAdd, SIGNAL(triggered()), SLOT(fav_add()));
     connect(ui_.actionFavEdit, SIGNAL(triggered()), SLOT(fav_edit()));
     connect(ui_.actionFavDelete, SIGNAL(triggered()), SLOT(fav_delete()));
@@ -74,11 +89,11 @@ main_window::main_window(QWidget *parent)
     connect(ui_.actionShow, SIGNAL(triggered()), SLOT(show_action()));
 
 
-//    new PushButtonActionLink(ui.favAddButton, ui.actionFavAdd);
-//    new PushButtonActionLink(ui.favDeleteButton, ui.actionFavDelete);
+    //    new PushButtonActionLink(ui.favAddButton, ui.actionFavAdd);
+    //    new PushButtonActionLink(ui.favDeleteButton, ui.actionFavDelete);
     new push_button_action_link(this, ui_.quickConnectButton, ui_.actionQuickConnect);
-//    new PushButtonActionLink(ui.favConnectButton, ui.actionConnectToFavorite);
-//    new PushButtonActionLink(ui.refreshAllButton, ui.actionRefreshAll);
+    //    new PushButtonActionLink(ui.favConnectButton, ui.actionConnectToFavorite);
+    //    new PushButtonActionLink(ui.refreshAllButton, ui.actionRefreshAll);
 
     load_options();
     load_server_favs(*opts_);
@@ -102,7 +117,7 @@ main_window::main_window(QWidget *parent)
     all_list_->tree()->addAction(ui_.actionRefreshSelected);
 
     new item_view_dblclick_action_link(this, all_list_->tree(), ui_.actionConnect);
-    
+
     fav_list_->setServerList(fav_sl_);
     connect(fav_sl_, SIGNAL(refreshStopped()), SLOT(refresh_all_stopped()));
     fav_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -122,7 +137,6 @@ main_window::main_window(QWidget *parent)
     setVisible(!(opts_->start_hidden));
 }
 
-
 main_window::~main_window()
 {
 }
@@ -137,9 +151,9 @@ void main_window::show_options()
 
 void main_window::quick_connect()
 {
-    launcher_.set_server_id( server_id( ui_.qlServerEdit->text() ) );
-    launcher_.set_user_name( ui_.qlPlayerEdit->text() );
-    launcher_.set_password( ui_.qlPasswordEdit->text() );
+    launcher_.set_server_id(server_id(ui_.qlServerEdit->text()));
+    launcher_.set_user_name(ui_.qlPlayerEdit->text());
+    launcher_.set_password(ui_.qlPasswordEdit->text());
     launcher_.launch();
 }
 
@@ -158,7 +172,7 @@ void main_window::fav_add()
 void main_window::fav_delete()
 {
     if (QMessageBox::question(this, tr("Delete a favorite"),
-            tr("Continue to delete a favorite"), QMessageBox::Ok | QMessageBox::Cancel) != QMessageBox::Ok)
+                              tr("Continue to delete a favorite"), QMessageBox::Ok | QMessageBox::Cancel) != QMessageBox::Ok)
         return;
     ServerIDList sel = fav_list_->selection();
     server_fav_list& list = opts_->servers;
@@ -193,7 +207,7 @@ void main_window::load_options()
 #elif defined(Q_OS_UNIX)
     opts_->qstat_opts.qstat_path = "/usr/bin/qstat";
 #endif
-    
+
     opts_->qstat_opts.master_server = "master.urbanterror.net";
 
     load_app_options(*opts_);
@@ -221,6 +235,8 @@ void main_window::show_about()
 
 void main_window::refresh_selected()
 {
+    que_->add_job(job_p(new job_update_selected));
+
     server_id id = selected();
     if (id.isEmpty()) return;
     serv_list_widget* list = selected_list_widget();
@@ -261,7 +277,7 @@ void main_window::connect_selected()
 
     server_options& opts = opts_->servers[id];
 
-    launcher_.set_server_id( id );
+    launcher_.set_server_id(id);
     launcher_.set_user_name("");
     launcher_.set_password(opts.password);
     launcher_.set_referee(opts.ref_password);
@@ -354,7 +370,8 @@ void main_window::update_server_info()
         old_id_ = si->id;
 
         ui_.server_info_browser->setHtml(get_server_info_html(*si));
-    } else
+    }
+    else
     {
         old_id_ = server_id();
         old_state_ = 0;

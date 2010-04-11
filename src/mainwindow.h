@@ -11,6 +11,7 @@
 #include "launcher.h"
 #include "servlistwidget.h"
 #include "serverlistcustom.h"
+#include "jobs/job_queue.h"
 
 class QTimer;
 class QSystemTrayIcon;
@@ -70,6 +71,7 @@ private:
     int old_state_;
     QSystemTrayIcon* tray_;
     QMenu* tray_menu_;
+    job_queue* que_;
 };
 
 #endif

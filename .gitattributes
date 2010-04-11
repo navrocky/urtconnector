@@ -43,11 +43,13 @@ src/exception.h -text
 src/icons/add.png -text
 src/icons/application-exit.png -text
 src/icons/bookmarks.png -text
+src/icons/close.png -text
 src/icons/configure.png -text
 src/icons/earth.png -text
 src/icons/edit-clear-locationbar-rtl.png -text
 src/icons/edit-find.png -text
 src/icons/edit.png -text
+src/icons/go-up.png -text
 src/icons/help-about.png -text
 src/icons/help-contents.png -text
 src/icons/launch.png -text
@@ -63,8 +65,12 @@ src/icons/visible-on.png -text
 src/images.qrc -text
 src/item_view_dblclick_action_link.cpp -text
 src/item_view_dblclick_action_link.h -text
+src/job_update_selected.cpp -text
+src/job_update_selected.h -text
 src/jobs/job.cpp -text
 src/jobs/job.h -text
+src/jobs/job_monitor.cpp -text
+src/jobs/job_monitor.h -text
 src/jobs/job_queue.cpp -text
 src/jobs/job_queue.h -text
 src/launcher.cpp -text

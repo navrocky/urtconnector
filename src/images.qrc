@@ -18,6 +18,8 @@
     <file>icons/edit.png</file>
     <file>icons/remove.png</file>
     <file>icons/view-refresh.png</file>
+    <file>icons/close.png</file>
+    <file>icons/go-up.png</file>
   </qresource>
   <qresource prefix="images">
     <file>icons/logo.png</file>

@@ -22,6 +22,9 @@ public:
     // get job list
     const jobs_t& get_jobs();
 
+    // current job
+    job_weak_p get_current_job();
+
 signals:
     void job_added(job_weak_p);
 

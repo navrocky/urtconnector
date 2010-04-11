@@ -12,7 +12,7 @@ job_queue::job_queue(QObject* parent)
 void job_queue::add_job(job_p job)
 {
     jobs_.push_back(job);
-    connect(job.get(), SIGNAL(state_changed(state_t)), 
+    connect(job.get(), SIGNAL(state_changed(job_t::state_t)),
             SLOT(job_state_changed(job_t::state_t)));
     try_execute();
 }
@@ -39,11 +39,17 @@ void job_queue::clear_stopped()
 void job_queue::job_state_changed(job_t::state_t state)
 {
     if (job_t::state_is_stopped(state))
+    {
+        try_execute();
         request_clear_stopped();
+    }
 }
 
 void job_queue::try_execute()
 {
+    job_p j = get_current_job().lock();
+    if (j) return;
+
     for (jobs_t::iterator it(jobs_.begin()); it != jobs_.end(); it++)
     {
         job_p job = *it;
@@ -54,6 +60,17 @@ void job_queue::try_execute()
             job->start();
             return;
         }
-
     }
+}
+
+job_weak_p job_queue::get_current_job()
+{
+    for (jobs_t::iterator it(jobs_.begin()); it != jobs_.end(); it++)
+    {
+        job_p job = *it;
+        job_t::state_t state = job->get_state();
+        if (state == job_t::js_executing)
+            return job;
+    }
+    return job_weak_p();
 }

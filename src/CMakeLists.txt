@@ -40,6 +40,8 @@ set(HEADERS
     item_view_dblclick_action_link.h
     jobs/job.h
     jobs/job_queue.h
+    jobs/job_monitor.h
+    job_update_selected.h
 )
 
 set(MOC_HEADERS
@@ -56,6 +58,8 @@ set(MOC_HEADERS
     item_view_dblclick_action_link.h
     jobs/job.h
     jobs/job_queue.h
+    jobs/job_monitor.h
+    job_update_selected.h
 )
 
 set(SOURCES
@@ -84,6 +88,8 @@ set(SOURCES
     item_view_dblclick_action_link.cpp
     jobs/job.cpp
     jobs/job_queue.cpp
+    jobs/job_monitor.cpp
+    job_update_selected.cpp
 )
 
 set(IFACES
