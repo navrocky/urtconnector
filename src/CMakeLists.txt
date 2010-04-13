@@ -99,6 +99,8 @@ set(IFACES
     optionsdialog.ui
     servlistwidget.ui
     servoptsdialog.ui
+    jobs/job_monitor.ui
+    jobs/job_item.ui
 )
 
 set(RESOURCES

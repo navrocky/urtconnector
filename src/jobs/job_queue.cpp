@@ -15,6 +15,7 @@ void job_queue::add_job(job_p job)
     connect(job.get(), SIGNAL(state_changed(job_t::state_t)),
             SLOT(job_state_changed(job_t::state_t)));
     try_execute();
+    emit job_added(job);
 }
 
 void job_queue::request_clear_stopped()

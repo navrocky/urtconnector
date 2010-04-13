@@ -69,8 +69,10 @@ src/job_update_selected.cpp -text
 src/job_update_selected.h -text
 src/jobs/job.cpp -text
 src/jobs/job.h -text
+src/jobs/job_item.ui -text
 src/jobs/job_monitor.cpp -text
 src/jobs/job_monitor.h -text
+src/jobs/job_monitor.ui -text
 src/jobs/job_queue.cpp -text
 src/jobs/job_queue.h -text
 src/launcher.cpp -text

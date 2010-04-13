@@ -20,7 +20,7 @@ public:
     void add_job(job_p j);
 
     // get job list
-    const jobs_t& get_jobs();
+    const jobs_t& get_jobs() const {return jobs_;}
 
     // current job
     job_weak_p get_current_job();
