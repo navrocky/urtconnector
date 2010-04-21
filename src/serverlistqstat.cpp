@@ -69,8 +69,8 @@ void ServerListQStat::refreshAll()
         sl << "-q3m" << qstatOpts_->master_server;
     } else
     {
-        ServerIDList& list = customServList();
-        for (ServerIDList::iterator it = list.begin(); it != list.end(); it++)
+        server_id_list& list = customServList();
+        for (server_id_list::iterator it = list.begin(); it != list.end(); it++)
             sl << "-q3s" << (*it).address();
     }
 
@@ -298,9 +298,9 @@ void ServerListQStat::processXml()
 
 void ServerListQStat::update()
 {
-    ServerIDList& list = customServList();
+    server_id_list& list = customServList();
     server_info_list_t newlist;
-    for (ServerIDList::iterator it = list.begin(); it != list.end(); it++)
+    for (server_id_list::iterator it = list.begin(); it != list.end(); it++)
     {
         server_id id = *it;
         server_info info = list_[id];

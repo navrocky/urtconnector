@@ -25,7 +25,7 @@ public:
     QTreeWidget* tree() const {return ui_.treeWidget;}
 
     // current selection
-    ServerIDList selection();
+    server_id_list selection();
 
     void forceUpdate();
 

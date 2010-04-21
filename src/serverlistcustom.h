@@ -28,13 +28,15 @@ public:
     void setAutoRefresh(bool val);
 
     /*! Custom server list, if empty then server list retrieved from master server */
-    ServerIDList& customServList() {return customServList_;}
+    server_id_list& customServList() {return customServList_;}
 
     /*! Resulting server info list */
-    const server_info_list_t& list() const {return list_;}
+    server_info_list_t& list() {return list_;}
 
     /*! List state. Changed always after list change. */
     int state() const {return state_;}
+
+    void change_state();
 
 signals:
     void refreshStopped();
@@ -45,7 +47,7 @@ protected:
     server_fav_list* opts_;
 
 private:
-    ServerIDList customServList_;
+    server_id_list customServList_;
     bool autoRefresh_;
 };
 

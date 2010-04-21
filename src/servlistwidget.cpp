@@ -171,9 +171,9 @@ void serv_list_widget::filterTextChanged(const QString& val)
     filterTimer_ = startTimer(500);
 }
 
-ServerIDList serv_list_widget::selection()
+server_id_list serv_list_widget::selection()
 {
-    ServerIDList res;
+    server_id_list res;
     QList<QTreeWidgetItem*> list = tree()->selectedItems();
     for (int i = 0; i < list.size(); i++)
     {

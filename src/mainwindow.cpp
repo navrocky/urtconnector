@@ -174,9 +174,9 @@ void main_window::fav_delete()
     if (QMessageBox::question(this, tr("Delete a favorite"),
                               tr("Continue to delete a favorite"), QMessageBox::Ok | QMessageBox::Cancel) != QMessageBox::Ok)
         return;
-    ServerIDList sel = fav_list_->selection();
+    server_id_list sel = fav_list_->selection();
     server_fav_list& list = opts_->servers;
-    for (ServerIDList::iterator it = sel.begin(); it != sel.end(); it++)
+    for (server_id_list::iterator it = sel.begin(); it != sel.end(); it++)
         list.erase(*it);
     sync_fav_list();
     fav_list_->forceUpdate();
@@ -187,7 +187,7 @@ void main_window::fav_delete()
 void main_window::sync_fav_list()
 {
     server_fav_list& srclist = opts_->servers;
-    ServerIDList& dstlist = fav_sl_->customServList();
+    server_id_list& dstlist = fav_sl_->customServList();
     dstlist.clear();
 
     for (server_fav_list::iterator it = srclist.begin(); it != srclist.end(); it++)
@@ -248,7 +248,7 @@ server_id main_window::selected()
 {
     serv_list_widget* list = selected_list_widget();
     if (!list) return server_id();
-    ServerIDList sel = list->selection();
+    server_id_list sel = list->selection();
     if (sel.size() == 0) return server_id();
     return sel.front();
 }

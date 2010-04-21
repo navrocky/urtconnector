@@ -48,6 +48,6 @@ bool operator<(const server_id& a, const server_id& b);
 bool operator>(const server_id& a, const server_id& b);
 // bool operator<=(const ServerID& a, const ServerID& b);
 // bool operator>=(const ServerID& a, const ServerID& b);
-typedef std::vector<server_id> ServerIDList;
+typedef std::vector<server_id> server_id_list;
 
 #endif

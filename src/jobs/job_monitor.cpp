@@ -208,8 +208,6 @@ public:
 void job_que_popup::update()
 {
     const jobs_t& jobs = que_->get_jobs();
-//    lay_->setEnabled(false);
-
     // adding created
     for (jobs_t::const_iterator it(jobs.begin()); it != jobs.end(); it++)
     {
@@ -224,7 +222,5 @@ void job_que_popup::update()
     // remove expired
     items_.erase(std::remove_if(items_.begin(), items_.end(), item_expired()), items_.end());
     correct_position();
-    
-//    lay_->setEnabled(true);
 }
 

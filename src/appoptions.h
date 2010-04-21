@@ -5,7 +5,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include "serveroptions.h"
-#include "qstatoptions.h"
+#include "qstat_options.h"
 
 class app_options
 {

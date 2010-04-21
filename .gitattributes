@@ -88,8 +88,10 @@ src/playerinfo.cpp -text
 src/playerinfo.h -text
 src/pushbuttonactionlink.cpp -text
 src/pushbuttonactionlink.h -text
-src/qstatoptions.cpp -text
-src/qstatoptions.h -text
+src/qstat_options.cpp -text
+src/qstat_options.h -text
+src/qstat_updater.cpp -text
+src/qstat_updater.h -text
 src/server_info_html.cpp -text
 src/server_info_html.h -text
 src/serverid.cpp -text

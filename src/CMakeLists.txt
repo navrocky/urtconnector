@@ -24,7 +24,6 @@ set(HEADERS
     optionsdialog.h
     playerinfo.h
     pushbuttonactionlink.h
-    qstatoptions.h
     serverid.h
     serverinfo.h
     serverlistcustom.h
@@ -38,6 +37,8 @@ set(HEADERS
     server_info_html.h
     config.h
     item_view_dblclick_action_link.h
+    qstat_updater.h
+    qstat_options.h
     jobs/job.h
     jobs/job_queue.h
     jobs/job_monitor.h
@@ -56,6 +57,7 @@ set(MOC_HEADERS
     servoptsdialog.h
     launcher.h
     item_view_dblclick_action_link.h
+    qstat_updater.h
     jobs/job.h
     jobs/job_queue.h
     jobs/job_monitor.h
@@ -74,7 +76,6 @@ set(SOURCES
     optionsdialog.cpp
     playerinfo.cpp
     pushbuttonactionlink.cpp
-    qstatoptions.cpp
     serverid.cpp
     serverinfo.cpp
     serverlistcustom.cpp
@@ -86,6 +87,8 @@ set(SOURCES
     app_options_saver.cpp
     server_info_html.cpp
     item_view_dblclick_action_link.cpp
+    qstat_updater.cpp
+    qstat_options.cpp
     jobs/job.cpp
     jobs/job_queue.cpp
     jobs/job_monitor.cpp

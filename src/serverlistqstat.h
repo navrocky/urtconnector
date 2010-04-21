@@ -6,7 +6,7 @@
 
 #include "serverinfo.h"
 #include "serverlistcustom.h"
-#include "qstatoptions.h"
+#include "qstat_options.h"
 
 // qstat emulation, otherwise using real qstat
 //#define QSTAT_FAKE

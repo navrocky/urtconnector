@@ -17,4 +17,9 @@ void serv_list_custom::setOpts(server_fav_list * opts)
   opts_ = opts;
 }
 
+void serv_list_custom::change_state()
+{
+    state_++;
+}
+
 
