@@ -11,7 +11,7 @@
 #include <QCloseEvent>
 #include <QHeaderView>
 
-#include "mainwindow.h"
+#include "main_window.h"
 #include "optionsdialog.h"
 #include "launcher.h"
 #include "exception.h"
@@ -40,8 +40,6 @@ main_window::main_window(QWidget *parent)
     que_ = new job_queue(this);
     job_monitor* jm = new job_monitor(que_, this);
     ui_.status_bar->addPermanentWidget(jm);
-//    job_monitor* jm2 = new job_monitor(que_, this);
-//    ui_.status_bar->addWidget(jm2);
 
 //#if (QT_VERSION >= QT_VERSION_CHECK(4, 5, 0))
 //    ui_.tabWidget->setDocumentMode(true);
@@ -88,12 +86,7 @@ main_window::main_window(QWidget *parent)
     connect(ui_.actionQuit, SIGNAL(triggered()), SLOT(quit_action()));
     connect(ui_.actionShow, SIGNAL(triggered()), SLOT(show_action()));
 
-
-    //    new PushButtonActionLink(ui.favAddButton, ui.actionFavAdd);
-    //    new PushButtonActionLink(ui.favDeleteButton, ui.actionFavDelete);
     new push_button_action_link(this, ui_.quickConnectButton, ui_.actionQuickConnect);
-    //    new PushButtonActionLink(ui.favConnectButton, ui.actionConnectToFavorite);
-    //    new PushButtonActionLink(ui.refreshAllButton, ui.actionRefreshAll);
 
     load_options();
     load_server_favs(*opts_);
@@ -235,13 +228,13 @@ void main_window::show_about()
 
 void main_window::refresh_selected()
 {
-    que_->add_job(job_p(new job_update_selected));
-
     server_id id = selected();
     if (id.isEmpty()) return;
     serv_list_widget* list = selected_list_widget();
     if (!list) return;
-    list->serverList()->refreshServer(id);
+    server_id_list ids;
+    ids.push_back(id);
+    que_->add_job(job_p(new job_update_selected(ids, list->serverList(), &(opts_->qstat_opts))));
 }
 
 server_id main_window::selected()

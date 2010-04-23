@@ -5,7 +5,7 @@
 
 #include <QString>
 
-#include "serverid.h"
+#include "server_id.h"
 
 class server_options
 {

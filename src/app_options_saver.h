@@ -5,7 +5,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include "appoptions.h"
+#include "app_options.h"
 
 typedef boost::shared_ptr<QSettings> qsettings_p;
 

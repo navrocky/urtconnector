@@ -2,7 +2,7 @@
 #include <QObject>
 
 #include "exception.h"
-#include "serverid.h"
+#include "server_id.h"
 
 const QString c_port_incorrect = QObject::tr("Port incorrect");
 const QString c_ip_incorrect = QObject::tr("IP incorrect");

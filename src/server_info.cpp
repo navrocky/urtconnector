@@ -1,6 +1,6 @@
 #include <QObject>
 
-#include "serverinfo.h"
+#include "server_info.h"
 
 server_info::server_info()
   : status(s_none),

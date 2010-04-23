@@ -2,6 +2,7 @@
 #define APPOPTIONS_H
 
 #include <QString>
+
 #include <boost/shared_ptr.hpp>
 
 #include "serveroptions.h"
@@ -12,7 +13,7 @@ class app_options
 public:
     app_options();
 
-    // start with hidden main window
+    /*! start with hidden main window */
     bool start_hidden;
 
     /*! Use advanced command line advCmdLine() to launch UrT binary instead of binaryPath(). */

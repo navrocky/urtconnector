@@ -18,6 +18,14 @@ public:
     void refresh_selected(const server_id_list& list);
     void refresh_cancel();
 
+    /* total count servers to refresh */
+    int get_count() const {return count_;}
+
+    /* refreshing progress */
+    int get_progress() const {return progress_;}
+
+    void clear();
+
 signals:
     void refresh_stopped();
 
@@ -47,6 +55,8 @@ private:
     typedef std::pair<QString, QString> rule_info_t;
     rule_info_t cur_rule_;
     serv_list_custom* serv_list_;
+    int count_;
+    int progress_;
 };
 
 #endif	/* _QSTAT_UPDATER_H */

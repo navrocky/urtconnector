@@ -4,7 +4,7 @@
 #include <QDialog>
 
 #include "ui_optionsdialog.h"
-#include "appoptions.h"
+#include "app_options.h"
 
 class options_dialog : public QDialog
 {

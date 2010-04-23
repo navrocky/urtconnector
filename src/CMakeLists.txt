@@ -16,16 +16,16 @@ configure_file(config.h.in config.h)
 set(HEADERS
     aboutdialog.h
     application.h
-    appoptions.h
+    app_options.h
     debughelp.h
     exception.h
     launcher.h
-    mainwindow.h
+    main_window.h
     optionsdialog.h
     playerinfo.h
     pushbuttonactionlink.h
-    serverid.h
-    serverinfo.h
+    server_id.h
+    server_info.h
     serverlistcustom.h
     serverlistqstat.h
     serveroptions.h
@@ -48,7 +48,7 @@ set(HEADERS
 set(MOC_HEADERS
     aboutdialog.h
     application.h
-    mainwindow.h
+    main_window.h
     optionsdialog.h
     pushbuttonactionlink.h
     serverlistcustom.h
@@ -68,16 +68,16 @@ set(SOURCES
     main.cpp
     aboutdialog.cpp
     application.cpp
-    appoptions.cpp
+    app_options.cpp
     debughelp.cpp
     exception.cpp
     launcher.cpp
-    mainwindow.cpp
+    main_window.cpp
     optionsdialog.cpp
     playerinfo.cpp
     pushbuttonactionlink.cpp
-    serverid.cpp
-    serverinfo.cpp
+    server_id.cpp
+    server_info.cpp
     serverlistcustom.cpp
     serverlistqstat.cpp
     serveroptions.cpp
@@ -98,7 +98,7 @@ set(SOURCES
 set(IFACES
     aboutdialog.ui
 #    mainwindow_concept.ui
-    mainwindow.ui
+    main_window.ui
     optionsdialog.ui
     servlistwidget.ui
     servoptsdialog.ui

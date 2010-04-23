@@ -3,7 +3,7 @@
 
 #include <map>
 
-#include "serverid.h"
+#include "server_id.h"
 #include "playerinfo.h"
 
 class server_info

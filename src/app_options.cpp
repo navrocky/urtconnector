@@ -1,4 +1,4 @@
-#include "appoptions.h"
+#include "app_options.h"
 
 app_options::app_options()
  : start_hidden(false)

@@ -7,7 +7,7 @@
 #include <QSystemTrayIcon>
 
 #include "ui_mainwindow.h"
-#include "appoptions.h"
+#include "app_options.h"
 #include "launcher.h"
 #include "servlistwidget.h"
 #include "serverlistcustom.h"

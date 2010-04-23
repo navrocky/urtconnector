@@ -2,8 +2,8 @@
 #define SERVERLISTCUSTOM_H
 
 #include <QObject>
-#include "serverinfo.h"
-#include "serverid.h"
+#include "server_info.h"
+#include "server_id.h"
 #include "serveroptions.h"
 
 class serv_list_custom : public QObject

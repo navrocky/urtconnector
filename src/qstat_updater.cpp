@@ -8,6 +8,7 @@ namespace
 const char* c_qstat = "qstat";
 const char* c_server = "server";
 const char* c_server_type = "type";
+const char* c_server_servers = "servers";
 const char* c_server_status = "status";
 const char* c_hostname = "hostname";
 const char* c_name = "name";
@@ -32,17 +33,26 @@ qstat_updater::qstat_updater(serv_list_custom* list, qstat_options* opts)
 : cur_state_(s_init)
 , qstat_opts_(opts)
 , serv_list_(list)
+, count_(0)
+, progress_(0)
 {
     connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
     connect(&proc_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
-    connect(&proc_, SIGNAL(ready_read_output()), SLOT(ready_read_output()));
+    connect(&proc_, SIGNAL(readyReadStandardOutput()), SLOT(ready_read_output()));
 }
 
+void qstat_updater::clear()
+{
+    rd_.clear();
+    progress_ = 0;
+    count_ = 0;
+    cur_state_ = s_init;
+}
 
 void qstat_updater::refresh_all()
 {
     if (proc_.state() != QProcess::NotRunning) return;
-    rd_.clear();
+    clear();
 
     QStringList sl;
 #ifdef QSTAT_FAKE
@@ -58,7 +68,9 @@ void qstat_updater::refresh_all()
 void qstat_updater::refresh_selected(const server_id_list& list)
 {
     if (proc_.state() != QProcess::NotRunning) return;
-    rd_.clear();
+    clear();
+
+    count_ = list.size();
 
     server_info_list_t& info_list = serv_list_->list();
 
@@ -91,6 +103,7 @@ void qstat_updater::refresh_cancel()
 {
     if (proc_.state() == QProcess::NotRunning) return;
     proc_.terminate();
+    clear();
 }
 
 void qstat_updater::error(QProcess::ProcessError error)
@@ -134,7 +147,6 @@ void qstat_updater::ready_read_output()
     }
 }
 
-
 void qstat_updater::process_xml()
 {
     if (rd_.isStartElement())
@@ -147,6 +159,7 @@ void qstat_updater::process_xml()
             if (rd_.attributes().value(c_server_type) == "Q3M")
             {
                 cur_state_ = s_master_server;
+                count_ = rd_.attributes().value(c_server_servers).toString().toInt();
             } else
             {
                 cur_server_info_ = server_info();
@@ -247,6 +260,7 @@ void qstat_updater::process_xml()
                 server_info& old_si = list[cur_server_info_.id];
                 cur_server_info_.update_stamp = old_si.update_stamp + 1;
                 list[cur_server_info_.id] = cur_server_info_;
+                progress_++;
 
                 serv_list_->change_state();
             }
@@ -291,5 +305,4 @@ void qstat_updater::prepare_info()
     else
         cur_server_info_.mode = (server_info::game_mode)(cur_server_info_.info["gametype"].toInt() + 1);
 }
-
 

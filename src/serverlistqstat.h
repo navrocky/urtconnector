@@ -4,7 +4,7 @@
 #include <QProcess>
 #include <QXmlStreamReader>
 
-#include "serverinfo.h"
+#include "server_info.h"
 #include "serverlistcustom.h"
 #include "qstat_options.h"
 

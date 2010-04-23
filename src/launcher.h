@@ -3,8 +3,8 @@
 
 #include <QObject>
 
-#include "appoptions.h"
-#include "serverid.h"
+#include "app_options.h"
+#include "server_id.h"
 
 /*! \brief Game launcher.
 

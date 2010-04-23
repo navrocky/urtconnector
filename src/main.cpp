@@ -2,7 +2,7 @@
 #include <QTranslator>
 #include <QLibraryInfo>
 
-#include "mainwindow.h"
+#include "main_window.h"
 #include "application.h"
 #include "exception.h"
 #include "debughelp.h"
