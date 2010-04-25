@@ -2,35 +2,33 @@
 #include "qstat_updater.h"
 #include "qstat_options.h"
 
-#include "job_update_selected.h"
+#include "job_update_from_master.h"
 
-job_update_selected::job_update_selected(const server_id_list& selection, 
-                                         serv_list_custom* list, qstat_options* opts)
-: caption_(tr("Update selected servers"))
-, selection_(selection)
+job_update_from_master::job_update_from_master(serv_list_custom* list, qstat_options* opts)
+: caption_(tr("Update from master server"))
 , updater_(new qstat_updater(list, opts))
 {
     connect(updater_.get(), SIGNAL(refresh_stopped()), SLOT(stopped()));
 }
 
-QString job_update_selected::get_caption()
+QString job_update_from_master::get_caption()
 {
     return caption_;
 }
 
-void job_update_selected::start()
+void job_update_from_master::start()
 {
     set_state(job_t::js_executing);
-    updater_->refresh_selected(selection_);
+    updater_->refresh_all();
 }
 
-void job_update_selected::cancel()
+void job_update_from_master::cancel()
 {
     set_state(job_t::js_canceled);
     updater_->refresh_cancel();
 }
 
-int job_update_selected::get_progress()
+int job_update_from_master::get_progress()
 {
     int cnt = updater_->get_count();
     int progress = updater_->get_progress();
@@ -40,7 +38,8 @@ int job_update_selected::get_progress()
         return 0;
 }
 
-void job_update_selected::stopped()
+void job_update_from_master::stopped()
 {
     set_state(js_finished);
 }
+

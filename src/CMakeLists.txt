@@ -43,6 +43,7 @@ set(HEADERS
     jobs/job_queue.h
     jobs/job_monitor.h
     job_update_selected.h
+    job_update_from_master.h
 )
 
 set(MOC_HEADERS
@@ -62,6 +63,7 @@ set(MOC_HEADERS
     jobs/job_queue.h
     jobs/job_monitor.h
     job_update_selected.h
+    job_update_from_master.h
 )
 
 set(SOURCES
@@ -93,6 +95,7 @@ set(SOURCES
     jobs/job_queue.cpp
     jobs/job_monitor.cpp
     job_update_selected.cpp
+    job_update_from_master.cpp
 )
 
 set(IFACES

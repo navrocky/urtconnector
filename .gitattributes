@@ -65,6 +65,8 @@ src/icons/visible-on.png -text
 src/images.qrc -text
 src/item_view_dblclick_action_link.cpp -text
 src/item_view_dblclick_action_link.h -text
+src/job_update_from_master.cpp -text
+src/job_update_from_master.h -text
 src/job_update_selected.cpp -text
 src/job_update_selected.h -text
 src/jobs/job.cpp -text

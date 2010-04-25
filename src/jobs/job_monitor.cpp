@@ -5,6 +5,7 @@
 #include <QIcon>
 #include <QTimer>
 #include <QPoint>
+#include <QToolTip>
 
 #include "ui_job_monitor.h"
 #include "ui_job_item.h"
@@ -151,9 +152,13 @@ void job_item::cancel()
 // job_que_popup
 
 job_que_popup::job_que_popup(job_queue* que, QWidget* parent)
-: QWidget(parent, Qt::ToolTip)
+: QFrame(parent, Qt::ToolTip)
 , que_(que)
 {
+    setPalette(QToolTip::palette());
+    setFrameStyle(QFrame::Box);
+    setLineWidth(1);
+
     update_timer_ = new QTimer(this);
     update_timer_->setInterval(100);
     connect(update_timer_, SIGNAL(timeout()), SLOT(update()));

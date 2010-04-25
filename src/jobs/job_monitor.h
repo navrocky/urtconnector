@@ -7,6 +7,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <QWidget>
+#include <QFrame>
 
 #include "job_queue.h"
 
@@ -35,7 +36,7 @@ private:
 
 typedef boost::shared_ptr<job_item> job_item_p;
 
-class job_que_popup : public QWidget
+class job_que_popup : public QFrame
 {
     Q_OBJECT
 public:
