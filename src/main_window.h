@@ -39,7 +39,6 @@ private slots:
     void fav_edit();
     void fav_delete();
     void refresh_all();
-    void refresh_all_stopped();
     void refresh_selected();
     void update_actions();
     void current_tab_changed(int);

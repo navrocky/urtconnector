@@ -26,6 +26,7 @@
 #include "jobs/job_monitor.h"
 
 #include "job_update_selected.h"
+#include "job_update_from_master.h"
 
 using namespace std;
 
@@ -102,7 +103,6 @@ main_window::main_window(QWidget *parent)
     favSL->setQStatOpts(&(opts_->qstat_opts));
 
     all_list_->setServerList(all_sl_);
-    connect(all_sl_, SIGNAL(refreshStopped()), SLOT(refresh_all_stopped()));
     all_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     all_list_->tree()->addAction(ui_.actionConnect);
     all_list_->tree()->addAction(ui_.actionAddToFav);
@@ -112,7 +112,6 @@ main_window::main_window(QWidget *parent)
     new item_view_dblclick_action_link(this, all_list_->tree(), ui_.actionConnect);
 
     fav_list_->setServerList(fav_sl_);
-    connect(fav_sl_, SIGNAL(refreshStopped()), SLOT(refresh_all_stopped()));
     fav_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     fav_list_->tree()->addAction(ui_.actionConnect);
     fav_list_->tree()->addAction(ui_.actionFavAdd);
@@ -211,13 +210,18 @@ void main_window::refresh_all()
     serv_list_widget* list = selected_list_widget();
     if (!list) return;
     serv_list_custom* sl = list->serverList();
-    sl->refreshAll();
-    ui_.actionRefreshAll->setEnabled(false);
-}
-
-void main_window::refresh_all_stopped()
-{
-    ui_.actionRefreshAll->setEnabled(true);
+    if (list == all_list_)
+    {
+        que_->add_job(job_p(new job_update_from_master(list->serverList(),
+            &(opts_->qstat_opts))));
+    } else
+    {
+        server_fav_list& fav_list = opts_->servers;
+        server_id_list ids;
+        for (server_fav_list::iterator it = fav_list.begin(); it != fav_list.end(); it++)
+            ids.push_back(it->first);
+        que_->add_job(job_p(new job_update_selected(ids, list->serverList(), &(opts_->qstat_opts))));
+    }
 }
 
 void main_window::show_about()

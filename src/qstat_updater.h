@@ -57,6 +57,7 @@ private:
     serv_list_custom* serv_list_;
     int count_;
     int progress_;
+    bool canceled_;
 };
 
 #endif	/* _QSTAT_UPDATER_H */

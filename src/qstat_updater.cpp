@@ -35,6 +35,7 @@ qstat_updater::qstat_updater(serv_list_custom* list, qstat_options* opts)
 , serv_list_(list)
 , count_(0)
 , progress_(0)
+, canceled_(false)
 {
     connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
     connect(&proc_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
@@ -59,7 +60,7 @@ void qstat_updater::refresh_all()
     sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
     proc_.start("/bin/bash", sl);
 #else
-    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-retry" << "10";
+    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";// << "-retry" << "10";
     sl << "-q3m" << qstat_opts_->master_server;
     proc_.start(qstat_opts_->qstat_path, sl);
 #endif
@@ -102,13 +103,15 @@ void qstat_updater::refresh_selected(const server_id_list& list)
 void qstat_updater::refresh_cancel()
 {
     if (proc_.state() == QProcess::NotRunning) return;
-    proc_.terminate();
+    canceled_ = true;
+    proc_.kill();
     clear();
 }
 
 void qstat_updater::error(QProcess::ProcessError error)
 {
     emit refresh_stopped();
+    if (canceled_) return;
     switch (error)
     {
         case QProcess::FailedToStart:
