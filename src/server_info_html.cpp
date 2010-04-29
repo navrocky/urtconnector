@@ -8,13 +8,22 @@
 
 QString get_css()
 {
-    return "<style> "
-    ".header{background-color: #DCDCDC;}"
-    "table{margin-left:20px; background-color: #EEEEEE; width: 100%;}"
-    ".line1{background-color: #EEEEEE;}"
-    ".line2{background-color: #FFFFFF;}"
-    ".img1{margin-right: 10px;}"
-    "</style>";
+    //generic window color
+    QString window = QPalette().color(QPalette::Window).name();
+    //background color for text entry widgets
+    QString base = QPalette().color(QPalette::Base).name();
+    //alternate background color in views with alternating row colors
+    QString alternate = QPalette().color(QPalette::AlternateBase).name();
+
+    QString css(
+        "<style> "
+        ".header{background-color: #EEEEEE;}"
+        "table{margin-left:20px; background-color: %1; width: 100%;}"
+        ".line1{background-color: %2;}"
+        ".line2{background-color: %3;}"
+        ".img1{margin-right: 10px;}"
+        "</style>");
+    return css.arg(window).arg(base).arg(alternate);
 }
 
 QString plain_to_html(const QString& src)
