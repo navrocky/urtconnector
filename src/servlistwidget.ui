@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>688</width>
     <height>300</height>
    </rect>
   </property>
@@ -123,6 +123,11 @@
      <column>
       <property name="text">
        <string>Players</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Password</string>
       </property>
      </column>
     </widget>

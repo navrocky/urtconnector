@@ -53,14 +53,24 @@ void serv_list_widget::updateItem(ServListItem* item)
     static QIcon icon_online(":/icons/icons/status-online.png");
     static QIcon icon_offline(":/icons/icons/status-offline.png");
     static QIcon icon_updating(":/icons/icons/status-update.png");
+    static QIcon icon_passwd( ":/icons/icons/status-passwd.png" );
 
+    #if QT_VERSION >= 0x040600
+        //trying to load system-wide icon by standard name
+        //TODO it is possible to try some standard names such as lock, locked... but later
+        icon_passwd = QIcon::fromTheme("object-locked", icon_passwd);
+    #endif
+    
     switch (si.status)
     {
         case server_info::s_none:
             item->setIcon(0, icon_none);
             break;
         case server_info::s_up:
-            item->setIcon(0, icon_online);
+            if ( si.need_passwd )
+                item->setIcon(0, icon_passwd);
+            else
+                item->setIcon(0, icon_online);
             break;
         case server_info::s_down:
             item->setIcon(0, icon_offline);
@@ -76,6 +86,7 @@ void serv_list_widget::updateItem(ServListItem* item)
     item->setText(4, si.mode_name());
     item->setText(5, si.map);
     item->setText(6, QString("%1/%2").arg(si.players.size()).arg(si.max_player_count));
+    item->setText(7, QString::number(si.need_passwd));
 
     QString players;
     for (player_info_list::const_iterator it = si.players.begin(); it != si.players.end(); it++)

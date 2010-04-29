@@ -17,13 +17,13 @@ QString get_css()
 
     QString css(
         "<style> "
-        ".header{background-color: #EEEEEE;}"
-        "table{margin-left:20px; background-color: %1; width: 100%;}"
-        ".line1{background-color: %2;}"
-        ".line2{background-color: %3;}"
+        ".header{background-color: %1;}"
+        "table{margin-left:20px; margin-right:20px; background-color: %2; width: 100%;}"
+        ".line1{background-color: %3;}"
+        ".line2{background-color: %4;}"
         ".img1{margin-right: 10px;}"
         "</style>");
-    return css.arg(window).arg(base).arg(alternate);
+    return css.arg(window).arg(window).arg(base).arg(alternate);
 }
 
 QString plain_to_html(const QString& src)
@@ -72,8 +72,16 @@ QString get_server_info_html(const server_info& si)
                                      "<img class=\"img1\" src=\":/icons/icons/status-none.png\"> Unknown");
         break;
     case server_info::s_up:
-        status_str = qApp->translate("server_info_html",
-                                     "<img class=\"img1\" src=\":/icons/icons/status-online.png\"> Online");
+        if ( si.need_passwd  )
+        {
+            status_str = qApp->translate("server_info_html",
+                                         "<img class=\"img1\" src=\":/icons/icons/status-passwd.png\"> Online");
+        }
+        else
+        {
+            status_str = qApp->translate("server_info_html",
+                                         "<img class=\"img1\" src=\":/icons/icons/status-online.png\"> Online");
+        }
         break;
     case server_info::s_updating:
         status_str = qApp->translate("server_info_html",
@@ -108,7 +116,7 @@ QString get_server_info_html(const server_info& si)
                 it != si.info.end(); it++)
         {
             ext_info += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td></tr>")
-                    .arg(i % 2 + 1).arg(it->first).arg(plain_to_html(it->second));
+                    .arg(i % 2 + 1).arg(it->first).arg(/*plain_to_html(*/it->second/*)*/); // plain_to_html dont works with it->second
             i++;
         }
         ext_info += "</table>";

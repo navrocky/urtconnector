@@ -46,6 +46,7 @@ public:
     int blue_score;
     QString map;
     QString map_url;
+    bool need_passwd;
 
     /*! additional server info */
     typedef std::map<QString, QString> info_t;
