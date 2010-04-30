@@ -2,8 +2,9 @@
 #include <QGroupBox>
 #include <QFileDialog>
 
-#include "optionsdialog.h"
+#include "options_dialog.h"
 #include "launcher.h"
+#include "app_options.h"
 
 options_dialog::options_dialog(QWidget *parent)
  : QDialog(parent)
@@ -20,7 +21,7 @@ options_dialog::~options_dialog()
 {
 }
 
-void options_dialog::set_opts(app_options_ptr value)
+void options_dialog::set_opts(app_options_p value)
 {
     opts_ = value;
     update_dialog();
@@ -78,7 +79,7 @@ void options_dialog::insert_file_path()
 
 void options_dialog::adv_text_changed(const QString& text)
 {
-    app_options_ptr opts(new app_options(*opts_));
+    app_options_p opts(new app_options(*opts_));
     opts->use_adv_cmd_line = true;
     opts->adv_cmd_line = text;
     opts->binary_path = ui.binary_edit->text();

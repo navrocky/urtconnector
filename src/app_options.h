@@ -3,9 +3,7 @@
 
 #include <QString>
 
-#include <boost/shared_ptr.hpp>
-
-#include "serveroptions.h"
+#include "server_options.h"
 #include "qstat_options.h"
 
 class app_options
@@ -31,7 +29,5 @@ public:
     
     qstat_options qstat_opts;
 };
-
-typedef boost::shared_ptr<app_options> app_options_ptr;
 
 #endif

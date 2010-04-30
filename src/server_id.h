@@ -1,5 +1,5 @@
-#ifndef SERVERID_H
-#define SERVERID_H
+#ifndef SERVER_ID_H
+#define SERVER_ID_H
 
 #include <vector>
 #include <QString>
@@ -7,39 +7,36 @@
 /*! \brief Server ID.
 
     Unique server identificator.
-
-    \author Navrocky Vladislaw (navrocky@visualdata.ru)
 */
 class server_id
 {
 public:
     server_id();
-    server_id(const QString& ip, const QString& hostName, int port);
+    server_id(const QString& ip, const QString& host_name, int port);
 
-    /*! use address string, ex.: "myhostname:port" */
+    /*! Use address string, ex.: "myhostname:port" */
     server_id(const QString& address);
 
-    server_id(const server_id& src);
-    ~server_id();
-
     QString ip() const {return ip_;}
-    QString hostName() const {return hostName_;}
-    QString ipOrHost() const;
+    QString host_name() const {return host_name_;}
+    QString ip_or_host() const;
 
     int port() const {return port_;}
 
-    void setIp(const QString& val);
-    void setHostName(const QString& val);
-    void setPort(int val);
-    void setPort(const QString& val);
+    void set_ip(const QString& val);
+    void set_host_name(const QString& val);
+    void set_port(int val);
+    void set_port(const QString& val);
 
+    /*! Returns server address in format "myhostname:port" */
     QString address() const;
 
-    bool isEmpty();
+    /*! Is empty address? True for default constructor result. */
+    bool is_empty();
 
 private:
     QString ip_;
-    QString hostName_;
+    QString host_name_;
     int port_;
 };
 

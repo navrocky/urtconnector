@@ -1,10 +1,10 @@
-#include "serverlistcustom.h"
+#include "server_list.h"
 #include "qstat_updater.h"
 #include "qstat_options.h"
 
 #include "job_update_from_master.h"
 
-job_update_from_master::job_update_from_master(serv_list_custom* list, qstat_options* opts)
+job_update_from_master::job_update_from_master(server_list_p list, qstat_options* opts)
 : caption_(tr("Update from master server"))
 , updater_(new qstat_updater(list, opts))
 {

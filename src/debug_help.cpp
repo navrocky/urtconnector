@@ -1,7 +1,7 @@
 #include <cstring>
 #include <string>
 #include <QtCore/qhash.h>
-#include "debughelp.h"
+#include "debug_help.h"
 
 debug_string __str_int(char* s)
 {

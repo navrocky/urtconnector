@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "app_options.h"
+#include "pointers.h"
 #include "server_id.h"
 
 /*! \brief Game launcher.
@@ -15,7 +15,7 @@ class launcher: public QObject
 {
 Q_OBJECT
 public:
-    launcher(app_options_ptr opts);
+    launcher(app_options_p opts);
 
     void set_server_id(const server_id& id);
     void set_user_name(const QString& value);
@@ -32,7 +32,7 @@ public slots:
 
 private:
     QString get_work_dir();
-    app_options_ptr opts_;
+    app_options_p opts_;
     QString userName_;
     QString password_;
     server_id id_;

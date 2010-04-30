@@ -6,13 +6,10 @@
 class QPushButton;
 class QAction;
 
-/*! \brief Link QAction to QPushButton
-
-	\author Navrocky Vladislaw (navrocky@visualdata.ru)
-*/
+/*! Link QAction to QPushButton */
 class push_button_action_link : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 public:
     push_button_action_link(QObject* parent, QPushButton *button, QAction* action);
 private slots:

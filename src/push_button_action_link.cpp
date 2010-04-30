@@ -1,7 +1,7 @@
 #include <QPushButton>
 #include <QAction>
 
-#include "pushbuttonactionlink.h"
+#include "push_button_action_link.h"
 
 push_button_action_link::push_button_action_link(QObject* parent, QPushButton * button, QAction * action)
     : QObject(parent),

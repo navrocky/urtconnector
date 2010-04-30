@@ -5,6 +5,7 @@
 
 #include "exception.h"
 #include "launcher.h"
+#include "app_options.h"
 
 // it's code from qprocess.cpp
 static QStringList parseCombinedArgString(const QString &program)
@@ -55,7 +56,7 @@ static QStringList parseCombinedArgString(const QString &program)
     return args;
 }
 
-launcher::launcher(app_options_ptr opts)
+launcher::launcher(app_options_p opts)
 : opts_(opts)
 {
 }

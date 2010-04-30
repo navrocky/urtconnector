@@ -5,8 +5,8 @@
 #include "main_window.h"
 #include "application.h"
 #include "exception.h"
-#include "debughelp.h"
-#include "strconvert.h"
+#include "debug_help.h"
+#include "str_convert.h"
 
 int main(int argc, char *argv[])
 {

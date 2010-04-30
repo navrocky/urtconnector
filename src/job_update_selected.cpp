@@ -1,11 +1,11 @@
-#include "serverlistcustom.h"
+#include "server_list.h"
 #include "qstat_updater.h"
 #include "qstat_options.h"
 
 #include "job_update_selected.h"
 
 job_update_selected::job_update_selected(const server_id_list& selection, 
-                                         serv_list_custom* list, qstat_options* opts)
+                                         server_list_p list, qstat_options* opts)
 : caption_(tr("Update selected servers"))
 , selection_(selection)
 , updater_(new qstat_updater(list, opts))

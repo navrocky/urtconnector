@@ -3,8 +3,8 @@
 
 #include <QDialog>
 
-#include "ui_optionsdialog.h"
-#include "app_options.h"
+#include "ui_options_dialog.h"
+#include "pointers.h"
 
 class options_dialog : public QDialog
 {
@@ -13,7 +13,7 @@ public:
     options_dialog(QWidget *parent = 0);
     ~options_dialog();
 
-    void set_opts(app_options_ptr value);
+    void set_opts(app_options_p value);
 protected:
     void accept();
 
@@ -27,7 +27,7 @@ private:
     void update_dialog();
 
     Ui::OptionsDialogClass ui;
-    app_options_ptr opts_;
+    app_options_p opts_;
 };
 
 #endif

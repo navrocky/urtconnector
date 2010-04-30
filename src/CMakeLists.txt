@@ -14,25 +14,23 @@ include(${QT_USE_FILE})
 configure_file(config.h.in config.h)
 
 set(HEADERS
-    aboutdialog.h
+    about_dialog.h
     application.h
     app_options.h
-    debughelp.h
+    debug_help.h
     exception.h
     launcher.h
     main_window.h
-    optionsdialog.h
-    playerinfo.h
-    pushbuttonactionlink.h
+    options_dialog.h
+    player_info.h
+    push_button_action_link.h
     server_id.h
     server_info.h
-    serverlistcustom.h
-    serverlistqstat.h
-    serveroptions.h
-    servlistwidget.h
-    servoptsdialog.h
-    xmlreaddata.h
-    strconvert.h
+    server_list.h
+    server_options.h
+    server_list_widget.h
+    server_options_dialog.h
+    str_convert.h
     app_options_saver.h
     server_info_html.h
     config.h
@@ -47,15 +45,13 @@ set(HEADERS
 )
 
 set(MOC_HEADERS
-    aboutdialog.h
+    about_dialog.h
     application.h
     main_window.h
-    optionsdialog.h
-    pushbuttonactionlink.h
-    serverlistcustom.h
-    serverlistqstat.h
-    servlistwidget.h
-    servoptsdialog.h
+    options_dialog.h
+    push_button_action_link.h
+    server_list_widget.h
+    server_options_dialog.h
     launcher.h
     item_view_dblclick_action_link.h
     qstat_updater.h
@@ -68,24 +64,22 @@ set(MOC_HEADERS
 
 set(SOURCES
     main.cpp
-    aboutdialog.cpp
+    about_dialog.cpp
     application.cpp
     app_options.cpp
-    debughelp.cpp
+    debug_help.cpp
     exception.cpp
     launcher.cpp
     main_window.cpp
-    optionsdialog.cpp
-    playerinfo.cpp
-    pushbuttonactionlink.cpp
+    options_dialog.cpp
+    player_info.cpp
+    push_button_action_link.cpp
     server_id.cpp
     server_info.cpp
-    serverlistcustom.cpp
-    serverlistqstat.cpp
-    serveroptions.cpp
-    servlistwidget.cpp
-    servoptsdialog.cpp
-    xmlreaddata.cpp
+    server_list.cpp
+    server_options.cpp
+    server_list_widget.cpp
+    server_options_dialog.cpp
     app_options_saver.cpp
     server_info_html.cpp
     item_view_dblclick_action_link.cpp
@@ -99,12 +93,11 @@ set(SOURCES
 )
 
 set(IFACES
-    aboutdialog.ui
-#    mainwindow_concept.ui
+    about_dialog.ui
     main_window.ui
-    optionsdialog.ui
-    servlistwidget.ui
-    servoptsdialog.ui
+    options_dialog.ui
+    server_list_widget.ui
+    server_options_dialog.ui
     jobs/job_monitor.ui
     jobs/job_item.ui
 )

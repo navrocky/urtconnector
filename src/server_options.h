@@ -7,6 +7,7 @@
 
 #include "server_id.h"
 
+/*! Server options, bookmark, favorite */
 class server_options
 {
 public:
@@ -16,10 +17,9 @@ public:
     QString password;
     QString rcon_password;
     QString ref_password;
-    QString folder;
 };
 
-// List of ServerOptions
+/*! List of server_options */
 typedef std::map<server_id, server_options> server_fav_list;
 
 #endif

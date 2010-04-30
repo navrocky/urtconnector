@@ -2,50 +2,56 @@
 #include <QTreeWidgetItem>
 #include <QtCore/qobject.h>
 
-#include "servlistwidget.h"
+#include "server_info.h"
+#include "server_list.h"
 
-const int cFilterInfoColumn = 100;
+#include "server_list_widget.h"
 
+const int c_filter_info_column = 100;
 
-class ServListItem: public QTreeWidgetItem
+class server_list_item: public QTreeWidgetItem
 {
 public:
-    ServListItem(QTreeWidget* parent, const server_id& id)
-      : QTreeWidgetItem(parent), id_(id) {};
-    ServListItem(QTreeWidgetItem* parent, const server_id& id)
-      : QTreeWidgetItem(parent), id_(id) {};
+    server_list_item(QTreeWidget* parent, const server_id& id)
+    : QTreeWidgetItem(parent), id_(id) 
+    {};
+
+    server_list_item(QTreeWidgetItem* parent, const server_id& id)
+    : QTreeWidgetItem(parent), id_(id) 
+    {};
+
     const server_id& id() const {return id_;}
+
 private:
     server_id id_;
 };
 
 
-serv_list_widget::serv_list_widget(QWidget *parent)
+server_list_widget::server_list_widget(QWidget *parent)
     : QWidget(parent),
-      servList_(0),
-      oldState_(0),
-      updateTimer_(0),
-      filterTimer_(0)
+      old_state_(0),
+      update_timer_(0),
+      filter_timer_(0)
 {
     ui_.setupUi(this);
-    updateTimer_ = startTimer(500);
-    connect(ui_.filterEdit, SIGNAL(textChanged(const QString&)), SLOT(filterTextChanged(const QString&)));
+    update_timer_ = startTimer(500);
+    connect(ui_.filterEdit, SIGNAL(textChanged(const QString&)), SLOT(filter_text_changed(const QString&)));
     connect(ui_.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
 }
 
-serv_list_widget::~serv_list_widget()
+server_list_widget::~server_list_widget()
 {
 }
 
-void serv_list_widget::setServerList(serv_list_custom * ptr)
+void server_list_widget::set_server_list(server_list_p ptr)
 {
-    servList_ = ptr;
+    serv_list_ = ptr;
 }
 
-void serv_list_widget::updateItem(ServListItem* item)
+void server_list_widget::update_item(server_list_item* item)
 {
-    const server_info_list_t& list = servList_->list();
-    server_info_list_t::const_iterator it = list.find(item->id());
+    const server_info_list& list = serv_list_->list();
+    server_info_list::const_iterator it = list.find(item->id());
     if (it == list.end()) return;
     const server_info& si = it->second;
 
@@ -92,68 +98,68 @@ void serv_list_widget::updateItem(ServListItem* item)
     for (player_info_list::const_iterator it = si.players.begin(); it != si.players.end(); it++)
         players += (*it).nick_name + " ";
 
-    item->setText(cFilterInfoColumn, QString("%1 %2 %3 %4 %5 %6").arg(si.name)
+    item->setText(c_filter_info_column, QString("%1 %2 %3 %4 %5 %6").arg(si.name)
         .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.mode_name()).arg(players));
-    item->setHidden(!filterItem(item));
+    item->setHidden(!filter_item(item));
 }
 
-bool serv_list_widget::filterItem(ServListItem* item)
+bool server_list_widget::filter_item(server_list_item* item)
 {
-    return filterRx_.isEmpty() ||
-            filterRx_.indexIn(item->text(cFilterInfoColumn)) != -1;
+    return filter_rx_.isEmpty() ||
+            filter_rx_.indexIn(item->text(c_filter_info_column)) != -1;
 }
 
-void serv_list_widget::timerEvent(QTimerEvent *te)
+void server_list_widget::timerEvent(QTimerEvent *te)
 {
-    if (!servList_) return;
+    if (!serv_list_) return;
 
-    if (te->timerId() == updateTimer_)
+    if (te->timerId() == update_timer_)
     {
-        if (servList_->state() == oldState_) return;
-        oldState_ = servList_->state();
-        updateList();
+        if (serv_list_->state() == old_state_) return;
+        old_state_ = serv_list_->state();
+        update_list();
     } else
-    if (te->timerId() == filterTimer_)
+    if (te->timerId() == filter_timer_)
     {
-        updateList();
-        killTimer(filterTimer_);
-        filterTimer_ = 0;
+        update_list();
+        killTimer(filter_timer_);
+        filter_timer_ = 0;
     }
 }
 
-void serv_list_widget::forceUpdate()
+void server_list_widget::force_update()
 {
-    oldState_ = servList_->state();
-    updateList();
+    old_state_ = serv_list_->state();
+    update_list();
 }
 
-void serv_list_widget::updateList()
+void server_list_widget::update_list()
 {
     setUpdatesEnabled(false);
     try
     {
-        const server_info_list_t& list = servList_->list();
+        const server_info_list& list = serv_list_->list();
 
         // who changed, appeared?
-        for (server_info_list_t::const_iterator it = list.begin(); it != list.end(); it++)
+        for (server_info_list::const_iterator it = list.begin(); it != list.end(); it++)
         {
             const server_id& id = (*it).first;
-            ServItems::iterator it2 = items_.find(id);
+            server_items::iterator it2 = items_.find(id);
 
             if (it2 != items_.end())
             {
-                updateItem((*it2).second);
+                update_item((*it2).second);
             } else
             {
-                ServListItem* item = new ServListItem(ui_.treeWidget, id);
+                server_list_item* item = new server_list_item(ui_.treeWidget, id);
                 items_[id] = item;
-                updateItem(item);
+                update_item(item);
             }
         }
 
         // who removed ?
         std::vector<server_id> to_remove;
-        for (ServItems::iterator it = items_.begin(); it != items_.end(); it++)
+        for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
         {
             const server_id& id = (*it).first;
             if (list.find(id) == list.end())
@@ -173,29 +179,29 @@ void serv_list_widget::updateList()
     }
 }
 
-void serv_list_widget::filterTextChanged(const QString& val)
+void server_list_widget::filter_text_changed(const QString& val)
 {
-    filterRx_ = QRegExp(val);
-    filterRx_.setCaseSensitivity(Qt::CaseInsensitive);
-    if (filterTimer_ != 0)
-        killTimer(filterTimer_);
-    filterTimer_ = startTimer(500);
+    filter_rx_ = QRegExp(val);
+    filter_rx_.setCaseSensitivity(Qt::CaseInsensitive);
+    if (filter_timer_ != 0)
+        killTimer(filter_timer_);
+    filter_timer_ = startTimer(500);
 }
 
-server_id_list serv_list_widget::selection()
+server_id_list server_list_widget::selection()
 {
     server_id_list res;
     QList<QTreeWidgetItem*> list = tree()->selectedItems();
     for (int i = 0; i < list.size(); i++)
     {
-        ServListItem* it = dynamic_cast<ServListItem*>(list[i]);
+        server_list_item* it = dynamic_cast<server_list_item*>(list[i]);
         if (it)
             res.push_back(it->id());
     }
     return res;
 }
 
-void serv_list_widget::filter_clear()
+void server_list_widget::filter_clear()
 {
     ui_.filterEdit->clear();
 }

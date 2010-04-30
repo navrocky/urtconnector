@@ -6,15 +6,16 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 
-#include "ui_main_window.h"
+#include "pointers.h"
+
 #include "app_options.h"
 #include "launcher.h"
-#include "servlistwidget.h"
-#include "serverlistcustom.h"
+#include "server_list_widget.h"
+#include "server_list.h"
 #include "jobs/job_queue.h"
 
 class QTimer;
-class QSystemTrayIcon;
+class Ui_MainWindowClass;
 
 class main_window : public QMainWindow
 {
@@ -55,16 +56,16 @@ private:
     void load_geometry();
 
     server_id selected();
-    serv_list_widget* selected_list_widget();
+    server_list_widget* selected_list_widget();
     const server_info* selected_info();
 
-    Ui::MainWindowClass ui_;
-    app_options_ptr opts_;
+    std::auto_ptr<Ui_MainWindowClass> ui_;
+    app_options_p opts_;
     launcher launcher_;
-    serv_list_widget* all_list_;
-    serv_list_widget* fav_list_;
-    serv_list_custom* all_sl_;
-    serv_list_custom* fav_sl_;
+    server_list_widget* all_list_;
+    server_list_widget* fav_list_;
+    server_list_p all_sl_;
+    server_list_p fav_sl_;
     QTimer* serv_info_update_timer_;
     server_id old_id_;
     int old_state_;

@@ -4,9 +4,10 @@
 #include <memory>
 #include <QString>
 
+#include "pointers.h"
 #include "jobs/job.h"
 
-class serv_list_custom;
+class server_list;
 class qstat_updater;
 class qstat_options;
 
@@ -14,7 +15,7 @@ class job_update_from_master : public job_t
 {
     Q_OBJECT
 public:
-    job_update_from_master(serv_list_custom* list, qstat_options* opts);
+    job_update_from_master(server_list_p list, qstat_options* opts);
     QString get_caption();
     void start();
     void cancel();

@@ -1,5 +1,5 @@
-#ifndef PLAYERINFO_H
-#define PLAYERINFO_H
+#ifndef PLAYER_INFO_H
+#define PLAYER_INFO_H
 
 #include <vector>
 #include <QString>

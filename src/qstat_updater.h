@@ -6,13 +6,15 @@
 #include <QXmlStreamReader>
 
 #include "qstat_options.h"
-#include "serverlistcustom.h"
+#include "pointers.h"
+#include "server_info.h"
+#include "player_info.h"
 
 class qstat_updater : public QObject
 {
     Q_OBJECT
 public:
-    qstat_updater(serv_list_custom* list, qstat_options* opts);
+    qstat_updater(server_list_p list, qstat_options* opts);
 
     void refresh_all();
     void refresh_selected(const server_id_list& list);
@@ -54,7 +56,7 @@ private:
     qstat_options* qstat_opts_;
     typedef std::pair<QString, QString> rule_info_t;
     rule_info_t cur_rule_;
-    serv_list_custom* serv_list_;
+    server_list_p serv_list_;
     int count_;
     int progress_;
     bool canceled_;

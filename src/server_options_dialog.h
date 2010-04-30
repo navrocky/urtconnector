@@ -3,22 +3,21 @@
 
 #include <QDialog>
 
-#include "ui_servoptsdialog.h"
-#include "serveroptions.h"
+#include "ui_server_options_dialog.h"
+#include "server_options.h"
 
-class ServOptsDialog : public QDialog
+class server_options_dialog : public QDialog
 {
 Q_OBJECT
 public:
-    ServOptsDialog(QWidget *parent = 0);
-    ServOptsDialog(QWidget *parent, const server_options& src);
-    ~ServOptsDialog();
+    server_options_dialog(QWidget *parent = 0);
+    server_options_dialog(QWidget *parent, const server_options& src);
 
     const server_options& options() const {return opts_;}
 protected:
     void accept();
 private:
-    void updateDialog();
+    void update_dialog();
 
     Ui::ServOptsDialogClass ui;
     server_options opts_;

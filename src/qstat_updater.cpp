@@ -1,4 +1,6 @@
 #include "exception.h"
+#include "server_id.h"
+#include "server_list.h"
 
 #include "qstat_updater.h"
 
@@ -29,7 +31,7 @@ const char* c_player_ping = "ping";
 
 }
 
-qstat_updater::qstat_updater(serv_list_custom* list, qstat_options* opts)
+qstat_updater::qstat_updater(server_list_p list, qstat_options* opts)
 : cur_state_(s_init)
 , qstat_opts_(opts)
 , serv_list_(list)
@@ -73,7 +75,7 @@ void qstat_updater::refresh_selected(const server_id_list& list)
 
     count_ = list.size();
 
-    server_info_list_t& info_list = serv_list_->list();
+    server_info_list& info_list = serv_list_->list();
 
     for (server_id_list::const_iterator it = list.begin(); it != list.end(); it++)
     {
@@ -259,7 +261,7 @@ void qstat_updater::process_xml()
             if (cur_state_ == s_server)
             {
                 prepare_info();
-                server_info_list_t& list = serv_list_->list();
+                server_info_list& list = serv_list_->list();
                 server_info& old_si = list[cur_server_info_.id];
                 cur_server_info_.update_stamp = old_si.update_stamp + 1;
                 list[cur_server_info_.id] = cur_server_info_;

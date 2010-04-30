@@ -1,31 +1,27 @@
-#include "servoptsdialog.h"
+#include "server_options_dialog.h"
 #include "exception.h"
 
-ServOptsDialog::ServOptsDialog(QWidget *parent)
+server_options_dialog::server_options_dialog(QWidget *parent)
  : QDialog(parent)
 {
     ui.setupUi(this);
     setWindowTitle(tr("New server favorite"));
-    updateDialog();
+    update_dialog();
 }
 
-ServOptsDialog::ServOptsDialog(QWidget * parent, const server_options & src)
+server_options_dialog::server_options_dialog(QWidget * parent, const server_options & src)
   : QDialog(parent),
     opts_(src)
 {
     ui.setupUi(this);
     setWindowTitle(tr("Server favorite options"));
-    updateDialog();
+    update_dialog();
 }
 
-ServOptsDialog::~ServOptsDialog()
-{
-}
-
-void ServOptsDialog::accept()
+void server_options_dialog::accept()
 {
     server_id id(ui.addressEdit->text());
-    if (id.isEmpty())
+    if (id.is_empty())
         throw qexception(tr("Server address must be non empty"));
 
     opts_.id = id;
@@ -37,9 +33,9 @@ void ServOptsDialog::accept()
     QDialog::accept();
 }
 
-void ServOptsDialog::updateDialog()
+void server_options_dialog::update_dialog()
 {
-    if (!(opts_.id.isEmpty()))
+    if (!(opts_.id.is_empty()))
         ui.addressEdit->setText(opts_.id.address());
     else
         ui.addressEdit->setText(QString());

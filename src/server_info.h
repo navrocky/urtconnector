@@ -4,7 +4,7 @@
 #include <map>
 
 #include "server_id.h"
-#include "playerinfo.h"
+#include "player_info.h"
 
 class server_info
 {
@@ -60,6 +60,6 @@ private:
 
 };
 
-typedef std::map<server_id, server_info> server_info_list_t;
+typedef std::map<server_id, server_info> server_info_list;
 
 #endif
