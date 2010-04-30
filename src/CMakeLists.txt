@@ -27,6 +27,7 @@ set(HEADERS
     server_id.h
     server_info.h
     server_list.h
+    server_list_saver.h
     server_options.h
     server_list_widget.h
     server_options_dialog.h
@@ -77,6 +78,7 @@ set(SOURCES
     server_id.cpp
     server_info.cpp
     server_list.cpp
+    server_list_saver.cpp
     server_options.cpp
     server_list_widget.cpp
     server_options_dialog.cpp

@@ -9,9 +9,8 @@ qsettings_p get_app_options_settings()
                                      qApp->organizationName(), qApp->applicationName()));
 }
 
-void save_app_options(const app_options& opts)
+void save_app_options(qsettings_p s, const app_options& opts)
 {
-    qsettings_p s = get_app_options_settings();
     s->beginGroup("app_opts");
     s->setValue("start_hidden", opts.start_hidden);
     s->setValue("use_adv_cmd_line", opts.use_adv_cmd_line);
@@ -25,10 +24,8 @@ void save_app_options(const app_options& opts)
     s->endGroup();
 }
 
-void load_app_options(app_options& opts)
+void load_app_options(qsettings_p s, app_options& opts)
 {
-    qsettings_p s = get_app_options_settings();
-
     s->beginGroup("app_opts");
     opts.start_hidden = s->value("start_hidden", false).toBool();
     opts.use_adv_cmd_line = s->value("use_adv_cmd_line", opts.use_adv_cmd_line).toBool();

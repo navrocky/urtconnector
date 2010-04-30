@@ -22,6 +22,7 @@
 #include "server_list.h"
 #include "about_dialog.h"
 #include "app_options_saver.h"
+#include "server_list_saver.h"
 #include "server_info_html.h"
 #include "item_view_dblclick_action_link.h"
 
@@ -95,6 +96,8 @@ main_window::main_window(QWidget *parent)
 
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
 
+    qsettings_p s = get_app_options_settings();
+    load_server_list(s, "all_list_info", *(all_sl_.get()));
     load_options();
     load_server_favs(*opts_);
 
@@ -121,8 +124,9 @@ main_window::main_window(QWidget *parent)
     update_actions();
     sync_fav_list();
     update_server_info();
-    load_geometry();
+    load_geometry(s);
     setVisible(!(opts_->start_hidden));
+    all_list_->force_update();
 }
 
 main_window::~main_window()
@@ -220,7 +224,8 @@ void main_window::sync_fav_list()
 
 void main_window::save_options()
 {
-    save_app_options(*opts_);
+    qsettings_p s = get_app_options_settings();
+    save_app_options(s, *opts_);
 }
 
 void main_window::load_options()
@@ -233,7 +238,8 @@ void main_window::load_options()
 
     opts_->qstat_opts.master_server = "master.urbanterror.net";
 
-    load_app_options(*opts_);
+    qsettings_p s = get_app_options_settings();
+    load_app_options(s, *opts_);
 }
 
 void main_window::refresh_all()
@@ -373,18 +379,16 @@ void main_window::closeEvent(QCloseEvent *event)
     event->ignore();
 }
 
-void main_window::save_geometry()
+void main_window::save_geometry(qsettings_p s)
 {
-    qsettings_p s = get_app_options_settings();
     s->setValue("geometry", saveGeometry());
     s->setValue("window_state", saveState());
     s->setValue("fav_list_state", fav_list_->tree()->header()->saveState());
     s->setValue("all_list_state", all_list_->tree()->header()->saveState());
 }
 
-void main_window::load_geometry()
+void main_window::load_geometry(qsettings_p s)
 {
-    qsettings_p s = get_app_options_settings();
     restoreGeometry(s->value("geometry").toByteArray());
     qApp->processEvents();
     restoreState(s->value("window_state").toByteArray());
@@ -449,7 +453,11 @@ void main_window::show_action()
 
 void main_window::quit_action()
 {
-    save_geometry();
+    qsettings_p s = get_app_options_settings();
+    save_geometry(s);
+    save_server_list(s, "all_list_info", *(all_sl_.get()));
+
+
     qApp->quit();
 }
 

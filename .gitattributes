@@ -105,6 +105,8 @@ src/server_info_html.cpp -text
 src/server_info_html.h -text
 src/server_list.cpp -text
 src/server_list.h -text
+src/server_list_saver.cpp -text
+src/server_list_saver.h -text
 src/server_list_widget.cpp -text
 src/server_list_widget.h -text
 src/server_list_widget.ui -text

@@ -52,8 +52,8 @@ private slots:
 private:
     void sync_fav_list();
 
-    void save_geometry();
-    void load_geometry();
+    void save_geometry(qsettings_p s);
+    void load_geometry(qsettings_p s);
 
     server_id selected();
     server_list_widget* selected_list_widget();

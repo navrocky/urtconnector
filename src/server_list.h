@@ -1,5 +1,5 @@
-#ifndef SERVER_LIST_H
-#define SERVER_LIST_H
+#ifndef _SERVER_LIST_H
+#define _SERVER_LIST_H
 
 #include "server_info.h"
 #include "server_id.h"
@@ -12,6 +12,7 @@ public:
 
     /*! Resulting server info list */
     server_info_list& list() {return list_;}
+    const server_info_list& list() const {return list_;}
 
     /*! List state. Changed always after list change. */
     int state() const {return state_;}
