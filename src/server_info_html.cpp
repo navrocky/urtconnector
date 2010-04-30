@@ -72,7 +72,7 @@ QString get_server_info_html(const server_info& si)
                                      "<img class=\"img1\" src=\":/icons/icons/status-none.png\"> Unknown");
         break;
     case server_info::s_up:
-        if ( si.need_passwd  )
+        if ( si.get_info("g_needpass").toInt()  )
         {
             status_str = qApp->translate("server_info_html",
                                          "<img class=\"img1\" src=\":/icons/icons/status-passwd.png\"> Online");

@@ -10,8 +10,7 @@ server_info::server_info()
     retries(0),
     red_score(0),
     blue_score(0),
-    update_stamp(0),
-    need_passwd(false)
+    update_stamp(0)
 {
 }
 
@@ -31,6 +30,14 @@ QString server_info::mode_name() const
     return QObject::tr("Unknown");
 }
 
+QString server_info::get_info(const QString& key) const
+{
+    info_t::const_iterator it( info.find(key) );
+    if ( it != info.end() )
+        return it->second;
+    else
+        return QString();
+}
 
 
 

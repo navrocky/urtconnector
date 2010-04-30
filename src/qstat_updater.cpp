@@ -285,8 +285,6 @@ void qstat_updater::process_xml()
         else if (rd_.name() == c_rule && cur_state_ == s_rule)
         {
             cur_server_info_.info[cur_rule_.first] = cur_rule_.second;
-            //I think parse_info_entry function will be useful in server_info class
-            if ( cur_rule_.first == "g_needpass" ) cur_server_info_.need_passwd = cur_rule_.second.toInt();
             cur_state_ = s_rules;
         }
         else if (rd_.name() == c_player && cur_state_ == s_player)

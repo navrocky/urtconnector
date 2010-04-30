@@ -67,7 +67,7 @@ void serv_list_widget::updateItem(ServListItem* item)
             item->setIcon(0, icon_none);
             break;
         case server_info::s_up:
-            if ( si.need_passwd )
+            if ( si.get_info("g_needpass").toInt() )
                 item->setIcon(0, icon_passwd);
             else
                 item->setIcon(0, icon_online);
@@ -86,7 +86,7 @@ void serv_list_widget::updateItem(ServListItem* item)
     item->setText(4, si.mode_name());
     item->setText(5, si.map);
     item->setText(6, QString("%1/%2").arg(si.players.size()).arg(si.max_player_count));
-    item->setText(7, QString::number(si.need_passwd));
+    item->setText(7, ( si.get_info("g_needpass").toInt() ) ? "required" : "" );
 
     QString players;
     for (player_info_list::const_iterator it = si.players.begin(); it != si.players.end(); it++)

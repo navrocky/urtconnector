@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QHeaderView>
+#include <QInputDialog>
 
 #include "main_window.h"
 #include "optionsdialog.h"
@@ -277,6 +278,15 @@ void main_window::connect_selected()
     launcher_.set_server_id(id);
     launcher_.set_user_name("");
     launcher_.set_password(opts.password);
+    
+    if ( opts.password.isEmpty() && selected_info() && selected_info()->get_info("g_needpass").toInt() )
+    {
+        bool ok;
+        QString password = QInputDialog::getText(this, "Server require password", "Enter password:", QLineEdit::PasswordEchoOnEdit, "", &ok );
+        if ( !ok ) return;
+        launcher_.set_password(password);
+    }
+
     launcher_.set_referee(opts.ref_password);
     launcher_.set_rcon(opts.rcon_password);
     launcher_.launch();
