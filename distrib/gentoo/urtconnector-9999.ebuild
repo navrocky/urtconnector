@@ -11,13 +11,13 @@ HOMEPAGE="http://code.google.com/p/urtconnector/"
 ESVN_REPO_URI="http://urtconnector.googlecode.com/svn/trunk/"
 
 LICENSE="GPL"
-KEYWORDS="x86 x64"
+KEYWORDS="~x86 ~x64"
 SLOT="0"
 IUSE=""
 
 RDEPEND="x11-libs/qt-gui:4
-	games-util/qstat
-	dev-libs/boost"
+    games-util/qstat
+    dev-libs/boost"
 
 DEPEND="${RDEPEND}"
 

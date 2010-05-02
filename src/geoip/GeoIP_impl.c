@@ -265,9 +265,8 @@ char *_GeoIP_full_path_to(const char *file_name) {
 
 	if (custom_directory == NULL){
 #if !defined(_WIN32)
-		memset(path, 0, sizeof(char) * 1024);
-//		snprintf(path, sizeof(char) * 1024 - 1, "%s/%s", GEOIPDATADIR, file_name);
-      snprintf(path, sizeof(char) * 1024 - 1, "%s/%s", "/usr/share/urtconnector", file_name);
+        memset(path, 0, sizeof(char) * 1024);
+        snprintf(path, sizeof(char) * 1024 - 1, "%s/%s", "/usr/share/GeoIp", file_name);
 #else
 		char buf[MAX_PATH], *p, *q = NULL;
 		memset(buf, 0, sizeof(buf));

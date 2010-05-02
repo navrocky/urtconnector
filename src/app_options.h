@@ -28,6 +28,9 @@ public:
     server_fav_list servers;
     
     qstat_options qstat_opts;
+
+    ///A path to GeoIP database file
+    QString geoip_database;
 };
 
 #endif

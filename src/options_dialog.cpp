@@ -14,6 +14,7 @@ options_dialog::options_dialog(QWidget *parent)
     connect( ui.selectBinButton, SIGNAL( clicked() ), SLOT( choose_binary() ));
     connect( ui.insertFileButton, SIGNAL( clicked() ), SLOT( insert_file_path() ));
     connect( ui.qstat_binary_choose_button, SIGNAL( clicked() ), SLOT( choose_qstat_binary() ));
+    connect( ui.geoip_database_choose_button, SIGNAL( clicked() ), SLOT( choose_geoip_database()));
     connect( ui.advCmdEdit, SIGNAL(textChanged(const QString&)), SLOT(adv_text_changed(const QString&)));
 }
 
@@ -34,6 +35,7 @@ void options_dialog::update_dialog()
     ui.advCmdBox->setChecked( opts_->use_adv_cmd_line );
     ui.qstat_binary_edit->setText( opts_->qstat_opts.qstat_path );
     ui.hide_mainwindow_check->setChecked(opts_->start_hidden);
+    ui.geoip_database_edit->setText( opts_->geoip_database );
     
 }
 
@@ -45,6 +47,7 @@ void options_dialog::accept()
     opts_->use_adv_cmd_line = ui.advCmdBox->isChecked();
     opts_->qstat_opts.qstat_path = ui.qstat_binary_edit->text();
     opts_->start_hidden = ui.hide_mainwindow_check->isChecked();
+    opts_->geoip_database = ui.geoip_database_edit->text();
 }
 
 void options_dialog::choose_binary()
@@ -55,6 +58,16 @@ void options_dialog::choose_binary()
     if (fileName.isEmpty()) return;
 
     ui.binary_edit->setText(fileName);
+}
+
+void options_dialog::choose_geoip_database()
+{
+    QString file_name = QFileDialog::getOpenFileName(this,
+      tr("GeoIP database"), "",
+      tr("DataBase (*.dat);;All Files (*)"));
+    if (file_name.isEmpty()) return;
+
+    ui.geoip_database_edit->setText(file_name);
 }
 
 void options_dialog::choose_qstat_binary()

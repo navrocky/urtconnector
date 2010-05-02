@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 #include <QSettings>
 
+#include "config.h"
 #include "app_options_saver.h"
 
 qsettings_p get_app_options_settings()
@@ -16,6 +17,7 @@ void save_app_options(qsettings_p s, const app_options& opts)
     s->setValue("use_adv_cmd_line", opts.use_adv_cmd_line);
     s->setValue("adv_cmd_line", opts.adv_cmd_line);
     s->setValue("binary_path", opts.binary_path);
+    s->setValue("geoip_database", opts.geoip_database);
     s->endGroup();
 
     s->beginGroup("qstat_opts");
@@ -31,6 +33,7 @@ void load_app_options(qsettings_p s, app_options& opts)
     opts.use_adv_cmd_line = s->value("use_adv_cmd_line", opts.use_adv_cmd_line).toBool();
     opts.adv_cmd_line = s->value("adv_cmd_line", opts.adv_cmd_line).toString();
     opts.binary_path = s->value("binary_path", opts.binary_path).toString();
+    opts.geoip_database = s->value( "geoip_database", opts.geoip_database ).toString();
     s->endGroup();
 
     s->beginGroup("qstat_opts");

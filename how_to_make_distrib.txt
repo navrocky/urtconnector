@@ -39,9 +39,17 @@ HOW TO MAKE DISTRIBUTION
 
 3. Gentoo
 =========
-
-    TODO
-
+    1) Put distrib/gentoo/*.ebuild to your working overlay.
+    	> mkdir -p /usr/local/portage/layman/xxx/games-fps/urtconnector
+    	> cp distrib/gentoo/*.ebuild /usr/local/portage/layman/xxx/games-fps/urtconnector
+    2) Unmask games-fps/urtconnector atom if needed
+        > echo games-fps/urtconnector /etc/portage/package.keywords/urtconnector
+	> echo games-fps/urtconnector /etc/portage/package.unmask/urtconnector
+    3) Create manifest for atom
+        > ebuild /usr/local/portage/layman/xxx/games-fps/urtconnector/*.ebuild manifest
+    4) Emerge urtconnector
+        > emerge urtconnector
+    5) Enjoy!
 
 4. Windows distribution
 =======================

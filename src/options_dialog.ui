@@ -24,7 +24,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="launchTab">
       <attribute name="title">
@@ -186,6 +186,25 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QPushButton" name="qstat_binary_choose_button">
+            <property name="text">
+             <string>Choose</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>GeoIP database path</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <widget class="QLineEdit" name="geoip_database_edit"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="geoip_database_choose_button">
             <property name="text">
              <string>Choose</string>
             </property>

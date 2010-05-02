@@ -26,6 +26,7 @@
 #include "server_list_saver.h"
 #include "server_info_html.h"
 #include "item_view_dblclick_action_link.h"
+#include "str_convert.h"
 
 #include "jobs/job_monitor.h"
 #include "job_update_selected.h"
@@ -72,18 +73,6 @@ main_window::main_window(QWidget *parent)
     connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
     serv_info_update_timer_->start();
 
-    try{
-#if defined(Q_OS_UNIX)
-        gi_.set_database( QString(URT_DATADIR) + "GeoIP.dat" );
-#elif defined(Q_OS_WIN)
-        gi_.set_database( QString(URT_DATADIR) + "GeoIP.dat" );
-#elif defined(Q_OS_MAC)
-        gi_.set_database( QString(URT_DATADIR) + "GeoIP.dat" );
-#endif
-    } catch (...){
-        gi_.set_database( geoip::DummyDB );
-    }
-    
     all_list_ = new server_list_widget(ui_->tabAll);
     QBoxLayout* tab_all_lay = dynamic_cast<QBoxLayout*> (ui_->tabAll->layout());
     tab_all_lay->insertWidget(0, all_list_);
@@ -243,10 +232,14 @@ void main_window::save_options()
 
 void main_window::load_options()
 {
-#if defined(Q_OS_WIN)
-    opts_->qstat_opts.qstat_path = "qstat.exe";
-#elif defined(Q_OS_UNIX)
+#if defined(Q_OS_UNIX)
     opts_->qstat_opts.qstat_path = "/usr/bin/qstat";
+    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
+#elif defined(Q_OS_WIN)
+    opts_->qstat_opts.qstat_path = "qstat.exe";
+    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
+#elif defined(Q_OS_MAC)
+    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
 #endif
 
     opts_->qstat_opts.master_server = "master.urbanterror.net";
@@ -257,6 +250,12 @@ void main_window::load_options()
 
 void main_window::refresh_all()
 {
+    try{
+        gi_.set_database( opts_->geoip_database );
+    } catch (std::exception& e){
+        statusBar()->showMessage (  to_qstr(e.what()) );
+    }
+    
     server_list_widget* list = selected_list_widget();
     if (!list) return;
     server_list_p sl = list->server_list();
@@ -282,6 +281,12 @@ void main_window::show_about()
 
 void main_window::refresh_selected()
 {
+    try{
+        gi_.set_database( opts_->geoip_database );
+    } catch (std::exception& e){
+        statusBar()->showMessage (  to_qstr(e.what()) );
+    }
+    
     server_id id = selected();
     if (id.is_empty()) return;
     server_list_widget* list = selected_list_widget();

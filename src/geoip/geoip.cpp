@@ -1,6 +1,8 @@
 
 #include <stdexcept>
 
+#include <QObject>
+
 #include "GeoIP_impl.h"
 #include "geoip.h"
 
@@ -13,7 +15,7 @@ struct geoip_disp{
     geoip_disp(const QString& database)
     {
         if ( ! (ptr =  GeoIP_open( database.toLocal8Bit().data(), GEOIP_MMAP_CACHE )) )
-            throw std::runtime_error( QString("Can't open GeoIP database %1").arg(database).toLocal8Bit().data() );
+            throw std::runtime_error( QObject::tr("Can't open GeoIP database %1").arg(database).toLocal8Bit().data() );
     }
 
     ~geoip_disp()
