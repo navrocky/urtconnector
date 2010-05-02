@@ -37,6 +37,8 @@ src/app_options_saver.cpp -text
 src/app_options_saver.h -text
 src/application.cpp -text
 src/application.h -text
+src/clipper.cpp -text
+src/clipper.h -text
 src/config.h.in -text
 src/debug_help.cpp -text
 src/debug_help.h -text

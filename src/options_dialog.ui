@@ -176,6 +176,13 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="looking_for_clip">
+         <property name="text">
+          <string>Loking for clipboard</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
           <string>QStat binary path</string>

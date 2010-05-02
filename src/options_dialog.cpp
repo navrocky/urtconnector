@@ -36,7 +36,7 @@ void options_dialog::update_dialog()
     ui.qstat_binary_edit->setText( opts_->qstat_opts.qstat_path );
     ui.hide_mainwindow_check->setChecked(opts_->start_hidden);
     ui.geoip_database_edit->setText( opts_->geoip_database );
-    
+    ui.looking_for_clip->setChecked( opts_->looking_for_clip );
 }
 
 void options_dialog::accept()
@@ -48,6 +48,7 @@ void options_dialog::accept()
     opts_->qstat_opts.qstat_path = ui.qstat_binary_edit->text();
     opts_->start_hidden = ui.hide_mainwindow_check->isChecked();
     opts_->geoip_database = ui.geoip_database_edit->text();
+    opts_->looking_for_clip = ui.looking_for_clip->isChecked();
 }
 
 void options_dialog::choose_binary()

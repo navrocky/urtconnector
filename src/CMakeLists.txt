@@ -47,6 +47,7 @@ set(HEADERS
     jobs/job_monitor.h
     job_update_selected.h
     job_update_from_master.h
+    clipper.h
 )
 
 set(MOC_HEADERS
@@ -65,6 +66,7 @@ set(MOC_HEADERS
     jobs/job_monitor.h
     job_update_selected.h
     job_update_from_master.h
+    clipper.h
 )
 
 set(SOURCES
@@ -96,6 +98,7 @@ set(SOURCES
     jobs/job_monitor.cpp
     job_update_selected.cpp
     job_update_from_master.cpp
+    clipper.cpp
 )
 
 set(IFACES

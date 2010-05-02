@@ -44,6 +44,7 @@ main_window::main_window(QWidget *parent)
 , all_sl_(new server_list)
 , fav_sl_(new server_list)
 , old_state_(0)
+, clipper_( new clipper(this, opts_) )
 {
     ui_->setupUi(this);
 
@@ -95,6 +96,8 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionAddToFav, SIGNAL(triggered()), SLOT(add_selected_to_fav()));
     connect(ui_->actionQuit, SIGNAL(triggered()), SLOT(quit_action()));
     connect(ui_->actionShow, SIGNAL(triggered()), SLOT(show_action()));
+
+    connect(clipper_, SIGNAL(address_obtained( const QString& )), ui_->qlServerEdit, SLOT( setText( const QString& ) ) );
 
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
 

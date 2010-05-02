@@ -14,6 +14,7 @@
 #include "server_list.h"
 #include "jobs/job_queue.h"
 #include "geoip/geoip.h"
+#include "clipper.h"
 
 class QTimer;
 class Ui_MainWindowClass;
@@ -74,6 +75,7 @@ private:
     QMenu* tray_menu_;
     job_queue* que_;
     geoip gi_;
+    clipper* clipper_;
 };
 
 #endif

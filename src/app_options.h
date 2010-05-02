@@ -17,6 +17,9 @@ public:
     /*! Use advanced command line advCmdLine() to launch UrT binary instead of binaryPath(). */
     bool use_adv_cmd_line;
 
+    /// look for system clipboard 
+    bool looking_for_clip;
+    
     /*! Advanced command line to launch UrT binary. Use followed substitutions:
         %host% %port% %user% %password% %rcon% and so on.*/
     QString adv_cmd_line;
