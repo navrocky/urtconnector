@@ -83,12 +83,12 @@ main_window::main_window(QWidget *parent)
         gi_.set_database( geoip::DummyDB );
     }
     
-    all_list_ = new server_list_widget(ui_->tabAll, gi_);
+    all_list_ = new server_list_widget(ui_->tabAll);
     QBoxLayout* tab_all_lay = dynamic_cast<QBoxLayout*> (ui_->tabAll->layout());
     tab_all_lay->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    fav_list_ = new server_list_widget(ui_->tabFav, gi_);
+    fav_list_ = new server_list_widget(ui_->tabFav);
     dynamic_cast<QBoxLayout*> (ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
@@ -214,7 +214,7 @@ void main_window::sync_fav_list()
         {
             server_options& opts = it->second;
 
-            server_info si(gi_);
+            server_info si;
             si.id = id;
             si.name = opts.name;
             dstlist[id] = si;
@@ -262,14 +262,14 @@ void main_window::refresh_all()
     if (list == all_list_)
     {
         que_->add_job(job_p(new job_update_from_master(list->server_list(),
-            &(opts_->qstat_opts))));
+            gi_, &(opts_->qstat_opts))));
     } else
     {
         server_fav_list& fav_list = opts_->servers;
         server_id_list ids;
         for (server_fav_list::iterator it = fav_list.begin(); it != fav_list.end(); it++)
             ids.push_back(it->first);
-        que_->add_job(job_p(new job_update_selected(ids, list->server_list(), &(opts_->qstat_opts))));
+        que_->add_job(job_p(new job_update_selected(ids, list->server_list(), gi_, &(opts_->qstat_opts))));
     }
 }
 
@@ -287,7 +287,7 @@ void main_window::refresh_selected()
     if (!list) return;
     server_id_list ids;
     ids.push_back(id);
-    que_->add_job(job_p(new job_update_selected(ids, list->server_list(), &(opts_->qstat_opts))));
+    que_->add_job(job_p(new job_update_selected(ids, list->server_list(), gi_, &(opts_->qstat_opts))));
 }
 
 server_id main_window::selected()
@@ -416,9 +416,6 @@ void main_window::update_server_info()
     const server_info* si = selected_info();
     if (si)
     {
-        //хак для обхода проблеммы с geoip - смотри "FIXME" в qstat_updater.cpp
-        const_cast<server_info*>(si)->gi = gi_;
-        
         if (old_id_ == si->id && old_state_ == si->update_stamp)
             return;
 

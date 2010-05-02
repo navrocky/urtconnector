@@ -3,10 +3,10 @@
 
 #include <map>
 
+#include <QIcon>
+
 #include "server_id.h"
 #include "player_info.h"
-
-#include "geoip/geoip.h"
 
 class server_info
 {
@@ -31,7 +31,7 @@ public:
         s_down
     };
 
-    server_info(const geoip& gi = geoip());
+    server_info();
 
     server_id id;
     status_t status;
@@ -40,6 +40,8 @@ public:
     player_info_list players;
     int max_player_count;
     QString country;
+    QString country_code;
+    QIcon country_flag;
     game_mode mode;
     QString mode_name() const;
     int ping;
@@ -57,7 +59,6 @@ public:
 
     /*! Info update stamp. Changed after each update. */
     int update_stamp;
-    geoip   gi;
 private:
 
 };

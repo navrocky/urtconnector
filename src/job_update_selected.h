@@ -18,6 +18,7 @@ class job_update_selected : public job_t
 public:
     job_update_selected(const server_id_list& selection, 
                         server_list_p list,
+                        const geoip& gi,
                         qstat_options* opts);
 
     QString get_caption();

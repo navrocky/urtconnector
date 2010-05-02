@@ -5,10 +5,10 @@
 #include "job_update_selected.h"
 
 job_update_selected::job_update_selected(const server_id_list& selection, 
-                                         server_list_p list, qstat_options* opts)
+                                         server_list_p list, const geoip& gi, qstat_options* opts)
 : caption_(tr("Update selected servers"))
 , selection_(selection)
-, updater_(new qstat_updater(list, opts))
+, updater_(new qstat_updater(list, gi, opts))
 {
     connect(updater_.get(), SIGNAL(refresh_stopped()), SLOT(stopped()));
 }

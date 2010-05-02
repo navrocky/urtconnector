@@ -93,8 +93,10 @@ QString get_server_info_html(const server_info& si)
         break;
     }
 
-    QString country_flag = QString("<img class=\"img1\" src=\"%1\">").arg(si.gi.flag_path(si.id.ip()));
-    std::cerr<<"Contfrylag:"<<country_flag.toStdString()<<std::endl;
+    
+    QString country_flag;
+    if( !si.country_code.isEmpty() )
+         country_flag = QString("<img class=\"img1\" src=\":/flags/flags/%1.png\">").arg(si.country_code);
 
     serv_info = qApp->translate("server_info_html",
                                 "<table width=100%>"
@@ -106,7 +108,7 @@ QString get_server_info_html(const server_info& si)
                                 "<tr class=\"line1\"><td>Max players</td><td>%7</td></tr>"
                                 "</table>"
                                 )
-            .arg(status_str).arg(si.mode_name()).arg(si.map).arg(si.ping).arg(country_flag).arg(si.gi.country( si.id.ip() )).arg(si.max_player_count);
+            .arg(status_str).arg(si.mode_name()).arg(si.map).arg(si.ping).arg(country_flag).arg(si.country).arg(si.max_player_count);
 
     QString ext_info;
     if (si.info.size() > 0)

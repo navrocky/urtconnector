@@ -9,12 +9,13 @@
 #include "pointers.h"
 #include "server_info.h"
 #include "player_info.h"
+#include "geoip/geoip.h"
 
 class qstat_updater : public QObject
 {
     Q_OBJECT
 public:
-    qstat_updater(server_list_p list, qstat_options* opts);
+    qstat_updater(server_list_p list, const geoip& gi, qstat_options* opts);
 
     void refresh_all();
     void refresh_selected(const server_id_list& list);
@@ -60,6 +61,7 @@ private:
     int count_;
     int progress_;
     bool canceled_;
+    geoip gi;
 };
 
 #endif	/* _QSTAT_UPDATER_H */

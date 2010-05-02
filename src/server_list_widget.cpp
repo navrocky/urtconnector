@@ -27,12 +27,11 @@ private:
 };
 
 
-server_list_widget::server_list_widget(QWidget *parent, const geoip& gi)
+server_list_widget::server_list_widget(QWidget *parent)
     : QWidget(parent),
       old_state_(0),
       update_timer_(0),
-      filter_timer_(0),
-      gi_(gi)
+      filter_timer_(0)
 {
     ui_.setupUi(this);
     update_timer_ = startTimer(500);
@@ -97,8 +96,8 @@ void server_list_widget::update_item(server_list_item* item)
 
     item->setText(2, si.name.trimmed());
     item->setText(3, si.id.address());
-    item->setIcon(4, gi_.flag( si.id.ip() ) );
-    item->setText(4, gi_.country( si.id.ip() ) );
+    item->setIcon(4, si.country_flag );
+    item->setText(4, si.country );
     item->setText(5, QString("%1").arg(si.ping, 5));
     item->setText(6, si.mode_name());
     item->setText(7, si.map);

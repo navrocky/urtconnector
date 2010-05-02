@@ -2,7 +2,7 @@
 
 #include "server_info.h"
 
-server_info::server_info(const geoip& gi)
+server_info::server_info()
   : status(s_none),
     max_player_count(0),
     mode(gm_none),
@@ -10,8 +10,7 @@ server_info::server_info(const geoip& gi)
     retries(0),
     red_score(0),
     blue_score(0),
-    update_stamp(0),
-    gi(gi)
+    update_stamp(0)
 {
 }
 

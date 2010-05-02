@@ -31,14 +31,13 @@ set(IFACES
 )
 
 set(RESOURCES
-    flags.qrc
 )
 
-qt4_add_resources(SOURCES ${RESOURCES})
+#qt4_add_resources(SOURCES ${RESOURCES})
 #qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
 #qt4_wrap_ui(SOURCES ${IFACES})
 
-add_library(${TARGET} SHARED ${HEADERS} ${SOURCES})
+add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
 target_link_libraries( ${TARGET} ${QT_LIBRARIES} )
 
