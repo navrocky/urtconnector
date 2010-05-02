@@ -11,6 +11,8 @@ include_directories(${Boost_INCLUDE_DIRS})
 find_package(Qt4 REQUIRED QtCore QtGui QtXml)
 include(${QT_USE_FILE})
 
+set(URT_DATADIR ${CMAKE_INSTALL_PREFIX}/share/urtconnector/)
+
 configure_file(config.h.in config.h)
 
 add_subdirectory(geoip)
@@ -123,3 +125,5 @@ install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 install(FILES icons/urtconnector.png DESTINATION share/icons)
 install(FILES icons/urtconnector.png DESTINATION share/pixmaps)
 install(FILES urtconnector.desktop DESTINATION share/applications)
+install(FILES GeoIP.dat DESTINATION share/urtconnector)
+

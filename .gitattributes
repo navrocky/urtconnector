@@ -27,6 +27,7 @@ doc/qstat_out.txt -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text
 src/CMakeLists.txt -text
+src/GeoIP.dat -text
 src/about_dialog.cpp -text
 src/about_dialog.h -text
 src/about_dialog.ui -text
@@ -276,7 +277,6 @@ src/flags/zw.png -text
 src/geoip/CMakeLists.txt -text
 src/geoip/GeoIP_impl.c -text
 src/geoip/GeoIP_impl.h -text
-src/geoip/flags.qrc -text
 src/geoip/geoip.cpp -text
 src/geoip/geoip.h -text
 src/icons/add.png -text

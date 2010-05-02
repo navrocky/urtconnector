@@ -4,5 +4,7 @@
 #define URT_VERSION "@URT_VERSION@"
 #define URT_CODENAME "@URT_CODENAME@"
 
+#define URT_DATADIR "@URT_DATADIR@"
+
 #endif	/* _CONFIG_H */
 

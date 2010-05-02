@@ -13,6 +13,7 @@
 #include <QHeaderView>
 #include <QInputDialog>
 
+#include "config.h"
 #include "ui_main_window.h"
 #include "options_dialog.h"
 #include "launcher.h"
@@ -73,11 +74,11 @@ main_window::main_window(QWidget *parent)
 
     try{
 #if defined(Q_OS_UNIX)
-        gi_.set_database( "/usr/share/urtconnector/GeoIP.dat" );
+        gi_.set_database( QString(URT_DATADIR) + "GeoIP.dat" );
 #elif defined(Q_OS_WIN)
-        gi_.set_database( "/usr/share/urtconnector/GeoIP.dat" );
+        gi_.set_database( QString(URT_DATADIR) + "GeoIP.dat" );
 #elif defined(Q_OS_MAC)
-        gi_.set_database( "/usr/share/urtconnector/GeoIP.dat" );
+        gi_.set_database( QString(URT_DATADIR) + "GeoIP.dat" );
 #endif
     } catch (...){
         gi_.set_database( geoip::DummyDB );
