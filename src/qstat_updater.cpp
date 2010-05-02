@@ -33,7 +33,7 @@ const char* c_player_ping = "ping";
 
 qstat_updater::qstat_updater(server_list_p list, const geoip& gi, qstat_options* opts)
 : cur_state_(s_init)
-, gi(gi)
+, gi_(gi)
 , qstat_opts_(opts)
 , serv_list_(list)
 , count_(0)
@@ -312,8 +312,8 @@ void qstat_updater::prepare_info()
         cur_server_info_.mode = server_info::gm_none;
     else
         cur_server_info_.mode = (server_info::game_mode)(cur_server_info_.info["gametype"].toInt() + 1);
-    cur_server_info_.country = gi.country( cur_server_info_.id.ip() );
-    cur_server_info_.country_code = gi.code( cur_server_info_.id.ip() ).toLower();
-    cur_server_info_.country_flag = QIcon( QString(":/flags/flags/%1.png").arg( gi.code(cur_server_info_.id.ip()).toLower() ) );
+    cur_server_info_.country = gi_.country( cur_server_info_.id.ip() );
+    cur_server_info_.country_code = gi_.code( cur_server_info_.id.ip() ).toLower();
+    cur_server_info_.country_flag = QIcon( QString(":/flags/flags/%1.png").arg( gi_.code(cur_server_info_.id.ip()).toLower() ) );
 }
 

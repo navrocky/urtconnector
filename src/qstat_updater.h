@@ -61,7 +61,7 @@ private:
     int count_;
     int progress_;
     bool canceled_;
-    geoip gi;
+    geoip gi_;
 };
 
 #endif	/* _QSTAT_UPDATER_H */

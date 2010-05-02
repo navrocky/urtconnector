@@ -102,7 +102,7 @@ main_window::main_window(QWidget *parent)
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
 
     qsettings_p s = get_app_options_settings();
-    load_server_list(s, "all_list_info", *(all_sl_.get()));
+    load_server_list(get_server_list_settings("servers"), "all_list_info", *(all_sl_.get()));
     load_options();
     load_server_favs(*opts_);
 
@@ -474,10 +474,12 @@ void main_window::show_action()
 
 void main_window::quit_action()
 {
+    hide();
     qsettings_p s = get_app_options_settings();
     save_geometry(s);
-    save_server_list(s, "all_list_info", *(all_sl_.get()));
 
+    save_server_list(get_server_list_settings("servers"), "all_list_info",
+            *(all_sl_.get()));
 
     qApp->quit();
 }
