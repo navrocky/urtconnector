@@ -71,12 +71,24 @@ main_window::main_window(QWidget *parent)
     connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
     serv_info_update_timer_->start();
 
-    all_list_ = new server_list_widget(ui_->tabAll);
+    try{
+#if defined(Q_OS_UNIX)
+        gi_.set_database( "/usr/share/urtconnector/GeoIP.dat" );
+#elif defined(Q_OS_WIN)
+        gi_.set_database( "/usr/share/urtconnector/GeoIP.dat" );
+#elif defined(Q_OS_MAC)
+        gi_.set_database( "/usr/share/urtconnector/GeoIP.dat" );
+#endif
+    } catch (...){
+        gi_.set_database( geoip::DummyDB );
+    }
+    
+    all_list_ = new server_list_widget(ui_->tabAll, gi_);
     QBoxLayout* tab_all_lay = dynamic_cast<QBoxLayout*> (ui_->tabAll->layout());
     tab_all_lay->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    fav_list_ = new server_list_widget(ui_->tabFav);
+    fav_list_ = new server_list_widget(ui_->tabFav, gi_);
     dynamic_cast<QBoxLayout*> (ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
@@ -202,7 +214,7 @@ void main_window::sync_fav_list()
         {
             server_options& opts = it->second;
 
-            server_info si;
+            server_info si(gi_);
             si.id = id;
             si.name = opts.name;
             dstlist[id] = si;
@@ -404,6 +416,9 @@ void main_window::update_server_info()
     const server_info* si = selected_info();
     if (si)
     {
+        //хак для обхода проблеммы с geoip - смотри "FIXME" в qstat_updater.cpp
+        const_cast<server_info*>(si)->gi = gi_;
+        
         if (old_id_ == si->id && old_state_ == si->update_stamp)
             return;
 

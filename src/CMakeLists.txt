@@ -13,6 +13,8 @@ include(${QT_USE_FILE})
 
 configure_file(config.h.in config.h)
 
+add_subdirectory(geoip)
+
 set(HEADERS
     about_dialog.h
     application.h
@@ -115,7 +117,7 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_executable(${TARGET} WIN32 ${HEADERS} ${SOURCES})
 
-target_link_libraries(${TARGET} ${QT_LIBRARIES})
+target_link_libraries(${TARGET} ${QT_LIBRARIES} geoip)
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 install(FILES icons/urtconnector.png DESTINATION share/icons)

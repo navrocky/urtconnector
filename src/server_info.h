@@ -6,6 +6,8 @@
 #include "server_id.h"
 #include "player_info.h"
 
+#include "geoip/geoip.h"
+
 class server_info
 {
 public:
@@ -29,7 +31,7 @@ public:
         s_down
     };
 
-    server_info();
+    server_info(const geoip& gi = geoip());
 
     server_id id;
     status_t status;
@@ -55,7 +57,7 @@ public:
 
     /*! Info update stamp. Changed after each update. */
     int update_stamp;
-
+    geoip   gi;
 private:
 
 };

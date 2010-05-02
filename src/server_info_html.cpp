@@ -53,7 +53,7 @@ QString get_server_info_html(const server_info& si)
         for (player_info_list::const_iterator it = pil.begin(); it != pil.end(); it++)
         {
             players += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td><td>%4</td></tr>")
-                    .arg(i % 2 + 1).arg(plain_to_html(it->nick_name)).arg(it->ping).arg(it->score);
+                    .arg(i % 2 + 1).arg(/*plain_to_html(*/it->nick_name/*)*/).arg(it->ping).arg(it->score);
             i++;
         }
         players += "</table>";
@@ -93,16 +93,20 @@ QString get_server_info_html(const server_info& si)
         break;
     }
 
+    QString country_flag = QString("<img class=\"img1\" src=\"%1\">").arg(si.gi.flag_path(si.id.ip()));
+    std::cerr<<"Contfrylag:"<<country_flag.toStdString()<<std::endl;
+
     serv_info = qApp->translate("server_info_html",
                                 "<table width=100%>"
                                 "<tr class=\"line1\"><td>Status</td><td>%1</td></tr>"
                                 "<tr class=\"line2\"><td>Game mode</td><td>%2</td></tr>"
                                 "<tr class=\"line1\"><td>Map</td><td>%3</td></tr>"
                                 "<tr class=\"line2\"><td>Ping</td><td>%4</td></tr>"
-                                "<tr class=\"line1\"><td>Max players</td><td>%5</td></tr>"
+                                "<tr class=\"line2\"><td>Country</td><td>%5 %6</td></tr>"
+                                "<tr class=\"line1\"><td>Max players</td><td>%7</td></tr>"
                                 "</table>"
                                 )
-            .arg(status_str).arg(si.mode_name()).arg(si.map).arg(si.ping).arg(si.max_player_count);
+            .arg(status_str).arg(si.mode_name()).arg(si.map).arg(si.ping).arg(country_flag).arg(si.gi.country( si.id.ip() )).arg(si.max_player_count);
 
     QString ext_info;
     if (si.info.size() > 0)

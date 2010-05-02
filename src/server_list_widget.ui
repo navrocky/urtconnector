@@ -91,6 +91,15 @@
      </column>
      <column>
       <property name="text">
+       <string>Password</string>
+      </property>
+      <property name="icon">
+       <iconset resource="images.qrc">
+        <normaloff>:/icons/icons/status-passwd.png</normaloff>:/icons/icons/status-passwd.png</iconset>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Name</string>
       </property>
       <property name="toolTip">
@@ -103,6 +112,11 @@
       </property>
       <property name="toolTip">
        <string>Server address (ip:port)</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Country</string>
       </property>
      </column>
      <column>
@@ -123,11 +137,6 @@
      <column>
       <property name="text">
        <string>Players</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Password</string>
       </property>
      </column>
     </widget>

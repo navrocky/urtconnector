@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
 {
     // this needed to link debug functions
     //    debug_help_init();
-
     application a(argc, argv);
     try
     {

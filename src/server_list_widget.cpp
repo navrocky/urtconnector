@@ -27,11 +27,12 @@ private:
 };
 
 
-server_list_widget::server_list_widget(QWidget *parent)
+server_list_widget::server_list_widget(QWidget *parent, const geoip& gi)
     : QWidget(parent),
       old_state_(0),
       update_timer_(0),
-      filter_timer_(0)
+      filter_timer_(0),
+      gi_(gi)
 {
     ui_.setupUi(this);
     update_timer_ = startTimer(500);
@@ -66,17 +67,14 @@ void server_list_widget::update_item(server_list_item* item)
         //TODO it is possible to try some standard names such as lock, locked... but later
         icon_passwd = QIcon::fromTheme("object-locked", icon_passwd);
     #endif
-    
+
     switch (si.status)
     {
         case server_info::s_none:
             item->setIcon(0, icon_none);
             break;
         case server_info::s_up:
-            if ( si.get_info("g_needpass").toInt() )
-                item->setIcon(0, icon_passwd);
-            else
-                item->setIcon(0, icon_online);
+            item->setIcon(0, icon_online);
             break;
         case server_info::s_down:
             item->setIcon(0, icon_offline);
@@ -86,13 +84,25 @@ void server_list_widget::update_item(server_list_item* item)
             break;
     }
 
-    item->setText(1, si.name.trimmed());
-    item->setText(2, si.id.address());
-    item->setText(3, QString("%1").arg(si.ping, 5));
-    item->setText(4, si.mode_name());
-    item->setText(5, si.map);
-    item->setText(6, QString("%1/%2").arg(si.players.size()).arg(si.max_player_count));
-    item->setText(7, ( si.get_info("g_needpass").toInt() ) ? "required" : "" );
+    //TODO "1" is the Password field need auto-mapping
+    // this is not works in constructor
+    ui_.treeWidget->header()->setResizeMode(1, QHeaderView::Fixed);
+    ui_.treeWidget->header()->resizeSection(1, 22);
+    
+    if ( si.get_info("g_needpass").toInt() )
+    {
+        item->setIcon(1, icon_passwd);
+        item->setText(1, "1");
+    }
+
+    item->setText(2, si.name.trimmed());
+    item->setText(3, si.id.address());
+    item->setIcon(4, gi_.flag( si.id.ip() ) );
+    item->setText(4, gi_.country( si.id.ip() ) );
+    item->setText(5, QString("%1").arg(si.ping, 5));
+    item->setText(6, si.mode_name());
+    item->setText(7, si.map);
+    item->setText(8, QString("%1/%2").arg(si.players.size()).arg(si.max_player_count));
 
     QString players;
     for (player_info_list::const_iterator it = si.players.begin(); it != si.players.end(); it++)

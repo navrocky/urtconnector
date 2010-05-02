@@ -10,6 +10,7 @@
 #include "ui_server_list_widget.h"
 #include "pointers.h"
 #include "server_id.h"
+#include "geoip/geoip.h"
 
 class server_list_item;
 
@@ -17,7 +18,7 @@ class server_list_widget : public QWidget
 {
 Q_OBJECT
 public:
-    server_list_widget(QWidget *parent = 0);
+    server_list_widget(QWidget *parent, const geoip& gi );
     ~server_list_widget();
 
     void set_server_list(server_list_p ptr);
@@ -49,6 +50,7 @@ private:
     QRegExp filter_rx_;
     int update_timer_;
     int filter_timer_;
+    geoip   gi_;
 };
 
 #endif

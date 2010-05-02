@@ -13,6 +13,7 @@
 #include "server_list_widget.h"
 #include "server_list.h"
 #include "jobs/job_queue.h"
+#include "geoip/geoip.h"
 
 class QTimer;
 class Ui_MainWindowClass;
@@ -72,6 +73,7 @@ private:
     QSystemTrayIcon* tray_;
     QMenu* tray_menu_;
     job_queue* que_;
+    geoip gi_;
 };
 
 #endif

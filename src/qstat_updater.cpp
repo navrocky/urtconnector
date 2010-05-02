@@ -264,6 +264,8 @@ void qstat_updater::process_xml()
                 server_info_list& list = serv_list_->list();
                 server_info& old_si = list[cur_server_info_.id];
                 cur_server_info_.update_stamp = old_si.update_stamp + 1;
+                //FIXME Тут в список server_info вставляется новый элемент, который об уже проинициализированном geoip ничего не знает.
+                // Думаю надо в server_list_widget сделать функцию update_server_info(id) и все действия по замене server_info проводить в нем
                 list[cur_server_info_.id] = cur_server_info_;
                 progress_++;
 
