@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QPointer>
 #include <QRegExp>
+#include <QStyledItemDelegate>
 
 #include "ui_server_list_widget.h"
 #include "pointers.h"
@@ -30,6 +31,9 @@ public:
 
     void force_update();
 
+Q_SIGNALS:
+    void size_changed(int);
+    
 private slots:
     void timerEvent(QTimerEvent *event);
     void filter_text_changed(const QString&);
@@ -49,6 +53,19 @@ private:
     QRegExp filter_rx_;
     int update_timer_;
     int filter_timer_;
+};
+
+
+class status_item_delegate : public QStyledItemDelegate{
+public:
+        
+    status_item_delegate(QObject* parent = 0);
+    virtual ~status_item_delegate();
+
+    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+
+private:
+    void next_icon(QRect& icon) const;
 };
 
 #endif

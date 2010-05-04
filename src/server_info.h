@@ -4,6 +4,7 @@
 #include <map>
 
 #include <QIcon>
+#include <QMetaType>
 
 #include "server_id.h"
 #include "player_info.h"
@@ -62,6 +63,9 @@ public:
 private:
 
 };
+
+//qRegisterMetaType<server_info>("server_info");
+Q_DECLARE_METATYPE(server_info);
 
 typedef std::map<server_id, server_info> server_info_list;
 

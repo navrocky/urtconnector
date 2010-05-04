@@ -56,7 +56,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QTreeWidget" name="treeWidget">
+    <widget class="server_tree_widget" name="treeWidget">
      <property name="contextMenuPolicy">
       <enum>Qt::ActionsContextMenu</enum>
      </property>
@@ -87,15 +87,6 @@
       </property>
       <property name="toolTip">
        <string>Server status</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Password</string>
-      </property>
-      <property name="icon">
-       <iconset resource="images.qrc">
-        <normaloff>:/icons/icons/status-passwd.png</normaloff>:/icons/icons/status-passwd.png</iconset>
       </property>
      </column>
      <column>
@@ -155,6 +146,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>server_tree_widget</class>
+   <extends>QTreeWidget</extends>
+   <header>server_tree_widget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="images.qrc"/>
  </resources>

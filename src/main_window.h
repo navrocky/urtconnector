@@ -19,6 +19,20 @@
 class QTimer;
 class Ui_MainWindowClass;
 
+
+class tab_size_updater: public QObject{
+    Q_OBJECT
+public:
+    tab_size_updater(QTabWidget* tw, int index);
+    ~tab_size_updater();
+
+public Q_SLOTS:
+    void update_size(int i) const;
+private:
+    QTabWidget* tw_;
+    int index_;
+};
+
 class main_window : public QMainWindow
 {
 Q_OBJECT
@@ -77,5 +91,7 @@ private:
     geoip gi_;
     clipper* clipper_;
 };
+
+
 
 #endif

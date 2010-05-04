@@ -48,6 +48,7 @@ set(HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
+    server_tree_widget.h
 )
 
 set(MOC_HEADERS
@@ -67,6 +68,7 @@ set(MOC_HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
+    server_tree_widget.h
 )
 
 set(SOURCES
@@ -99,6 +101,7 @@ set(SOURCES
     job_update_selected.cpp
     job_update_from_master.cpp
     clipper.cpp
+    server_tree_widget.cpp
 )
 
 set(IFACES

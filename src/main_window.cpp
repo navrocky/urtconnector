@@ -10,7 +10,7 @@
 #include <QTreeWidget>
 #include <QMessageBox>
 #include <QCloseEvent>
-#include <QHeaderView>
+// #include <QHeaderView>
 #include <QInputDialog>
 
 #include "config.h"
@@ -106,6 +106,9 @@ main_window::main_window(QWidget *parent)
     load_options();
     load_server_favs(*opts_);
 
+    tab_size_updater* all_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabAll ) );
+    connect(all_list_, SIGNAL(size_changed(int)), all_updater, SLOT(update_size(int)));
+    
     all_list_->set_server_list(all_sl_);
     all_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     all_list_->tree()->addAction(ui_->actionConnect);
@@ -115,6 +118,9 @@ main_window::main_window(QWidget *parent)
 
     new item_view_dblclick_action_link(this, all_list_->tree(), ui_->actionConnect);
 
+    tab_size_updater* fav_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabFav ) );
+    connect(fav_list_, SIGNAL(size_changed(int)), fav_updater, SLOT(update_size(int)));
+    
     fav_list_->set_server_list(fav_sl_);
     fav_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     fav_list_->tree()->addAction(ui_->actionConnect);
@@ -236,16 +242,19 @@ void main_window::save_options()
 void main_window::load_options()
 {
 #if defined(Q_OS_UNIX)
-    opts_->qstat_opts.qstat_path = "/usr/bin/qstat";
+    QString default_qstat = "/usr/bin/qstat";
     QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
 #elif defined(Q_OS_WIN)
-    opts_->qstat_opts.qstat_path = "qstat.exe";
+    QString default_qstat = "qstat.exe";
     QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
 #elif defined(Q_OS_MAC)
+    QString default_qstat = "/usr/bin/qstat";
     QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
 #endif
 
     opts_->qstat_opts.master_server = "master.urbanterror.net";
+    opts_->qstat_opts.qstat_path = default_qstat;
+    opts_->geoip_database = default_database;
 
     qsettings_p s = get_app_options_settings();
     load_app_options(s, *opts_);
@@ -491,3 +500,24 @@ void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
         ui_->actionShow->trigger();
     }
 }
+
+
+tab_size_updater::tab_size_updater(QTabWidget* tw, int index)
+    : QObject(tw)
+    , tw_(tw)
+    , index_(index)
+{}
+
+tab_size_updater::~tab_size_updater()
+{}
+
+void tab_size_updater::update_size(int size) const
+{
+    QString tabtext = tw_->tabText( index_ );
+    static QRegExp rx("([^()]+).*");
+    rx.exactMatch(tabtext);
+    QString new_text("%1(%2)");
+    tw_->setTabText( index_, QString("%1(%2)").arg(rx.cap(1)).arg(size) );
+}
+
+
