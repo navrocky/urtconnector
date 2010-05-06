@@ -14,7 +14,8 @@ struct geoip_disp{
 
     geoip_disp(const QString& database)
     {
-        if ( ! (ptr =  GeoIP_open( database.toLocal8Bit().data(), GEOIP_MMAP_CACHE )) )
+        //Dont use GEOIP_MMAP_CACHE because of it unimplemented under windows
+        if ( ! (ptr =  GeoIP_open( database.toLocal8Bit().data(), GEOIP_MEMORY_CACHE )) )
             throw std::runtime_error( QObject::tr("Can't open GeoIP database %1").arg(database).toLocal8Bit().data() );
     }
 

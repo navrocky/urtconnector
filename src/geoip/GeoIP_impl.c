@@ -18,6 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+//defined to avoid getnameinfo unidentified reference
+//this may request #include <ws2tcpip.h>
+#define _WIN32_WINNT 0x0501
+
+
 #include "GeoIP_impl.h"
 
 static geoipv6_t IPV6_NULL;

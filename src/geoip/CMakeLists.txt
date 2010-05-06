@@ -39,7 +39,12 @@ set(RESOURCES
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
-target_link_libraries( ${TARGET} ${QT_LIBRARIES} )
+if(WIN32)
+    target_link_libraries( ${TARGET} ${QT_LIBRARIES} ws2_32)
+else(WIN32)
+    target_link_libraries( ${TARGET} ${QT_LIBRARIES} )
+endif(WIN32)
+
 
 #install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 
