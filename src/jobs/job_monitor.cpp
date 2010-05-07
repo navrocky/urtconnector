@@ -133,6 +133,10 @@ job_item::job_item(job_weak_p job, QWidget* parent)
     connect(ui_->cancel_button, SIGNAL(clicked()), SLOT(cancel()));
 }
 
+job_item::~job_item()
+{}
+
+
 void job_item::update()
 {
     job_p j = job_.lock();
