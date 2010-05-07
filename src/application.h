@@ -1,9 +1,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <QApplication>
+#include "qtsingleapplication/qtsingleapplication.h"
 
-class application : public QApplication
+class application : public QtSingleApplication
 {
     Q_OBJECT
 public:

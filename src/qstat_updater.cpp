@@ -81,8 +81,8 @@ void qstat_updater::refresh_selected(const server_id_list& list)
     for (server_id_list::const_iterator it = list.begin(); it != list.end(); it++)
     {
         server_id id = it->address();
-        server_info info = info_list[id];
-        info.status = server_info::s_updating;
+        server_info_p info = info_list[id];
+        info->status = server_info::s_updating;
         info_list[id] = info;
     }
     serv_list_->change_state();
@@ -168,11 +168,11 @@ void qstat_updater::process_xml()
                 count_ = rd_.attributes().value(c_server_servers).toString().toInt();
             } else
             {
-                cur_server_info_ = server_info();
+                cur_server_info_ = server_info_p( new server_info() );
                 if (rd_.attributes().value(c_server_status) == "UP")
-                    cur_server_info_.status = server_info::s_up;
+                    cur_server_info_->status = server_info::s_up;
                 else
-                    cur_server_info_.status = server_info::s_down;
+                    cur_server_info_->status = server_info::s_down;
 
                 cur_state_ = s_server;
             }
@@ -232,19 +232,19 @@ void qstat_updater::process_xml()
     if (rd_.isCharacters())
     {
         if (cur_state_ == s_host_name)
-            cur_server_info_.id = server_id(rd_.text().toString());
+            cur_server_info_->id = server_id(rd_.text().toString());
         else if (cur_state_ == s_name)
-            cur_server_info_.name = rd_.text().toString();
+            cur_server_info_->name = rd_.text().toString();
         else if (cur_state_ == s_game_type)
-            cur_server_info_.game_type = rd_.text().toString();
+            cur_server_info_->game_type = rd_.text().toString();
         else if (cur_state_ == s_map)
-            cur_server_info_.map = rd_.text().toString();
+            cur_server_info_->map = rd_.text().toString();
         else if (cur_state_ == s_max_players)
-            cur_server_info_.max_player_count = rd_.text().toString().toInt();
+            cur_server_info_->max_player_count = rd_.text().toString().toInt();
         else if (cur_state_ == s_ping)
-            cur_server_info_.ping = rd_.text().toString().toInt();
+            cur_server_info_->ping = rd_.text().toString().toInt();
         else if (cur_state_ == s_retries)
-            cur_server_info_.retries = rd_.text().toString().toInt();
+            cur_server_info_->retries = rd_.text().toString().toInt();
         else if (cur_state_ == s_rule)
             cur_rule_.second = rd_.text().toString();
         else if (cur_state_ == s_player_name)
@@ -263,8 +263,8 @@ void qstat_updater::process_xml()
             {
                 prepare_info();
                 server_info_list& list = serv_list_->list();
-                server_info& si = list[cur_server_info_.id];
-                si.update_from(cur_server_info_);
+                server_info_p si = list[cur_server_info_->id];
+                si->update_from(*cur_server_info_);
                 progress_++;
 
                 serv_list_->change_state();
@@ -286,12 +286,12 @@ void qstat_updater::process_xml()
             cur_state_ = s_server;
         else if (rd_.name() == c_rule && cur_state_ == s_rule)
         {
-            cur_server_info_.info[cur_rule_.first] = cur_rule_.second;
+            cur_server_info_->info[cur_rule_.first] = cur_rule_.second;
             cur_state_ = s_rules;
         }
         else if (rd_.name() == c_player && cur_state_ == s_player)
         {
-            cur_server_info_.players.push_back(cur_player_info_);
+            cur_server_info_->players.push_back(cur_player_info_);
             cur_state_ = s_players;
         }
         else if ((rd_.name() == c_player_name && cur_state_ == s_player_name) ||
@@ -305,11 +305,11 @@ void qstat_updater::process_xml()
 
 void qstat_updater::prepare_info()
 {
-    if (cur_server_info_.status == server_info::s_down)
-        cur_server_info_.mode = server_info::gm_none;
+    if (cur_server_info_->status == server_info::s_down)
+        cur_server_info_->mode = server_info::gm_none;
     else
-        cur_server_info_.mode = (server_info::game_mode)(cur_server_info_.info["gametype"].toInt() + 1);
-    cur_server_info_.country = gi_.country( cur_server_info_.id.ip() );
-    cur_server_info_.country_code = gi_.code( cur_server_info_.id.ip() ).toLower();
+        cur_server_info_->mode = (server_info::game_mode)(cur_server_info_->info["gametype"].toInt() + 1);
+    cur_server_info_->country = gi_.country( cur_server_info_->id.ip() );
+    cur_server_info_->country_code = gi_.code( cur_server_info_->id.ip() ).toLower();
 }
 

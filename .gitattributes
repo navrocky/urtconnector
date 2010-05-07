@@ -302,6 +302,7 @@ src/icons/status-online.png -text
 src/icons/status-passwd.png -text
 src/icons/status-update.png -text
 src/icons/urtconnector.png -text
+src/icons/user-identity.png -text
 src/icons/view-refresh.png -text
 src/icons/visible-on.png -text
 src/images.qrc -text
@@ -337,6 +338,18 @@ src/qstat_options.cpp -text
 src/qstat_options.h -text
 src/qstat_updater.cpp -text
 src/qstat_updater.h -text
+src/qtsingleapplication/CMakeLists.txt -text
+src/qtsingleapplication/qtlocalpeer.cpp -text
+src/qtsingleapplication/qtlocalpeer.h -text
+src/qtsingleapplication/qtlockedfile.cpp -text
+src/qtsingleapplication/qtlockedfile.h -text
+src/qtsingleapplication/qtlockedfile_unix.cpp -text
+src/qtsingleapplication/qtlockedfile_win.cpp -text
+src/qtsingleapplication/qtsingleapplication.cpp -text
+src/qtsingleapplication/qtsingleapplication.h -text
+src/qtsingleapplication/qtsingleapplication.pri -text
+src/qtsingleapplication/qtsinglecoreapplication.cpp -text
+src/qtsingleapplication/qtsinglecoreapplication.h -text
 src/server_id.cpp -text
 src/server_id.h -text
 src/server_info.cpp -text

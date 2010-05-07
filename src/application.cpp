@@ -5,7 +5,7 @@
 #include "str_convert.h"
 
 application::application(int &argc, char * argv[])
-    : QApplication(argc, argv)
+    : QtSingleApplication(argc, argv)
 {
 }
 
@@ -34,4 +34,6 @@ void application::show_error(const QString & msg)
 {
     QMessageBox::critical(NULL, QObject::tr("Error"), msg);
 }
+
+
 

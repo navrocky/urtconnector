@@ -5,9 +5,9 @@
 #include <QtCore/qobject.h>
 #include <QPainter>
 
-#include "geoip/geoip.h"
 #include "server_info.h"
 #include "server_list.h"
+#include "geoip/geoip.h"
 
 #include "server_list_widget.h"
 
@@ -61,7 +61,7 @@ void server_list_widget::update_item(server_list_item* item)
     const server_info_list& list = serv_list_->list();
     server_info_list::const_iterator it = list.find(item->id());
     if (it == list.end()) return;
-    const server_info& si = it->second;
+    server_info_p si = it->second;
 
 //     static QIcon icon_none(":/icons/icons/status-none.png");
 //     static QIcon icon_online(":/icons/icons/status-online.png");
@@ -94,21 +94,21 @@ void server_list_widget::update_item(server_list_item* item)
     QModelIndex index = ui_.treeWidget->indexFromItem(item);
     ui_.treeWidget->model()->setData(index, qVariantFromValue(si), c_info_role );
 
-    item->setText(1, si.name.trimmed());
-    item->setText(2, si.id.address());
-    item->setIcon(3, geoip::get_flag_by_country(si.country_code) );
-    item->setText(3, si.country );
-    item->setText(4, QString("%1").arg(si.ping, 5));
-    item->setText(5, si.mode_name());
-    item->setText(6, si.map);
-    item->setText(7, QString("%1/%2").arg(si.players.size()).arg(si.max_player_count));
+    item->setText(1, si->name.trimmed());
+    item->setText(2, si->id.address());
+    item->setIcon(3, geoip::get_flag_by_country(si->country_code) );
+    item->setText(3, si->country );
+    item->setText(4, QString("%1").arg(si->ping, 5));
+    item->setText(5, si->mode_name());
+    item->setText(6, si->map);
+    item->setText(7, QString("%1/%2").arg(si->players.size()).arg(si->max_player_count));
 
     QString players;
-    for (player_info_list::const_iterator it = si.players.begin(); it != si.players.end(); it++)
+    for (player_info_list::const_iterator it = si->players.begin(); it != si->players.end(); it++)
         players += (*it).nick_name + " ";
 
-    item->setText(c_filter_info_column, QString("%1 %2 %3 %4 %5 %6").arg(si.name)
-        .arg(si.id.address()).arg(si.country).arg(si.map).arg(si.mode_name()).arg(players));
+    item->setText(c_filter_info_column, QString("%1 %2 %3 %4 %5 %6").arg(si->name)
+        .arg(si->id.address()).arg(si->country).arg(si->map).arg(si->mode_name()).arg(players));
     item->setHidden(!filter_item(item));
 }
 
@@ -223,7 +223,7 @@ status_item_delegate::status_item_delegate(QObject* parent)
 
 status_item_delegate::~status_item_delegate()
 {}
-
+#include <iostream>
 void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     //Draw base styled-item(gradient backgroud and other)
@@ -232,16 +232,18 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
     //Rect for drawing icons
     QRect icon( option.rect.topLeft(), QSize(option.rect.height(), option.rect.height()) );
     
-    server_info si = index.data(c_info_role).value<server_info>();
+    server_info_p si = index.data(c_info_role).value<server_info_p>();
 
     static QPixmap icon_none(":/icons/icons/status-none.png");
     static QPixmap icon_online(":/icons/icons/status-online.png");
     static QPixmap icon_offline(":/icons/icons/status-offline.png");
     static QPixmap icon_updating(":/icons/icons/status-update.png");
     static QPixmap icon_passwd( ":/icons/icons/status-passwd.png" );
+    static QPixmap icon_empty;
     
-    QPixmap& icon_status = icon_none;
-    switch (si.status)
+    
+    QPixmap& icon_status = icon_empty;
+    switch (si->status)
     {
         case server_info::s_none:
             icon_status = icon_none;
@@ -262,7 +264,12 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
 
     next_icon(icon);
 
-    if ( si.get_info("g_needpass").toInt() ) painter->drawPixmap( icon, icon_passwd );
+    if ( si->get_info("g_needpass").toInt() ) painter->drawPixmap( icon, icon_passwd );
+
+    next_icon(icon);
+
+    if ( si->get_info("pure", "-1").toInt() == 0 )
+        painter->drawPixmap( icon, QPixmap( ":/icons/icons/user-identity.png" ) );
 }
 
 void status_item_delegate::next_icon(QRect& icon) const

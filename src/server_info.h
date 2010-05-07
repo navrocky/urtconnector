@@ -8,6 +8,7 @@
 
 #include "server_id.h"
 #include "player_info.h"
+#include "pointers.h"
 
 class server_info
 {
@@ -51,7 +52,7 @@ public:
     QString map;
     QString map_url;
 
-    QString get_info(const QString& key) const;
+    QString get_info(const QString& key, const QString& default_value = QString()) const;
 
     /*! additional server info */
     typedef std::map<QString, QString> info_t;
@@ -67,8 +68,8 @@ private:
 };
 
 //qRegisterMetaType<server_info>("server_info");
-Q_DECLARE_METATYPE(server_info);
+Q_DECLARE_METATYPE(server_info_p);
 
-typedef std::map<server_id, server_info> server_info_list;
+typedef std::map<server_id, server_info_p> server_info_list;
 
 #endif

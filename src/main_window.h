@@ -73,7 +73,7 @@ private:
 
     server_id selected();
     server_list_widget* selected_list_widget();
-    const server_info* selected_info();
+    server_info_p selected_info();
 
     std::auto_ptr<Ui_MainWindowClass> ui_;
     app_options_p opts_;
@@ -91,7 +91,5 @@ private:
     geoip gi_;
     clipper* clipper_;
 };
-
-
 
 #endif

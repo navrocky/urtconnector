@@ -30,13 +30,13 @@ QString server_info::mode_name() const
     return QObject::tr("Unknown");
 }
 
-QString server_info::get_info(const QString& key) const
+QString server_info::get_info(const QString & key, const QString & default_value) const
 {
     info_t::const_iterator it( info.find(key) );
     if ( it != info.end() )
         return it->second;
     else
-        return QString();
+        return default_value;
 }
 
 void server_info::update_from(const server_info& src)

@@ -16,6 +16,7 @@ set(URT_DATADIR ${CMAKE_INSTALL_PREFIX}/share/urtconnector/)
 configure_file(config.h.in config.h)
 
 add_subdirectory(geoip)
+add_subdirectory(qtsingleapplication)
 
 set(HEADERS
     about_dialog.h
@@ -125,7 +126,7 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_executable(${TARGET} WIN32 ${HEADERS} ${SOURCES})
 
-target_link_libraries(${TARGET} ${QT_LIBRARIES} geoip)
+target_link_libraries(${TARGET} ${QT_LIBRARIES} geoip qtsingleapplication)
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 install(FILES icons/urtconnector.png DESTINATION share/icons)

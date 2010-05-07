@@ -52,7 +52,7 @@ private:
         s_player_score, s_player_ping
     };
     state_t cur_state_;
-    server_info cur_server_info_;
+    server_info_p cur_server_info_;
     player_info cur_player_info_;
     qstat_options* qstat_opts_;
     typedef std::pair<QString, QString> rule_info_t;

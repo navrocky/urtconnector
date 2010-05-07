@@ -38,6 +38,10 @@ job_monitor::job_monitor(job_queue* que, QWidget* parent)
     setVisible(false);
 }
 
+job_monitor::~job_monitor()
+{}
+
+
 void job_monitor::update()
 {
     job_p job = que_->get_current_job().lock();

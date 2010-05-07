@@ -22,6 +22,7 @@ class job_item : public QWidget
     Q_OBJECT
 public:
     job_item(job_weak_p job, QWidget* parent = 0);
+    virtual ~job_item();
 
     const job_weak_p& job() const {return job_;}
 
@@ -63,6 +64,7 @@ class job_monitor : public QWidget
     Q_OBJECT
 public:
     job_monitor(job_queue* que, QWidget* parent = 0);
+    virtual ~job_monitor();
 
 private slots:
     void update();

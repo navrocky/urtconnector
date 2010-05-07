@@ -13,6 +13,12 @@ int main(int argc, char *argv[])
     // this needed to link debug functions
     //    debug_help_init();
     application a(argc, argv);
+    if ( a.isRunning() )
+    {
+        a.sendMessage( QString() );
+        return 0;
+    }
+
     try
     {
         a.setOrganizationName("urtcommunity");
@@ -37,6 +43,8 @@ int main(int argc, char *argv[])
         a.installTranslator(&urt_tr);
 
         main_window w;
+        //set a widget that should raise when new instance trying to start
+        a.setActivationWindow(&w);
         return a.exec();
     }
     catch (const std::exception& e)

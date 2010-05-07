@@ -10,7 +10,6 @@
 #include <QTreeWidget>
 #include <QMessageBox>
 #include <QCloseEvent>
-// #include <QHeaderView>
 #include <QInputDialog>
 
 #include "config.h"
@@ -213,9 +212,9 @@ void main_window::sync_fav_list()
         {
             server_options& opts = it->second;
 
-            server_info si;
-            si.id = id;
-            si.name = opts.name;
+            server_info_p si( new server_info );
+            si->id = id;
+            si->name = opts.name;
             dstlist[id] = si;
             changed = true;
         }
@@ -317,21 +316,21 @@ server_id main_window::selected()
     return sel.front();
 }
 
-const server_info* main_window::selected_info()
+server_info_p main_window::selected_info()
 {
     server_list_widget* list = selected_list_widget();
     if (!list)
-        return 0;
+        return server_info_p();
     server_id id = selected();
     if (id.is_empty())
-        return 0;
+        return server_info_p();
     const server_info_list& sil = list->server_list()->list();
 
     server_info_list::const_iterator it = sil.find(id);
     if (it == sil.end())
-        return 0;
-    const server_info& si = it->second;
-    return &si;
+        return server_info_p();
+    
+    return it->second;
 }
 
 void main_window::connect_selected()
@@ -431,7 +430,7 @@ void main_window::update_server_info()
     if (!ui_->server_info_dock->isVisible())
         return;
 
-    const server_info* si = selected_info();
+    server_info_p si = selected_info();
     if (si)
     {
         if (old_id_ == si->id && old_state_ == si->update_stamp)
@@ -458,7 +457,7 @@ void main_window::selection_changed()
 
 void main_window::add_selected_to_fav()
 {
-    const server_info* si = selected_info();
+    server_info_p si = selected_info();
     if (!si) return;
 
     server_options opts;
