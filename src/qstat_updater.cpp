@@ -33,6 +33,7 @@ const char* c_player_ping = "ping";
 
 qstat_updater::qstat_updater(server_list_p list, const geoip& gi, qstat_options* opts)
 : cur_state_(s_init)
+, cur_server_info_( new server_info() )
 , gi_(gi)
 , qstat_opts_(opts)
 , serv_list_(list)
@@ -82,8 +83,12 @@ void qstat_updater::refresh_selected(const server_id_list& list)
     {
         server_id id = it->address();
         server_info_p info = info_list[id];
+        if ( !info )
+        {
+            info = server_info_p( new server_info() );
+            info_list[id] = info;
+        }
         info->status = server_info::s_updating;
-        info_list[id] = info;
     }
     serv_list_->change_state();
 
@@ -168,7 +173,6 @@ void qstat_updater::process_xml()
                 count_ = rd_.attributes().value(c_server_servers).toString().toInt();
             } else
             {
-                cur_server_info_ = server_info_p( new server_info() );
                 if (rd_.attributes().value(c_server_status) == "UP")
                     cur_server_info_->status = server_info::s_up;
                 else
@@ -264,6 +268,11 @@ void qstat_updater::process_xml()
                 prepare_info();
                 server_info_list& list = serv_list_->list();
                 server_info_p si = list[cur_server_info_->id];
+                if ( !si )
+                {
+                    si = server_info_p( new server_info() );
+                    list[cur_server_info_->id] = si;
+                }
                 si->update_from(*cur_server_info_);
                 progress_++;
 

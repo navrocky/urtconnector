@@ -233,6 +233,7 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
     QRect icon( option.rect.topLeft(), QSize(option.rect.height(), option.rect.height()) );
     
     server_info_p si = index.data(c_info_role).value<server_info_p>();
+    if ( !si ) si = server_info_p( new server_info() );
 
     static QPixmap icon_none(":/icons/icons/status-none.png");
     static QPixmap icon_online(":/icons/icons/status-online.png");
