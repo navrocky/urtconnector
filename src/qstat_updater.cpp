@@ -263,11 +263,8 @@ void qstat_updater::process_xml()
             {
                 prepare_info();
                 server_info_list& list = serv_list_->list();
-                server_info& old_si = list[cur_server_info_.id];
-                cur_server_info_.update_stamp = old_si.update_stamp + 1;
-                //FIXME Тут в список server_info вставляется новый элемент, который об уже проинициализированном geoip ничего не знает.
-                // Думаю надо в server_list_widget сделать функцию update_server_info(id) и все действия по замене server_info проводить в нем
-                list[cur_server_info_.id] = cur_server_info_;
+                server_info& si = list[cur_server_info_.id];
+                si.update_from(cur_server_info_);
                 progress_++;
 
                 serv_list_->change_state();
@@ -314,6 +311,5 @@ void qstat_updater::prepare_info()
         cur_server_info_.mode = (server_info::game_mode)(cur_server_info_.info["gametype"].toInt() + 1);
     cur_server_info_.country = gi_.country( cur_server_info_.id.ip() );
     cur_server_info_.country_code = gi_.code( cur_server_info_.id.ip() ).toLower();
-    cur_server_info_.country_flag = QIcon( QString(":/flags/flags/%1.png").arg( gi_.code(cur_server_info_.id.ip()).toLower() ) );
 }
 

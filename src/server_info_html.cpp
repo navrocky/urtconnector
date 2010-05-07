@@ -4,7 +4,9 @@
 #include <QRegExp>
 #include <iostream>
 
+#include "geoip/geoip.h"
 #include "server_info_html.h"
+#include "job_update_from_master.h"
 
 QString get_css()
 {
@@ -96,7 +98,8 @@ QString get_server_info_html(const server_info& si)
     
     QString country_flag;
     if( !si.country_code.isEmpty() )
-         country_flag = QString("<img class=\"img1\" src=\":/flags/flags/%1.png\">").arg(si.country_code);
+         country_flag = QString("<img class=\"img1\" src=\"%1\">")
+                 .arg(geoip::get_flag_filename_by_country(si.country_code));
 
     serv_info = qApp->translate("server_info_html",
                                 "<table width=100%>"
@@ -104,8 +107,8 @@ QString get_server_info_html(const server_info& si)
                                 "<tr class=\"line2\"><td>Game mode</td><td>%2</td></tr>"
                                 "<tr class=\"line1\"><td>Map</td><td>%3</td></tr>"
                                 "<tr class=\"line2\"><td>Ping</td><td>%4</td></tr>"
-                                "<tr class=\"line2\"><td>Country</td><td>%5 %6</td></tr>"
-                                "<tr class=\"line1\"><td>Max players</td><td>%7</td></tr>"
+                                "<tr class=\"line1\"><td>Country</td><td>%5 %6</td></tr>"
+                                "<tr class=\"line2\"><td>Max players</td><td>%7</td></tr>"
                                 "</table>"
                                 )
             .arg(status_str).arg(si.mode_name()).arg(si.map).arg(si.ping).arg(country_flag).arg(si.country).arg(si.max_player_count);

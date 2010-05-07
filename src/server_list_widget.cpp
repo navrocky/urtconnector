@@ -5,6 +5,7 @@
 #include <QtCore/qobject.h>
 #include <QPainter>
 
+#include "geoip/geoip.h"
 #include "server_info.h"
 #include "server_list.h"
 
@@ -95,7 +96,7 @@ void server_list_widget::update_item(server_list_item* item)
 
     item->setText(1, si.name.trimmed());
     item->setText(2, si.id.address());
-    item->setIcon(3, si.country_flag );
+    item->setIcon(3, geoip::get_flag_by_country(si.country_code) );
     item->setText(3, si.country );
     item->setText(4, QString("%1").arg(si.ping, 5));
     item->setText(5, si.mode_name());

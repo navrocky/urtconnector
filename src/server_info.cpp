@@ -39,5 +39,43 @@ QString server_info::get_info(const QString& key) const
         return QString();
 }
 
+void server_info::update_from(const server_info& src)
+{
+    if (!src.name.isEmpty())
+        name = src.name;
+    if (!src.country.isEmpty())
+        country = src.country;
+    if (!src.country_code.isEmpty())
+        country_code = src.country_code;
+    if (!src.info.empty())
+        info = src.info;
+    if (!src.map.isEmpty())
+        map = src.map;
+    if (!src.map_url.isEmpty())
+        map_url = src.map_url;
+    if (src.mode != gm_none)
+        mode = src.mode;
+    if (src.ping != 0)
+        ping = src.ping;
+    if (!src.players.empty())
+        players = src.players;
+    if (src.red_score != 0)
+        red_score = src.red_score;
+    if (src.retries != 0)
+        retries = src.retries;
+    status = src.status;
+    if (src.blue_score != 0)
+        blue_score = src.blue_score;
+    if (!src.game_type.isEmpty())
+        game_type = src.game_type;
+    id = src.id;
+    if (src.max_player_count != 0)
+        max_player_count = src.max_player_count;
+    update_stamp++;
+}
+
+//void server_info::update_from(const server_info& src)
+//{}
+
 
 

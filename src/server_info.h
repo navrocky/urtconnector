@@ -42,7 +42,6 @@ public:
     int max_player_count;
     QString country;
     QString country_code;
-    QIcon country_flag;
     game_mode mode;
     QString mode_name() const;
     int ping;
@@ -60,6 +59,9 @@ public:
 
     /*! Info update stamp. Changed after each update. */
     int update_stamp;
+
+    /*! Correctly update from anoter server_info */
+    void update_from(const server_info& src);
 private:
 
 };

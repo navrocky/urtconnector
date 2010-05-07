@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>556</width>
-    <height>339</height>
+    <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="launchTab">
       <attribute name="title">
@@ -178,7 +178,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QCheckBox" name="looking_for_clip">
          <property name="text">
-          <string>Loking for clipboard</string>
+          <string>Looking for ip:port in clipboard</string>
          </property>
         </widget>
        </item>
