@@ -19,7 +19,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout_2">
+    <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label_8">
        <property name="text">
@@ -29,6 +29,9 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="addressEdit"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_4">
@@ -40,10 +43,38 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QLineEdit" name="nameEdit"/>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="nameEdit"/>
+       </item>
+       <item>
+        <widget class="QToolButton" name="update_name_button">
+         <property name="toolTip">
+          <string>Update server name by address</string>
+         </property>
+         <property name="icon">
+          <iconset resource="images.qrc">
+           <normaloff>:/icons/icons/view-refresh.png</normaloff>:/icons/icons/view-refresh.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
-     <item row="4" column="0">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Password</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="passwordEdit"/>
+     </item>
+     <item row="3" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
         <string>RCON password</string>
@@ -53,29 +84,10 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2">
+     <item row="3" column="1">
       <widget class="QLineEdit" name="rconEdit"/>
      </item>
-     <item row="6" column="2">
-      <widget class="QLineEdit" name="refEdit"/>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Comment</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="2">
-      <widget class="QTextEdit" name="commentEdit"/>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLineEdit" name="addressEdit"/>
-     </item>
-     <item row="6" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="label_9">
        <property name="text">
         <string>Referee password</string>
@@ -85,18 +97,21 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="2">
-      <widget class="QLineEdit" name="passwordEdit"/>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="refEdit"/>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_7">
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Password</string>
+        <string>Comment</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QTextEdit" name="commentEdit"/>
      </item>
     </layout>
    </item>

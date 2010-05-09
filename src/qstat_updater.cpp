@@ -147,13 +147,13 @@ void qstat_updater::ready_read_output()
 {
     rd_.addData(proc_.readAll());
 
-    while (!rd_.atEnd())
+    while (!rd_.atEnd() && !canceled_)
     {
         if (rd_.readNext() != QXmlStreamReader::Invalid)
             process_xml();
         else
-
-        if (rd_.hasError() && (rd_.error() != QXmlStreamReader::PrematureEndOfDocumentError))
+        if (rd_.hasError() && (rd_.error() != QXmlStreamReader::PrematureEndOfDocumentError)
+            && !canceled_)
             throw qexception(rd_.errorString());
     }
 }
@@ -238,7 +238,7 @@ void qstat_updater::process_xml()
         if (cur_state_ == s_host_name)
             cur_server_info_->id = server_id(rd_.text().toString());
         else if (cur_state_ == s_name)
-            cur_server_info_->name = rd_.text().toString();
+            cur_server_info_->name = rd_.text().toString().trimmed();
         else if (cur_state_ == s_game_type)
             cur_server_info_->game_type = rd_.text().toString();
         else if (cur_state_ == s_map)
@@ -252,7 +252,7 @@ void qstat_updater::process_xml()
         else if (cur_state_ == s_rule)
             cur_rule_.second = rd_.text().toString();
         else if (cur_state_ == s_player_name)
-            cur_player_info_.nick_name = rd_.text().toString();
+            cur_player_info_.nick_name = rd_.text().toString().trimmed();
         else if (cur_state_ == s_player_score)
             cur_player_info_.score = rd_.text().toString().toInt();
         else if (cur_state_ == s_player_ping)
@@ -274,6 +274,7 @@ void qstat_updater::process_xml()
                     list[cur_server_info_->id] = si;
                 }
                 si->update_from(*cur_server_info_);
+                cur_server_info_.reset( new server_info() );
                 progress_++;
 
                 serv_list_->change_state();
@@ -318,7 +319,7 @@ void qstat_updater::prepare_info()
         cur_server_info_->mode = server_info::gm_none;
     else
         cur_server_info_->mode = (server_info::game_mode)(cur_server_info_->info["gametype"].toInt() + 1);
-    cur_server_info_->country = gi_.country( cur_server_info_->id.ip() );
-    cur_server_info_->country_code = gi_.code( cur_server_info_->id.ip() ).toLower();
+    cur_server_info_->country = gi_.country( cur_server_info_->id.ip_or_host() );
+    cur_server_info_->country_code = gi_.code( cur_server_info_->id.ip_or_host() ).toLower();
 }
 

@@ -30,6 +30,18 @@ QString server_info::mode_name() const
     return QObject::tr("Unknown");
 }
 
+QString server_info::status_name()
+{
+    switch (status)
+    {
+        case s_none: return QObject::tr("Unknown");
+        case s_down: return QObject::tr("Offline");
+        case s_up: return QObject::tr("Online");
+        case s_updating: return QObject::tr("Updating");
+    }
+    return QObject::tr("Unknown");
+}
+
 QString server_info::get_info(const QString & key, const QString & default_value) const
 {
     info_t::const_iterator it( info.find(key) );

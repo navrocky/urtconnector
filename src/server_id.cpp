@@ -21,17 +21,25 @@ server_id::server_id(const QString & ip, const QString & hostName, int port)
 
 server_id::server_id(const QString & address)
 {
-    QRegExp rx("^((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|([^:]+)):(\\d{1,5})$");
+    QRegExp rx("^((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|([^:]+))(:(\\d{1,5}))?$");
     if (!(rx.exactMatch(address)))
         throw qexception(QObject::tr("Address syntax error"));
     set_ip(rx.cap(2));
     set_host_name(rx.cap(3));
-    set_port(rx.cap(4));
+    if (rx.cap(5).isEmpty())
+        set_port(27960);
+    else
+        set_port(rx.cap(5));
 }
 
 bool operator ==(const server_id & a, const server_id & b)
 {
     return a.host_name() == b.host_name() && a.ip() == b.ip() && a.port() == b.port();
+}
+
+bool operator!= ( const server_id& a, const server_id& b )
+{
+    return !(a == b);
 }
 
 bool operator <(const server_id & a, const server_id & b)

@@ -22,7 +22,7 @@ public:
 
     void set_database(const QString& database);
 
-    QString code(const QString& addr) const;
+    QString code(const QString& ip_or_host) const;
     QString code3(const QString& addr) const;
     QString country(const QString& addr) const;
 

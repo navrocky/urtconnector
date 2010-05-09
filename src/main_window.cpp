@@ -131,6 +131,9 @@ main_window::main_window(QWidget *parent)
 
     new item_view_dblclick_action_link(this, fav_list_->tree(), ui_->actionConnect);
 
+    fav_list_->set_favs(&(opts_->servers));
+    all_list_->set_favs(&(opts_->servers));
+
     update_actions();
     sync_fav_list();
     update_server_info();
@@ -162,6 +165,7 @@ void main_window::quick_connect()
 void main_window::fav_add()
 {
     server_options_dialog d;
+    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
     if (d.exec() == QDialog::Rejected) return;
     server_fav_list& list = opts_->servers;
     list[d.options().id] = d.options();
@@ -169,6 +173,30 @@ void main_window::fav_add()
     fav_list_->force_update();
     update_actions();
     save_server_favs(*opts_);
+}
+
+void main_window::fav_edit()
+{
+    server_id id = selected();
+    if (id.is_empty()) return;
+    server_options opts = opts_->servers[id];
+
+    server_options_dialog d(this, opts);
+    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
+    if (d.exec() == QDialog::Rejected) return;
+
+    if (d.options().id != id)
+    {
+        opts_->servers.erase(id);
+        id = d.options().id;
+    }
+
+    opts_->servers[id] = d.options();
+    save_server_favs(*opts_);
+    sync_fav_list();
+    fav_list_->force_update();
+
+    update_actions();
 }
 
 void main_window::fav_delete()
@@ -214,7 +242,7 @@ void main_window::sync_fav_list()
 
             server_info_p si( new server_info );
             si->id = id;
-            si->name = opts.name;
+//             si->name = opts.name;
             dstlist[id] = si;
             changed = true;
         }
@@ -242,14 +270,12 @@ void main_window::load_options()
 {
 #if defined(Q_OS_UNIX)
     QString default_qstat = "/usr/bin/qstat";
-    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
 #elif defined(Q_OS_WIN)
     QString default_qstat = "qstat.exe";
-    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
 #elif defined(Q_OS_MAC)
     QString default_qstat = "/usr/bin/qstat";
-    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
 #endif
+    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
 
     opts_->qstat_opts.master_server = "master.urbanterror.net";
     opts_->qstat_opts.qstat_path = default_qstat;
@@ -380,23 +406,6 @@ void main_window::update_actions()
     ui_->actionRefreshSelected->setEnabled(sel);
 }
 
-void main_window::fav_edit()
-{
-    server_id id = selected();
-    if (id.is_empty()) return;
-    server_options opts = opts_->servers[id];
-
-    server_options_dialog d(this, opts);
-    if (d.exec() == QDialog::Rejected) return;
-
-    opts_->servers[id] = d.options();
-    save_server_favs(*opts_);
-    sync_fav_list();
-    fav_list_->force_update();
-
-    update_actions();
-}
-
 void main_window::current_tab_changed(int)
 {
     update_actions();
@@ -439,7 +448,8 @@ void main_window::update_server_info()
         old_state_ = si->update_stamp;
         old_id_ = si->id;
 
-        ui_->server_info_browser->setHtml(get_server_info_html(*si));
+        QString s = get_server_info_html(*si);
+        ui_->server_info_browser->setHtml(s);
     }
     else
     {
@@ -483,6 +493,7 @@ void main_window::show_action()
 void main_window::quit_action()
 {
     hide();
+    tray_->hide();
     qsettings_p s = get_app_options_settings();
     save_geometry(s);
 

@@ -20,14 +20,15 @@ class QTimer;
 class Ui_MainWindowClass;
 
 
-class tab_size_updater: public QObject{
+class tab_size_updater: public QObject
+{
     Q_OBJECT
 public:
-    tab_size_updater(QTabWidget* tw, int index);
+    tab_size_updater ( QTabWidget* tw, int index );
     ~tab_size_updater();
 
 public Q_SLOTS:
-    void update_size(int i) const;
+    void update_size ( int i ) const;
 private:
     QTabWidget* tw_;
     int index_;
@@ -35,9 +36,9 @@ private:
 
 class main_window : public QMainWindow
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    main_window(QWidget *parent = 0);
+    main_window ( QWidget *parent = 0 );
     ~main_window();
 
 public slots:
@@ -45,7 +46,7 @@ public slots:
     void load_options();
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent ( QCloseEvent *event );
 
 private slots:
     void show_options();
@@ -58,18 +59,18 @@ private slots:
     void refresh_all();
     void refresh_selected();
     void update_actions();
-    void current_tab_changed(int);
+    void current_tab_changed ( int );
     void update_server_info();
     void selection_changed();
     void add_selected_to_fav();
-    void tray_activated(QSystemTrayIcon::ActivationReason reason);
+    void tray_activated ( QSystemTrayIcon::ActivationReason reason );
     void show_action();
     void quit_action();
 private:
     void sync_fav_list();
 
-    void save_geometry(qsettings_p s);
-    void load_geometry(qsettings_p s);
+    void save_geometry ( qsettings_p s );
+    void load_geometry ( qsettings_p s );
 
     server_id selected();
     server_list_widget* selected_list_widget();

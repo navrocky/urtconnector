@@ -41,6 +41,7 @@ private:
 };
 
 bool operator==(const server_id& a, const server_id& b);
+bool operator!=(const server_id& a, const server_id& b);
 bool operator<(const server_id& a, const server_id& b);
 bool operator>(const server_id& a, const server_id& b);
 // bool operator<=(const ServerID& a, const ServerID& b);

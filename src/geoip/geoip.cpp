@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include <QObject>
+#include <QRegExp>
 
 #include "GeoIP_impl.h"
 #include "geoip.h"
@@ -31,8 +32,14 @@ struct geoip::Pimpl
 {
 
     Pimpl(const QString & database)
+    : ip_rx("^[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}\\.[\\d]{1,3}$")
     {
         set_database(database);
+    }
+
+    bool is_ip(const QString& ip_or_host) const
+    {
+        return ip_rx.exactMatch(ip_or_host);
     }
 
     void set_database(const QString & database)
@@ -42,20 +49,36 @@ struct geoip::Pimpl
 
     QString code(const QString & addr) const
     {
-        return (gi) ? GeoIP_country_code_by_addr(gi->ptr, addr.toLocal8Bit().data()) : QString();
+        if (!gi)
+            return QString();
+        if (is_ip(addr))
+            return GeoIP_country_code_by_addr(gi->ptr, addr.toLocal8Bit().data());
+        else
+            return GeoIP_country_code_by_name(gi->ptr, addr.toLocal8Bit().data());
     }
 
     QString code3(const QString & addr) const
     {
-        return (gi) ? GeoIP_country_code3_by_addr(gi->ptr, addr.toLocal8Bit().data()) : QString();
+        if (!gi)
+            return QString();
+        if (is_ip(addr))
+            return GeoIP_country_code3_by_addr(gi->ptr, addr.toLocal8Bit().data());
+        else
+            return GeoIP_country_code3_by_name(gi->ptr, addr.toLocal8Bit().data());
     }
 
     QString country(const QString & addr) const
     {
-        return (gi) ? GeoIP_country_name_by_addr(gi->ptr, addr.toLocal8Bit().data()) : QString();
+        if (!gi)
+            return QString();
+        if (is_ip(addr))
+            return GeoIP_country_name_by_addr(gi->ptr, addr.toLocal8Bit().data());
+        else
+            return GeoIP_country_name_by_name(gi->ptr, addr.toLocal8Bit().data());
     }
 
     boost::shared_ptr<geoip_disp> gi;
+    QRegExp ip_rx;
 };
 
 geoip::geoip(const QString& database)
@@ -68,19 +91,19 @@ bool geoip::operator()()const
     return p_;
 }
 
-QString geoip::code(const QString& addr) const
+QString geoip::code(const QString& ip_or_host) const
 {
-    return p_->code(addr);
+    return p_->code(ip_or_host);
 }
 
-QString geoip::code3(const QString& addr) const
+QString geoip::code3(const QString& ip_or_host) const
 {
-    return p_->code3(addr);
+    return p_->code3(ip_or_host);
 }
 
-QString geoip::country(const QString& addr) const
+QString geoip::country(const QString& ip_or_host) const
 {
-    return p_->country(addr);
+    return p_->country(ip_or_host);
 }
 
 void geoip::set_database(const QString& database)

@@ -11,6 +11,7 @@
 #include "ui_server_list_widget.h"
 #include "pointers.h"
 #include "server_id.h"
+#include "server_options.h"
 
 class server_list_item;
 
@@ -19,16 +20,20 @@ class server_list_widget : public QWidget
 Q_OBJECT
 public:
     server_list_widget(QWidget *parent);
-    ~server_list_widget();
 
     void set_server_list(server_list_p ptr);
     server_list_p server_list() const {return serv_list_;}
 
+    /*! Favorites list */
+    void set_favs(server_fav_list* favs);
+
+    /*! Access to internal QTreeWidget */
     QTreeWidget* tree() const {return ui_.treeWidget;}
 
     /*! Current selection in widget */
     server_id_list selection();
 
+    /*! Force update widget */
     void force_update();
 
 Q_SIGNALS:
@@ -53,6 +58,7 @@ private:
     QRegExp filter_rx_;
     int update_timer_;
     int filter_timer_;
+    server_fav_list* favs_;
 };
 
 
