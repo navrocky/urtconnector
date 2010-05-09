@@ -1,5 +1,5 @@
 %define name urtconnector
-%define version 0.3.1
+%define version 0.4.0
 
 Summary: Advanced Urban Terror launcher
 Name: %{name}
@@ -48,4 +48,4 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/icons/*
 /usr/share/pixmaps/*
 /usr/share/applications/*
-/usr/share/urtconnector/translations/*
+/usr/share/urtconnector/*
