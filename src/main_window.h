@@ -41,10 +41,6 @@ public:
     main_window ( QWidget *parent = 0 );
     ~main_window();
 
-public slots:
-    void save_options();
-    void load_options();
-
 protected:
     void closeEvent ( QCloseEvent *event );
 
@@ -69,8 +65,8 @@ private slots:
 private:
     void sync_fav_list();
 
-    void save_geometry ( qsettings_p s );
-    void load_geometry ( qsettings_p s );
+    void save_geometry(settings s);
+    void load_geometry(settings s);
 
     server_id selected();
     server_list_widget* selected_list_widget();

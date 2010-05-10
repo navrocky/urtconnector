@@ -27,6 +27,10 @@ server_options_dialog::server_options_dialog(QWidget * parent, const server_opti
     setWindowTitle(tr("Server favorite options"));
 }
 
+server_options_dialog::~server_options_dialog()
+{}
+
+
 void server_options_dialog::init()
 {
     ui_.reset(new Ui_ServOptsDialogClass);
@@ -65,10 +69,10 @@ void server_options_dialog::update_dialog()
     ui_->commentEdit->setPlainText(opts_.comment);
 }
 
-void server_options_dialog::set_update_params ( geoip* gi, qstat_options* opts, job_queue* que)
+void server_options_dialog::set_update_params ( geoip* gi, const settings& qstat, job_queue* que)
 {
     gi_ = gi;
-    qstat_opts_ = opts;
+    qstat_opts_ = qstat;
     que_ = que;
 }
 
