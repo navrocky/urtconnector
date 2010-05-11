@@ -47,8 +47,8 @@ protected:
 private slots:
     void show_options();
     void show_about();
-    void quick_connect();
-    void connect_selected();
+    void quick_connect() const;
+    void connect_selected() const;
     void fav_add();
     void fav_edit();
     void fav_delete();
@@ -68,13 +68,12 @@ private:
     void save_geometry(settings s);
     void load_geometry(settings s);
 
-    server_id selected();
-    server_list_widget* selected_list_widget();
-    server_info_p selected_info();
+    server_id selected() const;
+    server_list_widget* selected_list_widget() const;
+    server_info_p selected_info() const;
 
     std::auto_ptr<Ui_MainWindowClass> ui_;
     app_options_p opts_;
-    launcher launcher_;
     server_list_widget* all_list_;
     server_list_widget* fav_list_;
     server_list_p all_sl_;

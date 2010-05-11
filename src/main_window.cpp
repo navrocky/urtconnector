@@ -39,7 +39,6 @@ main_window::main_window(QWidget *parent)
 : QMainWindow(parent)
 , ui_(new Ui::MainWindowClass)
 , opts_(new app_options())
-, launcher_(opts_)
 , all_sl_(new server_list)
 , fav_sl_(new server_list)
 , old_state_(0)
@@ -152,12 +151,13 @@ void main_window::show_options()
     if (d.exec() == QDialog::Rejected) return;
 }
 
-void main_window::quick_connect()
+void main_window::quick_connect() const
 {
-    launcher_.set_server_id(server_id(ui_->qlServerEdit->text()));
-    launcher_.set_user_name(ui_->qlPlayerEdit->text());
-    launcher_.set_password(ui_->qlPasswordEdit->text());
-    launcher_.launch();
+    launcher l( opts_->launch );
+    l.set_server_id(server_id(ui_->qlServerEdit->text()));
+    l.set_user_name(ui_->qlPlayerEdit->text());
+    l.set_password(ui_->qlPasswordEdit->text());
+    l.launch();
 }
 
 void main_window::fav_add()
@@ -306,7 +306,7 @@ void main_window::refresh_selected()
     que_->add_job(job_p(new job_update_selected(ids, list->server_list(), gi_, opts_->qstat)));
 }
 
-server_id main_window::selected()
+server_id main_window::selected() const
 {
     server_list_widget* list = selected_list_widget();
     if (!list) return server_id();
@@ -315,7 +315,7 @@ server_id main_window::selected()
     return sel.front();
 }
 
-server_info_p main_window::selected_info()
+server_info_p main_window::selected_info() const
 {
     server_list_widget* list = selected_list_widget();
     if (!list)
@@ -332,31 +332,40 @@ server_info_p main_window::selected_info()
     return it->second;
 }
 
-void main_window::connect_selected()
+void main_window::connect_selected() const
 {
-    server_id id = selected();
-    if (id.is_empty()) return;
+    //info MUST be correct or connect-action is disabled!
+    server_info_p info = selected_info();
 
-    server_options& opts = opts_->servers[id];
+    server_options opts;
 
-    launcher_.set_server_id(id);
-    launcher_.set_user_name("");
-    launcher_.set_password(opts.password);
-    
+    server_fav_list::const_iterator it;
+
+    //may be wrap server_info in shared_ptr?
+    if ( ( it = opts_->servers.find( info->id ) ) != opts_->servers.end() )
+        opts = it->second;
+
+    //i think launcher can be created on stack
+    launcher l(opts_->launch);
+
+    l.set_server_id( info->id );
+    l.set_user_name("");
+    l.set_password(opts.password);
+
     if ( opts.password.isEmpty() && selected_info() && selected_info()->get_info("g_needpass").toInt() )
     {
         bool ok;
-        QString password = QInputDialog::getText(this, "Server require password", "Enter password:", QLineEdit::PasswordEchoOnEdit, "", &ok );
-        if ( !ok ) return;
-        launcher_.set_password(password);
+        QString password = QInputDialog::getText(0, "Server require password", "Enter password:", QLineEdit::PasswordEchoOnEdit, "", &ok );
+        if ( ok ) return;
+        l.set_password(password);
     }
 
-    launcher_.set_referee(opts.ref_password);
-    launcher_.set_rcon(opts.rcon_password);
-    launcher_.launch();
+    l.set_referee(opts.ref_password);
+    l.set_rcon(opts.rcon_password);
+    l.launch();
 }
 
-server_list_widget* main_window::selected_list_widget()
+server_list_widget* main_window::selected_list_widget() const
 {
     QWidget* curw = ui_->tabWidget->currentWidget();
     if (curw == ui_->tabFav)

@@ -102,7 +102,7 @@ void options_dialog::adv_text_changed(const QString& text)
     opts->launch.set_value("adv_cmd_line", text);
     opts->launch.set_value("binary_path", ui.binary_edit->text());
 
-    launcher l(opts);
+    launcher l(opts->launch);
     l.set_server_id(server_id("server:12345"));
     l.set_user_name("New_URT_Player");
     l.set_rcon("rcon_pAsSwOrD");

@@ -56,14 +56,14 @@ static QStringList parseCombinedArgString(const QString &program)
     return args;
 }
 
-launcher::launcher(app_options_p opts)
-: opts_(opts)
+launcher::launcher(const settings& opts)
+: launch_opts(opts)
 {
 }
 
 QString launcher::get_work_dir()
 {
-    return QFileInfo(opts_->launch.value<QString>("binary_path")).absoluteDir().absolutePath();
+    return QFileInfo(launch_opts.value<QString>("binary_path")).absoluteDir().absolutePath();
 }
 
 void launcher::set_server_id(const server_id & id)
@@ -109,10 +109,10 @@ void launcher::launch()
 QString launcher::launch_string()
 {
     QString res;
-    if (opts_->launch.value<bool>("use_adv_cmd_line"))
+    if (launch_opts.value<bool>("use_adv_cmd_line"))
     {
-        res = opts_->launch.value<QString>("adv_cmd_line");
-        res.replace("%bin%", opts_->launch.value<QString>("binary_path"), Qt::CaseInsensitive)
+        res = launch_opts.value<QString>("adv_cmd_line");
+        res.replace("%bin%", launch_opts.value<QString>("binary_path"), Qt::CaseInsensitive)
                 .replace("%name%", userName_, Qt::CaseInsensitive)
                 .replace("%pwd%", password_, Qt::CaseInsensitive)
                 .replace("%addr%", id_.address(), Qt::CaseInsensitive)
@@ -121,7 +121,7 @@ QString launcher::launch_string()
     }
     else
     {
-        res = opts_->launch.value<QString>("binary_path");
+        res = launch_opts.value<QString>("binary_path");
         if (!userName_.isEmpty())
             res += QString(" +name \"%1\"").arg(userName_);
 
