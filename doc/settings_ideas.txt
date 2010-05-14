@@ -1,0 +1,38 @@
+// инициализируем объект настроек в main()
+settings s;
+
+// задаем ассоциацию uid и пути в контейнере
+s.set_uid_path(qstat_options::uid(), "/path/to/qstat_opts");
+
+// грузим по пути uid'а
+s.load_from_file_by_uid("qstat_opts.ini", qstat_options::uid());
+
+// или грузим просто по пути
+s.load_from_file_by_path("qstat_opts.ini", "/path/to/qstat_opts");
+
+...
+
+// где-то в коде qstat, где нам надо доступиться до настроек
+qstat_options opts(s);
+opts.binary_path();
+opts.retry_count();
+opts.set_binary_path("aassdas");
+
+...
+
+// при выходе из приложения сохраняем все в один файл
+s.save_to_file("aaa");
+
+// или в разные файлы разные ветки
+s.save_to_file_by_path("qstat.conf", "/path/to/qstat_opts"):
+
+// или в разные файлы разные ветки
+s.save_to_file_by_uid("qstat.conf", qstat_options::uid()):
+
+
+// реализация метода qstat_options
+string qstat_options::binary_path()
+{
+  return settings_.read_value(uid(), "group1/binary_path").to_str();
+}
+

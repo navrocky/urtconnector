@@ -24,6 +24,7 @@ doc/ExampleData/qstat_out.xml -text
 doc/ExampleData/servers.xml -text
 doc/class_model.xmi -text
 doc/qstat_out.txt -text
+doc/settings_ideas.txt -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text
 src/CMakeLists.txt -text

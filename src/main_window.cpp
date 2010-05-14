@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QInputDialog>
+#include <QByteArray>
 
 #include "config.h"
 #include "ui_main_window.h"
@@ -32,6 +33,7 @@
 #include "job_update_from_master.h"
 
 #include "main_window.h"
+#include <QFile>
 
 using namespace std;
 
@@ -457,6 +459,8 @@ void main_window::add_selected_to_fav()
     opts.name = si->name;
 
     server_options_dialog d(0, opts);
+    d.set_update_params(&gi_, opts_->qstat, que_);
+    
     if (d.exec() == QDialog::Rejected) return;
     server_fav_list& list = opts_->servers;
     list[d.options().id] = d.options();
@@ -471,14 +475,30 @@ void main_window::show_action()
     setVisible(!isVisible());
 }
 
+void save_list1(server_list_p list)
+{
+    qsettings_p s = get_server_list_settings("servers");
+    QFile::remove(s->fileName());
+    save_server_list(s, "all_list_info", *(list.get()));
+}
+
+void save_list2(server_list_p list)
+{
+    QByteArray ba = save_server_list2(*(list.get()));
+    QString fn = get_server_list_settings("servers2")->fileName();
+    QFile f(fn);
+    f.open(QIODevice::WriteOnly);
+    f.write(ba);
+}
+
 void main_window::quit_action()
 {
     hide();
     tray_->hide();
     save_geometry(opts_->state);
 
-    save_server_list(get_server_list_settings("servers"), "all_list_info",
-            *(all_sl_.get()));
+    save_list1(all_sl_);
+//     save_list2(all_sl_);
 
     qApp->quit();
 }

@@ -91,8 +91,8 @@ void server_list_widget::update_item(server_list_item* item)
 
     if ( si->get_info("g_needpass").toInt() )
         sl << tr("Private");
-    if ( si->get_info("pure", "-1").toInt() != 0 )
-        sl << tr("Pure");
+    if ( si->get_info("pure", "-1").toInt() == 0 )
+        sl << tr("Not pure");
 
     QString status = sl.join(", ");
 
