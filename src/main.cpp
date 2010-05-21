@@ -2,14 +2,24 @@
 #include <QTranslator>
 #include <QLibraryInfo>
 
+#include <iostream>
+#include <cl/syslog/syslog.h>
+#include <cl/syslog/output_stream.h>
+
 #include "main_window.h"
 #include "application.h"
 #include "exception.h"
 #include "debug_help.h"
 #include "str_convert.h"
 
+using namespace cl::syslog;
+
 int main(int argc, char *argv[])
 {
+    output_p cerr_out(new output_stream(std::cerr));
+//     logman().level_set(harddebug);
+    logman().output_add(cerr_out);
+    
     // this needed to link debug functions
     //    debug_help_init();
     application a(argc, argv);

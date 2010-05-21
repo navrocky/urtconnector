@@ -1,9 +1,15 @@
+#include <stdexcept>
+
 #include <QCoreApplication>
 #include <QSettings>
 #include <QByteArray>
 
+#include <cl/syslog/syslog.h>
+
 #include "pointers.h"
 #include "server_list_saver.h"
+
+SYSLOG_MODULE("server_list_saver");
 
 qsettings_p get_server_list_settings(const QString& name)
 {
@@ -61,21 +67,54 @@ void save_server_info2(props_t& props, const server_info_p& info)
 void load_server_info2(const props_t& props, server_info_p& info)
 {
     props_t::const_iterator prop;
+
     prop = props.find("address");
     if (prop != props.end())
+    {
+        LOG_HARD << "addr = %1", prop->toString().toStdString();
+        
         info->id = server_id(prop->toString());
+    }
+    LOG_HARD << "info.id = %1", info->id.address().toStdString();
     prop = props.find("name");
     if (prop != props.end())
         info->name = prop->toString();
+    LOG_HARD << "info.name = %1", info->name.toStdString();
     prop = props.find("game_type");
     if (prop != props.end())
-        info->name = prop->toString();
-    prop = props.find("name");
+        info->game_type = prop->toString();
+    LOG_HARD << "info.game_type = %1", info->game_type.toStdString();
+    prop = props.find("map");
     if (prop != props.end())
-        info->name = prop->toString();
+        info->map = prop->toString();
+    prop = props.find("map_url");
+    if (prop != props.end())
+        info->map_url = prop->toString();
+    prop = props.find("max_player_count");
+    if (prop != props.end())
+        info->max_player_count = prop->toInt();
+    prop = props.find("mode");
+    if (prop != props.end())
+        info->mode = static_cast<server_info::game_mode>(prop->toInt());
+    prop = props.find("ping");
+    if (prop != props.end())
+        info->ping = prop->toInt();
+    prop = props.find("country");
+    if (prop != props.end())
+        info->country = prop->toString();
+    prop = props.find("country_code");
+    if (prop != props.end())
+        info->country_code = prop->toString();
+    prop = props.find("info");
+    if (prop != props.end())
+    {
+        props_t src = prop.value().value<props_t>();
+        server_info::info_t& inf = info->info;
+        inf.clear();
+        for (props_t::const_iterator it = src.begin(); it != src.end(); it++)
+            inf[it.key()] = it->toString();
+    }
 }
-
-
 
 void load_server_info(qsettings_p s, server_info_p info)
 {
@@ -114,7 +153,9 @@ void save_server_list(qsettings_p s, const QString& name, const server_list& lis
         s->endArray();
     }
     catch(...)
-    {}
+    {
+        LOG_ERR << "Error occured while saving server list";
+    }
 }
 
 QByteArray save_server_list2(const server_list& list)
@@ -141,6 +182,7 @@ void load_server_list2(server_list& list, const QByteArray& ba)
         QDataStream stream(ba);
         int size;
         stream >> size;
+        LOG_HARD << "Loading %1 server infos...", size;
         for (int i = 0; i < size; i++)
         {
             props_t props;
@@ -148,10 +190,17 @@ void load_server_list2(server_list& list, const QByteArray& ba)
             server_info_p info(new server_info);
             load_server_info2(props, info);
             l[info->id] = info;
+            LOG_HARD << "Load info #%1 success", i;
         }
     }
+    catch(const std::exception& e)
+    {
+        LOG_ERR << "Error \"%1\"occured while loading server list", e.what();
+    }
     catch(...)
-    {}
+    {
+        LOG_ERR << "Error occured while loading server list";
+    }
 }
 
 void load_server_list(qsettings_p s, const QString& name, server_list& list)

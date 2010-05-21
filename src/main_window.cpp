@@ -13,6 +13,8 @@
 #include <QInputDialog>
 #include <QByteArray>
 
+#include <cl/syslog/syslog.h>
+
 #include "config.h"
 #include "ui_main_window.h"
 #include "options_dialog.h"
@@ -34,6 +36,8 @@
 
 #include "main_window.h"
 #include <QFile>
+
+SYSLOG_MODULE("main_window");
 
 using namespace std;
 
@@ -103,6 +107,14 @@ main_window::main_window(QWidget *parent)
 
     qsettings_p s = get_app_options_settings();
     load_server_list(get_server_list_settings("servers"), "all_list_info", *(all_sl_.get()));
+    load_server_list(get_server_list_settings("favs"), "all_list_info", *(fav_sl_.get()));
+
+/*    {
+        QFile f(get_server_list_settings("favs2")->fileName());
+        f.open(QIODevice::ReadOnly);
+        load_server_list2(*(fav_sl_.get()), f.readAll());
+    }*/
+    
     load_server_favs(*opts_);
 
     tab_size_updater* all_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabAll ) );
@@ -140,6 +152,7 @@ main_window::main_window(QWidget *parent)
     load_geometry(opts_->state);
     setVisible(!(opts_->main.value<bool>("start_hidden")));
     all_list_->force_update();
+    fav_list_->force_update();
 }
 
 main_window::~main_window()
@@ -475,17 +488,17 @@ void main_window::show_action()
     setVisible(!isVisible());
 }
 
-void save_list1(server_list_p list)
+void save_list1(server_list_p list, const QString& name)
 {
-    qsettings_p s = get_server_list_settings("servers");
+    qsettings_p s = get_server_list_settings(name);
     QFile::remove(s->fileName());
     save_server_list(s, "all_list_info", *(list.get()));
 }
 
-void save_list2(server_list_p list)
+void save_list2(server_list_p list, const QString& name)
 {
     QByteArray ba = save_server_list2(*(list.get()));
-    QString fn = get_server_list_settings("servers2")->fileName();
+    QString fn = get_server_list_settings(name)->fileName();
     QFile f(fn);
     f.open(QIODevice::WriteOnly);
     f.write(ba);
@@ -497,8 +510,28 @@ void main_window::quit_action()
     tray_->hide();
     save_geometry(opts_->state);
 
-    save_list1(all_sl_);
-//     save_list2(all_sl_);
+    save_list1(all_sl_, "servers");
+    save_list1(fav_sl_, "favs");
+
+
+//     LOG_HARD << "1";
+// 
+//     int cnt = 1;
+//     
+// 
+//     for (int i = 0; i < cnt; i++)
+//     {
+//         save_list1(all_sl_, "servers");
+//     }
+//     LOG_HARD << "2";
+//     for (int i = 0; i < cnt; i++)
+//     {
+//         save_list2(all_sl_, "servers2");
+//     }
+//     LOG_HARD << "3";
+//     
+//     save_list1(fav_sl_, "favs");
+//     save_list2(fav_sl_, "favs2");
 
     qApp->quit();
 }

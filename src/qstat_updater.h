@@ -63,6 +63,8 @@ private:
     int progress_;
     bool canceled_;
     geoip gi_;
+
+    QString qstat_output_;
 };
 
 #endif	/* _QSTAT_UPDATER_H */

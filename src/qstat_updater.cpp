@@ -1,8 +1,12 @@
+#include <cl/syslog/syslog.h>
+
 #include "exception.h"
 #include "server_id.h"
 #include "server_list.h"
 
 #include "qstat_updater.h"
+
+SYSLOG_MODULE("qstat_updater");
 
 namespace
 {
@@ -145,7 +149,9 @@ void qstat_updater::finished(int, QProcess::ExitStatus)
 
 void qstat_updater::ready_read_output()
 {
-    rd_.addData(proc_.readAll());
+    QByteArray a = proc_.readAll();
+    qstat_output_.append(a);
+    rd_.addData(a);
 
     while (!rd_.atEnd() && !canceled_)
     {
@@ -274,6 +280,10 @@ void qstat_updater::process_xml()
                     list[cur_server_info_->id] = si;
                 }
                 si->update_from(*cur_server_info_);
+
+                LOG_HARD << "Received server info: %1, %2, ", si->id.address().toStdString(),
+                  si->name.toStdString();
+
                 cur_server_info_.reset( new server_info() );
                 progress_++;
 
