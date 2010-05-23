@@ -12,6 +12,7 @@
 #include <QCloseEvent>
 #include <QInputDialog>
 #include <QByteArray>
+#include <QFile>
 
 #include <cl/syslog/syslog.h>
 
@@ -35,20 +36,22 @@
 #include "job_update_from_master.h"
 
 #include "main_window.h"
-#include <QFile>
 
 SYSLOG_MODULE("main_window");
 
 using namespace std;
 
+////////////////////////////////////////////////////////////////////////////////
+// main_window
+
 main_window::main_window(QWidget *parent)
-: QMainWindow(parent)
-, ui_(new Ui::MainWindowClass)
-, opts_(new app_options())
-, all_sl_(new server_list)
-, fav_sl_(new server_list)
-, old_state_(0)
-, clipper_( new clipper(this, opts_) )
+        : QMainWindow(parent)
+        , ui_(new Ui::MainWindowClass)
+        , opts_(new app_options())
+        , all_sl_(new server_list)
+        , fav_sl_(new server_list)
+        , old_state_(0)
+        , clipper_( new clipper(this, opts_) )
 {
     ui_->setupUi(this);
 
@@ -87,6 +90,7 @@ main_window::main_window(QWidget *parent)
     dynamic_cast<QBoxLayout*> (ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
+    connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
     connect(ui_->tabWidget, SIGNAL(currentChanged(int)), SLOT(current_tab_changed(int)));
     connect(ui_->actionOptions, SIGNAL(triggered()), SLOT(show_options()));
     connect(ui_->actionQuickConnect, SIGNAL(triggered()), SLOT(quick_connect()));
@@ -109,17 +113,17 @@ main_window::main_window(QWidget *parent)
     load_server_list(get_server_list_settings("servers"), "all_list_info", *(all_sl_.get()));
     load_server_list(get_server_list_settings("favs"), "all_list_info", *(fav_sl_.get()));
 
-/*    {
-        QFile f(get_server_list_settings("favs2")->fileName());
-        f.open(QIODevice::ReadOnly);
-        load_server_list2(*(fav_sl_.get()), f.readAll());
-    }*/
-    
+    /*    {
+            QFile f(get_server_list_settings("favs2")->fileName());
+            f.open(QIODevice::ReadOnly);
+            load_server_list2(*(fav_sl_.get()), f.readAll());
+        }*/
+
     load_server_favs(*opts_);
 
     tab_size_updater* all_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabAll ) );
     connect(all_list_, SIGNAL(size_changed(int)), all_updater, SLOT(update_size(int)));
-    
+
     all_list_->set_server_list(all_sl_);
     all_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     all_list_->tree()->addAction(ui_->actionConnect);
@@ -131,7 +135,7 @@ main_window::main_window(QWidget *parent)
 
     tab_size_updater* fav_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabFav ) );
     connect(fav_list_, SIGNAL(size_changed(int)), fav_updater, SLOT(update_size(int)));
-    
+
     fav_list_->set_server_list(fav_sl_);
     fav_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     fav_list_->tree()->addAction(ui_->actionConnect);
@@ -215,8 +219,8 @@ void main_window::fav_edit()
 void main_window::fav_delete()
 {
     if (QMessageBox::question(this, tr("Delete a favorite"),
-        tr("Continue to delete a favorite"),
-        QMessageBox::Ok | QMessageBox::Cancel) != QMessageBox::Ok)
+                              tr("Continue to delete a favorite"),
+                              QMessageBox::Ok | QMessageBox::Cancel) != QMessageBox::Ok)
         return;
 
     server_id_list sel = fav_list_->selection();
@@ -275,19 +279,19 @@ void main_window::sync_fav_list()
 
 void main_window::refresh_all()
 {
-    try{
+    try {
         gi_.set_database( opts_->main.value<QString>("geoip_database") );
-    } catch (std::exception& e){
+    } catch (std::exception& e) {
         statusBar()->showMessage (  to_qstr(e.what()) );
     }
-    
+
     server_list_widget* list = selected_list_widget();
     if (!list) return;
     server_list_p sl = list->server_list();
     if (list == all_list_)
     {
         que_->add_job(job_p(new job_update_from_master(list->server_list(),
-            gi_, opts_->qstat)));
+                            gi_, opts_->qstat)));
     } else
     {
         server_fav_list& fav_list = opts_->servers;
@@ -306,12 +310,12 @@ void main_window::show_about()
 
 void main_window::refresh_selected()
 {
-    try{
+    try {
         gi_.set_database( opts_->main.value<QString>("geoip_database") );
-    } catch (std::exception& e){
+    } catch (std::exception& e) {
         statusBar()->showMessage (  to_qstr(e.what()) );
     }
-    
+
     server_id id = selected();
     if (id.is_empty()) return;
     server_list_widget* list = selected_list_widget();
@@ -343,7 +347,7 @@ server_info_p main_window::selected_info() const
     server_info_list::const_iterator it = sil.find(id);
     if (it == sil.end())
         return server_info_p();
-    
+
     return it->second;
 }
 
@@ -408,12 +412,6 @@ void main_window::current_tab_changed(int)
     update_actions();
 }
 
-void main_window::closeEvent(QCloseEvent *event)
-{
-    hide();
-    event->ignore();
-}
-
 void main_window::save_geometry(settings s)
 {
     s.set_value("geometry", saveGeometry());
@@ -473,7 +471,7 @@ void main_window::add_selected_to_fav()
 
     server_options_dialog d(0, opts);
     d.set_update_params(&gi_, opts_->qstat, que_);
-    
+
     if (d.exec() == QDialog::Rejected) return;
     server_fav_list& list = opts_->servers;
     list[d.options().id] = d.options();
@@ -504,35 +502,29 @@ void save_list2(server_list_p list, const QString& name)
     f.write(ba);
 }
 
-void main_window::quit_action()
+void main_window::save_all()
 {
-    hide();
-    tray_->hide();
+    LOG_DEBUG << "Save all state";
+
     save_geometry(opts_->state);
 
     save_list1(all_sl_, "servers");
     save_list1(fav_sl_, "favs");
+}
 
 
-//     LOG_HARD << "1";
-// 
-//     int cnt = 1;
-//     
-// 
-//     for (int i = 0; i < cnt; i++)
-//     {
-//         save_list1(all_sl_, "servers");
-//     }
-//     LOG_HARD << "2";
-//     for (int i = 0; i < cnt; i++)
-//     {
-//         save_list2(all_sl_, "servers2");
-//     }
-//     LOG_HARD << "3";
-//     
-//     save_list1(fav_sl_, "favs");
-//     save_list2(fav_sl_, "favs2");
+void main_window::commit_data_request(QSessionManager&)
+{
+    LOG_DEBUG << "Commit data request";
+    save_all();
+}
 
+void main_window::quit_action()
+{
+    LOG_DEBUG << "Quit action";
+    hide();
+    tray_->hide();
+    save_all();
     qApp->quit();
 }
 
@@ -544,11 +536,14 @@ void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// tab_size_updater
+
 
 tab_size_updater::tab_size_updater(QTabWidget* tw, int index)
-    : QObject(tw)
-    , tw_(tw)
-    , index_(index)
+        : QObject(tw)
+        , tw_(tw)
+        , index_(index)
 {}
 
 tab_size_updater::~tab_size_updater()

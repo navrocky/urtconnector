@@ -42,7 +42,6 @@ public:
     ~main_window();
 
 protected:
-    void closeEvent ( QCloseEvent *event );
 
 private slots:
     void show_options();
@@ -59,14 +58,17 @@ private slots:
     void update_server_info();
     void selection_changed();
     void add_selected_to_fav();
-    void tray_activated ( QSystemTrayIcon::ActivationReason reason );
+    void tray_activated(QSystemTrayIcon::ActivationReason);
     void show_action();
     void quit_action();
+    void commit_data_request(QSessionManager&);
 private:
     void sync_fav_list();
 
     void save_geometry(settings s);
     void load_geometry(settings s);
+    
+    void save_all();
 
     server_id selected() const;
     server_list_widget* selected_list_widget() const;

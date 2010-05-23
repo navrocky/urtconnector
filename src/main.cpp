@@ -1,6 +1,7 @@
 #include <QMessageBox>
 #include <QTranslator>
 #include <QLibraryInfo>
+#include <QString>
 
 #include <iostream>
 #include <cl/syslog/syslog.h>
@@ -14,11 +15,15 @@
 
 using namespace cl::syslog;
 
+SYSLOG_MODULE("main");
+
 int main(int argc, char *argv[])
 {
     output_p cerr_out(new output_stream(std::cerr));
-//     logman().level_set(harddebug);
+    logman().level_set(harddebug);
     logman().output_add(cerr_out);
+    
+    LOG_DEBUG << "Syslog started";
     
     // this needed to link debug functions
     //    debug_help_init();
@@ -28,6 +33,7 @@ int main(int argc, char *argv[])
         a.sendMessage( QString() );
         return 0;
     }
+    application::setQuitOnLastWindowClosed(false);
 
     try
     {
@@ -36,33 +42,51 @@ int main(int argc, char *argv[])
 
         // loading translations
         QTranslator qt_trans;
-        qt_trans.load("qt_" + QLocale::system().name(),
+        QString trans_name = "qt_" + QLocale::system().name();
+        bool loaded = qt_trans.load(trans_name,
                       QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+        if (loaded)
+            LOG_DEBUG << "Translation \"%1\" loaded", trans_name.toStdString();
+        else
+            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name.toStdString();
+            
         a.installTranslator(&qt_trans);
 
         QTranslator urt_tr;
 
+        trans_name = "urtconnector_" + QLocale::system().name();
 #if defined(Q_OS_UNIX)
-        urt_tr.load("urtconnector_" + QLocale::system().name(), "/usr/share/urtconnector/translations");
+        loaded = urt_tr.load(trans_name, "/usr/share/urtconnector/translations");
 #elif defined(Q_OS_WIN)
-        urt_tr.load("urtconnector_" + QLocale::system().name());
+        loaded = urt_tr.load(trans_name);
 #elif defined(Q_OS_MAC)
         // FIXME i don't know how do this on mac
-        urt_tr.load("urtconnector_" + QLocale::system().name());
+        loaded = urt_tr.load(trans_name);
 #endif
+        if (loaded)
+            LOG_DEBUG << "Translation \"%1\" loaded", trans_name.toStdString();
+        else
+            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name.toStdString();
+        
         a.installTranslator(&urt_tr);
 
         main_window w;
         //set a widget that should raise when new instance trying to start
         a.setActivationWindow(&w);
-        return a.exec();
+        int res = a.exec();
+        
+        LOG_DEBUG << "Application finished";
+        
+        return res;
     }
     catch (const std::exception& e)
     {
+        LOG_ERR << "Exception catched: " << e.what();
         a.show_error(to_qstr(e.what()));
     }
     catch (...)
     {
+        LOG_ERR << "Unknown exception catched";
         a.show_error(QObject::tr("Unknown error"));
     }
     return 1;

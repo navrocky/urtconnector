@@ -140,6 +140,7 @@ void load_server_info(qsettings_p s, server_info_p info)
 
 void save_server_list(qsettings_p s, const QString& name, const server_list& list)
 {
+    LOG_DEBUG << "Saving server list \"%1\"", s->fileName().toStdString();
     try
     {
         const server_info_list& l = list.list();
@@ -205,6 +206,7 @@ void load_server_list2(server_list& list, const QByteArray& ba)
 
 void load_server_list(qsettings_p s, const QString& name, server_list& list)
 {
+    LOG_DEBUG << "Loading server list \"%1\"", s->fileName().toStdString();
     try
     {
         server_info_list& l = list.list();
