@@ -121,7 +121,7 @@ QString launcher::launch_string()
     }
     else
     {
-        res = launch_opts.value<QString>("binary_path");
+        res = QString("\"%1\"").arg(launch_opts.value<QString>("binary_path"));
         if (!userName_.isEmpty())
             res += QString(" +name \"%1\"").arg(userName_);
 

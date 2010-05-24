@@ -15,14 +15,17 @@ app_options::app_options()
 
     main.set_value( "start_hidden", main.value( "start_hidden", false ) );
     main.set_value( "looking_for_clip", main.value( "looking_for_clip", false ) );
-    main.set_value( "geoip_database", main.value<QString>("geoip_database", QString(URT_DATADIR) + "GeoIP.dat" ) );
+
 
 #if defined(Q_OS_UNIX)
     qstat.set_value( "path", qstat.value( "path", "/usr/bin/qstat" )  );
+    main.set_value( "geoip_database", main.value<QString>("geoip_database", QString(URT_DATADIR) + "GeoIP.dat" ) );
 #elif defined(Q_OS_WIN)
     qstat.set_value( "path", qstat.value( "path", QString("qstat.exe") )  );
+    main.set_value( "geoip_database", main.value<QString>("geoip_database", "GeoIP.dat" ) );
 #elif defined(Q_OS_MAC)
     qstat.set_value( "path", qstat.value( "path", "/usr/bin/qstat" )  );
+    main.set_value( "geoip_database", main.value<QString>("geoip_database", QString(URT_DATADIR) + "GeoIP.dat" ) );
 #endif
 
     qstat.set_value( "master_server", qstat.value( "master_server", QString("master.urbanterror.net") ) );

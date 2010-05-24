@@ -1,6 +1,6 @@
 !define APP_SHORT_NAME "urtconnector"
 !define PRODUCT_NAME "UrTConnector"
-!define PRODUCT_VERSION "0.3.0"
+!define PRODUCT_VERSION "0.4.0"
 !define ICON_FILE "urtconnector.ico"
 !define USE_COMPRESS
 
@@ -79,6 +79,7 @@ Section "UrT Connector"
   File "${DIR_TRANS}\urtconnector_ru.qm"
   
   File "qstat.exe"
+  File "GeoIP.dat"
   File "QtCore4.dll"
   File "QtGui4.dll"
   File "QtXml4.dll"
