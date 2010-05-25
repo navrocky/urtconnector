@@ -4,31 +4,36 @@
 #include <QString>
 
 #include "server_options.h"
-
-#include "settings/settings.h"
+#include "qstat_options.h"
 
 class app_options
 {
 public:
     app_options();
 
-    ///main configuration object
-    settings    main;
-    ///prefferences for launching UT
-    settings    launch;
-    ///qstat prefferences
-    settings    qstat;
+    /*! start with hidden main window */
+    bool start_hidden;
 
+    /*! Use advanced command line advCmdLine() to launch UrT binary instead of binaryPath(). */
+    bool use_adv_cmd_line;
+
+    /*! look for system clipboard */
+    bool looking_for_clip;
     
-    settings    srv_list;
+    /*! Advanced command line to launch UrT binary. Use followed substitutions:
+        %host% %port% %user% %password% %rcon% and so on.*/
+    QString adv_cmd_line;
 
-    ///states of the widgets are stored here
-    settings    state;
+    /*! Path to UrT binary, used when not advanced command line. */
+    QString binary_path;
 
-    void sync();
-    
-    // Servers options list.
+    /*! Servers options list. */
     server_fav_list servers;
+    
+    qstat_options qstat_opts;
+
+    /*! A path to GeoIP database file */
+    QString geoip_database;
 };
 
 #endif

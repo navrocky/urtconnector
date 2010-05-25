@@ -10,6 +10,40 @@ qsettings_p get_app_options_settings()
                                      qApp->organizationName(), qApp->applicationName()));
 }
 
+void save_app_options(qsettings_p s, const app_options& opts)
+{
+    s->beginGroup("app_opts");
+    s->setValue("start_hidden", opts.start_hidden);
+    s->setValue("looking_clip", opts.looking_for_clip);
+    s->setValue("use_adv_cmd_line", opts.use_adv_cmd_line);
+    s->setValue("adv_cmd_line", opts.adv_cmd_line);
+    s->setValue("binary_path", opts.binary_path);
+    s->setValue("geoip_database", opts.geoip_database);
+    s->endGroup();
+
+    s->beginGroup("qstat_opts");
+    s->setValue("master_server", opts.qstat_opts.master_server);
+    s->setValue("qstat_path", opts.qstat_opts.qstat_path);
+    s->endGroup();
+}
+
+void load_app_options(qsettings_p s, app_options& opts)
+{
+    s->beginGroup("app_opts");
+    opts.start_hidden = s->value("start_hidden", false).toBool();
+    opts.looking_for_clip = s->value("looking_clip", true).toBool();
+    opts.use_adv_cmd_line = s->value("use_adv_cmd_line", opts.use_adv_cmd_line).toBool();
+    opts.adv_cmd_line = s->value("adv_cmd_line", opts.adv_cmd_line).toString();
+    opts.binary_path = s->value("binary_path", opts.binary_path).toString();
+    opts.geoip_database = s->value( "geoip_database", opts.geoip_database ).toString();
+    s->endGroup();
+
+    s->beginGroup("qstat_opts");
+    opts.qstat_opts.master_server = s->value("master_server", opts.qstat_opts.master_server).toString();
+    opts.qstat_opts.qstat_path = s->value("qstat_path", opts.qstat_opts.qstat_path).toString();
+    s->endGroup();
+}
+
 void save_server_favs(const app_options& opts)
 {
     const server_fav_list& ol = opts.servers;

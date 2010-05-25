@@ -12,11 +12,14 @@ include_directories(${Boost_INCLUDE_DIRS})
 find_package(Qt4 REQUIRED QtCore QtGui QtXml)
 include(${QT_USE_FILE})
 
-set(URT_DATADIR ${CMAKE_INSTALL_PREFIX}/share/urtconnector/)
+if (WIN32)
+    set(URT_DATADIR "")
+else()
+    set(URT_DATADIR ${CMAKE_INSTALL_PREFIX}/share/urtconnector/)
+endif()
 
 configure_file(config.h.in config.h)
 
-add_subdirectory(settings)
 add_subdirectory(geoip)
 add_subdirectory(qtsingleapplication)
 add_subdirectory(cl)
@@ -129,12 +132,11 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_executable(${TARGET} WIN32 ${HEADERS} ${SOURCES})
 
-target_link_libraries(${TARGET} ${QT_LIBRARIES} settings geoip qtsingleapplication clsyslog)
+target_link_libraries(${TARGET} ${QT_LIBRARIES} geoip qtsingleapplication clsyslog)
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 install(FILES icons/urtconnector.png DESTINATION share/icons)
 install(FILES icons/urtconnector.png DESTINATION share/pixmaps)
 install(FILES urtconnector.desktop DESTINATION share/applications)
 install(FILES GeoIP.dat DESTINATION share/urtconnector)
-
 

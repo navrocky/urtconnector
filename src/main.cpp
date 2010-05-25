@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
     try
     {
-        a.setOrganizationName("");
+        a.setOrganizationName("urtcommunity");
         a.setApplicationName("urtconnector");
 
         // loading translations

@@ -17,7 +17,7 @@ clipper::~clipper(){}
 
 void clipper::changed(QClipboard::Mode mode)
 {
-    if ( !opts_->main.value<bool>("looking_for_clip") ) return;
+    if ( !opts_->looking_for_clip ) return;
     
     try {
         server_id id( QApplication::clipboard()->text(mode) );

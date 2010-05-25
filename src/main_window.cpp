@@ -112,13 +112,8 @@ main_window::main_window(QWidget *parent)
     qsettings_p s = get_app_options_settings();
     load_server_list(get_server_list_settings("servers"), "all_list_info", *(all_sl_.get()));
     load_server_list(get_server_list_settings("favs"), "all_list_info", *(fav_sl_.get()));
-
-    /*    {
-            QFile f(get_server_list_settings("favs2")->fileName());
-            f.open(QIODevice::ReadOnly);
-            load_server_list2(*(fav_sl_.get()), f.readAll());
-        }*/
-
+    
+    load_options();
     load_server_favs(*opts_);
 
     tab_size_updater* all_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabAll ) );
@@ -153,8 +148,8 @@ main_window::main_window(QWidget *parent)
     update_actions();
     sync_fav_list();
     update_server_info();
-    load_geometry(opts_->state);
-    setVisible(!(opts_->main.value<bool>("start_hidden")));
+    load_geometry(s);
+    setVisible(!(opts_->start_hidden));
     all_list_->force_update();
     fav_list_->force_update();
 }
@@ -168,11 +163,12 @@ void main_window::show_options()
     options_dialog d;
     d.set_opts(opts_);
     if (d.exec() == QDialog::Rejected) return;
+    save_options();
 }
 
 void main_window::quick_connect() const
 {
-    launcher l( opts_->launch );
+    launcher l( opts_ );
     l.set_server_id(server_id(ui_->qlServerEdit->text()));
     l.set_user_name(ui_->qlPlayerEdit->text());
     l.set_password(ui_->qlPasswordEdit->text());
@@ -182,7 +178,7 @@ void main_window::quick_connect() const
 void main_window::fav_add()
 {
     server_options_dialog d;
-    d.set_update_params(&gi_, opts_->qstat, que_);
+    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
     if (d.exec() == QDialog::Rejected) return;
     server_fav_list& list = opts_->servers;
     list[d.options().id] = d.options();
@@ -199,7 +195,7 @@ void main_window::fav_edit()
     server_options opts = opts_->servers[id];
 
     server_options_dialog d(this, opts);
-    d.set_update_params(&gi_, opts_->qstat, que_);
+    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
     if (d.exec() == QDialog::Rejected) return;
 
     if (d.options().id != id)
@@ -277,10 +273,35 @@ void main_window::sync_fav_list()
         fav_sl_->change_state();
 }
 
+void main_window::save_options()
+{
+    qsettings_p s = get_app_options_settings();
+    save_app_options(s, *opts_);
+}
+
+void main_window::load_options()
+{
+#if defined(Q_OS_UNIX)
+    QString default_qstat = "/usr/bin/qstat";
+#elif defined(Q_OS_WIN)
+    QString default_qstat = "qstat.exe";
+#elif defined(Q_OS_MAC)
+    QString default_qstat = "/usr/bin/qstat";
+#endif
+    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
+
+    opts_->qstat_opts.master_server = "master.urbanterror.net";
+    opts_->qstat_opts.qstat_path = default_qstat;
+    opts_->geoip_database = default_database;
+
+    qsettings_p s = get_app_options_settings();
+    load_app_options(s, *opts_);
+}
+
 void main_window::refresh_all()
 {
     try {
-        gi_.set_database( opts_->main.value<QString>("geoip_database") );
+        gi_.set_database( opts_->geoip_database );
     } catch (std::exception& e) {
         statusBar()->showMessage (  to_qstr(e.what()) );
     }
@@ -291,14 +312,14 @@ void main_window::refresh_all()
     if (list == all_list_)
     {
         que_->add_job(job_p(new job_update_from_master(list->server_list(),
-                            gi_, opts_->qstat)));
+            gi_, &(opts_->qstat_opts))));
     } else
     {
         server_fav_list& fav_list = opts_->servers;
         server_id_list ids;
         for (server_fav_list::iterator it = fav_list.begin(); it != fav_list.end(); it++)
             ids.push_back(it->first);
-        que_->add_job(job_p(new job_update_selected(ids, list->server_list(), gi_, opts_->qstat)));
+        que_->add_job(job_p(new job_update_selected(ids, list->server_list(), gi_, &(opts_->qstat_opts))));
     }
 }
 
@@ -311,7 +332,7 @@ void main_window::show_about()
 void main_window::refresh_selected()
 {
     try {
-        gi_.set_database( opts_->main.value<QString>("geoip_database") );
+        gi_.set_database( opts_->geoip_database );
     } catch (std::exception& e) {
         statusBar()->showMessage (  to_qstr(e.what()) );
     }
@@ -322,7 +343,7 @@ void main_window::refresh_selected()
     if (!list) return;
     server_id_list ids;
     ids.push_back(id);
-    que_->add_job(job_p(new job_update_selected(ids, list->server_list(), gi_, opts_->qstat)));
+    que_->add_job(job_p(new job_update_selected(ids, list->server_list(), gi_, &(opts_->qstat_opts))));
 }
 
 server_id main_window::selected() const
@@ -365,7 +386,7 @@ void main_window::connect_selected() const
         opts = it->second;
 
     //i think launcher can be created on stack
-    launcher l(opts_->launch);
+    launcher l(opts_);
 
     l.set_server_id( info->id );
     l.set_user_name("");
@@ -412,21 +433,21 @@ void main_window::current_tab_changed(int)
     update_actions();
 }
 
-void main_window::save_geometry(settings s)
+void main_window::save_geometry(qsettings_p s)
 {
-    s.set_value("geometry", saveGeometry());
-    s.set_value("window_state", saveState());
-    s.set_value("fav_list_state", fav_list_->tree()->header()->saveState());
-    s.set_value("all_list_state", all_list_->tree()->header()->saveState());
+    s->setValue("geometry", saveGeometry());
+    s->setValue("window_state", saveState());
+    s->setValue("fav_list_state", fav_list_->tree()->header()->saveState());
+    s->setValue("all_list_state", all_list_->tree()->header()->saveState());
 }
 
-void main_window::load_geometry(settings s)
+void main_window::load_geometry(qsettings_p s)
 {
-    restoreGeometry(s.value<QByteArray>("geometry"));
+    restoreGeometry(s->value("geometry").toByteArray());
     qApp->processEvents();
-    restoreState(s.value<QByteArray>("window_state"));
-    fav_list_->tree()->header()->restoreState(s.value<QByteArray>("fav_list_state"));
-    all_list_->tree()->header()->restoreState(s.value<QByteArray>("all_list_state"));
+    restoreState(s->value("window_state").toByteArray());
+    fav_list_->tree()->header()->restoreState(s->value("fav_list_state").toByteArray());
+    all_list_->tree()->header()->restoreState(s->value("all_list_state").toByteArray());
 }
 
 void main_window::update_server_info()
@@ -470,11 +491,12 @@ void main_window::add_selected_to_fav()
     opts.name = si->name;
 
     server_options_dialog d(0, opts);
-    d.set_update_params(&gi_, opts_->qstat, que_);
+    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
 
     if (d.exec() == QDialog::Rejected) return;
     server_fav_list& list = opts_->servers;
     list[d.options().id] = d.options();
+    save_options();
     sync_fav_list();
     fav_list_->force_update();
     update_actions();
@@ -506,7 +528,7 @@ void main_window::save_all()
 {
     LOG_DEBUG << "Save all state";
 
-    save_geometry(opts_->state);
+    save_geometry(get_app_options_settings());
 
     save_list1(all_sl_, "servers");
     save_list1(fav_sl_, "favs");

@@ -3,7 +3,6 @@
 
 #include <QString>
 
-#include "settings/settings.h"
 #include "pointers.h"
 #include "server_list.h"
 

@@ -35,11 +35,11 @@ const char* c_player_ping = "ping";
 
 }
 
-qstat_updater::qstat_updater(server_list_p list, const geoip& gi, const settings& qstat)
+qstat_updater::qstat_updater(server_list_p list, const geoip& gi, qstat_options* opts)
 : cur_state_(s_init)
 , cur_server_info_( new server_info() )
 , gi_(gi)
-, qstat(qstat)
+, qstat_opts_(opts)
 , serv_list_(list)
 , count_(0)
 , progress_(0)
@@ -69,8 +69,8 @@ void qstat_updater::refresh_all()
     proc_.start("/bin/bash", sl);
 #else
     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";// << "-retry" << "10";
-    sl << "-q3m" << qstat.value<QString>("master_server");
-    proc_.start(qstat.value<QString>("path"), sl);
+    sl << "-q3m" << qstat_opts_->master_server;
+    proc_.start(qstat_opts_->qstat_path, sl);
 #endif
 }
 
@@ -108,7 +108,7 @@ void qstat_updater::refresh_selected(const server_id_list& list)
     for (server_id_list::const_iterator it = list.begin(); it != list.end(); it++)
         sl << "-q3s" << it->address();
 
-    proc_.start( qstat.value<QString>("path"), sl);
+    proc_.start(qstat_opts_->qstat_path, sl);
 #endif
 }
 

@@ -4,7 +4,6 @@
 #include <memory>
 #include <QString>
 
-#include "settings/settings.h"
 #include "jobs/job.h"
 #include "server_id.h"
 #include "qstat_updater.h"
@@ -20,7 +19,7 @@ public:
     job_update_selected(const server_id_list& selection, 
                         server_list_p list,
                         const geoip& gi,
-                        const settings& qstat);
+                        qstat_options* opts);
 
     QString get_caption();
     void start();

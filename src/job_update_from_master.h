@@ -4,7 +4,6 @@
 #include <memory>
 #include <QString>
 
-#include "settings/settings.h"
 #include "pointers.h"
 #include "jobs/job.h"
 
@@ -17,7 +16,7 @@ class job_update_from_master : public job_t
 {
     Q_OBJECT
 public:
-    job_update_from_master(server_list_p list, const geoip& gi, const settings& qstat);
+    job_update_from_master(server_list_p list, const geoip& gi, qstat_options* opts);
     ~job_update_from_master();
     
     QString get_caption();

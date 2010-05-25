@@ -3,7 +3,6 @@
 
 #include <QObject>
 
-#include "settings/settings.h"
 #include "pointers.h"
 #include "server_id.h"
 
@@ -16,7 +15,7 @@ class launcher: public QObject
 {
 Q_OBJECT
 public:
-    launcher(const settings& launch);
+    launcher(app_options_p launch);
 
     void set_server_id(const server_id& id);
     void set_user_name(const QString& value);
@@ -33,7 +32,7 @@ public slots:
 
 private:
     QString get_work_dir();
-    settings launch_opts;
+    app_options_p opts_;
     QString userName_;
     QString password_;
     server_id id_;

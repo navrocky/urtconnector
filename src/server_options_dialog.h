@@ -8,10 +8,10 @@
 #include "pointers.h"
 #include "server_options.h"
 #include "jobs/job.h"
-#include "settings/settings.h"
 
 class Ui_ServOptsDialogClass;
 class geoip;
+class qstat_options;
 class job_queue;
 
 class server_options_dialog : public QDialog
@@ -21,11 +21,9 @@ public:
     server_options_dialog(QWidget *parent = 0);
     server_options_dialog(QWidget *parent, const server_options& src);
 
-    ~server_options_dialog();
-    
     const server_options& options() const {return opts_;}
 
-    void set_update_params(geoip* gi, const settings& qstat, job_queue* que);
+    void set_update_params(geoip* gi, qstat_options* opts, job_queue* que);
 
 protected:
     void accept();
@@ -43,7 +41,7 @@ private:
     server_id_list ids_;
     server_list_p list_;
     geoip* gi_;
-    settings qstat_opts_;
+    qstat_options* qstat_opts_;
     job_queue* que_;
 };
 
