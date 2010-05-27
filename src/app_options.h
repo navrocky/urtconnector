@@ -17,9 +17,6 @@ public:
     /*! Use advanced command line advCmdLine() to launch UrT binary instead of binaryPath(). */
     bool use_adv_cmd_line;
 
-    /*! look for system clipboard */
-    bool looking_for_clip;
-    
     /*! Advanced command line to launch UrT binary. Use followed substitutions:
         %host% %port% %user% %password% %rcon% and so on.*/
     QString adv_cmd_line;
@@ -34,6 +31,21 @@ public:
 
     /*! A path to GeoIP database file */
     QString geoip_database;
+
+    /*! Look for system clipboard (LFC) */
+    bool looking_for_clip;
+
+    /*! LFC regexp */
+    QString lfc_regexp;
+    
+    /*! LFC regexp match number for host */
+    int lfc_host;
+    
+    /*! LFC regexp match number for port */
+    int lfc_port;
+    
+    /*! LFC regexp match number for password */
+    int lfc_password;
 };
 
 #endif

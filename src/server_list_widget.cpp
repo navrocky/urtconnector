@@ -248,21 +248,22 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
     
     
     QPixmap& icon_status = icon_empty;
-    switch (si->status)
-    {
-        case server_info::s_none:
-            icon_status = icon_none;
-            break;
-        case server_info::s_up:
-            icon_status = icon_online;
-            break;
-        case server_info::s_down:
-            icon_status = icon_offline;
-            break;
-        case server_info::s_updating:
-            icon_status = icon_updating;
-            break;
-    }
+
+    if (si->updating)
+        icon_status = icon_updating;
+    else
+        switch (si->status)
+        {
+            case server_info::s_none:
+                icon_status = icon_none;
+                break;
+            case server_info::s_up:
+                icon_status = icon_online;
+                break;
+            case server_info::s_down:
+                icon_status = icon_offline;
+                break;
+        }
 
     //First icon - status icon
     painter->drawPixmap( icon_rect, icon_status );

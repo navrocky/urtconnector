@@ -40,6 +40,7 @@ private slots:
 private:
     void process_xml();
     void prepare_info();
+    void do_refresh_stopped();
 
     QProcess proc_;
     QXmlStreamReader rd_;

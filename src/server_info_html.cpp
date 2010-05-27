@@ -67,33 +67,35 @@ QString get_server_info_html(const server_info& si)
 
     QString serv_info;
     QString status_str;
-    switch (si.status)
-    {
-    case server_info::s_none:
-        status_str = qApp->translate("server_info_html",
-                                     "<img class=\"img1\" src=\":/icons/icons/status-none.png\"> Unknown");
-        break;
-    case server_info::s_up:
-        if ( si.get_info("g_needpass").toInt()  )
-        {
-            status_str = qApp->translate("server_info_html",
-                                         "<img class=\"img1\" src=\":/icons/icons/status-passwd.png\"> Online");
-        }
-        else
-        {
-            status_str = qApp->translate("server_info_html",
-                                         "<img class=\"img1\" src=\":/icons/icons/status-online.png\"> Online");
-        }
-        break;
-    case server_info::s_updating:
+
+
+    if (si.updating)
         status_str = qApp->translate("server_info_html",
                                      "<img class=\"img1\" src=\":/icons/icons/status-update.png\"> Updating");
-        break;
-    case server_info::s_down:
-        status_str = qApp->translate("server_info_html",
-                                     "<img class=\"img1\" src=\":/icons/icons/status-offline.png\"> Offline");
-        break;
-    }
+    else
+        switch (si.status)
+        {
+        case server_info::s_none:
+            status_str = qApp->translate("server_info_html",
+                                        "<img class=\"img1\" src=\":/icons/icons/status-none.png\"> Unknown");
+            break;
+        case server_info::s_up:
+            if ( si.get_info("g_needpass").toInt()  )
+            {
+                status_str = qApp->translate("server_info_html",
+                                            "<img class=\"img1\" src=\":/icons/icons/status-passwd.png\"> Online");
+            }
+            else
+            {
+                status_str = qApp->translate("server_info_html",
+                                            "<img class=\"img1\" src=\":/icons/icons/status-online.png\"> Online");
+            }
+            break;
+        case server_info::s_down:
+            status_str = qApp->translate("server_info_html",
+                                        "<img class=\"img1\" src=\":/icons/icons/status-offline.png\"> Offline");
+            break;
+        }
 
     
     QString country_flag;

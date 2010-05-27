@@ -7,15 +7,11 @@
 #include <cl/syslog/syslog.h>
 
 #include "pointers.h"
+#include "server_list.h"
+
 #include "server_list_saver.h"
 
 SYSLOG_MODULE("server_list_saver");
-
-qsettings_p get_server_list_settings(const QString& name)
-{
-    return qsettings_p(new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                                     qApp->organizationName(), qApp->applicationName() + "_" + name));
-}
 
 void save_server_info(qsettings_p s, const server_info_p& info)
 {
@@ -138,12 +134,12 @@ void load_server_info(qsettings_p s, server_info_p info)
     s->endArray();
 }
 
-void save_server_list(qsettings_p s, const QString& name, const server_list& list)
+void save_server_list(qsettings_p s, const QString& name, const server_list_p list)
 {
     LOG_DEBUG << "Saving server list \"%1\"", s->fileName().toStdString();
     try
     {
-        const server_info_list& l = list.list();
+        const server_info_list& l = list->list();
         s->beginWriteArray(name);
         int i = 0;
         for (server_info_list::const_iterator it = l.begin(); it != l.end(); it++)
@@ -157,6 +153,31 @@ void save_server_list(qsettings_p s, const QString& name, const server_list& lis
     {
         LOG_ERR << "Error occured while saving server list";
     }
+}
+
+void load_server_list(qsettings_p s, const QString& name, server_list_p list)
+{
+    LOG_DEBUG << "Loading server list \"%1\"", s->fileName().toStdString();
+    try
+    {
+        server_info_list& l = list->list();
+        int size = s->beginReadArray(name);
+        for (int i = 0; i < size; i++)
+        {
+            s->setArrayIndex(i);
+            server_info_p info( new server_info() );
+            try
+            {
+                load_server_info(s, info);
+                l[info->id] = info;
+            }
+            catch(...)
+            {}
+        }
+        s->endArray();
+    }
+    catch(...)
+    {}
 }
 
 QByteArray save_server_list2(const server_list& list)
@@ -202,29 +223,4 @@ void load_server_list2(server_list& list, const QByteArray& ba)
     {
         LOG_ERR << "Error occured while loading server list";
     }
-}
-
-void load_server_list(qsettings_p s, const QString& name, server_list& list)
-{
-    LOG_DEBUG << "Loading server list \"%1\"", s->fileName().toStdString();
-    try
-    {
-        server_info_list& l = list.list();
-        int size = s->beginReadArray(name);
-        for (int i = 0; i < size; i++)
-        {
-            s->setArrayIndex(i);
-            server_info_p info( new server_info() );
-            try
-            {
-                load_server_info(s, info);
-                l[info->id] = info;
-            }
-            catch(...)
-            {}
-        }
-        s->endArray();
-    }
-    catch(...)
-    {}
 }

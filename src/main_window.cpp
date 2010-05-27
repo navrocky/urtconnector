@@ -45,13 +45,13 @@ using namespace std;
 // main_window
 
 main_window::main_window(QWidget *parent)
-        : QMainWindow(parent)
-        , ui_(new Ui::MainWindowClass)
-        , opts_(new app_options())
-        , all_sl_(new server_list)
-        , fav_sl_(new server_list)
-        , old_state_(0)
-        , clipper_( new clipper(this, opts_) )
+: QMainWindow(parent)
+, ui_(new Ui::MainWindowClass)
+, opts_(new app_options())
+, all_sl_(new server_list)
+, fav_sl_(new server_list)
+, old_state_(0)
+, clipper_( new clipper(this, opts_) )
 {
     ui_->setupUi(this);
 
@@ -63,6 +63,7 @@ main_window::main_window(QWidget *parent)
 //    ui_.tabWidget->setDocumentMode(true);
 //#endif
 
+    // Setting up system tray icon
     tray_menu_ = new QMenu(this);
     tray_menu_->addAction(ui_->actionShow);
     tray_menu_->addSeparator();
@@ -72,7 +73,6 @@ main_window::main_window(QWidget *parent)
     tray_->setIcon(QIcon(":/images/icons/logo.png"));
     tray_->show();
     tray_->setContextMenu(tray_menu_);
-
     connect(tray_, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             SLOT(tray_activated(QSystemTrayIcon::ActivationReason)));
 
@@ -90,7 +90,6 @@ main_window::main_window(QWidget *parent)
     dynamic_cast<QBoxLayout*> (ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
     connect(ui_->tabWidget, SIGNAL(currentChanged(int)), SLOT(current_tab_changed(int)));
     connect(ui_->actionOptions, SIGNAL(triggered()), SLOT(show_options()));
     connect(ui_->actionQuickConnect, SIGNAL(triggered()), SLOT(quick_connect()));
@@ -105,16 +104,10 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionQuit, SIGNAL(triggered()), SLOT(quit_action()));
     connect(ui_->actionShow, SIGNAL(triggered()), SLOT(show_action()));
 
-    connect(clipper_, SIGNAL(address_obtained( const QString& )), ui_->qlServerEdit, SLOT( setText( const QString& ) ) );
+    connect(clipper_, SIGNAL(address_obtained(const QString&)), ui_->qlServerEdit, SLOT(setText(const QString&)));
+    connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
 
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
-
-    qsettings_p s = get_app_options_settings();
-    load_server_list(get_server_list_settings("servers"), "all_list_info", *(all_sl_.get()));
-    load_server_list(get_server_list_settings("favs"), "all_list_info", *(fav_sl_.get()));
-    
-    load_options();
-    load_server_favs(*opts_);
 
     tab_size_updater* all_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabAll ) );
     connect(all_list_, SIGNAL(size_changed(int)), all_updater, SLOT(update_size(int)));
@@ -145,17 +138,16 @@ main_window::main_window(QWidget *parent)
     fav_list_->set_favs(&(opts_->servers));
     all_list_->set_favs(&(opts_->servers));
 
+    // loading all options
+    load_all_at_start();
+    load_geometry();
+
     update_actions();
     sync_fav_list();
     update_server_info();
-    load_geometry(s);
     setVisible(!(opts_->start_hidden));
     all_list_->force_update();
     fav_list_->force_update();
-}
-
-main_window::~main_window()
-{
 }
 
 void main_window::show_options()
@@ -185,7 +177,7 @@ void main_window::fav_add()
     sync_fav_list();
     fav_list_->force_update();
     update_actions();
-    save_server_favs(*opts_);
+    save_favorites();
 }
 
 void main_window::fav_edit()
@@ -205,7 +197,7 @@ void main_window::fav_edit()
     }
 
     opts_->servers[id] = d.options();
-    save_server_favs(*opts_);
+    save_favorites();
     sync_fav_list();
     fav_list_->force_update();
 
@@ -228,7 +220,7 @@ void main_window::fav_delete()
     sync_fav_list();
     fav_list_->force_update();
     update_actions();
-    save_server_favs(*opts_);
+    save_favorites();
 }
 
 void main_window::sync_fav_list()
@@ -275,12 +267,19 @@ void main_window::sync_fav_list()
 
 void main_window::save_options()
 {
-    qsettings_p s = get_app_options_settings();
-    save_app_options(s, *opts_);
+    save_app_options(get_app_options_settings("options"), opts_);
 }
 
-void main_window::load_options()
+void main_window::load_all_at_start()
 {
+    struct local
+    {
+        static void load_list(server_list_p list, const QString& name)
+        {
+            load_server_list(get_app_options_settings(name), name, list);
+        }
+    };
+    
 #if defined(Q_OS_UNIX)
     QString default_qstat = "/usr/bin/qstat";
 #elif defined(Q_OS_WIN)
@@ -294,8 +293,35 @@ void main_window::load_options()
     opts_->qstat_opts.qstat_path = default_qstat;
     opts_->geoip_database = default_database;
 
-    qsettings_p s = get_app_options_settings();
-    load_app_options(s, *opts_);
+    load_app_options(get_app_options_settings("options"), opts_);
+    load_server_favs(get_app_options_settings("favorites"), opts_);
+
+    local::load_list(all_sl_, "all_state");
+    local::load_list(fav_sl_, "favs_state");
+}
+
+void main_window::save_state_at_exit()
+{
+    struct local
+    {
+        static void save_list(server_list_p list, const QString& name)
+        {
+            qsettings_p s = get_app_options_settings(name);
+            QFile::remove(s->fileName());
+            save_server_list(s, name, list);
+        }
+    };
+
+    LOG_DEBUG << "Save state at exit";
+
+    save_geometry();
+    local::save_list(all_sl_, "all_state");
+    local::save_list(fav_sl_, "favs_state");
+}
+
+void main_window::save_favorites()
+{
+    save_server_favs(get_app_options_settings("favorites"), opts_);
 }
 
 void main_window::refresh_all()
@@ -433,16 +459,18 @@ void main_window::current_tab_changed(int)
     update_actions();
 }
 
-void main_window::save_geometry(qsettings_p s)
+void main_window::save_geometry()
 {
+    qsettings_p s = get_app_options_settings("state");
     s->setValue("geometry", saveGeometry());
     s->setValue("window_state", saveState());
     s->setValue("fav_list_state", fav_list_->tree()->header()->saveState());
     s->setValue("all_list_state", all_list_->tree()->header()->saveState());
 }
 
-void main_window::load_geometry(qsettings_p s)
+void main_window::load_geometry()
 {
+    qsettings_p s = get_app_options_settings("state");
     restoreGeometry(s->value("geometry").toByteArray());
     qApp->processEvents();
     restoreState(s->value("window_state").toByteArray());
@@ -500,7 +528,7 @@ void main_window::add_selected_to_fav()
     sync_fav_list();
     fav_list_->force_update();
     update_actions();
-    save_server_favs(*opts_);
+    save_favorites();
 }
 
 void main_window::show_action()
@@ -508,37 +536,19 @@ void main_window::show_action()
     setVisible(!isVisible());
 }
 
-void save_list1(server_list_p list, const QString& name)
-{
-    qsettings_p s = get_server_list_settings(name);
-    QFile::remove(s->fileName());
-    save_server_list(s, "all_list_info", *(list.get()));
-}
-
-void save_list2(server_list_p list, const QString& name)
-{
-    QByteArray ba = save_server_list2(*(list.get()));
-    QString fn = get_server_list_settings(name)->fileName();
-    QFile f(fn);
-    f.open(QIODevice::WriteOnly);
-    f.write(ba);
-}
-
-void main_window::save_all()
-{
-    LOG_DEBUG << "Save all state";
-
-    save_geometry(get_app_options_settings());
-
-    save_list1(all_sl_, "servers");
-    save_list1(fav_sl_, "favs");
-}
-
+// void save_list2(server_list_p list, const QString& name)
+// {
+//     QByteArray ba = save_server_list2(*(list.get()));
+//     QString fn = get_server_list_settings(name)->fileName();
+//     QFile f(fn);
+//     f.open(QIODevice::WriteOnly);
+//     f.write(ba);
+// }
 
 void main_window::commit_data_request(QSessionManager&)
 {
     LOG_DEBUG << "Commit data request";
-    save_all();
+    save_state_at_exit();
 }
 
 void main_window::quit_action()
@@ -546,7 +556,7 @@ void main_window::quit_action()
     LOG_DEBUG << "Quit action";
     hide();
     tray_->hide();
-    save_all();
+    save_state_at_exit();
     qApp->quit();
 }
 
@@ -560,7 +570,6 @@ void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
 
 ////////////////////////////////////////////////////////////////////////////////
 // tab_size_updater
-
 
 tab_size_updater::tab_size_updater(QTabWidget* tw, int index)
         : QObject(tw)

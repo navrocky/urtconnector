@@ -28,14 +28,15 @@ public:
     enum status_t
     {
         s_none = 0,
-        s_updating,
         s_up,
-        s_down
+        s_down,
+        s_error
     };
 
     server_info();
 
     server_id id;
+    bool updating;
     status_t status;
     QString status_name();
     QString name;

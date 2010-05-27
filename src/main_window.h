@@ -39,12 +39,10 @@ class main_window : public QMainWindow
     Q_OBJECT
 public:
     main_window ( QWidget *parent = 0 );
-    ~main_window();
 
 public slots:
     void save_options();
-    void load_options();
-
+    
 protected:
 
 private slots:
@@ -69,10 +67,11 @@ private slots:
 private:
     void sync_fav_list();
 
-    void save_geometry ( qsettings_p s );
-    void load_geometry ( qsettings_p s );
-    
-    void save_all();
+    void load_all_at_start();
+    void save_state_at_exit();
+    void save_geometry();
+    void load_geometry();
+    void save_favorites();
 
     server_id selected() const;
     server_list_widget* selected_list_widget() const;

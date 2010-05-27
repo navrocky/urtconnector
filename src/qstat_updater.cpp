@@ -92,7 +92,7 @@ void qstat_updater::refresh_selected(const server_id_list& list)
             info = server_info_p( new server_info() );
             info_list[id] = info;
         }
-        info->status = server_info::s_updating;
+        info->updating = true;
     }
     serv_list_->change_state();
 
@@ -112,6 +112,21 @@ void qstat_updater::refresh_selected(const server_id_list& list)
 #endif
 }
 
+void qstat_updater::do_refresh_stopped()
+{
+    LOG_DEBUG << "Refresh stopped";
+    
+    // clear updating state
+    server_info_list& il = serv_list_->list();
+    for (server_info_list::iterator it = il.begin(); it != il.end(); it++)
+    {
+        it->second->updating = false;
+    }
+    serv_list_->change_state();
+    
+    emit refresh_stopped();
+}
+
 void qstat_updater::refresh_cancel()
 {
     if (proc_.state() == QProcess::NotRunning) return;
@@ -122,7 +137,7 @@ void qstat_updater::refresh_cancel()
 
 void qstat_updater::error(QProcess::ProcessError error)
 {
-    emit refresh_stopped();
+    do_refresh_stopped();
     if (canceled_) return;
     switch (error)
     {
@@ -144,7 +159,8 @@ void qstat_updater::error(QProcess::ProcessError error)
 
 void qstat_updater::finished(int, QProcess::ExitStatus)
 {
-    emit refresh_stopped();
+    LOG_HARD << "QStat output: %1", qstat_output_.toStdString();
+    do_refresh_stopped();
 }
 
 void qstat_updater::ready_read_output()
@@ -181,6 +197,8 @@ void qstat_updater::process_xml()
             {
                 if (rd_.attributes().value(c_server_status) == "UP")
                     cur_server_info_->status = server_info::s_up;
+                else if (rd_.attributes().value(c_server_status) == "ERROR")
+                    cur_server_info_->status = server_info::s_error;
                 else
                     cur_server_info_->status = server_info::s_down;
 
@@ -271,18 +289,22 @@ void qstat_updater::process_xml()
         {
             if (cur_state_ == s_server)
             {
-                prepare_info();
-                server_info_list& list = serv_list_->list();
-                server_info_p si = list[cur_server_info_->id];
-                if ( !si )
+                if (cur_server_info_->status != server_info::s_error &&
+                    !cur_server_info_->id.is_empty())
                 {
-                    si = server_info_p( new server_info() );
-                    list[cur_server_info_->id] = si;
-                }
-                si->update_from(*cur_server_info_);
+                    prepare_info();
+                    server_info_list& list = serv_list_->list();
+                    server_info_p si = list[cur_server_info_->id];
+                    if ( !si )
+                    {
+                        si = server_info_p( new server_info() );
+                        list[cur_server_info_->id] = si;
+                    }
+                    si->update_from(*cur_server_info_);
 
-                LOG_HARD << "Received server info: %1, %2, ", si->id.address().toStdString(),
-                  si->name.toStdString();
+                    LOG_HARD << "Received server info: %1, %2, ", si->id.address().toStdString(),
+                    si->name.toStdString();
+                }
 
                 cur_server_info_.reset( new server_info() );
                 progress_++;

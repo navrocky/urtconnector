@@ -3,14 +3,15 @@
 #include "server_info.h"
 
 server_info::server_info()
-  : status(s_none),
-    max_player_count(0),
-    mode(gm_none),
-    ping(0),
-    retries(0),
-    red_score(0),
-    blue_score(0),
-    update_stamp(0)
+: updating(false)
+, status(s_none)
+, max_player_count(0)
+, mode(gm_none)
+, ping(0)
+, retries(0)
+, red_score(0)
+, blue_score(0)
+, update_stamp(0)
 {
 }
 
@@ -32,12 +33,13 @@ QString server_info::mode_name() const
 
 QString server_info::status_name()
 {
+    if (updating)
+        return QObject::tr("Updating");
+    
     switch (status)
     {
-        case s_none: return QObject::tr("Unknown");
         case s_down: return QObject::tr("Offline");
         case s_up: return QObject::tr("Online");
-        case s_updating: return QObject::tr("Updating");
     }
     return QObject::tr("Unknown");
 }
