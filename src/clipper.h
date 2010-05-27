@@ -21,6 +21,7 @@ signals:
 
 public slots:
     void changed ( QClipboard::Mode mode );
+    void data_changed();
 
 private:
     app_options_p opts_;
