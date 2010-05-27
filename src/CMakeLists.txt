@@ -56,6 +56,7 @@ set(HEADERS
     job_update_from_master.h
     clipper.h
     server_tree_widget.h
+    tools.h
 )
 
 set(MOC_HEADERS
@@ -109,6 +110,7 @@ set(SOURCES
     job_update_from_master.cpp
     clipper.cpp
     server_tree_widget.cpp
+    tools.cpp
 )
 
 set(IFACES

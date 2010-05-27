@@ -30,6 +30,7 @@
 #include "server_info_html.h"
 #include "item_view_dblclick_action_link.h"
 #include "str_convert.h"
+#include "tools.h"
 
 #include "jobs/job_monitor.h"
 #include "job_update_selected.h"
@@ -68,13 +69,15 @@ main_window::main_window(QWidget *parent)
     tray_menu_->addAction(ui_->actionShow);
     tray_menu_->addSeparator();
     tray_menu_->addAction(ui_->actionQuit);
-
+    
     tray_ = new QSystemTrayIcon(this);
     tray_->setIcon(QIcon(":/images/icons/logo.png"));
     tray_->show();
     tray_->setContextMenu(tray_menu_);
+    tray_->setToolTip(tr("Click to show/hide UrTConnector or middle click to quick launch"));
     connect(tray_, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             SLOT(tray_activated(QSystemTrayIcon::ActivationReason)));
+    connect(tray_, SIGNAL(messageClicked()), SLOT(raise_window()));        
 
     serv_info_update_timer_ = new QTimer(this);
     serv_info_update_timer_->setInterval(1000);
@@ -104,21 +107,23 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionQuit, SIGNAL(triggered()), SLOT(quit_action()));
     connect(ui_->actionShow, SIGNAL(triggered()), SLOT(show_action()));
 
-    connect(clipper_, SIGNAL(address_obtained(const QString&)), ui_->qlServerEdit, SLOT(setText(const QString&)));
+    connect(clipper_, SIGNAL(info_obtained()), SLOT(clipboard_info_obtained()));
     connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
 
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
 
     tab_size_updater* all_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabAll ) );
     connect(all_list_, SIGNAL(size_changed(int)), all_updater, SLOT(update_size(int)));
-
+    
     all_list_->set_server_list(all_sl_);
     all_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     all_list_->tree()->addAction(ui_->actionConnect);
+    add_separator_action(all_list_->tree());
     all_list_->tree()->addAction(ui_->actionAddToFav);
+    add_separator_action(all_list_->tree());
     all_list_->tree()->addAction(ui_->actionRefreshAll);
     all_list_->tree()->addAction(ui_->actionRefreshSelected);
-
+    
     new item_view_dblclick_action_link(this, all_list_->tree(), ui_->actionConnect);
 
     tab_size_updater* fav_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabFav ) );
@@ -127,9 +132,11 @@ main_window::main_window(QWidget *parent)
     fav_list_->set_server_list(fav_sl_);
     fav_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     fav_list_->tree()->addAction(ui_->actionConnect);
+    add_separator_action(fav_list_->tree());
     fav_list_->tree()->addAction(ui_->actionFavAdd);
     fav_list_->tree()->addAction(ui_->actionFavEdit);
     fav_list_->tree()->addAction(ui_->actionFavDelete);
+    add_separator_action(fav_list_->tree());
     fav_list_->tree()->addAction(ui_->actionRefreshSelected);
     fav_list_->tree()->addAction(ui_->actionRefreshAll);
 
@@ -148,6 +155,26 @@ main_window::main_window(QWidget *parent)
     setVisible(!(opts_->start_hidden));
     all_list_->force_update();
     fav_list_->force_update();
+}
+
+void main_window::clipboard_info_obtained()
+{
+    ui_->qlServerEdit->setText(clipper_->address());
+    ui_->qlPasswordEdit->setText(clipper_->password());
+    tray_->showMessage(tr("Server info catched"), 
+                       tr("Address: %1\nPassword: %2\n\n"
+                       "Click this message to open UrTConnector.")
+                       .arg(clipper_->address())
+                       .arg(clipper_->password())
+                       );
+}
+
+void main_window::raise_window()
+{
+    setVisible(true);
+    setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+    raise();
+    activateWindow();
 }
 
 void main_window::show_options()
@@ -292,6 +319,13 @@ void main_window::load_all_at_start()
     opts_->qstat_opts.master_server = "master.urbanterror.net";
     opts_->qstat_opts.qstat_path = default_qstat;
     opts_->geoip_database = default_database;
+    
+    opts_->looking_for_clip = true;
+    opts_->lfc_regexp = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})"
+        "(:(\\d{1,5}))?(.+pass[^\\s]*\\s+([^\\s]+))?";
+    opts_->lfc_host = 1;
+    opts_->lfc_port = 3;
+    opts_->lfc_password = 5;
 
     load_app_options(get_app_options_settings("options"), opts_);
     load_server_favs(get_app_options_settings("favorites"), opts_);
@@ -329,7 +363,7 @@ void main_window::refresh_all()
     try {
         gi_.set_database( opts_->geoip_database );
     } catch (std::exception& e) {
-        statusBar()->showMessage (  to_qstr(e.what()) );
+        statusBar()->showMessage(to_qstr(e.what()), 2000);
     }
 
     server_list_widget* list = selected_list_widget();
@@ -349,27 +383,28 @@ void main_window::refresh_all()
     }
 }
 
+void main_window::refresh_selected()
+{
+    try 
+    {
+        gi_.set_database( opts_->geoip_database );
+    } 
+    catch (std::exception& e) 
+    {
+        statusBar()->showMessage(to_qstr(e.what()), 2000);
+    }
+    
+    server_list_widget* list = selected_list_widget();
+    if (!list) return;
+    server_id_list sel = list->selection();
+    if (sel.empty()) return;
+    que_->add_job(job_p(new job_update_selected(sel, list->server_list(), gi_, &(opts_->qstat_opts))));
+}
+
 void main_window::show_about()
 {
     about_dialog d;
     d.exec();
-}
-
-void main_window::refresh_selected()
-{
-    try {
-        gi_.set_database( opts_->geoip_database );
-    } catch (std::exception& e) {
-        statusBar()->showMessage (  to_qstr(e.what()) );
-    }
-
-    server_id id = selected();
-    if (id.is_empty()) return;
-    server_list_widget* list = selected_list_widget();
-    if (!list) return;
-    server_id_list ids;
-    ids.push_back(id);
-    que_->add_job(job_p(new job_update_selected(ids, list->server_list(), gi_, &(opts_->qstat_opts))));
 }
 
 server_id main_window::selected() const
@@ -565,6 +600,10 @@ void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
     if (reason == QSystemTrayIcon::Trigger)
     {
         ui_->actionShow->trigger();
+    }
+    if (reason == QSystemTrayIcon::DoubleClick)
+    {
+        ui_->actionQuickConnect->trigger();
     }
 }
 

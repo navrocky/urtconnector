@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     application a(argc, argv);
     if ( a.isRunning() )
     {
+        LOG_DEBUG << "UrTConnector already started. Activating and exit.";
         a.sendMessage( QString() );
         return 0;
     }

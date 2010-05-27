@@ -14,7 +14,6 @@ void save_app_options(qsettings_p s, app_options_p opts)
 {
     s->beginGroup("app_opts");
     s->setValue("start_hidden", opts->start_hidden);
-    s->setValue("looking_for_clipboard", opts->looking_for_clip);
     s->setValue("use_adv_cmd_line", opts->use_adv_cmd_line);
     s->setValue("adv_cmd_line", opts->adv_cmd_line);
     s->setValue("binary_path", opts->binary_path);
@@ -25,13 +24,20 @@ void save_app_options(qsettings_p s, app_options_p opts)
     s->setValue("master_server", opts->qstat_opts.master_server);
     s->setValue("qstat_path", opts->qstat_opts.qstat_path);
     s->endGroup();
+    
+    s->beginGroup("clipboard");
+    s->setValue("looking_for", opts->looking_for_clip);
+    s->setValue("regexp", opts->lfc_regexp);
+    s->setValue("host", opts->lfc_host);
+    s->setValue("port", opts->lfc_port);
+    s->setValue("password", opts->lfc_password);
+    s->endGroup();
 }
 
 void load_app_options(qsettings_p s, app_options_p opts)
 {
     s->beginGroup("app_opts");
     opts->start_hidden = s->value("start_hidden", false).toBool();
-    opts->looking_for_clip = s->value("looking_for_clipboard", true).toBool();
     opts->use_adv_cmd_line = s->value("use_adv_cmd_line", opts->use_adv_cmd_line).toBool();
     opts->adv_cmd_line = s->value("adv_cmd_line", opts->adv_cmd_line).toString();
     opts->binary_path = s->value("binary_path", opts->binary_path).toString();
@@ -41,6 +47,14 @@ void load_app_options(qsettings_p s, app_options_p opts)
     s->beginGroup("qstat_opts");
     opts->qstat_opts.master_server = s->value("master_server", opts->qstat_opts.master_server).toString();
     opts->qstat_opts.qstat_path = s->value("qstat_path", opts->qstat_opts.qstat_path).toString();
+    s->endGroup();
+    
+    s->beginGroup("clipboard");
+    opts->looking_for_clip = s->value("looking_for", opts->looking_for_clip).toBool();
+    opts->lfc_regexp = s->value("regexp", opts->lfc_regexp).toString();
+    opts->lfc_host = s->value("host", opts->lfc_host).toInt();
+    opts->lfc_port = s->value("port", opts->lfc_port).toInt();
+    opts->lfc_password = s->value("password", opts->lfc_password).toInt();
     s->endGroup();
 }
 

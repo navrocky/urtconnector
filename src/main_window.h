@@ -64,6 +64,8 @@ private slots:
     void show_action();
     void quit_action();
     void commit_data_request(QSessionManager&);
+    void clipboard_info_obtained();
+    void raise_window();
 private:
     void sync_fav_list();
 
@@ -88,6 +90,8 @@ private:
     int old_state_;
     QSystemTrayIcon* tray_;
     QMenu* tray_menu_;
+    QMenu* favs_menu_;
+    QMenu* all_menu_;
     job_queue* que_;
     geoip gi_;
     clipper* clipper_;

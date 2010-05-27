@@ -398,6 +398,8 @@ src/server_options_dialog.ui -text
 src/server_tree_widget.cpp -text
 src/server_tree_widget.h -text
 src/str_convert.h -text
+src/tools.cpp -text
+src/tools.h -text
 src/urtconnector.desktop -text
 translations/CMakeLists.txt -text
 translations/urtconnector_ru.ts -text
