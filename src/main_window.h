@@ -19,21 +19,6 @@
 class QTimer;
 class Ui_MainWindowClass;
 
-
-class tab_size_updater: public QObject
-{
-    Q_OBJECT
-public:
-    tab_size_updater ( QTabWidget* tw, int index );
-    ~tab_size_updater();
-
-public Q_SLOTS:
-    void update_size ( int i ) const;
-private:
-    QTabWidget* tw_;
-    int index_;
-};
-
 class main_window : public QMainWindow
 {
     Q_OBJECT
@@ -66,6 +51,7 @@ private slots:
     void commit_data_request(QSessionManager&);
     void clipboard_info_obtained();
     void raise_window();
+    void about_qt();
 private:
     void sync_fav_list();
 
@@ -74,6 +60,8 @@ private:
     void save_geometry();
     void load_geometry();
     void save_favorites();
+    
+    void update_tabs();
 
     server_id selected() const;
     server_list_widget* selected_list_widget() const;

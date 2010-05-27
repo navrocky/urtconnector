@@ -47,6 +47,16 @@ server_list_widget::server_list_widget(QWidget *parent)
     connect(ui_.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
 
     ui_.treeWidget->setItemDelegateForColumn( 0, new status_item_delegate(this) );
+    
+    QHeaderView* hdr = ui_.treeWidget->header();
+    
+    hdr->moveSection(2, 7);
+    hdr->resizeSection(0, 80);
+    hdr->resizeSection(1, 350);
+    hdr->resizeSection(3, 50);
+    hdr->resizeSection(4, 50);
+    hdr->resizeSection(7, 50);
+    hdr->setSortIndicator(4, Qt::AscendingOrder);
 }
 
 void server_list_widget::set_server_list(server_list_p ptr)

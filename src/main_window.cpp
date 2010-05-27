@@ -109,12 +109,10 @@ main_window::main_window(QWidget *parent)
 
     connect(clipper_, SIGNAL(info_obtained()), SLOT(clipboard_info_obtained()));
     connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
+    connect(ui_->action_about_qt, SIGNAL(triggered()), SLOT(about_qt()));
 
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
 
-    tab_size_updater* all_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabAll ) );
-    connect(all_list_, SIGNAL(size_changed(int)), all_updater, SLOT(update_size(int)));
-    
     all_list_->set_server_list(all_sl_);
     all_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     all_list_->tree()->addAction(ui_->actionConnect);
@@ -125,9 +123,6 @@ main_window::main_window(QWidget *parent)
     all_list_->tree()->addAction(ui_->actionRefreshSelected);
     
     new item_view_dblclick_action_link(this, all_list_->tree(), ui_->actionConnect);
-
-    tab_size_updater* fav_updater = new tab_size_updater( ui_->tabWidget,  ui_->tabWidget->indexOf( ui_->tabFav ) );
-    connect(fav_list_, SIGNAL(size_changed(int)), fav_updater, SLOT(update_size(int)));
 
     fav_list_->set_server_list(fav_sl_);
     fav_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -155,6 +150,7 @@ main_window::main_window(QWidget *parent)
     setVisible(!(opts_->start_hidden));
     all_list_->force_update();
     fav_list_->force_update();
+    update_tabs();
 }
 
 void main_window::clipboard_info_obtained()
@@ -407,6 +403,11 @@ void main_window::show_about()
     d.exec();
 }
 
+void main_window::about_qt()
+{
+    QApplication::aboutQt();
+}
+
 server_id main_window::selected() const
 {
     server_list_widget* list = selected_list_widget();
@@ -515,6 +516,8 @@ void main_window::load_geometry()
 
 void main_window::update_server_info()
 {
+    update_tabs();
+    
     if (!ui_->server_info_dock->isVisible())
         return;
 
@@ -601,31 +604,14 @@ void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
     {
         ui_->actionShow->trigger();
     }
-    if (reason == QSystemTrayIcon::DoubleClick)
+    if (reason == QSystemTrayIcon::MiddleClick)
     {
         ui_->actionQuickConnect->trigger();
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// tab_size_updater
-
-tab_size_updater::tab_size_updater(QTabWidget* tw, int index)
-        : QObject(tw)
-        , tw_(tw)
-        , index_(index)
-{}
-
-tab_size_updater::~tab_size_updater()
-{}
-
-void tab_size_updater::update_size(int size) const
+void main_window::update_tabs()
 {
-    QString tabtext = tw_->tabText( index_ );
-    static QRegExp rx("([^()]+).*");
-    rx.exactMatch(tabtext);
-    QString new_text("%1(%2)");
-    tw_->setTabText( index_, QString("%1(%2)").arg(rx.cap(1)).arg(size) );
+    ui_->tabWidget->setTabText(0, tr("Favorites (%1)").arg(fav_sl_->list().size()));
+    ui_->tabWidget->setTabText(1, tr("All (%1)").arg(all_sl_->list().size()));
 }
-
-
