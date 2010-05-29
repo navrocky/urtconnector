@@ -311,6 +311,7 @@ src/geoip/geoip.h -text
 src/icons/add.png -text
 src/icons/application-exit.png -text
 src/icons/bookmarks.png -text
+src/icons/choose-file.png -text
 src/icons/close.png -text
 src/icons/configure.png -text
 src/icons/earth.png -text

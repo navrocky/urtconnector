@@ -20,7 +20,7 @@ QString get_css()
     QString css(
         "<style> "
         ".header{background-color: %1;}"
-        "table{margin-left:20px; margin-right:20px; background-color: %2; width: 100%;}"
+        "table{margin-left:20px; margin-right:0px; background-color: %2; width: 100%;}"
         ".line1{background-color: %3;}"
         ".line2{background-color: %4;}"
         ".img1{margin-right: 10px;}"
