@@ -22,6 +22,11 @@ clipper::~clipper() {}
 
 void clipper::data_changed()
 {
+    changed(QClipboard::Clipboard);
+}
+
+void clipper::changed(QClipboard::Mode mode)
+{
     if ( !opts_->looking_for_clip ) return;
 
     LOG_HARD << "Clipboard has new value";
@@ -33,7 +38,7 @@ void clipper::data_changed()
         return;
     }
 
-    QString clip_text = QApplication::clipboard()->text();
+    QString clip_text = QApplication::clipboard()->text(mode);
 
     if (rx.indexIn(clip_text) >= 0)
     {
@@ -70,9 +75,4 @@ void clipper::data_changed()
 
     } else
         LOG_HARD << "Match failed";
-}
-
-void clipper::changed(QClipboard::Mode mode)
-{
-    data_changed();
 }

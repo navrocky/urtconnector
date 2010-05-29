@@ -11,11 +11,19 @@ options_dialog::options_dialog(QWidget *parent)
 {
     ui.setupUi(this);
 
-    connect( ui.selectBinButton, SIGNAL( clicked() ), SLOT( choose_binary() ));
+    connect( ui.select_bin_button, SIGNAL( clicked() ), SLOT( choose_binary() ));
     connect( ui.insertFileButton, SIGNAL( clicked() ), SLOT( insert_file_path() ));
     connect( ui.qstat_binary_choose_button, SIGNAL( clicked() ), SLOT( choose_qstat_binary() ));
     connect( ui.geoip_database_choose_button, SIGNAL( clicked() ), SLOT( choose_geoip_database()));
     connect( ui.advCmdEdit, SIGNAL(textChanged(const QString&)), SLOT(adv_text_changed(const QString&)));
+    
+    ui.adv_cmd_help_label->setText(tr(
+        "<b>%bin%</b> - UrbanTerror binary path<br>"
+        "<b>%name%</b> - player name<br>"
+        "<b>%pwd%</b> - password<br>"
+        "<b>%addr%</b> - hostname or ip and port<br>"
+        "<b>%rcon%</b> - RCON password"
+    ));
 }
 
 options_dialog::~options_dialog()
@@ -36,7 +44,11 @@ void options_dialog::update_dialog()
     ui.qstat_binary_edit->setText( opts_->qstat_opts.qstat_path );
     ui.hide_mainwindow_check->setChecked(opts_->start_hidden);
     ui.geoip_database_edit->setText( opts_->geoip_database );
-    ui.looking_for_clip->setChecked( opts_->looking_for_clip );
+    ui.group_clipboard_watch->setChecked( opts_->looking_for_clip );
+    ui.clip_regexp_edit->setText( opts_->lfc_regexp );
+    ui.clip_host_spin->setValue( opts_->lfc_host );
+    ui.clip_port_spin->setValue( opts_->lfc_port );
+    ui.clip_password_spin->setValue( opts_->lfc_password );
 }
 
 void options_dialog::accept()
@@ -48,7 +60,11 @@ void options_dialog::accept()
     opts_->qstat_opts.qstat_path = ui.qstat_binary_edit->text();
     opts_->start_hidden = ui.hide_mainwindow_check->isChecked();
     opts_->geoip_database = ui.geoip_database_edit->text();
-    opts_->looking_for_clip = ui.looking_for_clip->isChecked();
+    opts_->looking_for_clip = ui.group_clipboard_watch->isChecked();
+    opts_->lfc_regexp = ui.clip_regexp_edit->text();
+    opts_->lfc_host = ui.clip_host_spin->value();
+    opts_->lfc_port = ui.clip_port_spin->value();
+    opts_->lfc_password = ui.clip_password_spin->value();
 }
 
 void options_dialog::choose_binary()

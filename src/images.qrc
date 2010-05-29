@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/choose-file.png</file>
     <file>icons/earth.png</file>
     <file>icons/visible-on.png</file>
     <file>icons/status-none.png</file>
