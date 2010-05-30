@@ -15,8 +15,12 @@ include(${QT_USE_FILE})
 if (WIN32)
     set(URT_DATADIR "")
 else()
-    set(URT_DATADIR ${CMAKE_INSTALL_PREFIX}/share/urtconnector/)
+    set(URT_DATADIR /usr/share/urtconnector/)
 endif()
+
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+    add_definitions(-DDEBUG)
+endif()    
 
 configure_file(config.h.in config.h)
 

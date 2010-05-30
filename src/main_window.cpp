@@ -436,20 +436,16 @@ server_info_p main_window::selected_info() const
 
 void main_window::connect_selected() const
 {
-    //info MUST be correct or connect-action is disabled!
+    // info MUST be correct or connect-action is disabled!
     server_info_p info = selected_info();
 
+    server_fav_list::const_iterator it = opts_->servers.find(info->id);
     server_options opts;
-
-    server_fav_list::const_iterator it;
-
-    //may be wrap server_info in shared_ptr?
-    if ( ( it = opts_->servers.find( info->id ) ) != opts_->servers.end() )
+    if ( it != opts_->servers.end() )
         opts = it->second;
 
-    //i think launcher can be created on stack
+    // i think launcher can be created on stack
     launcher l(opts_);
-
     l.set_server_id( info->id );
     l.set_user_name("");
     l.set_password(opts.password);
@@ -457,8 +453,8 @@ void main_window::connect_selected() const
     if ( opts.password.isEmpty() && selected_info() && selected_info()->get_info("g_needpass").toInt() )
     {
         bool ok;
-        QString password = QInputDialog::getText(0, "Server require password", "Enter password:", QLineEdit::PasswordEchoOnEdit, "", &ok );
-        if ( ok ) return;
+        QString password = QInputDialog::getText(0, tr("Server require password"), tr("Enter password"), QLineEdit::Normal, "", &ok );
+        if ( !ok ) return;
         l.set_password(password);
     }
 

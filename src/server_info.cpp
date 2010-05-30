@@ -71,8 +71,8 @@ void server_info::update_from(const server_info& src)
         mode = src.mode;
     if (src.ping != 0)
         ping = src.ping;
-    if (!src.players.empty())
-        players = src.players;
+//    if (!src.players.empty())
+    players = src.players;
     if (src.red_score != 0)
         red_score = src.red_score;
     if (src.retries != 0)

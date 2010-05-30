@@ -20,7 +20,13 @@ SYSLOG_MODULE("main");
 int main(int argc, char *argv[])
 {
     output_p cerr_out(new output_stream(std::cerr));
+    
+    #ifdef DEBUG
     logman().level_set(harddebug);
+    #else
+    logman().level_set(info);
+    #endif
+    
     logman().output_add(cerr_out);
     
     LOG_DEBUG << "Syslog started";
