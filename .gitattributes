@@ -398,6 +398,9 @@ src/server_options_dialog.h -text
 src/server_options_dialog.ui -text
 src/server_tree_widget.cpp -text
 src/server_tree_widget.h -text
+src/settings/CMakeLists.txt -text
+src/settings/settings.cpp -text
+src/settings/settings.h -text
 src/str_convert.h -text
 src/tools.cpp -text
 src/tools.h -text
