@@ -83,6 +83,7 @@ Section "UrT Connector"
   File "QtCore4.dll"
   File "QtGui4.dll"
   File "QtXml4.dll"
+  File "QtNetwork4.dll"
   File "mingwm10.dll"
   File "libgcc_s_dw2-1.dll"
   !ifdef ICON_FILE
