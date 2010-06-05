@@ -12,7 +12,8 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 Release: 1
 AutoReq: off
 License: GPL
-Requires: qt >= 4.3.0, cmake >= 2.6, qstat >= 2.6
+BuildRequires: cmake boost-devel libqt4-devel
+Requires: libqt4>=4.3.0 qstat>=2.6
 
 %description
 
@@ -44,8 +45,10 @@ make install/strip
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%defattr(-, root, root) 
 /usr/bin/*
 /usr/share/icons/*
 /usr/share/pixmaps/*
 /usr/share/applications/*
+/usr/share/urtconnector
 /usr/share/urtconnector/*
