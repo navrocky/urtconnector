@@ -61,6 +61,7 @@ set(HEADERS
     clipper.h
     server_tree_widget.h
     tools.h
+    launcher/tools.h
 )
 
 set(MOC_HEADERS
@@ -81,6 +82,7 @@ set(MOC_HEADERS
     job_update_from_master.h
     clipper.h
     server_tree_widget.h
+    launcher/tools.h
 )
 
 set(SOURCES
@@ -115,6 +117,7 @@ set(SOURCES
     clipper.cpp
     server_tree_widget.cpp
     tools.cpp
+    launcher/tools.cpp
 )
 
 set(IFACES
@@ -145,4 +148,5 @@ install(FILES icons/urtconnector.png DESTINATION share/icons)
 install(FILES icons/urtconnector.png DESTINATION share/pixmaps)
 install(FILES urtconnector.desktop DESTINATION share/applications)
 install(FILES GeoIP.dat DESTINATION share/urtconnector)
+
 

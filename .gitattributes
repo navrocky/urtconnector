@@ -350,6 +350,8 @@ src/jobs/job_queue.cpp -text
 src/jobs/job_queue.h -text
 src/launcher.cpp -text
 src/launcher.h -text
+src/launcher/tools.cpp -text
+src/launcher/tools.h -text
 src/main.cpp -text
 src/main_window.cpp -text
 src/main_window.h -text

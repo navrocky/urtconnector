@@ -13,6 +13,8 @@
 #include "debug_help.h"
 #include "str_convert.h"
 
+#include <QTemporaryFile>
+
 using namespace cl::syslog;
 
 SYSLOG_MODULE("main");
@@ -47,6 +49,20 @@ int main(int argc, char *argv[])
         a.setOrganizationName("urtcommunity");
         a.setApplicationName("urtconnector");
 
+//         QTemporaryFile file;
+//         file.setAutoRemove(false);
+//         file.open();
+//         QString command("echo 12312123 >> %1");
+//         
+//         system( command.arg( file.fileName() ).toStdString().c_str() );
+//         std::cerr<<file.fileName().toStdString()<<std::endl;
+// 
+//         QByteArray ba = file.readLine();
+// 
+//         std::cerr<<"Readed:"<<ba.constData()<<std::endl;
+//         
+//         return 0;
+        
         // loading translations
         QTranslator qt_trans;
         QString trans_name = "qt_" + QLocale::system().name();

@@ -21,6 +21,8 @@ public:
         %host% %port% %user% %password% %rcon% and so on.*/
     QString adv_cmd_line;
 
+    bool separate_x;
+    
     /*! Path to UrT binary, used when not advanced command line. */
     QString binary_path;
 

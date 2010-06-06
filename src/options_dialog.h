@@ -14,9 +14,9 @@ public:
     ~options_dialog();
 
     void set_opts(app_options_p value);
+
 protected:
     void accept();
-
 
 private slots:
     void choose_binary();
@@ -24,6 +24,7 @@ private slots:
     void choose_geoip_database();
     void insert_file_path();
     void adv_text_changed(const QString&);
+    void x_check();
 private:
     void update_dialog();
 

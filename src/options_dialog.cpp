@@ -1,10 +1,15 @@
+
+#include <boost/thread.hpp>
+
 #include <QLineEdit>
 #include <QGroupBox>
 #include <QFileDialog>
+#include <QProgressDialog>
 
 #include "options_dialog.h"
 #include "launcher.h"
 #include "app_options.h"
+#include "launcher/tools.h"
 
 options_dialog::options_dialog(QWidget *parent)
  : QDialog(parent)
@@ -16,6 +21,7 @@ options_dialog::options_dialog(QWidget *parent)
     connect( ui.qstat_binary_choose_button, SIGNAL( clicked() ), SLOT( choose_qstat_binary() ));
     connect( ui.geoip_database_choose_button, SIGNAL( clicked() ), SLOT( choose_geoip_database()));
     connect( ui.advCmdEdit, SIGNAL(textChanged(const QString&)), SLOT(adv_text_changed(const QString&)));
+    connect( ui.x_check_button, SIGNAL( clicked() ), SLOT( x_check() ));
     
     ui.adv_cmd_help_label->setText(tr(
         "<b>%bin%</b> - UrbanTerror binary path<br>"
@@ -49,6 +55,7 @@ void options_dialog::update_dialog()
     ui.clip_host_spin->setValue( opts_->lfc_host );
     ui.clip_port_spin->setValue( opts_->lfc_port );
     ui.clip_password_spin->setValue( opts_->lfc_password );
+    ui.separate_x_check->setChecked( opts_->separate_x );
 }
 
 void options_dialog::accept()
@@ -65,6 +72,7 @@ void options_dialog::accept()
     opts_->lfc_host = ui.clip_host_spin->value();
     opts_->lfc_port = ui.clip_port_spin->value();
     opts_->lfc_password = ui.clip_password_spin->value();
+    opts_->separate_x = ui.separate_x_check->isChecked();
 }
 
 void options_dialog::choose_binary()
@@ -123,3 +131,25 @@ void options_dialog::adv_text_changed(const QString& text)
 
     ui.adv_cmd_preview_edit->setText(l.launch_string());
 }
+
+void test_thread( bool* result, QProgressDialog* d)
+{
+    sleep(1);
+    *result = try_x_start();
+    d->reset();
+}
+
+void options_dialog::x_check()
+{
+    QProgressDialog * p = new QProgressDialog( tr("This may take about 30 seconds"), QString(), 0, 0, this);
+    p->setCancelButton(0);
+
+    bool result;
+    boost::thread t( boost::bind( test_thread, &result, p ) );
+    
+    p->exec();
+
+    ui.separate_x_check->setChecked( result );
+}
+
+

@@ -6,6 +6,7 @@
 #include "exception.h"
 #include "launcher.h"
 #include "app_options.h"
+#include "launcher/tools.h"
 
 // it's code from qprocess.cpp
 static QStringList parseCombinedArgString(const QString &program)
@@ -135,5 +136,11 @@ QString launcher::launch_string()
 
         res += QString(" +set fs_game q3ut4");
     }
+
+#if defined(Q_OS_UNIX)
+    if ( opts_->separate_x )
+        res = QString("xinit %1 -- :%2").arg(res).arg( find_free_display() );
+#endif
+    
     return res;
 }
