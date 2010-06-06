@@ -136,7 +136,7 @@ void test_thread( bool* result, QProgressDialog* d)
 {
     sleep(1);
     *result = try_x_start();
-    d->reset();
+    d->deleteLater();
 }
 
 void options_dialog::x_check()
