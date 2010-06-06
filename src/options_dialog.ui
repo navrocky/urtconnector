@@ -152,7 +152,7 @@
          <item>
           <widget class="QCheckBox" name="separate_x_check">
            <property name="text">
-            <string>Launch UrabnTerrpr is separate X session</string>
+            <string>Launch UrbanTerror is separate X session</string>
            </property>
           </widget>
          </item>

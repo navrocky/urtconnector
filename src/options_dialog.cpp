@@ -132,24 +132,28 @@ void options_dialog::adv_text_changed(const QString& text)
     ui.adv_cmd_preview_edit->setText(l.launch_string());
 }
 
-void test_thread( bool* result, QProgressDialog* d)
+namespace {
+    
+void test_thread( dialog_syncer& syncer)
 {
-    sleep(1);
-    *result = try_x_start();
-    d->deleteLater();
+    sleep(2);
+    if ( try_x_start() )
+        syncer.accept();
+    else
+        syncer.reject();
+}
+
 }
 
 void options_dialog::x_check()
 {
-    QProgressDialog * p = new QProgressDialog( tr("This may take about 30 seconds"), QString(), 0, 0, this);
-    p->setCancelButton(0);
+    QProgressDialog progress( tr("This may take about 30 seconds"), QString(), 0, 0, this );
+    dialog_syncer syncer;
+    connect( &syncer, SIGNAL( accepted() ), &progress, SLOT( accept() ) );
+    connect( &syncer, SIGNAL( rejected() ), &progress, SLOT( reject() ) );
 
-    bool result;
-    boost::thread t( boost::bind( test_thread, &result, p ) );
+    boost::thread t( boost::bind( test_thread, boost::ref(syncer) ) );
     
-    p->exec();
-
-    ui.separate_x_check->setChecked( result );
+    ui.separate_x_check->setChecked( progress.exec() );
 }
-
 

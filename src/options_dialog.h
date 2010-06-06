@@ -32,4 +32,22 @@ private:
     app_options_p opts_;
 };
 
+#include <iostream>
+
+class dialog_syncer: public QObject
+{
+    Q_OBJECT
+public:
+    dialog_syncer(){};
+    ~dialog_syncer(){};
+
+Q_SIGNALS:
+    void accepted();
+    void rejected();
+    
+public Q_SLOTS:
+    void accept(){ emit accepted(); }
+    void reject(){ emit rejected(); }
+};
+
 #endif
