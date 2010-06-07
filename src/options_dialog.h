@@ -32,8 +32,6 @@ private:
     app_options_p opts_;
 };
 
-#include <iostream>
-
 class dialog_syncer: public QObject
 {
     Q_OBJECT

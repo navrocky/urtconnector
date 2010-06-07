@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QGroupBox>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QProgressDialog>
 
 #include "options_dialog.h"
@@ -153,7 +154,13 @@ void options_dialog::x_check()
     connect( &syncer, SIGNAL( rejected() ), &progress, SLOT( reject() ) );
 
     boost::thread t( boost::bind( test_thread, boost::ref(syncer) ) );
-    
+
     ui.separate_x_check->setChecked( progress.exec() );
+    QMessageBox::information( this,
+        tr( "X session autodetection" ),
+        ( ui.separate_x_check->isChecked() )
+            ? tr( "Another X session started succesfully" )
+            : tr( "Another X session failed" )
+    );
 }
 
