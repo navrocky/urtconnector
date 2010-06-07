@@ -8,7 +8,7 @@
 #include <QProgressDialog>
 
 #include "options_dialog.h"
-#include "launcher.h"
+#include "launcher/launcher.h"
 #include "app_options.h"
 #include "launcher/tools.h"
 

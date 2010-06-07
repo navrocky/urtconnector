@@ -27,6 +27,10 @@ server_options_dialog::server_options_dialog(QWidget * parent, const server_opti
     setWindowTitle(tr("Server favorite options"));
 }
 
+server_options_dialog::~server_options_dialog()
+{}
+
+
 void server_options_dialog::init()
 {
     ui_.reset(new Ui_ServOptsDialogClass);

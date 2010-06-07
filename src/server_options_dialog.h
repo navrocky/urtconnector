@@ -21,6 +21,8 @@ public:
     server_options_dialog(QWidget *parent = 0);
     server_options_dialog(QWidget *parent, const server_options& src);
 
+    ~server_options_dialog();
+
     const server_options& options() const {return opts_;}
 
     void set_update_params(geoip* gi, qstat_options* opts, job_queue* que);

@@ -34,7 +34,7 @@ set(HEADERS
     app_options.h
     debug_help.h
     exception.h
-    launcher.h
+    launcher/launcher.h
     main_window.h
     options_dialog.h
     player_info.h
@@ -72,7 +72,7 @@ set(MOC_HEADERS
     push_button_action_link.h
     server_list_widget.h
     server_options_dialog.h
-    launcher.h
+    launcher/launcher.h
     item_view_dblclick_action_link.h
     qstat_updater.h
     jobs/job.h
@@ -92,7 +92,7 @@ set(SOURCES
     app_options.cpp
     debug_help.cpp
     exception.cpp
-    launcher.cpp
+    launcher/launcher.cpp
     main_window.cpp
     options_dialog.cpp
     player_info.cpp

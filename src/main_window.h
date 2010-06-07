@@ -9,7 +9,7 @@
 #include "pointers.h"
 
 #include "app_options.h"
-#include "launcher.h"
+#include "launcher/launcher.h"
 #include "server_list_widget.h"
 #include "server_list.h"
 #include "jobs/job_queue.h"
@@ -24,6 +24,7 @@ class main_window : public QMainWindow
     Q_OBJECT
 public:
     main_window ( QWidget *parent = 0 );
+    ~main_window();
 
 public slots:
     void save_options();

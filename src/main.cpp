@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     output_p cerr_out(new output_stream(std::cerr));
     
     #ifdef DEBUG
-    logman().level_set(harddebug);
+    logman().level_set(debug);
     #else
     logman().level_set(info);
     #endif
@@ -49,20 +49,6 @@ int main(int argc, char *argv[])
         a.setOrganizationName("urtcommunity");
         a.setApplicationName("urtconnector");
 
-//         QTemporaryFile file;
-//         file.setAutoRemove(false);
-//         file.open();
-//         QString command("echo 12312123 >> %1");
-//         
-//         system( command.arg( file.fileName() ).toStdString().c_str() );
-//         std::cerr<<file.fileName().toStdString()<<std::endl;
-// 
-//         QByteArray ba = file.readLine();
-// 
-//         std::cerr<<"Readed:"<<ba.constData()<<std::endl;
-//         
-//         return 0;
-        
         // loading translations
         QTranslator qt_trans;
         QString trans_name = "qt_" + QLocale::system().name();

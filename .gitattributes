@@ -348,8 +348,8 @@ src/jobs/job_monitor.h -text
 src/jobs/job_monitor.ui -text
 src/jobs/job_queue.cpp -text
 src/jobs/job_queue.h -text
-src/launcher.cpp -text
-src/launcher.h -text
+src/launcher/launcher.cpp -text
+src/launcher/launcher.h -text
 src/launcher/tools.cpp -text
 src/launcher/tools.h -text
 src/main.cpp -text

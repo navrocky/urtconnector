@@ -19,7 +19,7 @@
 #include "config.h"
 #include "ui_main_window.h"
 #include "options_dialog.h"
-#include "launcher.h"
+#include "launcher/launcher.h"
 #include "exception.h"
 #include "server_options_dialog.h"
 #include "push_button_action_link.h"
@@ -152,6 +152,10 @@ main_window::main_window(QWidget *parent)
     fav_list_->force_update();
     update_tabs();
 }
+
+main_window::~main_window()
+{}
+
 
 void main_window::clipboard_info_obtained()
 {
@@ -450,12 +454,23 @@ void main_window::connect_selected() const
     l.set_user_name("");
     l.set_password(opts.password);
 
-    if ( opts.password.isEmpty() && selected_info() && selected_info()->get_info("g_needpass").toInt() )
+    if ( opts.password.isEmpty() && info && info->get_info("g_needpass").toInt() )
     {
         bool ok;
         QString password = QInputDialog::getText(0, tr("Server require password"), tr("Enter password"), QLineEdit::Normal, "", &ok );
         if ( !ok ) return;
         l.set_password(password);
+    }
+
+    if ( info && info->players.size() == info->max_player_count )
+    {
+        QMessageBox::StandardButton selected = QMessageBox::warning( 0
+            , tr( "Server is full" )
+            , tr( "Server is full do you want to continue ?" )
+            , QMessageBox::Yes | QMessageBox::No, QMessageBox::No
+        );
+
+        if( selected == QMessageBox::No ) return;           
     }
 
     l.set_referee(opts.ref_password);
