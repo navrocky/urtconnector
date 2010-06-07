@@ -1,4 +1,8 @@
+
 #include <memory>
+
+#include <boost/bind.hpp>
+
 #include <QApplication>
 #include <QTextEdit>
 #include <QRegExp>
@@ -34,46 +38,44 @@ QString get_css()
 
 QString color( const QString& str )
 {
-    if ( str == "0")
-        return QColor(Qt::black).name();
-    else if ( str == "1")
-        return QColor(Qt::red).name();
-    else if ( str == "2")
-        return QColor(Qt::green).name();
-    else if ( str == "3")
-        return QColor(Qt::yellow).name();
-    else if ( str == "4")
-        return QColor(Qt::blue).name();
-    else if ( str == "5")
-        return QColor(Qt::cyan).name();
-    else if ( str == "6")
-        return QColor(Qt::magenta).name();
-    else if ( str == "7")
-        return QColor(Qt::white).name();
+    static QMap<QString, QString> color_map;
+
+    if( color_map.isEmpty() )
+    {
+        color_map["0"] = QColor(Qt::black).name();
+        color_map["1"] = QColor(Qt::red).name();
+        color_map["2"] = QColor(Qt::green).name();
+        color_map["3"] = QColor(Qt::yellow).name();
+        color_map["4"] = QColor(Qt::blue).name();
+        color_map["5"] = QColor(Qt::cyan).name();
+        color_map["6"] = QColor(Qt::magenta).name();
+        color_map["7"] = QColor(Qt::white).name();
+    }
+    
+    if ( color_map.contains( str ) )
+        return color_map[str];
     else
         return QPalette().color(QPalette::Base).name();
 }
 
 QString make_css_colored(QString str)
 {
-    QString colored("<font color=\"%1\">%2</font>");
+    static QString colored("<font color=\"%1\">%2</font>");
 
-    QStringList markers;
-    markers <<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7";
+    static QStringList markers;
+    if ( markers.isEmpty() ) markers <<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7";
 
     for( QStringList::iterator it = markers.begin(); it != markers.end(); ++it )
     {
         if( str.startsWith( *it ) )
         {
-            str.remove(*it);
+            str.remove(0,1);
             return colored.arg( color(*it) ).arg(str);
         }
     }
     
     return str;
 }
-
-#include <boost/bind.hpp>
 
 QString q3coloring( const QString& str )
 {
