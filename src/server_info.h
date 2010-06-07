@@ -40,6 +40,7 @@ public:
     status_t status;
     QString status_name();
     QString name;
+    QString strict_name;
     QString game_type; /* q3ut4 */
     player_info_list players;
     int max_player_count;

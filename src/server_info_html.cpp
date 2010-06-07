@@ -8,6 +8,10 @@
 #include "server_info_html.h"
 #include "job_update_from_master.h"
 
+using namespace std;
+using namespace boost;
+
+
 QString get_css()
 {
     //generic window color
@@ -26,6 +30,61 @@ QString get_css()
         ".img1{margin-right: 10px;}"
         "</style>");
     return css.arg(window).arg(window).arg(base).arg(alternate);
+}
+
+QString color( const QString& str )
+{
+    if ( str == "0")
+        return QColor(Qt::black).name();
+    else if ( str == "1")
+        return QColor(Qt::red).name();
+    else if ( str == "2")
+        return QColor(Qt::green).name();
+    else if ( str == "3")
+        return QColor(Qt::yellow).name();
+    else if ( str == "4")
+        return QColor(Qt::blue).name();
+    else if ( str == "5")
+        return QColor(Qt::cyan).name();
+    else if ( str == "6")
+        return QColor(Qt::magenta).name();
+    else if ( str == "7")
+        return QColor(Qt::white).name();
+    else
+        return QPalette().color(QPalette::Base).name();
+}
+
+QString make_css_colored(QString str)
+{
+    QString colored("<font color=\"%1\">%2</font>");
+
+    QStringList markers;
+    markers <<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7";
+
+    for( QStringList::iterator it = markers.begin(); it != markers.end(); ++it )
+    {
+        if( str.startsWith( *it ) )
+        {
+            str.remove(*it);
+            return colored.arg( color(*it) ).arg(str);
+        }
+    }
+    
+    return str;
+}
+
+#include <boost/bind.hpp>
+
+QString q3coloring( const QString& str )
+{
+    //split incoming string by quake3 color-markers
+    QStringList lst = str.split( QRegExp("\\^") );
+    //removing empty lines
+    lst.erase( remove_if( lst.begin(), lst.end(), bind( &QString::isEmpty, _1 ) ), lst.end() );
+    //replacing quake3 color-markers by html-formated text
+    transform(lst.begin(), lst.end(), lst.begin(), make_css_colored );
+    //joining list to plain string
+    return lst.join("");
 }
 
 QString plain_to_html(const QString& src)
@@ -61,10 +120,14 @@ QString get_server_info_html(const server_info& si)
         players += "</table>";
     }
 
-    QString name = plain_to_html(si.name);
-    if (name.isEmpty())
+    //FIXME plain_to_html dont work!!
+    //QString name = plain_to_html(si.name);
+    QString name = ( si.strict_name.isEmpty() ) ? si.name : si.strict_name ;
+    if ( name.isEmpty() )
         name = qApp->translate("server_info_html", "* Unnamed *");
 
+    name = q3coloring(name);
+    
     QString serv_info;
     QString status_str;
 
