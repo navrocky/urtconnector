@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
@@ -68,7 +68,7 @@ private:
     server_list_widget* selected_list_widget() const;
     server_info_p selected_info() const;
 
-    std::auto_ptr<Ui_MainWindowClass> ui_;
+    boost::shared_ptr<Ui_MainWindowClass> ui_;
     app_options_p opts_;
     server_list_widget* all_list_;
     server_list_widget* fav_list_;

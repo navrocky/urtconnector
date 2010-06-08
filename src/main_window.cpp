@@ -13,6 +13,7 @@
 #include <QInputDialog>
 #include <QByteArray>
 #include <QFile>
+#include <QHeaderView>
 
 #include <cl/syslog/syslog.h>
 

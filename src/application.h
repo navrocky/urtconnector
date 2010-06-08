@@ -1,9 +1,22 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "qtsingleapplication/qtsingleapplication.h"
+// #if QT_VERSION >= QT_VERSION_CHECK(4, 5, 0)
+// #define USE_SINGLE_APP
+// #endif
 
-class application : public QtSingleApplication
+#ifdef USE_SINGLE_APP
+#include "qtsingleapplication/qtsingleapplication.h"
+#else
+#include <QApplication>
+#endif
+
+class application :
+#ifdef USE_SINGLE_APP
+public QtSingleApplication
+#else
+public QApplication
+#endif
 {
     Q_OBJECT
 public:

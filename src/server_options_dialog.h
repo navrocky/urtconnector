@@ -1,7 +1,7 @@
 #ifndef SERVOPTSDIALOG_H
 #define SERVOPTSDIALOG_H
 
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 #include <QDialog>
 
@@ -38,7 +38,7 @@ private:
     void update_dialog();
     void init();
 
-    std::auto_ptr<Ui_ServOptsDialogClass> ui_;
+    boost::shared_ptr<Ui_ServOptsDialogClass> ui_;
     server_options opts_;
     server_id_list ids_;
     server_list_p list_;

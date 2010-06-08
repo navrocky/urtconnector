@@ -19,7 +19,10 @@ output_file::output_file(const std::string& file_name, bool append)
         : output()
 {
     path fp(file_name);
-    create_directories(fp.parent_path());
+//     create_directories(fp.parent_path());
+    std::string dir = fp.branch_path().string();
+    if (!dir.empty())
+        create_directories(dir);
 
     if (append)
         f_.open(file_name.c_str(), fstream::out | fstream::app);

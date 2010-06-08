@@ -36,12 +36,15 @@ int main(int argc, char *argv[])
     // this needed to link debug functions
     //    debug_help_init();
     application a(argc, argv);
+#ifdef USE_SINGLE_APP
     if ( a.isRunning() )
     {
         LOG_DEBUG << "UrTConnector already started. Activating and exit.";
+        
         a.sendMessage( QString() );
         return 0;
     }
+#endif
     application::setQuitOnLastWindowClosed(false);
 
     try
@@ -80,8 +83,11 @@ int main(int argc, char *argv[])
         a.installTranslator(&urt_tr);
 
         main_window w;
+
+#ifdef USE_SINGLE_APP
         //set a widget that should raise when new instance trying to start
         a.setActivationWindow(&w);
+#endif
         int res = a.exec();
         
         LOG_DEBUG << "Application finished";

@@ -5,6 +5,7 @@
 #include <QtCore/qobject.h>
 #include <QPainter>
 #include <QStringList>
+#include <QHeaderView>
 
 #include "server_info.h"
 #include "server_list.h"

@@ -9,7 +9,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 find_package( Boost COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})
 
-find_package(Qt4 REQUIRED QtCore QtGui QtXml)
+find_package(Qt4 REQUIRED QtCore QtGui QtXml QtNetwork)
 include(${QT_USE_FILE})
 
 if (WIN32)
