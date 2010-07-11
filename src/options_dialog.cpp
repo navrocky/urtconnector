@@ -58,6 +58,7 @@ void options_dialog::update_dialog()
     ui.clip_port_spin->setValue( opts_->lfc_port );
     ui.clip_password_spin->setValue( opts_->lfc_password );
     ui.separate_x_check->setChecked( opts_->separate_x );
+    ui.center_current_row_check->setChecked( opts_->center_current_row );
 }
 
 void options_dialog::accept()
@@ -75,6 +76,7 @@ void options_dialog::accept()
     opts_->lfc_port = ui.clip_port_spin->value();
     opts_->lfc_password = ui.clip_password_spin->value();
     opts_->separate_x = ui.separate_x_check->isChecked();
+    opts_->center_current_row = ui.center_current_row_check->isChecked();
 }
 
 void options_dialog::choose_binary()

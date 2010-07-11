@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>512</width>
-    <height>409</height>
+    <height>436</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -202,6 +202,13 @@
         <widget class="QCheckBox" name="hide_mainwindow_check">
          <property name="text">
           <string>Hide main window on startup</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="center_current_row_check">
+         <property name="text">
+          <string>Centering on current server row during update</string>
          </property>
         </widget>
        </item>

@@ -7,5 +7,6 @@ app_options::app_options()
 , lfc_host(0)
 , lfc_port(0)
 , lfc_password(0)
+, center_current_row(true)
 {
 }

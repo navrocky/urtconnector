@@ -12,6 +12,7 @@
 #include "pointers.h"
 #include "server_id.h"
 #include "server_options.h"
+#include "pointers.h"
 
 class server_list_item;
 
@@ -19,11 +20,11 @@ class server_list_widget : public QWidget
 {
 Q_OBJECT
 public:
-    server_list_widget(QWidget *parent);
+    server_list_widget(app_options_p opts, QWidget *parent);
 
     void set_server_list(server_list_p ptr);
     server_list_p server_list() const {return serv_list_;}
-
+    
     /*! Favorites list */
     void set_favs(server_fav_list* favs);
 
@@ -36,9 +37,6 @@ public:
     /*! Force update widget */
     void force_update();
 
-Q_SIGNALS:
-    void size_changed(int);
-    
 private slots:
     void timerEvent(QTimerEvent *event);
     void filter_text_changed(const QString&);
@@ -59,6 +57,7 @@ private:
     int update_timer_;
     int filter_timer_;
     server_fav_list* favs_;
+    app_options_p opts_;
 };
 
 

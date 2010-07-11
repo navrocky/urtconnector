@@ -6,12 +6,17 @@
 #include <QPainter>
 #include <QStringList>
 #include <QHeaderView>
+#include <QScrollBar>
 
 #include "server_info.h"
 #include "server_list.h"
 #include "geoip/geoip.h"
 
 #include "server_list_widget.h"
+#include "app_options.h"
+#include <cl/syslog/syslog.h>
+
+SYSLOG_MODULE("server_list_widget");
 
 const int c_filter_info_column = 100;
 //Role to access server_info stored in QTreeModel
@@ -35,12 +40,13 @@ private:
 };
 
 
-server_list_widget::server_list_widget(QWidget *parent)
+server_list_widget::server_list_widget(app_options_p opts, QWidget *parent)
 : QWidget(parent)
 , old_state_(0)
 , update_timer_(0)
 , filter_timer_(0)
 , favs_(NULL)
+, opts_(opts)
 {
     ui_.setupUi(this);
     update_timer_ = startTimer(500);
@@ -159,7 +165,10 @@ void server_list_widget::force_update()
 
 void server_list_widget::update_list()
 {
-    setUpdatesEnabled(false);
+    QTreeWidget* tw = ui_.treeWidget;
+    QTreeWidgetItem* cur_item = tw->currentItem();
+
+    tw->setUpdatesEnabled(false);
     try
     {
         const server_info_list& list = serv_list_->list();
@@ -175,7 +184,7 @@ void server_list_widget::update_list()
                 update_item((*it2).second);
             } else
             {
-                server_list_item* item = new server_list_item(ui_.treeWidget, id);
+                server_list_item* item = new server_list_item(tw, id);
                 items_[id] = item;
                 update_item(item);
             }
@@ -195,13 +204,15 @@ void server_list_widget::update_list()
             items_.erase(*it);
         }
 
-        setUpdatesEnabled(true);
+        tw->setUpdatesEnabled(true);
     }
     catch(...)
     {
-        setUpdatesEnabled(true);
+        tw->setUpdatesEnabled(true);
     }
-    emit size_changed( items_.size() );
+
+    if (cur_item && opts_->center_current_row)
+        tw->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
 }
 
 void server_list_widget::filter_text_changed(const QString& val)
@@ -216,10 +227,9 @@ void server_list_widget::filter_text_changed(const QString& val)
 server_id_list server_list_widget::selection()
 {
     server_id_list res;
-    QList<QTreeWidgetItem*> list = tree()->selectedItems();
-    for (int i = 0; i < list.size(); i++)
+    foreach(QTreeWidgetItem* item, tree()->selectedItems())
     {
-        server_list_item* it = dynamic_cast<server_list_item*>(list[i]);
+        server_list_item* it = dynamic_cast<server_list_item*>(item);
         if (it)
             res.push_back(it->id());
     }
@@ -245,7 +255,8 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
     QStyledItemDelegate::paint(painter, option, index);
 
     //Rect for drawing icons
-    QRect icon_rect( option.rect.topLeft(), QSize(option.rect.height(), option.rect.height()) );
+    const QRect& optr = option.rect;
+    QRect icon_rect( optr.x() + 2, optr.y() + 2, optr.height() - 4, optr.height() - 4 );
     
     server_info_p si = index.data(c_info_role).value<server_info_p>();
     if ( !si ) si = server_info_p( new server_info() );
@@ -277,6 +288,7 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
         }
 
     //First icon - status icon
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
     painter->drawPixmap( icon_rect, icon_status );
 
     next_icon( icon_rect);
@@ -290,7 +302,9 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
 }
 
 void status_item_delegate::next_icon(QRect& icon) const
-{ icon.adjust( icon.width(), 0, icon.width(), 0 ); }
+{ 
+    icon.adjust( icon.width(), 0, icon.width(), 0 );
+}
 
 
 

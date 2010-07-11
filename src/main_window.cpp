@@ -85,12 +85,12 @@ main_window::main_window(QWidget *parent)
     connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
     serv_info_update_timer_->start();
 
-    all_list_ = new server_list_widget(ui_->tabAll);
+    all_list_ = new server_list_widget(opts_, ui_->tabAll);
     QBoxLayout* tab_all_lay = dynamic_cast<QBoxLayout*> (ui_->tabAll->layout());
     tab_all_lay->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    fav_list_ = new server_list_widget(ui_->tabFav);
+    fav_list_ = new server_list_widget(opts_, ui_->tabFav);
     dynamic_cast<QBoxLayout*> (ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 

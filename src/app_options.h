@@ -48,6 +48,9 @@ public:
     
     /*! LFC regexp match number for password */
     int lfc_password;
+
+    /*! centering current server row while updating */
+    bool center_current_row;
 };
 
 #endif

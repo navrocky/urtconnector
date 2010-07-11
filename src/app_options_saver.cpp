@@ -14,6 +14,7 @@ void save_app_options(qsettings_p s, app_options_p opts)
 {
     s->beginGroup("app_opts");
     s->setValue("start_hidden", opts->start_hidden);
+    s->setValue("center_current_row", opts->center_current_row);
     s->setValue("separate_xsession", opts->separate_x);
     s->setValue("use_adv_cmd_line", opts->use_adv_cmd_line);
     s->setValue("adv_cmd_line", opts->adv_cmd_line);
@@ -39,6 +40,7 @@ void load_app_options(qsettings_p s, app_options_p opts)
 {
     s->beginGroup("app_opts");
     opts->start_hidden = s->value("start_hidden", false).toBool();
+    opts->center_current_row = s->value("center_current_row", true).toBool();
     opts->separate_x = s->value("separate_xsession", false).toBool();
     opts->use_adv_cmd_line = s->value("use_adv_cmd_line", opts->use_adv_cmd_line).toBool();
     opts->adv_cmd_line = s->value("adv_cmd_line", opts->adv_cmd_line).toString();
