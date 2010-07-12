@@ -352,7 +352,6 @@ void qstat_updater::prepare_info()
     else
         cur_server_info_->mode = (server_info::game_mode)(cur_server_info_->info["gametype"].toInt() + 1);
 
-    cur_server_info_->strict_name = cur_server_info_->info["sv_hostname"];
     cur_server_info_->country = gi_.country( cur_server_info_->id.ip_or_host() );
     cur_server_info_->country_code = gi_.code( cur_server_info_->id.ip_or_host() ).toLower();
 }

@@ -7,6 +7,7 @@
 #include <QTextEdit>
 #include <QRegExp>
 #include <iostream>
+#include <QtGui/qcolor.h>
 
 #include "geoip/geoip.h"
 #include "server_info_html.h"
@@ -28,34 +29,38 @@ QString get_css()
     QString css(
         "<style> "
         ".header{background-color: %1;}"
-        "table{margin-left:20px; margin-right:0px; background-color: %2; width: 100%;}"
+        ".props{margin-left:20px; margin-right:0px; background-color: %2; width: 100%; border-width:0px;}"
         ".line1{background-color: %3;}"
         ".line2{background-color: %4;}"
         ".img1{margin-right: 10px;}"
+        ".serv_header{background-color: black; color:white;"
+        "padding:5px 10px 5px 10px;font: bold 12pt; font-family:monospace;}"
         "</style>");
     return css.arg(window).arg(window).arg(base).arg(alternate);
 }
 
 QString color( const QString& str )
 {
-    static QMap<QString, QString> color_map;
+    static QMap<int, QColor> color_map;
 
     if( color_map.isEmpty() )
     {
-        color_map["0"] = QColor(Qt::black).name();
-        color_map["1"] = QColor(Qt::red).name();
-        color_map["2"] = QColor(Qt::green).name();
-        color_map["3"] = QColor(Qt::yellow).name();
-        color_map["4"] = QColor(Qt::blue).name();
-        color_map["5"] = QColor(Qt::cyan).name();
-        color_map["6"] = QColor(Qt::magenta).name();
-        color_map["7"] = QColor(Qt::white).name();
+        color_map[0] = QColor(Qt::black);
+        color_map[1] = QColor(Qt::red);
+        color_map[2] = QColor(Qt::green);
+        color_map[3] = QColor(Qt::yellow);
+        color_map[4] = QColor(Qt::blue);
+        color_map[5] = QColor(Qt::cyan);
+        color_map[6] = QColor(Qt::magenta);
+        color_map[7] = QColor(Qt::white);
     }
+
+    bool ok;
+    int col_num = str.toInt(&ok) % 8;
+    if (!ok)
+        col_num = 7;
     
-    if ( color_map.contains( str ) )
-        return color_map[str];
-    else
-        return QPalette().color(QPalette::Base).name();
+    return color_map[col_num].lighter().name();
 }
 
 QString make_css_colored(QString str)
@@ -124,7 +129,11 @@ QString get_server_info_html(const server_info& si)
 
     //FIXME plain_to_html dont work!!
     //QString name = plain_to_html(si.name);
-    QString name = ( si.strict_name.isEmpty() ) ? si.name : si.strict_name ;
+    QString name = si.get_info("sv_hostname");
+    if (name.isEmpty())
+        name = si.get_info("hostname");
+    if (name.isEmpty())
+        name = si.name;
     if ( name.isEmpty() )
         name = qApp->translate("server_info_html", "* Unnamed *");
 
@@ -169,7 +178,7 @@ QString get_server_info_html(const server_info& si)
                  .arg(geoip::get_flag_filename_by_country(si.country_code));
 
     serv_info = qApp->translate("server_info_html",
-                                "<table width=100%>"
+                                "<table width=100% class=\"props\">"
                                 "<tr class=\"line1\"><td>Status</td><td>%1</td></tr>"
                                 "<tr class=\"line2\"><td>Game mode</td><td>%2</td></tr>"
                                 "<tr class=\"line1\"><td>Map</td><td>%3</td></tr>"
@@ -184,7 +193,7 @@ QString get_server_info_html(const server_info& si)
     if (si.info.size() > 0)
     {
         ext_info = qApp->translate("server_info_html", "<hr>Extended info:"
-                                   "<table width=100%>"
+                                   "<table width=100% class=\"props\">"
                                    "<tr class=\"header\"><td>Key</td><td>Value</td></tr>");
 
         int i = 0;
@@ -198,7 +207,8 @@ QString get_server_info_html(const server_info& si)
         ext_info += "</table>";
     }
 
-    html = QString("<html><head>%1</head><body><h3>%2</h3>%3<hr>%4%5%6</body></html>")
+    html = QString("<html><head>%1</head><body><table width=100%><tr><td class=\"serv_header\">%2"
+            "</td></tr></table>%3<hr>%4%5%6</body></html>")
             .arg(get_css()).arg(name).arg(si.id.address()).arg(serv_info).arg(players)
             .arg(ext_info);
     return html;

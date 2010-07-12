@@ -40,7 +40,6 @@ public:
     status_t status;
     QString status_name();
     QString name;
-    QString strict_name;
     QString game_type; /* q3ut4 */
     player_info_list players;
     int max_player_count;
@@ -55,7 +54,7 @@ public:
     QString map;
     QString map_url;
 
-    QString get_info(const QString& key, const QString& default_value = QString()) const;
+    const QString& get_info(const QString& key, const QString& default_value = QString()) const;
 
     /*! additional server info */
     typedef std::map<QString, QString> info_t;

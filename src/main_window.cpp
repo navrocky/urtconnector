@@ -549,7 +549,8 @@ void main_window::update_server_info()
     {
         old_id_ = server_id();
         old_state_ = 0;
-        ui_->server_info_browser->clear();
+//        ui_->server_info_browser->clear();
+        ui_->server_info_browser->setHtml("");
     }
 }
 

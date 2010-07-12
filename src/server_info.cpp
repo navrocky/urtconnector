@@ -44,7 +44,7 @@ QString server_info::status_name()
     return QObject::tr("Unknown");
 }
 
-QString server_info::get_info(const QString & key, const QString & default_value) const
+const QString& server_info::get_info(const QString & key, const QString & default_value) const
 {
     info_t::const_iterator it( info.find(key) );
     if ( it != info.end() )
@@ -71,8 +71,6 @@ void server_info::update_from(const server_info& src)
         mode = src.mode;
     if (src.ping != 0)
         ping = src.ping;
-    if (!src.strict_name.isEmpty())
-        strict_name = src.strict_name;
 //    if (!src.players.empty())
     players = src.players;
     if (src.red_score != 0)
