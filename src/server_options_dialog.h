@@ -27,11 +27,13 @@ public:
 
     void set_update_params(geoip* gi, qstat_options* opts, job_queue* que);
 
+public slots:
+    void update_name();
+
 protected:
     void accept();
 
 private slots:
-    void update_name();
     void job_state_changed(job_t::state_t state);
     
 private:

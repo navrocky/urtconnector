@@ -111,6 +111,7 @@ main_window::main_window(QWidget *parent)
     connect(clipper_, SIGNAL(info_obtained()), SLOT(clipboard_info_obtained()));
     connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
     connect(ui_->action_about_qt, SIGNAL(triggered()), SLOT(about_qt()));
+    connect(ui_->quick_favorite_button, SIGNAL(clicked()), SLOT(quick_add_favorite()));
 
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
 
@@ -193,6 +194,26 @@ void main_window::quick_connect() const
     l.set_user_name(ui_->qlPlayerEdit->text());
     l.set_password(ui_->qlPasswordEdit->text());
     l.launch();
+}
+
+void main_window::quick_add_favorite()
+{
+    server_options opts;
+    opts.id = server_id(ui_->qlServerEdit->text());
+    opts.password = ui_->qlPasswordEdit->text();
+
+    server_options_dialog d(0, opts);
+    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
+    d.update_name();
+
+    if (d.exec() == QDialog::Rejected) return;
+    server_fav_list& list = opts_->servers;
+    list[d.options().id] = d.options();
+    save_options();
+    sync_fav_list();
+    fav_list_->force_update();
+    update_actions();
+    save_favorites();
 }
 
 void main_window::fav_add()
