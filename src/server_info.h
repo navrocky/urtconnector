@@ -37,6 +37,7 @@ public:
 
     server_id id;
     bool updating;
+    bool fresh;
     status_t status;
     QString status_name();
     QString name;

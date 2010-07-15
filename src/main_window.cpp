@@ -1,6 +1,8 @@
 #include <iostream>
 #include <set>
 
+#include <boost/bind.hpp>
+
 #include <QAction>
 #include <QTimer>
 #include <QSettings>
@@ -100,13 +102,20 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionFavAdd, SIGNAL(triggered()), SLOT(fav_add()));
     connect(ui_->actionFavEdit, SIGNAL(triggered()), SLOT(fav_edit()));
     connect(ui_->actionFavDelete, SIGNAL(triggered()), SLOT(fav_delete()));
+
+    
+    connect(ui_->tabWidget, SIGNAL(currentChanged(int)), SLOT(tab_changed(int)));
     connect(ui_->actionRefreshSelected, SIGNAL(triggered()), SLOT(refresh_selected()));
     connect(ui_->actionRefreshAll, SIGNAL(triggered()), SLOT(refresh_all()));
+    connect(ui_->actionRefreshMaster, SIGNAL(triggered()), SLOT(refresh_master()));
+    
     connect(ui_->actionAbout, SIGNAL(triggered()), SLOT(show_about()));
     connect(ui_->actionConnect, SIGNAL(triggered()), SLOT(connect_selected()));
     connect(ui_->actionAddToFav, SIGNAL(triggered()), SLOT(add_selected_to_fav()));
     connect(ui_->actionQuit, SIGNAL(triggered()), SLOT(quit_action()));
     connect(ui_->actionShow, SIGNAL(triggered()), SLOT(show_action()));
+    connect(ui_->actionClearOld, SIGNAL(triggered()), SLOT(clear_old()));
+    connect(ui_->actionClearAll, SIGNAL(triggered()), SLOT(clear_all()));
 
     connect(clipper_, SIGNAL(info_obtained()), SLOT(clipboard_info_obtained()));
     connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
@@ -121,8 +130,8 @@ main_window::main_window(QWidget *parent)
     add_separator_action(all_list_->tree());
     all_list_->tree()->addAction(ui_->actionAddToFav);
     add_separator_action(all_list_->tree());
-    all_list_->tree()->addAction(ui_->actionRefreshAll);
     all_list_->tree()->addAction(ui_->actionRefreshSelected);
+    all_list_->tree()->addAction(ui_->actionRefreshMaster);
     
     new item_view_dblclick_action_link(this, all_list_->tree(), ui_->actionConnect);
 
@@ -150,6 +159,7 @@ main_window::main_window(QWidget *parent)
     sync_fav_list();
     update_server_info();
     setVisible(!(opts_->start_hidden));
+    tab_changed( ui_->tabWidget->currentIndex() );
     all_list_->force_update();
     fav_list_->force_update();
     update_tabs();
@@ -380,48 +390,50 @@ void main_window::save_favorites()
     save_server_favs(get_app_options_settings("favorites"), opts_);
 }
 
-void main_window::refresh_all()
+void main_window::refresh_servers(server_list_widget* current, const server_id_list& to_update, bool master = false)
 {
-    try {
+    try
+    {
         gi_.set_database( opts_->geoip_database );
-    } catch (std::exception& e) {
+    }
+    catch (std::exception& e)
+    {
         statusBar()->showMessage(to_qstr(e.what()), 2000);
     }
 
+    if ( master )
+        que_->add_job( job_p( new job_update_from_master( current->server_list(), gi_, &(opts_->qstat_opts)) ) );
+    else
+        que_->add_job( job_p( new job_update_selected( to_update, current->server_list(), gi_, &(opts_->qstat_opts)) ) );
+}
+
+
+void main_window::refresh_all()
+{
     server_list_widget* list = selected_list_widget();
-    if (!list) return;
-    server_list_p sl = list->server_list();
-    if (list == all_list_)
-    {
-        que_->add_job(job_p(new job_update_from_master(list->server_list(),
-            gi_, &(opts_->qstat_opts))));
-    } else
-    {
-        server_fav_list& fav_list = opts_->servers;
-        server_id_list ids;
-        for (server_fav_list::iterator it = fav_list.begin(); it != fav_list.end(); it++)
-            ids.push_back(it->first);
-        que_->add_job(job_p(new job_update_selected(ids, list->server_list(), gi_, &(opts_->qstat_opts))));
-    }
+    assert( list == fav_list_ );
+    server_id_list ids;
+
+    server_list_p s_lst = list->server_list();
+    transform( s_lst->list().begin(), s_lst->list().end(), back_inserter(ids),
+        boost::bind(&server_info_list::value_type::first, _1) );
+
+    refresh_servers( list, ids );
 }
 
 void main_window::refresh_selected()
 {
-    try 
-    {
-        gi_.set_database( opts_->geoip_database );
-    } 
-    catch (std::exception& e) 
-    {
-        statusBar()->showMessage(to_qstr(e.what()), 2000);
-    }
-    
     server_list_widget* list = selected_list_widget();
-    if (!list) return;
-    server_id_list sel = list->selection();
-    if (sel.empty()) return;
-    que_->add_job(job_p(new job_update_selected(sel, list->server_list(), gi_, &(opts_->qstat_opts))));
+    refresh_servers( list, list->selection() );
 }
+
+void main_window::refresh_master()
+{
+    server_list_widget* list = selected_list_widget();
+    assert( list == all_list_ );
+    refresh_servers( list, server_id_list(), true );
+}
+
 
 void main_window::show_about()
 {
@@ -648,4 +660,44 @@ void main_window::update_tabs()
 {
     ui_->tabWidget->setTabText(0, tr("Favorites (%1)").arg(fav_sl_->list().size()));
     ui_->tabWidget->setTabText(1, tr("All (%1)").arg(all_sl_->list().size()));
+}
+
+void main_window::clear_all()
+{
+    server_list_widget* current = selected_list_widget();
+    current->server_list()->list().clear();
+    current->force_update();
+}
+
+bool not_fresh(const server_info_list::value_type& info)
+{ return !info.second->fresh; }
+
+void main_window::clear_old()
+{
+    server_list_widget* current = selected_list_widget();
+    server_info_list& info_lst = current->server_list()->list();
+    
+    server_info_list::iterator finded;
+    while( finded = find_if( info_lst.begin(), info_lst.end(), not_fresh )
+        , finded != info_lst.end()  )
+    {
+        info_lst.erase(finded);
+    }
+
+    current->force_update();
+}
+
+void main_window::tab_changed(int index)
+{
+    QWidget* curw = ui_->tabWidget->widget(index);
+    if (curw == ui_->tabFav)
+    {
+        ui_->actionRefreshAll->setVisible(true);
+        ui_->actionRefreshMaster->setVisible(false);
+    }
+    else if (curw == ui_->tabAll)
+    {
+        ui_->actionRefreshAll->setVisible(false);
+        ui_->actionRefreshMaster->setVisible(true);
+    }
 }

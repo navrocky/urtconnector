@@ -162,7 +162,6 @@ void server_list_widget::force_update()
     old_state_ = serv_list_->state();
     update_list();
 }
-
 void server_list_widget::update_list()
 {
     QTreeWidget* tw = ui_.treeWidget;
@@ -189,7 +188,6 @@ void server_list_widget::update_list()
                 update_item(item);
             }
         }
-
         // who removed ?
         std::vector<server_id> to_remove;
         for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
@@ -203,15 +201,13 @@ void server_list_widget::update_list()
             delete items_[*it];
             items_.erase(*it);
         }
-
         tw->setUpdatesEnabled(true);
     }
     catch(...)
     {
         tw->setUpdatesEnabled(true);
     }
-
-    if (cur_item && opts_->center_current_row)
+    if (tw->topLevelItemCount() > 0 && cur_item && opts_->center_current_row)
         tw->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
 }
 

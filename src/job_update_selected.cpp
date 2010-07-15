@@ -1,3 +1,7 @@
+
+#include "boost/bind.hpp"
+#include "boost/foreach.hpp"
+
 #include "server_list.h"
 #include "qstat_updater.h"
 #include "qstat_options.h"
@@ -11,6 +15,11 @@ job_update_selected::job_update_selected(const server_id_list& selection,
 , updater_(new qstat_updater(list, gi, opts))
 {
     connect(updater_.get(), SIGNAL(refresh_stopped()), SLOT(stopped()));
+    
+    BOOST_FOREACH( server_info_list::value_type& info, list->list() )
+    {
+        info.second->fresh = false;
+    }
 }
 
 QString job_update_selected::get_caption()
@@ -21,6 +30,7 @@ QString job_update_selected::get_caption()
 void job_update_selected::start()
 {
     set_state(job_t::js_executing);
+
     updater_->refresh_selected(selection_);
 }
 

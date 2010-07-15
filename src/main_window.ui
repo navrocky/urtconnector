@@ -111,8 +111,8 @@
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Tahoma'; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Tahoma'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -236,9 +236,12 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionFavDelete"/>
    <addaction name="actionFavEdit"/>
    <addaction name="actionAddToFav"/>
+   <addaction name="actionClearAll"/>
+   <addaction name="actionClearOld"/>
    <addaction name="separator"/>
    <addaction name="actionRefreshSelected"/>
    <addaction name="actionRefreshAll"/>
+   <addaction name="actionRefreshMaster"/>
   </widget>
   <widget class="QStatusBar" name="status_bar"/>
   <action name="actionQuit">
@@ -394,6 +397,33 @@ p, li { white-space: pre-wrap; }
   <action name="action_about_qt">
    <property name="text">
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionClearAll">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/icons/edit-clear.png</normaloff>:/icons/icons/edit-clear.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear all</string>
+   </property>
+  </action>
+  <action name="actionClearOld">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/icons/edit-clear-history.png</normaloff>:/icons/icons/edit-clear-history.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear Old</string>
+   </property>
+  </action>
+  <action name="actionRefreshMaster">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/icons/download.png</normaloff>:/icons/icons/download.png</iconset>
+   </property>
+   <property name="text">
+    <string>Update from master server</string>
    </property>
   </action>
  </widget>

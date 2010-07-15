@@ -4,6 +4,7 @@
 
 server_info::server_info()
 : updating(false)
+, fresh(false)
 , status(s_none)
 , max_player_count(0)
 , mode(gm_none)
