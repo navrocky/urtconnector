@@ -51,6 +51,12 @@ public:
 
     /*! centering current server row while updating */
     bool center_current_row;
+
+    /*! Keep history of connections */
+    bool keep_history;
+
+    /*! Number of connections that are kept in history */
+    int number_in_history;
 };
 
 #endif

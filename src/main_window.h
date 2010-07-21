@@ -81,8 +81,10 @@ private:
     app_options_p opts_;
     server_list_widget* all_list_;
     server_list_widget* fav_list_;
+    server_list_widget* history_list_;
     server_list_p all_sl_;
     server_list_p fav_sl_;
+    server_list_p history_sl_;
     QTimer* serv_info_update_timer_;
     server_id old_id_;
     int old_state_;

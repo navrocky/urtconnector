@@ -8,5 +8,7 @@ app_options::app_options()
 , lfc_port(0)
 , lfc_password(0)
 , center_current_row(true)
+, keep_history(true)
+, number_in_history(30)
 {
 }

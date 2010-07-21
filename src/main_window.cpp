@@ -96,6 +96,10 @@ main_window::main_window(QWidget *parent)
     dynamic_cast<QBoxLayout*> (ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
+    history_list_ = new server_list_widget(opts_, ui_->tabHistory);
+    dynamic_cast<QBoxLayout*> (ui_->tabHistory->layout())->insertWidget(0, history_list_);
+    connect(history_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
+
     connect(ui_->tabWidget, SIGNAL(currentChanged(int)), SLOT(current_tab_changed(int)));
     connect(ui_->actionOptions, SIGNAL(triggered()), SLOT(show_options()));
     connect(ui_->actionQuickConnect, SIGNAL(triggered()), SLOT(quick_connect()));
@@ -148,8 +152,21 @@ main_window::main_window(QWidget *parent)
 
     new item_view_dblclick_action_link(this, fav_list_->tree(), ui_->actionConnect);
 
+    history_list_->set_server_list(history_sl_);
+    history_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
+    history_list_->tree()->addAction(ui_->actionConnect);
+    add_separator_action(history_list_->tree());
+    history_list_->tree()->addAction(ui_->actionAddToFav);
+    history_list_->tree()->addAction(ui_->actionHistoryDelete);
+    add_separator_action(history_list_->tree());
+    history_list_->tree()->addAction(ui_->actionRefreshSelected);
+    history_list_->tree()->addAction(ui_->actionRefreshAll);
+
+    new item_view_dblclick_action_link(this, history_list_->tree(), ui_->actionConnect);
+
     fav_list_->set_favs(&(opts_->servers));
     all_list_->set_favs(&(opts_->servers));
+    history_list_->set_favs(&(opts_->servers));
 
     // loading all options
     load_all_at_start();

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>512</width>
-    <height>436</height>
+    <height>477</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,6 +25,9 @@
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
+     </property>
+     <property name="documentMode">
+      <bool>false</bool>
      </property>
      <widget class="QWidget" name="launch_tab">
       <attribute name="title">
@@ -243,6 +246,9 @@
          <property name="title">
           <string>GeoIP database file</string>
          </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
            <widget class="QLineEdit" name="geoip_database_edit"/>
@@ -332,6 +338,37 @@
              </layout>
             </item>
            </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="group_keep_history">
+         <property name="title">
+          <string>Keep history of connections</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QLabel" name="number_in_history_label">
+            <property name="text">
+             <string>Number of connections that are kept</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>number_in_history_spin</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="number_in_history_spin"/>
           </item>
          </layout>
         </widget>
