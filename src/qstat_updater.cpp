@@ -355,5 +355,9 @@ void qstat_updater::prepare_info()
 
     cur_server_info_->country = gi_.country( cur_server_info_->id.ip_or_host() );
     cur_server_info_->country_code = gi_.code( cur_server_info_->id.ip_or_host() ).toLower();
+    
+    // move offline servers to bottom
+    if (cur_server_info_->status != server_info::s_up)
+        cur_server_info_->ping = 9999;
 }
 
