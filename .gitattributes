@@ -23,6 +23,7 @@ doc/ExampleData/appdata.xml -text
 doc/ExampleData/qstat_out.xml -text
 doc/ExampleData/servers.xml -text
 doc/class_model.xmi -text
+doc/filters.xmi -text
 doc/qstat_out.txt -text
 doc/settings_ideas.txt -text
 /how_to_install.txt -text
@@ -71,6 +72,14 @@ src/debug_help.cpp -text
 src/debug_help.h -text
 src/exception.cpp -text
 src/exception.h -text
+src/filters/CMakeLists.txt -text
+src/filters/filter.cpp -text
+src/filters/filter.h -text
+src/filters/filter_factory.cpp -text
+src/filters/filter_factory.h -text
+src/filters/filter_list.cpp -text
+src/filters/filter_list.h -text
+src/filters/pointers.h -text
 src/flags/C.png -text
 src/flags/ad.png -text
 src/flags/ae.png -text
