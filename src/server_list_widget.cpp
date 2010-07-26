@@ -62,7 +62,7 @@ server_list_widget::server_list_widget(app_options_p opts, QWidget *parent)
     hdr->resizeSection(1, 350);
     hdr->resizeSection(3, 50);
     hdr->resizeSection(4, 50);
-    hdr->resizeSection(7, 50);
+    hdr->resizeSection(7, 60);
     hdr->setSortIndicator(4, Qt::AscendingOrder);
 }
 
@@ -113,6 +113,8 @@ void server_list_widget::update_item(server_list_item* item)
 
     QString status = sl.join(", ");
 
+    int private_slots = si->get_info("sv_privateClients").toInt();
+
     item->setToolTip(0, status);
     item->setText(1, name);
     item->setText(2, si->id.address());
@@ -121,7 +123,11 @@ void server_list_widget::update_item(server_list_item* item)
     item->setText(4, QString("%1").arg(si->ping, 5));
     item->setText(5, si->mode_name());
     item->setText(6, si->map);
-    item->setText(7, QString("%1/%2").arg(si->players.size()).arg(si->max_player_count));
+
+    item->setText(7, QString("%1/%2/%3").arg(si->players.size())
+        .arg(si->max_player_count - private_slots).arg(si->max_player_count));
+    item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
+        .arg(si->players.size()).arg(si->max_player_count - private_slots).arg(si->max_player_count));
 
     QString players;
     for (player_info_list::const_iterator it = si->players.begin(); it != si->players.end(); it++)

@@ -142,6 +142,7 @@ QString get_server_info_html(const server_info& si)
     QString serv_info;
     QString status_str;
 
+    int private_slots = si.get_info("sv_privateClients").toInt();
 
     if (si.updating)
         status_str = qApp->translate("server_info_html",
@@ -164,12 +165,17 @@ QString get_server_info_html(const server_info& si)
                 status_str = qApp->translate("server_info_html",
                                             "<img class=\"img1\" src=\":/icons/icons/status-online.png\"> Online");
             }
+            if (si.max_player_count > 0 &&
+                si.players.size() >= si.max_player_count - private_slots)
+                status_str += qApp->translate("server_info_html", ", Full");
             break;
         case server_info::s_down:
             status_str = qApp->translate("server_info_html",
                                         "<img class=\"img1\" src=\":/icons/icons/status-offline.png\"> Offline");
             break;
         }
+
+
 
     
     QString country_flag;
@@ -184,10 +190,13 @@ QString get_server_info_html(const server_info& si)
                                 "<tr class=\"line1\"><td>Map</td><td>%3</td></tr>"
                                 "<tr class=\"line2\"><td>Ping</td><td>%4</td></tr>"
                                 "<tr class=\"line1\"><td>Country</td><td>%5 %6</td></tr>"
-                                "<tr class=\"line2\"><td>Max players</td><td>%7</td></tr>"
+                                "<tr class=\"line2\"><td>Public slots</td><td>%7</td></tr>"
+                                "<tr class=\"line1\"><td>Total slots</td><td>%8</td></tr>"
                                 "</table>"
                                 )
-            .arg(status_str).arg(si.mode_name()).arg(si.map).arg(si.ping).arg(country_flag).arg(si.country).arg(si.max_player_count);
+            .arg(status_str).arg(si.mode_name()).arg(si.map).arg(si.ping)
+            .arg(country_flag).arg(si.country).arg(si.max_player_count - private_slots)
+            .arg(si.max_player_count);
 
     QString ext_info;
     if (si.info.size() > 0)
