@@ -1,7 +1,4 @@
 
-#include "boost/bind.hpp"
-#include "boost/foreach.hpp"
-
 #include "server_list.h"
 #include "qstat_updater.h"
 #include "qstat_options.h"
@@ -13,11 +10,6 @@ job_update_from_master::job_update_from_master( server_list_p list, const geoip&
 , updater_(new qstat_updater(list, gi, opts))
 {
     connect(updater_.get(), SIGNAL(refresh_stopped()), SLOT(stopped()));
-
-    BOOST_FOREACH( server_info_list::value_type& info, list->list() )
-    {
-        info.second->fresh = false;
-    }
 }
 
 job_update_from_master::~job_update_from_master()

@@ -168,6 +168,7 @@ void server_list_widget::force_update()
     old_state_ = serv_list_->state();
     update_list();
 }
+
 void server_list_widget::update_list()
 {
     QTreeWidget* tw = ui_.treeWidget;
@@ -213,8 +214,11 @@ void server_list_widget::update_list()
     {
         tw->setUpdatesEnabled(true);
     }
+
+    //FIXME cur_item may be incorrect due to deletion old current item;
     if (tw->topLevelItemCount() > 0 && cur_item && opts_->center_current_row)
         tw->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
+
 }
 
 void server_list_widget::filter_text_changed(const QString& val)

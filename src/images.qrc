@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/edit-clear-selected.png</file>
+    <file>icons/edit-clear-offline.png</file>
     <file>icons/download.png</file>
     <file>icons/edit-clear.png</file>
     <file>icons/choose-file.png</file>

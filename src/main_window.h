@@ -40,13 +40,12 @@ private slots:
     void fav_add();
     void fav_edit();
     void fav_delete();
-    void tab_changed(int index);
-    
+
     void refresh_all();
     void refresh_selected();
     void refresh_master();
 
-    void update_actions();
+    void update_actions( );
     void current_tab_changed ( int );
     void update_server_info();
     void selection_changed();
@@ -57,8 +56,10 @@ private slots:
     void commit_data_request(QSessionManager&);
     void clipboard_info_obtained();
     void raise_window();
+
     void clear_all();
-    void clear_old();
+    void clear_selected();
+    void clear_offline();
     void about_qt();
 private:
     void sync_fav_list();
@@ -70,6 +71,7 @@ private:
     void save_favorites();
 
     void refresh_servers(server_list_widget* current, const server_id_list& to_update, bool master );
+    void clear_servers(server_list_widget* current, const server_id_list& to_delete);
     
     void update_tabs();
 

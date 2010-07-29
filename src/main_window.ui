@@ -57,7 +57,7 @@
      <x>0</x>
      <y>0</y>
      <width>803</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
@@ -236,8 +236,10 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionFavDelete"/>
    <addaction name="actionFavEdit"/>
    <addaction name="actionAddToFav"/>
+   <addaction name="separator"/>
+   <addaction name="actionClearSelected"/>
+   <addaction name="actionClearOffline"/>
    <addaction name="actionClearAll"/>
-   <addaction name="actionClearOld"/>
    <addaction name="separator"/>
    <addaction name="actionRefreshSelected"/>
    <addaction name="actionRefreshAll"/>
@@ -408,13 +410,16 @@ p, li { white-space: pre-wrap; }
     <string>Clear all</string>
    </property>
   </action>
-  <action name="actionClearOld">
+  <action name="actionClearOffline">
    <property name="icon">
     <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/edit-clear-history.png</normaloff>:/icons/icons/edit-clear-history.png</iconset>
+     <normaloff>:/icons/icons/edit-clear-offline.png</normaloff>:/icons/icons/edit-clear-offline.png</iconset>
    </property>
    <property name="text">
-    <string>Clear Old</string>
+    <string>Clear Offline</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear Offline</string>
    </property>
   </action>
   <action name="actionRefreshMaster">
@@ -424,6 +429,18 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Update from master server</string>
+   </property>
+  </action>
+  <action name="actionClearSelected">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/icons/edit-clear-selected.png</normaloff>:/icons/icons/edit-clear-selected.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear Selected</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear Selected</string>
    </property>
   </action>
  </widget>

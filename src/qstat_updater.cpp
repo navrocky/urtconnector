@@ -301,7 +301,6 @@ void qstat_updater::process_xml()
                         list[cur_server_info_->id] = si;
                     }
                     si->update_from(*cur_server_info_);
-                    si->fresh = true;
 
                     LOG_HARD << "Received server info: %1, %2, ", si->id.address().toStdString(),
                     si->name.toStdString();

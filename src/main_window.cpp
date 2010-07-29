@@ -2,6 +2,7 @@
 #include <set>
 
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 
 #include <QAction>
 #include <QTimer>
@@ -104,7 +105,6 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionFavDelete, SIGNAL(triggered()), SLOT(fav_delete()));
 
     
-    connect(ui_->tabWidget, SIGNAL(currentChanged(int)), SLOT(tab_changed(int)));
     connect(ui_->actionRefreshSelected, SIGNAL(triggered()), SLOT(refresh_selected()));
     connect(ui_->actionRefreshAll, SIGNAL(triggered()), SLOT(refresh_all()));
     connect(ui_->actionRefreshMaster, SIGNAL(triggered()), SLOT(refresh_master()));
@@ -114,8 +114,9 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionAddToFav, SIGNAL(triggered()), SLOT(add_selected_to_fav()));
     connect(ui_->actionQuit, SIGNAL(triggered()), SLOT(quit_action()));
     connect(ui_->actionShow, SIGNAL(triggered()), SLOT(show_action()));
-    connect(ui_->actionClearOld, SIGNAL(triggered()), SLOT(clear_old()));
     connect(ui_->actionClearAll, SIGNAL(triggered()), SLOT(clear_all()));
+    connect(ui_->actionClearOffline, SIGNAL(triggered()), SLOT(clear_offline()));
+    connect(ui_->actionClearSelected, SIGNAL(triggered()), SLOT(clear_selected()));
 
     connect(clipper_, SIGNAL(info_obtained()), SLOT(clipboard_info_obtained()));
     connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
@@ -155,11 +156,10 @@ main_window::main_window(QWidget *parent)
     load_all_at_start();
     load_geometry();
 
-    update_actions();
     sync_fav_list();
     update_server_info();
     setVisible(!(opts_->start_hidden));
-    tab_changed( ui_->tabWidget->currentIndex() );
+    current_tab_changed( ui_->tabWidget->currentIndex() );
     all_list_->force_update();
     fav_list_->force_update();
     update_tabs();
@@ -524,15 +524,30 @@ server_list_widget* main_window::selected_list_widget() const
 
 void main_window::update_actions()
 {
-    QWidget* curw = selected_list_widget();
+    server_list_widget* current = selected_list_widget();
     bool sel = !(selected().is_empty());
 
-    ui_->actionAddToFav->setEnabled(curw == all_list_ && sel);
+    ui_->actionAddToFav->setEnabled(current == all_list_ && sel);
     ui_->actionConnect->setEnabled(sel);
-    ui_->actionFavAdd->setEnabled(curw == fav_list_);
-    ui_->actionFavDelete->setEnabled(curw == fav_list_ && sel);
-    ui_->actionFavEdit->setEnabled(curw == fav_list_ && sel);
+    ui_->actionFavAdd->setEnabled(current == fav_list_);
+    ui_->actionFavDelete->setEnabled(current == fav_list_ && sel);
+    ui_->actionFavEdit->setEnabled(current == fav_list_ && sel);
     ui_->actionRefreshSelected->setEnabled(sel);
+
+    ui_->actionClearSelected->setVisible(current);
+    ui_->actionClearOffline->setVisible(current);
+    ui_->actionClearAll->setVisible(current);
+    
+    if ( current )
+    {
+        bool has_any_server = !( current->server_list()->list().empty() );
+        ui_->actionClearSelected->setEnabled(sel);
+        ui_->actionClearOffline->setEnabled(has_any_server);
+        ui_->actionClearAll->setEnabled(has_any_server);
+    }
+
+    ui_->actionRefreshAll->setVisible(current == fav_list_);
+    ui_->actionRefreshMaster->setVisible(current != fav_list_);
 }
 
 void main_window::current_tab_changed(int)
@@ -662,42 +677,73 @@ void main_window::update_tabs()
     ui_->tabWidget->setTabText(1, tr("All (%1)").arg(all_sl_->list().size()));
 }
 
+void main_window::clear_servers(server_list_widget* current, const server_id_list& to_delete)
+{
+    if ( current == all_list_ )
+    {
+        server_info_list& info_lst = current->server_list()->list();
+        BOOST_FOREACH( const server_id_list::value_type& id, to_delete ){
+            info_lst.erase(id);
+        }
+    }
+    else if ( current == fav_list_)
+    {
+        if (QMessageBox::question(this, tr("Deleting a favorite")
+            , tr("Continue to delete a favorite?")
+            , QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes
+        )
+            return;
+        
+        server_fav_list& fav_lst = opts_->servers;
+        BOOST_FOREACH( const server_id_list::value_type& id, to_delete ){
+            fav_lst.erase(id);
+        }
+
+        sync_fav_list();
+        save_favorites();
+    }
+    update_actions();
+    current->force_update();
+}
+
+
 void main_window::clear_all()
 {
     server_list_widget* current = selected_list_widget();
-    current->server_list()->list().clear();
-    current->force_update();
+
+    server_id_list id_list;
+    BOOST_FOREACH(const server_info_list::value_type& info, current->server_list()->list()){
+        id_list.push_back(info.first);
+    }
+    
+    //if current item will removed during clearing, scrollToItem crashes
+    current->tree()->setCurrentItem(0);    
+    clear_servers(current, id_list);
 }
 
-bool not_fresh(const server_info_list::value_type& info)
-{ return !info.second->fresh; }
+bool is_offline( const server_info_list::value_type& info )
+{ return ( info.second->status == server_info::s_down ) || ( info.second->status == server_info::s_error ); }
 
-void main_window::clear_old()
+void main_window::clear_offline()
 {
     server_list_widget* current = selected_list_widget();
-    server_info_list& info_lst = current->server_list()->list();
-    
-    server_info_list::iterator finded;
-    while( finded = find_if( info_lst.begin(), info_lst.end(), not_fresh )
-        , finded != info_lst.end()  )
-    {
-        info_lst.erase(finded);
+
+    server_id_list id_list;
+    BOOST_FOREACH(const server_info_list::value_type& info, current->server_list()->list()){
+        if ( is_offline(info) )
+            id_list.push_back(info.first);
     }
 
-    current->force_update();
+    //if current item will removed during clearing, scrollToItem crashes
+    current->tree()->setCurrentItem(0);
+    clear_servers(current, id_list);
 }
 
-void main_window::tab_changed(int index)
+void main_window::clear_selected()
 {
-    QWidget* curw = ui_->tabWidget->widget(index);
-    if (curw == ui_->tabFav)
-    {
-        ui_->actionRefreshAll->setVisible(true);
-        ui_->actionRefreshMaster->setVisible(false);
-    }
-    else if (curw == ui_->tabAll)
-    {
-        ui_->actionRefreshAll->setVisible(false);
-        ui_->actionRefreshMaster->setVisible(true);
-    }
+    server_list_widget* current = selected_list_widget();
+
+    //if current item will removed during clearing, scrollToItem crashes
+    current->tree()->setCurrentItem(0);
+    clear_servers(current, current->selection());
 }
