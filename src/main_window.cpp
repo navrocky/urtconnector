@@ -793,6 +793,7 @@ void main_window::clear_selected()
     server_list_widget* current = selected_list_widget();
 
     //if current item will removed during clearing, scrollToItem crashes
+    server_id_list id_list( current->selection() );
     current->tree()->setCurrentItem(0);
-    clear_servers(current, current->selection());
+    clear_servers(current, id_list);
 }
