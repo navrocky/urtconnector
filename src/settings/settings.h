@@ -45,7 +45,7 @@ public:
 
     ///Get QSettings object registered byt \p uid.
     /*! If no object registered register_group(uid, uid) is called and created object returned */
-    settings_ptr get_uid( const QString& uid );
+    static settings_ptr get_settings( const QString& uid );
 
 private:
     struct Pimpl;
@@ -60,11 +60,11 @@ class settings_uid_provider{
     settings s;
 public:
 
-    settings_uid_provider(const settings& s)
+    settings_uid_provider(const settings& s = settings() )
         : s(s){}
 
     settings::settings_ptr part()
-    { return s.get_uid( uid() ); }
+    { return s.get_settings( uid() ); }
 
     static const QString& uid()
     { return uid_;}

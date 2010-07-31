@@ -1,4 +1,5 @@
 
+#include <boost/pool/detail/singleton.hpp>
 
 #include <QCoreApplication>
 #include <QDir>
@@ -15,6 +16,7 @@ struct settings::Pimpl{
     Pimpl()
         : settings( new QSettings( QSettings::IniFormat, QSettings::UserScope,
             QCoreApplication::organizationName(), QCoreApplication::applicationName() ) )
+        , registered(  boost::details::pool::singleton_default<settings_map>::instance() )
     {}
 
     ///Get dir to the main QSettings object
@@ -49,9 +51,8 @@ struct settings::Pimpl{
     }
 
     settings_ptr settings;
-    settings_map registered;
+    settings_map& registered;
 };
-
 
 settings::settings()
     : p_( new Pimpl )
@@ -73,14 +74,15 @@ void settings::register_group(const QString& uid, const QString& group)
         p_->registered[uid] = p_->create_group(uid, group);
 }
 
-settings::settings_ptr settings::get_uid(const QString& uid)
+settings::settings_ptr settings::main()
 {
-    return p_->get_settings(uid);
+    return p_->settings;
 }
 
-
-
-
-
+settings::settings_ptr settings::get_settings(const QString& uid)
+{
+    settings s;
+    return s.p_->get_settings(uid);
+}
 
 

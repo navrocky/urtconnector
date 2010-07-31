@@ -28,6 +28,7 @@ add_subdirectory(geoip)
 add_subdirectory(qtsingleapplication)
 add_subdirectory(cl)
 add_subdirectory(filters)
+add_subdirectory(settings)
 
 set(HEADERS
     about_dialog.h
@@ -147,6 +148,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES}
     qtsingleapplication
     clsyslog
     filters
+    settings
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)

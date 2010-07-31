@@ -40,6 +40,8 @@
 #include "job_update_selected.h"
 #include "job_update_from_master.h"
 
+#include "settings/settings.h"
+
 #include "main_window.h"
 
 SYSLOG_MODULE("main_window");
@@ -48,6 +50,24 @@ using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 // main_window
+
+
+//Получаем UID для state_settings
+class state_settings: public settings_uid_provider<state_settings>
+//Если типизированные поля не нужны - дальше модно ничего не писать
+{
+public:
+    //Для простых данных это необязательно но можно типизировать сохраняемые поля
+    QByteArray geometry(){
+        return part()->value("geometry").toByteArray();
+    }
+
+    void set_geometry( const QByteArray& g ){
+        return part()->setValue("geometry", g );
+    }
+   
+
+};
 
 main_window::main_window(QWidget *parent)
 : QMainWindow(parent)
@@ -58,6 +78,11 @@ main_window::main_window(QWidget *parent)
 , old_state_(0)
 , clipper_( new clipper(this, opts_) )
 {
+    //Инициализируем объект настроек
+    settings set;
+    //Регистрируем state_settings в отдельном файле
+    set.register_file( state_settings::uid(), "state.ini" );
+
     ui_->setupUi(this);
 
     que_ = new job_queue(this);
@@ -159,7 +184,8 @@ main_window::main_window(QWidget *parent)
     sync_fav_list();
     update_server_info();
     setVisible(!(opts_->start_hidden));
-    current_tab_changed( ui_->tabWidget->currentIndex() );
+    current_tab_changed( ui_->tabWidget->currentIndex() );
+
     all_list_->force_update();
     fav_list_->force_update();
     update_tabs();
@@ -557,8 +583,13 @@ void main_window::current_tab_changed(int)
 
 void main_window::save_geometry()
 {
-    qsettings_p s = get_app_options_settings("state");
-    s->setValue("geometry", saveGeometry());
+    //Используем типизированные и именованные точки доступа
+    state_settings state_s;
+    state_s.set_geometry( saveGeometry() );
+
+    //А можно использовать традиционный способ присвоения/запроса значений
+    qsettings_p s = settings::get_settings( state_settings::uid() );
+    //s->setValue("geometry", saveGeometry());
     s->setValue("window_state", saveState());
     s->setValue("fav_list_state", fav_list_->tree()->header()->saveState());
     s->setValue("all_list_state", all_list_->tree()->header()->saveState());
@@ -566,8 +597,26 @@ void main_window::save_geometry()
 
 void main_window::load_geometry()
 {
-    qsettings_p s = get_app_options_settings("state");
-    restoreGeometry(s->value("geometry").toByteArray());
+    qsettings_p s = settings::get_settings( state_settings::uid() );
+                
+    //Нужно незаметно для пользователя перенести старые настройки в новый формат
+    qsettings_p old_s = get_app_options_settings("state");
+    QStringList allkeys = old_s->allKeys();
+
+    if ( !allkeys.isEmpty() )
+    {
+        BOOST_FOREACH( const QString& key, allkeys ){
+            s->setValue( key, old_s->value(key) );
+        }
+        old_s->clear();
+    }
+    
+    //restoreGeometry(s->value("geometry").toByteArray());
+    //Используем типизированные и именованные точки доступа
+    state_settings state_s;
+    restoreGeometry( state_s.geometry() );
+
+    //или традиционный метод
     qApp->processEvents();
     restoreState(s->value("window_state").toByteArray());
     fav_list_->tree()->header()->restoreState(s->value("fav_list_state").toByteArray());
