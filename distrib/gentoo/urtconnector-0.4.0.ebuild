@@ -11,7 +11,7 @@ HOMEPAGE="http://code.google.com/p/urtconnector/"
 SRC_URI="http://urtconnector.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="GPL"
-KEYWORDS="~x86 ~x64"
+KEYWORDS="x86 amd64"
 SLOT="0"
 IUSE=""
 

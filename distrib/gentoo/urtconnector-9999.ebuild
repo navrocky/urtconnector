@@ -11,7 +11,7 @@ HOMEPAGE="http://code.google.com/p/urtconnector/"
 ESVN_REPO_URI="http://urtconnector.googlecode.com/svn/trunk/"
 
 LICENSE="GPL"
-KEYWORDS="~x86 ~x64"
+KEYWORDS="~x86 ~amd64"
 SLOT="0"
 IUSE=""
 

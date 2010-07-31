@@ -75,6 +75,7 @@ src/debug_help.h -text
 src/exception.cpp -text
 src/exception.h -text
 src/filters/CMakeLists.txt -text
+src/filters/alternative.h -text
 src/filters/filter.cpp -text
 src/filters/filter.h -text
 src/filters/filter_factory.cpp -text
