@@ -70,7 +70,6 @@ private:
 
 };
 
-//qRegisterMetaType<server_info>("server_info");
 Q_DECLARE_METATYPE(server_info_p);
 
 typedef std::map<server_id, server_info_p> server_info_list;

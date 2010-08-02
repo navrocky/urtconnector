@@ -13,7 +13,6 @@ class QSettings;
 typedef boost::shared_ptr<QSettings> qsettings_p;
 
 class server_info;
-///Shared pointer for server_info class. Forward declaration.
 typedef boost::shared_ptr<server_info> server_info_p;
 
 #endif	/* _POINTERS_H */

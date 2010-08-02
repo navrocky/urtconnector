@@ -5,14 +5,19 @@
 
 filter::filter(filter_class_p fc)
 : fc_(fc)
+, enabled_(true)
 {
 }
 
-void filter::set_uid(const QString& uid)
+void filter::set_name(const QString& name)
 {
-    uid_ = uid;
+    name_ = name;
 }
 
+void filter::set_enabled(bool val)
+{
+    enabled_ = val;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // filter_class

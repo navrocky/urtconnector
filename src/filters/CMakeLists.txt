@@ -8,15 +8,20 @@ set(HEADERS
     filter.h
     filter_factory.h
     filter_list.cpp
+    composite_filter.h
+    filter_edit_widget.h
 )
 
 set(MOC_HEADERS
+    filter_edit_widget.h
 )
 
 set(SOURCES
     filter.cpp
     filter_factory.cpp
     filter_list.cpp
+    composite_filter.cpp
+    filter_edit_widget.cpp
 )
 
 set(IFACES
@@ -25,9 +30,9 @@ set(IFACES
 set(RESOURCES
 )
 
-#qt4_add_resources(SOURCES ${RESOURCES})
-#qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
-#qt4_wrap_ui(SOURCES ${IFACES})
+qt4_add_resources(SOURCES ${RESOURCES})
+qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
+qt4_wrap_ui(SOURCES ${IFACES})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 

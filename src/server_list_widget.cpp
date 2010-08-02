@@ -1,61 +1,127 @@
-
 #include <vector>
 
 #include <QTreeWidgetItem>
-#include <QtCore/qobject.h>
 #include <QPainter>
 #include <QStringList>
 #include <QHeaderView>
 #include <QScrollBar>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QTreeWidget>
+#include <QLineEdit>
+#include <QToolButton>
+#include <QLabel>
+#include <QPixmap>
+#include <QTimerEvent>
+
+#include <cl/syslog/syslog.h>
 
 #include "server_info.h"
 #include "server_list.h"
 #include "geoip/geoip.h"
+#include "app_options.h"
+#include "filters/filter.h"
+#include "filters/filter_edit_widget.h"
+#include "filters/filter_list.h"
 
 #include "server_list_widget.h"
-#include "app_options.h"
-#include <cl/syslog/syslog.h>
 
 SYSLOG_MODULE("server_list_widget");
 
 const int c_filter_info_column = 100;
+
 //Role to access server_info stored in QTreeModel
-const int c_info_role = Qt::UserRole +1;
+const int c_info_role = Qt::UserRole;
 
-class server_list_item: public QTreeWidgetItem
+////////////////////////////////////////////////////////////////////////////////
+// server_tree
+
+server_tree::server_tree(QWidget* p)
+    :QTreeWidget(p)
+{}
+
+QModelIndex server_tree::indexFromItem(QTreeWidgetItem* item) const
 {
-public:
-    server_list_item(QTreeWidget* parent, const server_id& id)
-    : QTreeWidgetItem(parent), id_(id) 
-    {};
+    return QTreeWidget::indexFromItem(item);
+}
 
-    server_list_item(QTreeWidgetItem* parent, const server_id& id)
-    : QTreeWidgetItem(parent), id_(id) 
-    {};
+////////////////////////////////////////////////////////////////////////////////
+// server_list_widget
 
-    const server_id& id() const {return id_;}
-
-private:
-    server_id id_;
-};
-
-
-server_list_widget::server_list_widget(app_options_p opts, QWidget *parent)
+server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p factory,
+    QWidget *parent)
 : QWidget(parent)
 , old_state_(0)
 , update_timer_(0)
 , filter_timer_(0)
-, favs_(NULL)
+, favs_(0)
 , opts_(opts)
+, filters_(new filter_list(factory))
 {
-    ui_.setupUi(this);
-    update_timer_ = startTimer(500);
-    connect(ui_.filterEdit, SIGNAL(textChanged(const QString&)), SLOT(filter_text_changed(const QString&)));
-    connect(ui_.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
+    QBoxLayout* vert_lay = new QVBoxLayout(this);
+    vert_lay->setContentsMargins(0, 0, 0, 0);
+    QBoxLayout* horiz_lay = new QHBoxLayout();
 
-    ui_.treeWidget->setItemDelegateForColumn( 0, new status_item_delegate(this) );
+    show_filter_button_ = new QToolButton(this);
+    show_filter_button_->setIcon(QIcon(":/icons/icons/view-filter.png"));
+    show_filter_button_->setAutoRaise(true);
+    show_filter_button_->setToolTip(tr("View and edit filter"));
+
+    connect(show_filter_button_, SIGNAL(clicked()), SLOT(edit_filter()));
+
+    horiz_lay->addWidget(show_filter_button_);
+
+    filter_edit_ = new QLineEdit(this);
+
+    horiz_lay->addWidget(filter_edit_);
+
+    clear_filter_button_ = new QToolButton(this);
+    clear_filter_button_->setIcon(QIcon(":/icons/icons/edit-clear-locationbar-rtl.png"));
+    clear_filter_button_->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    clear_filter_button_->setAutoRaise(true);
+
+    horiz_lay->addWidget(clear_filter_button_);
+
+    vert_lay->addLayout(horiz_lay);
+
+    tree_ = new server_tree(this);
+    tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tree_->setEditTriggers(QAbstractItemView::EditKeyPressed);
+    tree_->setAlternatingRowColors(true);
+    tree_->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    tree_->setRootIsDecorated(false);
+    tree_->setUniformRowHeights(true);
+    tree_->setSortingEnabled(true);
+    tree_->setAllColumnsShowFocus(true);
+    tree_->setWordWrap(true);
+
+    vert_lay->addWidget(tree_);
+
+    clear_filter_button_->setText(tr("Clear filter"));
+    clear_filter_button_->setToolTip(tr("Clear current filter"));
+
+    filter_edit_->setToolTip(tr("Filter line. You can use here a regular expressions."));
+
+    QTreeWidgetItem *hi = tree_->headerItem();
+    hi->setText(7, tr("Players"));
+    hi->setText(6, tr("Map"));
+    hi->setText(5, tr("Game mode"));
+    hi->setText(4, tr("Ping"));
+    hi->setText(3, tr("Country"));
+    hi->setText(2, tr("Address"));
+    hi->setText(1, tr("Name"));
+    hi->setText(0, tr("Status"));
+    hi->setToolTip(2, tr("Server address (ip:port)"));
+    hi->setToolTip(1, tr("Server name"));
+    hi->setToolTip(0, tr("Server status"));
+
+    update_timer_ = startTimer(500);
+    connect(filter_edit_, SIGNAL(textChanged(const QString&)), SLOT(filter_text_changed(const QString&)));
+    connect(clear_filter_button_, SIGNAL(clicked()), SLOT(filter_clear()));
+
+    tree_->setItemDelegateForColumn( 0, new status_item_delegate(this) );
     
-    QHeaderView* hdr = ui_.treeWidget->header();
+    QHeaderView* hdr = tree_->header();
     
     hdr->moveSection(2, 7);
     hdr->resizeSection(0, 80);
@@ -76,15 +142,14 @@ void server_list_widget::set_favs ( server_fav_list* favs )
     favs_ = favs;
 }
 
-void server_list_widget::update_item(server_list_item* item)
+void server_list_widget::update_item(QTreeWidgetItem* item)
 {
-    const server_info_list& list = serv_list_->list();
-    server_info_list::const_iterator it = list.find(item->id());
-    if (it == list.end()) return;
-    server_info_p si = it->second;
+    server_info_p si = item->data(0, c_info_role).value<server_info_p>();
+    if (!si)
+        return;
 
-    QModelIndex index = ui_.treeWidget->indexFromItem(item);
-    ui_.treeWidget->model()->setData(index, qVariantFromValue(si), c_info_role );
+    QModelIndex index = tree_->indexFromItem(item);
+    tree_->model()->setData(index, qVariantFromValue(si), c_info_role );
 
     QString name = si->name;
     if (favs_)
@@ -139,8 +204,15 @@ void server_list_widget::update_item(server_list_item* item)
     item->setHidden(!filter_item(item));
 }
 
-bool server_list_widget::filter_item(server_list_item* item)
+bool server_list_widget::filter_item(QTreeWidgetItem* item)
 {
+    server_info_p si = item->data(0, c_info_role).value<server_info_p>();
+    if (filters_->root_filter())
+    {
+        if (!filters_->root_filter()->filter_server(*(si.get())))
+            return false;
+    }
+
     return filter_rx_.isEmpty() ||
             filter_rx_.indexIn(item->text(c_filter_info_column)) != -1;
 }
@@ -171,7 +243,7 @@ void server_list_widget::force_update()
 
 void server_list_widget::update_list()
 {
-    QTreeWidget* tw = ui_.treeWidget;
+    QTreeWidget* tw = tree_;
     QTreeWidgetItem* cur_item = tw->currentItem();
 
     tw->setUpdatesEnabled(false);
@@ -182,15 +254,16 @@ void server_list_widget::update_list()
         // who changed, appeared?
         for (server_info_list::const_iterator it = list.begin(); it != list.end(); it++)
         {
-            const server_id& id = (*it).first;
+            const server_id& id = it->first;
             server_items::iterator it2 = items_.find(id);
 
             if (it2 != items_.end())
             {
-                update_item((*it2).second);
+                update_item(it2->second);
             } else
             {
-                server_list_item* item = new server_list_item(tw, id);
+                QTreeWidgetItem* item = new QTreeWidgetItem(tw);
+                item->setData(0, c_info_role, QVariant::fromValue(it->second));
                 items_[id] = item;
                 update_item(item);
             }
@@ -199,13 +272,16 @@ void server_list_widget::update_list()
         std::vector<server_id> to_remove;
         for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
         {
-            const server_id& id = (*it).first;
+            const server_id& id = it->first;
             if (list.find(id) == list.end())
                 to_remove.push_back(id);
         }
         for (std::vector<server_id>::iterator it = to_remove.begin(); it != to_remove.end(); it++)
         {
-            delete items_[*it];
+            QTreeWidgetItem* item = items_[*it];
+            if (item == cur_item)
+                cur_item == 0;
+            delete item;
             items_.erase(*it);
         }
         tw->setUpdatesEnabled(true);
@@ -215,10 +291,8 @@ void server_list_widget::update_list()
         tw->setUpdatesEnabled(true);
     }
 
-    //FIXME cur_item may be incorrect due to deletion old current item;
     if (tw->topLevelItemCount() > 0 && cur_item && opts_->center_current_row)
         tw->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
-
 }
 
 void server_list_widget::filter_text_changed(const QString& val)
@@ -233,28 +307,38 @@ void server_list_widget::filter_text_changed(const QString& val)
 server_id_list server_list_widget::selection()
 {
     server_id_list res;
-    foreach(QTreeWidgetItem* item, tree()->selectedItems())
+    foreach (QTreeWidgetItem* item, tree_->selectedItems())
     {
-        server_list_item* it = dynamic_cast<server_list_item*>(item);
-        if (it)
-            res.push_back(it->id());
+        server_info_p si = item->data(0, c_info_role).value<server_info_p>();
+        if (si)
+            res.push_back(si->id);
     }
     return res;
 }
 
 void server_list_widget::filter_clear()
 {
-    ui_.filterEdit->clear();
+    filter_edit_->clear();
 }
 
+QTreeWidget* server_list_widget::tree() const
+{
+    return tree_;
+}
+
+void server_list_widget::edit_filter()
+{
+    filter_edit_widget* ew = new filter_edit_widget(filters_);
+    ew->show();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// status_item_delegate
 
 status_item_delegate::status_item_delegate(QObject* parent)
     : QStyledItemDelegate(parent)
 {}
 
-status_item_delegate::~status_item_delegate()
-{}
-// #include <iostream>
 void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     //Draw base styled-item(gradient backgroud and other)
@@ -273,7 +357,6 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
     static QPixmap icon_updating(":/icons/icons/status-update.png");
     static QPixmap icon_passwd( ":/icons/icons/status-passwd.png" );
     static QPixmap icon_empty;
-    
     
     QPixmap& icon_status = icon_empty;
 
@@ -311,8 +394,3 @@ void status_item_delegate::next_icon(QRect& icon) const
 { 
     icon.adjust( icon.width(), 0, icon.width(), 0 );
 }
-
-
-
-
-

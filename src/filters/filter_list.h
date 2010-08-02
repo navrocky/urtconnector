@@ -11,15 +11,17 @@ class server_info;
 class filter_list
 {
 public:
-
-    /*! Filter server info. */
-    bool filter_server(const server_info& si);
+    filter_list(filter_factory_p factory);
 
     /*! Filters factory. */
     filter_factory_p factory() const {return factory_;}
 
     /*! Filter list currently contained.  */
-    filters_t filters() const;
+    filters_t filters() const {return filters_;}
+
+    /*! Root filter. */
+    filter_p root_filter() const {return root_filter_;}
+    void set_root_filter(filter_p f);
 
     /*! Add new filter to list. Can be created via factory. */
     void add_filter(filter_p f);
@@ -27,25 +29,13 @@ public:
     /*! Remove filter from list. */
     void delete_filter(filter_p f);
 
-    /*! Is filter enabled? */
-    bool is_filter_enabled(filter_p f) const;
-
-    /*! Enables filter. */
-    void set_filter_enabled(filter_p f, bool enabled);
-
     /*! Take filter by his uid (name). Can be useful in metafilters. */
-    filter_p get_filter_by_uid(const QString& uid) const;
+    filter_p get_filter_by_name(const QString& name) const;
 
 private:
-    struct filter_rec
-    {
-        filter_rec();
-        bool enabled;
-    };
-    typedef std::map<filter_p, filter_rec> filter_recs_t;
-
     filter_factory_p factory_;
-    filter_recs_t filters_;
+    filters_t filters_;
+    filter_p root_filter_;
 };
 
 #endif	/* FILTER_LIST_H */

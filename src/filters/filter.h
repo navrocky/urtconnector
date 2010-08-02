@@ -12,12 +12,15 @@ class filter
 public:
     filter(filter_class_p fc);
 
-    /*! Unique filter identified (name) */
-    const QString& uid() const {return uid_;}
-    void set_uid(const QString& uid);
+    /*! Unique filter identifier (name). */
+    const QString& name() const {return name_;}
+    void set_name(const QString& uid);
 
-    /*! Filter class */
+    /*! Get filter class. */
     filter_class_p get_class() const {return fc_;}
+
+    bool enabled() const {return enabled_;}
+    void set_enabled(bool val);
 
     /*! Filters server by server info. */
     virtual bool filter_server(const server_info& si) = 0;
@@ -30,7 +33,8 @@ public:
     
 private:
     filter_class_p fc_;
-    QString uid_;
+    QString name_;
+    bool enabled_;
 };
 
 /*! Filter class. Creation, info. */

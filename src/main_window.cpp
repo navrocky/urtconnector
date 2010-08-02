@@ -3,6 +3,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
+#include <boost/make_shared.hpp>
 
 #include <QAction>
 #include <QTimer>
@@ -39,6 +40,8 @@
 #include "jobs/job_monitor.h"
 #include "job_update_selected.h"
 #include "job_update_from_master.h"
+
+#include "filters/filter_factory.h"
 
 #include "settings/settings.h"
 
@@ -89,9 +92,11 @@ main_window::main_window(QWidget *parent)
     job_monitor* jm = new job_monitor(que_, this);
     ui_->status_bar->addPermanentWidget(jm);
 
-//#if (QT_VERSION >= QT_VERSION_CHECK(4, 5, 0))
-//    ui_.tabWidget->setDocumentMode(true);
-//#endif
+    filter_factory_ = boost::make_shared<filter_factory>();
+
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 5, 0))
+    ui_->tabWidget->setDocumentMode(true);
+#endif
 
     // Setting up system tray icon
     tray_menu_ = new QMenu(this);
@@ -113,12 +118,12 @@ main_window::main_window(QWidget *parent)
     connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
     serv_info_update_timer_->start();
 
-    all_list_ = new server_list_widget(opts_, ui_->tabAll);
+    all_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabAll);
     QBoxLayout* tab_all_lay = dynamic_cast<QBoxLayout*> (ui_->tabAll->layout());
     tab_all_lay->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    fav_list_ = new server_list_widget(opts_, ui_->tabFav);
+    fav_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabFav);
     dynamic_cast<QBoxLayout*> (ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 

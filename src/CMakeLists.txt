@@ -61,7 +61,6 @@ set(HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
-    server_tree_widget.h
     tools.h
     launcher/tools.h
 )
@@ -83,7 +82,6 @@ set(MOC_HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
-    server_tree_widget.h
     launcher/tools.h
 )
 
@@ -117,7 +115,6 @@ set(SOURCES
     job_update_selected.cpp
     job_update_from_master.cpp
     clipper.cpp
-    server_tree_widget.cpp
     tools.cpp
     launcher/tools.cpp
 )
@@ -126,7 +123,6 @@ set(IFACES
     about_dialog.ui
     main_window.ui
     options_dialog.ui
-    server_list_widget.ui
     server_options_dialog.ui
     jobs/job_monitor.ui
     jobs/job_item.ui

@@ -15,9 +15,11 @@
 #include "jobs/job_queue.h"
 #include "geoip/geoip.h"
 #include "clipper.h"
+#include "filters/pointers.h"
 
 class QTimer;
 class Ui_MainWindowClass;
+class QSessionManager;
 
 class main_window : public QMainWindow
 {
@@ -95,6 +97,7 @@ private:
     job_queue* que_;
     geoip gi_;
     clipper* clipper_;
+    filter_factory_p filter_factory_;
 };
 
 #endif

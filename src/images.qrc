@@ -28,6 +28,7 @@
     <file>icons/close.png</file>
     <file>icons/go-up.png</file>
     <file>icons/user-identity.png</file>
+    <file>icons/view-filter.png</file>
   </qresource>
   <qresource prefix="images">
     <file>icons/logo.png</file>
