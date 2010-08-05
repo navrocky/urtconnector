@@ -7,6 +7,11 @@
 class composite_filter_class : public filter_class
 {
 public:
+    composite_filter_class();
+
+    virtual filter_p create_filter();
+
+    static const char* get_id();
 };
 
 class composite_filter : public filter
@@ -25,6 +30,7 @@ public:
 
     void add_filter(filter_p f);
     void remove_filter(filter_p f);
+    const filters_t& filters() const {return filters_;}
 
     virtual bool filter_server(const server_info& si);
 

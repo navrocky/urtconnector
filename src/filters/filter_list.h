@@ -23,6 +23,8 @@ public:
     filter_p root_filter() const {return root_filter_;}
     void set_root_filter(filter_p f);
 
+    filter_p create_by_class_id(const QString& id);
+
     /*! Add new filter to list. Can be created via factory. */
     void add_filter(filter_p f);
 

@@ -42,6 +42,7 @@
 #include "job_update_from_master.h"
 
 #include "filters/filter_factory.h"
+#include "filters/reg_filters.h"
 
 #include "settings/settings.h"
 
@@ -92,7 +93,9 @@ main_window::main_window(QWidget *parent)
     job_monitor* jm = new job_monitor(que_, this);
     ui_->status_bar->addPermanentWidget(jm);
 
+    // initialize filter system
     filter_factory_ = boost::make_shared<filter_factory>();
+    register_filters(filter_factory_);
 
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 5, 0))
     ui_->tabWidget->setDocumentMode(true);
@@ -307,7 +310,7 @@ void main_window::fav_delete()
     for (server_id_list::iterator it = sel.begin(); it != sel.end(); it++)
         list.erase(*it);
 
-    sync_fav_list();
+//    sync_fav_list();
     fav_list_->force_update();
     update_actions();
     save_favorites();

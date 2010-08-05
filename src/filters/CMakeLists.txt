@@ -7,9 +7,10 @@ set(HEADERS
     pointers.h
     filter.h
     filter_factory.h
-    filter_list.cpp
+    filter_list.h
     composite_filter.h
     filter_edit_widget.h
+    reg_filters.h
 )
 
 set(MOC_HEADERS
@@ -22,6 +23,7 @@ set(SOURCES
     filter_list.cpp
     composite_filter.cpp
     filter_edit_widget.cpp
+    reg_filters.cpp
 )
 
 set(IFACES

@@ -87,6 +87,8 @@ src/filters/filter_factory.h -text
 src/filters/filter_list.cpp -text
 src/filters/filter_list.h -text
 src/filters/pointers.h -text
+src/filters/reg_filters.cpp -text
+src/filters/reg_filters.h -text
 src/flags/C.png -text
 src/flags/ad.png -text
 src/flags/ae.png -text

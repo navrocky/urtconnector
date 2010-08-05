@@ -82,7 +82,6 @@ set(MOC_HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
-    launcher/tools.h
 )
 
 set(SOURCES

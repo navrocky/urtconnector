@@ -13,6 +13,7 @@
 #include <QLabel>
 #include <QPixmap>
 #include <QTimerEvent>
+#include <QDialog>
 
 #include <cl/syslog/syslog.h>
 
@@ -23,10 +24,11 @@
 #include "filters/filter.h"
 #include "filters/filter_edit_widget.h"
 #include "filters/filter_list.h"
+#include "filters/composite_filter.h"
 
 #include "server_list_widget.h"
 
-SYSLOG_MODULE("server_list_widget");
+SYSLOG_MODULE("server_list_widget")
 
 const int c_filter_info_column = 100;
 
@@ -130,6 +132,14 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     hdr->resizeSection(4, 50);
     hdr->resizeSection(7, 60);
     hdr->setSortIndicator(4, Qt::AscendingOrder);
+
+    filter_p f = filters_->create_by_class_id(composite_filter_class::get_id());
+    filters_->set_root_filter(f);
+}
+
+server_list_widget::~server_list_widget()
+{
+    delete edit_widget_;
 }
 
 void server_list_widget::set_server_list(server_list_p ptr)
@@ -328,8 +338,13 @@ QTreeWidget* server_list_widget::tree() const
 
 void server_list_widget::edit_filter()
 {
-    filter_edit_widget* ew = new filter_edit_widget(filters_);
-    ew->show();
+    if (!edit_widget_)
+    {
+        edit_widget_ = new filter_edit_widget(filters_);
+//        edit_widget_->setAttribute(Qt::WA_DeleteOnClose, true);
+    }
+    edit_widget_->move(show_filter_button_->mapToGlobal(QPoint(0, show_filter_button_->height())));
+    edit_widget_->show();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

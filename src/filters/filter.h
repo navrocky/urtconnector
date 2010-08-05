@@ -2,6 +2,7 @@
 #define	FILTER_H
 
 #include <QString>
+#include <boost/enable_shared_from_this.hpp>
 
 #include "pointers.h"
 
@@ -26,11 +27,11 @@ public:
     virtual bool filter_server(const server_info& si) = 0;
 
     /*! Save filter settings to QByteArray. */
-    virtual QByteArray save() = 0;
+//    virtual QByteArray save() = 0;
 
     /*! Load filter setings from QByteArray. */
-    virtual void load(const QByteArray& ba) = 0;
-    
+//    virtual void load(const QByteArray& ba) = 0;
+
 private:
     filter_class_p fc_;
     QString name_;
@@ -38,7 +39,7 @@ private:
 };
 
 /*! Filter class. Creation, info. */
-class filter_class
+class filter_class : public boost::enable_shared_from_this<filter_class>
 {
 public:
     filter_class(const QString& id, const QString& caption, const QString& description);
@@ -48,7 +49,7 @@ public:
     QString description() const {return description_;}
 
     virtual filter_p create_filter() = 0;
-    
+
 //    virtual prop_panel create_prop_panel() = 0;
 private:
     QString id_;

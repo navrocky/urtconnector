@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "filter.h"
+#include "filter_factory.h"
 
 #include "filter_list.h"
 
@@ -10,6 +11,13 @@
 filter_list::filter_list(filter_factory_p factory)
 : factory_(factory)
 {
+}
+
+filter_p filter_list::create_by_class_id(const QString& id)
+{
+    filter_p res = factory_->create_filter_by_id(id);
+    add_filter(res);
+    return res;
 }
 
 void filter_list::add_filter(filter_p f)

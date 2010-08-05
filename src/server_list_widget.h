@@ -17,6 +17,7 @@
 
 class QLineEdit;
 class QToolButton;
+class filter_edit_widget;
 
 class server_tree: public QTreeWidget
 {
@@ -31,6 +32,7 @@ class server_list_widget : public QWidget
 Q_OBJECT
 public:
     server_list_widget(app_options_p opts, filter_factory_p factory, QWidget *parent);
+    ~server_list_widget();
 
     void set_server_list(server_list_p ptr);
     server_list_p server_list() const {return serv_list_;}
@@ -73,6 +75,7 @@ private:
     server_fav_list* favs_;
     app_options_p opts_;
     filter_list_p filters_;
+    QPointer<filter_edit_widget> edit_widget_;
 };
 
 class status_item_delegate : public QStyledItemDelegate

@@ -1,4 +1,28 @@
+#include <QObject>
+#include <boost/make_shared.hpp>
+
 #include "composite_filter.h"
+
+////////////////////////////////////////////////////////////////////////////////
+// composite_filter_class
+
+composite_filter_class::composite_filter_class()
+: filter_class(get_id(), QObject::tr("Composite filter"),
+               QObject::tr("Composite child filters using logical operations."))
+{}
+
+const char* composite_filter_class::get_id()
+{
+    return "composite";
+}
+
+filter_p composite_filter_class::create_filter()
+{
+    return boost::make_shared<composite_filter>(shared_from_this());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// composite_filter
 
 composite_filter::composite_filter(filter_class_p fc)
 : filter(fc)
