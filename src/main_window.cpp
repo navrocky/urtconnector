@@ -299,21 +299,23 @@ void main_window::fav_edit()
 
 void main_window::fav_delete()
 {
-    if (QMessageBox::question(this, tr("Delete a favorite"),
-                              tr("Continue to delete a favorite"),
-                              QMessageBox::Ok | QMessageBox::Cancel) != QMessageBox::Ok)
-        return;
-
-    server_id_list sel = fav_list_->selection();
-    server_fav_list& list = opts_->servers;
-
-    for (server_id_list::iterator it = sel.begin(); it != sel.end(); it++)
-        list.erase(*it);
-
-//    sync_fav_list();
-    fav_list_->force_update();
-    update_actions();
-    save_favorites();
+//     if (QMessageBox::question(this, tr("Delete a favorite"),
+//                               tr("Continue to delete a favorite"),
+//                               QMessageBox::Ok | QMessageBox::Cancel) != QMessageBox::Ok)
+//         return;
+// 
+//     server_id_list sel = fav_list_->selection();
+//     server_fav_list& list = opts_->servers;
+// 
+//     for (server_id_list::iterator it = sel.begin(); it != sel.end(); it++)
+//         list.erase(*it);
+// 
+// //    sync_fav_list();
+//     fav_list_->force_update();
+//     update_actions();
+//     save_favorites();
+    LOG_HARD << "deleting favorite server(s)";
+    clear_selected();
 }
 
 void main_window::sync_fav_list()
@@ -738,6 +740,7 @@ void main_window::clear_servers(server_list_widget* current, const server_id_lis
 {
     if ( current == all_list_ )
     {
+        LOG_DEBUG << "deleting entries from All-list";
         server_info_list& info_lst = current->server_list()->list();
         BOOST_FOREACH( const server_id_list::value_type& id, to_delete ){
             info_lst.erase(id);
@@ -750,7 +753,8 @@ void main_window::clear_servers(server_list_widget* current, const server_id_lis
             , QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes
         )
             return;
-        
+
+        LOG_DEBUG << "deleting entries from Fav-list";
         server_fav_list& fav_lst = opts_->servers;
         BOOST_FOREACH( const server_id_list::value_type& id, to_delete ){
             fav_lst.erase(id);
@@ -761,11 +765,13 @@ void main_window::clear_servers(server_list_widget* current, const server_id_lis
     }
     update_actions();
     current->force_update();
+    LOG_DEBUG << to_delete.size() << " entries deleted";
 }
 
 
 void main_window::clear_all()
 {
+    LOG_HARD << "deleting all entries";
     server_list_widget* current = selected_list_widget();
 
     server_id_list id_list;
@@ -783,6 +789,7 @@ bool is_offline( const server_info_list::value_type& info )
 
 void main_window::clear_offline()
 {
+    LOG_HARD << "deleting offline entries";
     server_list_widget* current = selected_list_widget();
 
     server_id_list id_list;
@@ -798,6 +805,7 @@ void main_window::clear_offline()
 
 void main_window::clear_selected()
 {
+    LOG_HARD << "deleting selected entries";
     server_list_widget* current = selected_list_widget();
 
     //if current item will removed during clearing, scrollToItem crashes
