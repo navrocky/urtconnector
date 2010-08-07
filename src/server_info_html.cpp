@@ -9,6 +9,7 @@
 #include <iostream>
 #include <QtGui/qcolor.h>
 
+#include "tools.h"
 #include "geoip/geoip.h"
 #include "server_info_html.h"
 #include "job_update_from_master.h"
@@ -37,61 +38,6 @@ QString get_css()
         "padding:5px 10px 5px 10px;font: bold 12pt; font-family:monospace;}"
         "</style>");
     return css.arg(window).arg(window).arg(base).arg(alternate);
-}
-
-QString color( const QString& str )
-{
-    static QMap<int, QColor> color_map;
-
-    if( color_map.isEmpty() )
-    {
-        color_map[0] = QColor(Qt::black);
-        color_map[1] = QColor(Qt::red);
-        color_map[2] = QColor(Qt::green);
-        color_map[3] = QColor(Qt::yellow);
-        color_map[4] = QColor(Qt::blue);
-        color_map[5] = QColor(Qt::cyan);
-        color_map[6] = QColor(Qt::magenta);
-        color_map[7] = QColor(Qt::white);
-    }
-
-    bool ok;
-    int col_num = str.toInt(&ok) % 8;
-    if (!ok)
-        col_num = 7;
-    
-    return color_map[col_num].lighter().name();
-}
-
-QString make_css_colored(QString str)
-{
-    static QString colored("<font color=\"%1\">%2</font>");
-
-    static QStringList markers;
-    if ( markers.isEmpty() ) markers <<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7";
-
-    for( QStringList::iterator it = markers.begin(); it != markers.end(); ++it )
-    {
-        if( str.startsWith( *it ) )
-        {
-            str.remove(0,1);
-            return colored.arg( color(*it) ).arg(str);
-        }
-    }
-    
-    return str;
-}
-
-QString q3coloring( const QString& str )
-{
-    //split incoming string by quake3 color-markers
-    QStringList lst = str.split( QRegExp("\\^") );
-    //removing empty lines
-    lst.erase( remove_if( lst.begin(), lst.end(), bind( &QString::isEmpty, _1 ) ), lst.end() );
-    //replacing quake3 color-markers by html-formated text
-    transform(lst.begin(), lst.end(), lst.begin(), make_css_colored );
-    //joining list to plain string
-    return lst.join("");
 }
 
 QString plain_to_html(const QString& src)

@@ -41,6 +41,8 @@
 #include "job_update_selected.h"
 #include "job_update_from_master.h"
 
+#include "rcon/rcon.h"
+
 #include "filters/filter_factory.h"
 #include "filters/reg_filters.h"
 
@@ -150,6 +152,8 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionClearAll, SIGNAL(triggered()), SLOT(clear_all()));
     connect(ui_->actionClearOffline, SIGNAL(triggered()), SLOT(clear_offline()));
     connect(ui_->actionClearSelected, SIGNAL(triggered()), SLOT(clear_selected()));
+    
+    connect(ui_->actionOpenRemoteConsole, SIGNAL(triggered()), SLOT(open_remote_console()));
 
     connect(clipper_, SIGNAL(info_obtained()), SLOT(clipboard_info_obtained()));
     connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
@@ -573,6 +577,7 @@ void main_window::update_actions()
     ui_->actionClearSelected->setVisible(current);
     ui_->actionClearOffline->setVisible(current);
     ui_->actionClearAll->setVisible(current);
+    ui_->actionOpenRemoteConsole->setEnabled(current == fav_list_ && sel);
     
     if ( current )
     {
@@ -813,3 +818,23 @@ void main_window::clear_selected()
     current->tree()->setCurrentItem(0);
     clear_servers(current, id_list);
 }
+
+
+
+void main_window::open_remote_console()
+{
+    server_id_list id_list( selected_list_widget()->selection() );
+
+    if( !id_list.size() ) return;
+
+    server_fav_list& list = opts_->servers;
+
+    QDockWidget* dw = new QDockWidget( QString("RCon:%1").arg( id_list.front().address() ), this );
+    dw->setAttribute( Qt::WA_DeleteOnClose  );
+    dw->setWidget( new rcon(0, id_list.front(), list[id_list.front()]) );
+    
+    addDockWidget(Qt::BottomDockWidgetArea,  dw );
+}
+
+
+

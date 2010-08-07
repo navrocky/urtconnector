@@ -82,6 +82,7 @@ set(MOC_HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
+    rcon/rcon.h
 )
 
 set(SOURCES
@@ -116,6 +117,7 @@ set(SOURCES
     clipper.cpp
     tools.cpp
     launcher/tools.cpp
+    rcon/rcon.cpp
 )
 
 set(IFACES
@@ -125,6 +127,7 @@ set(IFACES
     server_options_dialog.ui
     jobs/job_monitor.ui
     jobs/job_item.ui
+    rcon/rcon.ui
 )
 
 set(RESOURCES
@@ -151,5 +154,6 @@ install(FILES icons/urtconnector.png DESTINATION share/icons)
 install(FILES icons/urtconnector.png DESTINATION share/pixmaps)
 install(FILES urtconnector.desktop DESTINATION share/applications)
 install(FILES GeoIP.dat DESTINATION share/urtconnector)
+
 
 

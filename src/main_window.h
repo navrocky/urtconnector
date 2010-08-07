@@ -59,6 +59,8 @@ private slots:
     void clipboard_info_obtained();
     void raise_window();
 
+    void open_remote_console();
+    
     void clear_all();
     void clear_selected();
     void clear_offline();

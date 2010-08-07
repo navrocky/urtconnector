@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/utilities-terminal.png</file>
     <file>icons/edit-clear-selected.png</file>
     <file>icons/edit-clear-offline.png</file>
     <file>icons/download.png</file>

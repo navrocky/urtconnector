@@ -244,6 +244,8 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionRefreshSelected"/>
    <addaction name="actionRefreshAll"/>
    <addaction name="actionRefreshMaster"/>
+   <addaction name="separator"/>
+   <addaction name="actionOpenRemoteConsole"/>
   </widget>
   <widget class="QStatusBar" name="status_bar"/>
   <action name="actionQuit">
@@ -441,6 +443,15 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="toolTip">
     <string>Clear Selected</string>
+   </property>
+  </action>
+  <action name="actionOpenRemoteConsole">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/icons/icons/utilities-terminal.png</normaloff>:/icons/icons/utilities-terminal.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open Remote Console</string>
    </property>
   </action>
  </widget>
