@@ -5,9 +5,15 @@
 
 #include "pointers.h"
 
+class QWidget;
 class QTreeWidget;
 class QTreeWidgetItem;
 class QAction;
+class QLabel;
+class QComboBox;
+class QCheckBox;
+class QToolButton;
+class QBoxLayout;
 
 class composite_filter;
 
@@ -18,10 +24,20 @@ public:
     filter_item_widget(filter_p filter, QWidget* parent);
     void set_selected(bool val);
 
+private slots:
+    void enable_toggled();
+
 private:
     void update_selected();
+    void update_contents();
+
     bool selected_;
     filter_p filter_;
+    QLabel* label_;
+    QCheckBox* enabled_check_;
+    QToolButton* options_button_;
+    QBoxLayout* options_lay_;
+    QWidget* quick_opts_widget_;
 };
 
 

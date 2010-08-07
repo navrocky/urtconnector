@@ -15,47 +15,64 @@
 
 Q_DECLARE_METATYPE(filter_p)
 
+////////////////////////////////////////////////////////////////////////////////
+// filter_item_widget
+
 filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
 : QWidget(parent)
 , selected_(false)
 , filter_(filter)
+, quick_opts_widget_(NULL)
 {
     QBoxLayout* lay = new QHBoxLayout(this);
-    QCheckBox* cb = new QCheckBox(this);
-    cb->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    enabled_check_ = new QCheckBox(this);
+    enabled_check_->setToolTip(tr("Enable filter"));
+    enabled_check_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(enabled_check_, SIGNAL(stateChanged(int)), SLOT(enable_toggled()));
 
-    QLabel* lb = new QLabel(this);
-    lb->setText("<b>Filter name</b><br><small>Filter description here.</small>");
+    label_ = new QLabel(this);
+//    label_->setText("<b>Filter name</b><br><small>Filter description here.</small>");
 //    lb->setForegroundRole(QPalette::HighlightedText);
 
 //    QFont fn = lb->font();
 //    fn.setBold(true);
 //    lb->setFont(fn);
-    lb->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    lay->addWidget(cb);
-    lay->addWidget(lb);
+    label_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    lay->addWidget(enabled_check_);
+    lay->addWidget(label_);
 
-    QComboBox* combo = new QComboBox(this);
-    lay->addWidget(combo);
-    combo->addItem("AND");
-    combo->addItem("OR");
-    combo->addItem("XOR %D");
-    combo->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    options_lay_ = new QHBoxLayout(this);
+    options_lay_->setContentsMargins(0, 0, 0, 0);
+    lay->addLayout(options_lay_);
 
-    QToolButton* btn = new QToolButton(this);
-    btn->setIcon(QIcon(":/icons/icons/configure.png"));
+//    QComboBox* combo = new QComboBox(this);
+//    lay->addWidget(combo);
+//    combo->addItem("AND");
+//    combo->addItem("OR");
+//    combo->addItem("XOR %D");
+//    combo->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+    options_button_ = new QToolButton(this);
+    options_button_->setIcon(QIcon(":/icons/icons/configure.png"));
+    options_button_->setToolTip(tr("Configure filter"));
+    lay->addWidget(options_button_);
+
+//    btn = new QToolButton(this);
+//    btn->setIcon(QIcon(":/icons/icons/info.png"));
 //    btn->setAutoRaise(true);
-    lay->addWidget(btn);
-
-    btn = new QToolButton(this);
-    btn->setIcon(QIcon(":/icons/icons/info.png"));
-//    btn->setAutoRaise(true);
-    lay->addWidget(btn);
+//    lay->addWidget(btn);
 //
 //    btn = new QToolButton(this);
 //    btn->setIcon(QIcon(":/icons/icons/delete.png"));
 ////    btn->setAutoRaise(true);
 //    lay->addWidget(btn);
+
+    update_contents();
+}
+
+void filter_item_widget::enable_toggled()
+{
+    filter_->set_enabled(enabled_check_->isChecked());
 }
 
 void filter_item_widget::set_selected(bool val)
@@ -78,6 +95,31 @@ void filter_item_widget::update_selected()
     }
 }
 
+void filter_item_widget::update_contents()
+{
+    filter_class_p fc = filter_->get_class();
+    QString name = filter_->name();
+    if (name.isEmpty())
+        name = fc->caption();
+
+    label_->setText(name);
+    label_->setToolTip(fc->description());
+    options_button_->setVisible(fc->has_additional_options());
+    enabled_check_->setChecked(filter_->enabled());
+
+    if (!quick_opts_widget_)
+    {
+        quick_opts_widget_ = fc->create_quick_opts_widget(filter_);
+        if (quick_opts_widget_)
+        {
+            quick_opts_widget_->setParent(this);
+            options_lay_->addWidget(quick_opts_widget_);
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// filter_edit_widget
 
 filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
 : QWidget(parent, Qt::Tool)
@@ -122,7 +164,14 @@ void filter_edit_widget::do_update(filter_p filter, QTreeWidget* tw, QTreeWidget
 void filter_edit_widget::update_item(QTreeWidgetItem* item)
 {
     filter_p filter = item->data(0, Qt::UserRole).value<filter_p>();
-    item->setText(0, filter->get_class()->caption());
+
+    filter_item_widget* w = qobject_cast<filter_item_widget*>(tree_->itemWidget(item, 0));
+    if (!w)
+    {
+        w = new filter_item_widget(filter, tree_);
+        tree_->setItemWidget(item, 0, w);
+    }
+
 }
 
 void filter_edit_widget::update_contents()

@@ -14,6 +14,8 @@ set(HEADERS
 )
 
 set(MOC_HEADERS
+    filter.h
+    composite_filter.h
     filter_edit_widget.h
 )
 

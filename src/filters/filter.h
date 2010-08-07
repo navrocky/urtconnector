@@ -2,14 +2,16 @@
 #define	FILTER_H
 
 #include <QString>
+#include <QObject>
 #include <boost/enable_shared_from_this.hpp>
 
 #include "pointers.h"
 
 class server_info;
 
-class filter
+class filter : public QObject
 {
+    Q_OBJECT
 public:
     filter(filter_class_p fc);
 
@@ -32,6 +34,9 @@ public:
     /*! Load filter setings from QByteArray. */
 //    virtual void load(const QByteArray& ba) = 0;
 
+signals:
+    void changed_signal();
+
 private:
     filter_class_p fc_;
     QString name_;
@@ -49,7 +54,9 @@ public:
     QString description() const {return description_;}
 
     virtual filter_p create_filter() = 0;
-
+    
+    virtual QWidget* create_quick_opts_widget(filter_p f);
+    virtual bool has_additional_options();
 //    virtual prop_panel create_prop_panel() = 0;
 private:
     QString id_;
