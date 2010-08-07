@@ -56,7 +56,7 @@ public:
     bool keep_history;
 
     /*! Number of connections that are kept in history */
-    int number_in_history;
+    unsigned int number_in_history;
 };
 
 #endif

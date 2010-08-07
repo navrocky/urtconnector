@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>MainWindowClass</class>
  <widget class="QMainWindow" name="MainWindowClass">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,7 +17,7 @@
    <string>UrTConnector</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="images.qrc">
     <normaloff>:/images/icons/logo.png</normaloff>:/images/icons/logo.png</iconset>
   </property>
   <property name="dockNestingEnabled">
@@ -24,12 +27,18 @@
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tabFav">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="images.qrc">
          <normaloff>:/icons/icons/bookmarks.png</normaloff>:/icons/icons/bookmarks.png</iconset>
        </attribute>
        <attribute name="title">
@@ -39,7 +48,7 @@
       </widget>
       <widget class="QWidget" name="tabAll">
        <attribute name="icon">
-        <iconset>
+        <iconset resource="images.qrc">
          <normaloff>:/icons/icons/earth.png</normaloff>:/icons/icons/earth.png</iconset>
        </attribute>
        <attribute name="title">
@@ -52,7 +61,7 @@
         <bool>true</bool>
        </property>
        <attribute name="icon">
-        <iconset>
+        <iconset resource="images.qrc">
          <normaloff>:/icons/icons/history.png</normaloff>:/icons/icons/history.png</iconset>
        </attribute>
        <attribute name="title">
@@ -207,7 +216,7 @@ p, li { white-space: pre-wrap; }
           <string>Add server to favorites</string>
          </property>
          <property name="icon">
-          <iconset>
+          <iconset resource="images.qrc">
            <normaloff>:/icons/icons/bookmarks.png</normaloff>:/icons/icons/bookmarks.png</iconset>
          </property>
          <property name="autoRaise">
@@ -259,7 +268,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QStatusBar" name="status_bar"/>
   <action name="actionQuit">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/application-exit.png</normaloff>:/icons/icons/application-exit.png</iconset>
    </property>
    <property name="text">
@@ -268,7 +277,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/help-about.png</normaloff>:/icons/icons/help-about.png</iconset>
    </property>
    <property name="text">
@@ -277,7 +286,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionHelp">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/help-contents.png</normaloff>:/icons/icons/help-contents.png</iconset>
    </property>
    <property name="text">
@@ -289,7 +298,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOptions">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/configure.png</normaloff>:/icons/icons/configure.png</iconset>
    </property>
    <property name="text">
@@ -298,7 +307,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionFavAdd">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
    </property>
    <property name="text">
@@ -313,7 +322,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionFavDelete">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/remove.png</normaloff>:/icons/icons/remove.png</iconset>
    </property>
    <property name="text">
@@ -325,7 +334,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionFavEdit">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
    </property>
    <property name="text">
@@ -340,7 +349,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionConnect">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/launch.png</normaloff>:/icons/icons/launch.png</iconset>
    </property>
    <property name="text">
@@ -352,7 +361,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionQuickConnect">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/launch.png</normaloff>:/icons/icons/launch.png</iconset>
    </property>
    <property name="text">
@@ -364,7 +373,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionRefreshAll">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/view-refresh.png</normaloff>:/icons/icons/view-refresh.png</iconset>
    </property>
    <property name="text">
@@ -376,7 +385,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionAddToFav">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/bookmarks.png</normaloff>:/icons/icons/bookmarks.png</iconset>
    </property>
    <property name="text">
@@ -388,7 +397,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionRefreshSelected">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/view-refresh.png</normaloff>:/icons/icons/view-refresh.png</iconset>
    </property>
    <property name="text">
@@ -400,7 +409,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionShow">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/visible-on.png</normaloff>:/icons/icons/visible-on.png</iconset>
    </property>
    <property name="text">
@@ -414,7 +423,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionClearAll">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/edit-clear.png</normaloff>:/icons/icons/edit-clear.png</iconset>
    </property>
    <property name="text">
@@ -423,7 +432,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionClearOld">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/edit-clear-history.png</normaloff>:/icons/icons/edit-clear-history.png</iconset>
    </property>
    <property name="text">
@@ -432,7 +441,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionRefreshMaster">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/download.png</normaloff>:/icons/icons/download.png</iconset>
    </property>
    <property name="text">
@@ -441,7 +450,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionHistoryDelete">
    <property name="icon">
-    <iconset>
+    <iconset resource="images.qrc">
      <normaloff>:/icons/icons/remove.png</normaloff>:/icons/icons/remove.png</iconset>
    </property>
    <property name="text">
@@ -459,6 +468,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>qlPasswordEdit</tabstop>
   <tabstop>server_info_browser</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

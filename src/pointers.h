@@ -16,5 +16,10 @@ class server_info;
 ///Shared pointer for server_info class. Forward declaration.
 typedef boost::shared_ptr<server_info> server_info_p;
 
-#endif	/* _POINTERS_H */
+class history_item;
+typedef boost::shared_ptr<history_item> history_item_p;
 
+class history;
+typedef boost::shared_ptr<history> history_p;
+
+#endif	/* _POINTERS_H */
