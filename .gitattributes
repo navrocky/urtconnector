@@ -404,6 +404,9 @@ src/qtsingleapplication/qtsingleapplication.h -text
 src/qtsingleapplication/qtsingleapplication.pri -text
 src/qtsingleapplication/qtsinglecoreapplication.cpp -text
 src/qtsingleapplication/qtsinglecoreapplication.h -text
+src/rcon/rcon.cpp -text
+src/rcon/rcon.h -text
+src/rcon/rcon.ui -text
 src/server_id.cpp -text
 src/server_id.h -text
 src/server_info.cpp -text
