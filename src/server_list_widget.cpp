@@ -135,6 +135,7 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
 
     filter_p f = filters_->create_by_class_id(composite_filter_class::get_id());
     filters_->set_root_filter(f);
+    connect(f.get(), SIGNAL(changed_signal()), SLOT(update_list()));
 }
 
 server_list_widget::~server_list_widget()
@@ -253,6 +254,7 @@ void server_list_widget::force_update()
 
 void server_list_widget::update_list()
 {
+    LOG_DEBUG << "update_list()";
     QTreeWidget* tw = tree_;
     QTreeWidgetItem* cur_item = tw->currentItem();
 

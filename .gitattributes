@@ -344,6 +344,7 @@ src/icons/edit.png -text
 src/icons/go-up.png -text
 src/icons/help-about.png -text
 src/icons/help-contents.png -text
+src/icons/insert-link.png -text
 src/icons/launch.png -text
 src/icons/logo.png -text
 src/icons/remove.png -text
@@ -358,6 +359,7 @@ src/icons/utilities-terminal.png -text
 src/icons/view-filter.png -text
 src/icons/view-refresh.png -text
 src/icons/visible-on.png -text
+src/icons/zoom.png -text
 src/images.qrc -text
 src/item_view_dblclick_action_link.cpp -text
 src/item_view_dblclick_action_link.h -text

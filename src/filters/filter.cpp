@@ -26,11 +26,15 @@ void filter::set_enabled(bool val)
 ////////////////////////////////////////////////////////////////////////////////
 // filter_class
 
-filter_class::filter_class(const QString& id, const QString& caption, const QString& description)
+filter_class::filter_class(const QString& id, const QString& caption, 
+                           const QString& description, const QIcon& icon)
 : id_(id)
 , caption_(caption)
 , description_(description)
+, icon_(icon)
 {
+    if (icon_.isNull())
+        icon_ = QIcon(":/icons/icons/view-filter.png");
 }
 
 bool filter_class::has_additional_options()

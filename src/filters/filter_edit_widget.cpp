@@ -6,14 +6,80 @@
 #include <QToolButton>
 #include <QComboBox>
 #include <QHeaderView>
+#include <QAction>
+#include <QListWidget>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <qmessagebox.h>
 
 #include "filter.h"
 #include "filter_list.h"
 #include "composite_filter.h"
 
 #include "filter_edit_widget.h"
+#include "filter_factory.h"
+#include "server_list_widget.h"
 
 Q_DECLARE_METATYPE(filter_p)
+Q_DECLARE_METATYPE(filter_class_p)
+
+////////////////////////////////////////////////////////////////////////////////
+// select_filter_class_dialog
+
+select_filter_class_dialog::select_filter_class_dialog(filter_factory_p factory)
+: QDialog()
+, factory_(factory)
+{
+    setWindowTitle(tr("Select filter type"));
+    setWindowIcon(QIcon(":/icons/icons/zoom.png"));
+
+    QBoxLayout* lay = new QVBoxLayout(this);
+    tree_ = new QListWidget(this);
+    connect(tree_, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+            SLOT(selection_changed()));
+    lay->addWidget(tree_);
+    
+    buttons_ = new QDialogButtonBox(this);
+    buttons_->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    lay->addWidget(buttons_);
+    connect(buttons_, SIGNAL(accepted()), SLOT(accept()));
+    connect(buttons_, SIGNAL(rejected()), SLOT(reject()));
+    connect(tree_, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+            buttons_->button(QDialogButtonBox::Ok), SLOT(click()));
+
+    update_list();
+    update_actions();
+}
+
+void select_filter_class_dialog::selection_changed()
+{
+    update_actions();
+}
+
+void select_filter_class_dialog::update_actions()
+{
+    QListWidgetItem* item = tree_->currentItem();
+    if (item)
+        selected_ = item->data(Qt::UserRole).value<filter_class_p>();
+    else
+        selected_ = filter_class_p();
+
+    buttons_->button(QDialogButtonBox::Ok)->setEnabled(selected_);
+}
+
+void select_filter_class_dialog::update_list()
+{
+    tree_->clear();
+    foreach (filter_class_p fc, factory_->filter_classes())
+    {
+        QListWidgetItem* it = new QListWidgetItem(fc->icon(), fc->caption(), tree_);
+        it->setToolTip(fc->description());
+        it->setData(Qt::UserRole, QVariant::fromValue(fc));
+    }
+}
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // filter_item_widget
@@ -41,7 +107,7 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
     lay->addWidget(enabled_check_);
     lay->addWidget(label_);
 
-    options_lay_ = new QHBoxLayout(this);
+    options_lay_ = new QHBoxLayout;
     options_lay_->setContentsMargins(0, 0, 0, 0);
     lay->addLayout(options_lay_);
 
@@ -127,6 +193,17 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
 {
     setWindowTitle(tr("Filter options"));
     setWindowIcon(QIcon(":/icons/icons/view-filter.png"));
+
+    add_new_filter_action_ = new QAction(QIcon(":/icons/icons/add.png"),
+                                         tr("Add new child filter"), this);
+    add_exist_filter_action_ = new QAction(QIcon(":/icons/icons/insert-link.png"),
+                                         tr("Add child link to existing filter"), this);
+    delete_filter_action_ = new QAction(QIcon(":/icons/icons/remove.png"),
+                                         tr("Delete filter"), this);
+
+    connect(add_new_filter_action_, SIGNAL(triggered()), SLOT(add_new_filter()));
+    connect(delete_filter_action_, SIGNAL(triggered()), SLOT(delete_filter()));
+
     QVBoxLayout* lay = new QVBoxLayout(this);
     lay->setContentsMargins(0, 0, 0, 0);
 
@@ -134,6 +211,18 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     lay->addWidget(tree_);
     tree_->header()->setVisible(false);
     tree_->setAlternatingRowColors(true);
+
+    tree_->addAction(add_new_filter_action_);
+    tree_->addAction(add_exist_filter_action_);
+    
+    QAction* sep = new QAction(this);
+    sep->setSeparator(true);
+    tree_->addAction(sep);
+    tree_->addAction(delete_filter_action_);
+    tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
+
+    connect(tree_, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+            SLOT(update_actions()));
 
     resize(400, 250);
     update_contents();
@@ -178,4 +267,49 @@ void filter_edit_widget::update_contents()
 {
     tree_->clear();
     do_update(filters_->root_filter(), tree_, 0);
+}
+
+void filter_edit_widget::update_actions()
+{
+    QTreeWidgetItem* item = tree_->currentItem();
+    QTreeWidgetItem* parent_item = item ? item->parent() : NULL;
+
+    add_exist_filter_action_->setEnabled(item);
+    add_exist_filter_action_->setEnabled(item);
+    delete_filter_action_->setEnabled(parent_item);
+}
+
+void filter_edit_widget::add_new_filter()
+{
+    select_filter_class_dialog d(filters_->factory());
+    if (d.exec() != QDialog::Accepted)
+        return;
+    filter_class_p fc = d.selected();
+
+    QTreeWidgetItem* parent_item = tree_->currentItem();
+    filter_p parent_f = parent_item->data(0, Qt::UserRole).value<filter_p>();
+    composite_filter* cf = qobject_cast<composite_filter*>(parent_f.get());
+    filter_p f = fc->create_filter();
+    cf->add_filter(f);
+    QTreeWidgetItem* item = new QTreeWidgetItem(parent_item);
+    item->setData(0, Qt::UserRole, QVariant::fromValue(f));
+    update_item(item);
+    tree_->setCurrentItem(item);
+}
+
+void filter_edit_widget::delete_filter()
+{
+    if (QMessageBox::question(this, tr("Delete filter"), tr("Continue with delete selected filter?"),
+                          QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes)
+            != QMessageBox::Yes)
+        return;
+    QTreeWidgetItem* item = tree_->currentItem();
+    QTreeWidgetItem* parent_item = item->parent();
+    if (!parent_item)
+        return;
+    filter_p f = item->data(0, Qt::UserRole).value<filter_p>();
+    filter_p parent_f = parent_item->data(0, Qt::UserRole).value<filter_p>();
+    composite_filter* cf = qobject_cast<composite_filter*>(parent_f.get());
+    cf->remove_filter(f);
+    delete item;
 }

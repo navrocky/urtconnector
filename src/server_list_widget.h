@@ -54,12 +54,12 @@ private slots:
     void filter_text_changed(const QString&);
     void filter_clear();
     void edit_filter();
+    void update_list();
     
 private:
     typedef std::map<server_id, QTreeWidgetItem*> server_items;
 
     void update_item(QTreeWidgetItem*);
-    void update_list();
     bool filter_item(QTreeWidgetItem*);
 
     server_tree* tree_;

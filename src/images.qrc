@@ -30,6 +30,8 @@
     <file>icons/go-up.png</file>
     <file>icons/user-identity.png</file>
     <file>icons/view-filter.png</file>
+    <file>icons/insert-link.png</file>
+    <file>icons/zoom.png</file>
   </qresource>
   <qresource prefix="images">
     <file>icons/logo.png</file>

@@ -2,6 +2,7 @@
 #define	FILTER_H
 
 #include <QString>
+#include <QIcon>
 #include <QObject>
 #include <boost/enable_shared_from_this.hpp>
 
@@ -47,11 +48,13 @@ private:
 class filter_class : public boost::enable_shared_from_this<filter_class>
 {
 public:
-    filter_class(const QString& id, const QString& caption, const QString& description);
+    filter_class(const QString& id, const QString& caption, const QString& description,
+                 const QIcon& icon = QIcon());
 
     QString id() const {return id_;}
     QString caption() const {return caption_;}
     QString description() const {return description_;}
+    const QIcon& icon() const {return icon_;}
 
     virtual filter_p create_filter() = 0;
     
@@ -62,6 +65,7 @@ private:
     QString id_;
     QString caption_;
     QString description_;
+    QIcon icon_;
 };
 
 
