@@ -1,9 +1,11 @@
 #include <QObject>
 #include <QComboBox>
 #include <boost/make_shared.hpp>
+#include <cl/except/error.h>
 
 #include "composite_filter.h"
 #include "filter_edit_widget.h"
+#include "tools.h"
 
 Q_DECLARE_METATYPE(composite_filter::operation_t)
 
@@ -100,6 +102,50 @@ void composite_filter::child_filter_changed()
 {
     emit changed_signal();
 }
+
+QByteArray composite_filter::save()
+{
+    QByteArray res;
+    QDataStream ds(&res, QIODevice::WriteOnly);
+
+    ds << (qint32)1; // version
+
+    // save own fields
+    ds << (qint32)operation_;
+    
+    // save child filters
+    ds << (qint32)(filters_.size());
+    foreach (filter_p f, filters_)
+        ds << filter_save(f);
+}
+
+void composite_filter::load(const QByteArray& ba, filter_factory_p factory)
+{
+    assert(filters_.size() == 0);
+
+    QByteArray res;
+    QDataStream ds(&res, QIODevice::ReadOnly);
+
+    qint32 version;
+    ds >> version;
+    if (version < 1)
+        throw cl::except::error("Invalid filter version");
+
+    qint32 v;
+    ds >> v;
+    operation_ = (operation_t)v;
+
+    qint32 sz;
+    ds >> sz;
+    for (int i = 0; i < sz; i++)
+    {
+        QByteArray ba2;
+        ds >> ba2;
+        filter_p f = filter_load(ba2, factory);
+        add_filter(f);
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // composite_filter_quick_opt_widget

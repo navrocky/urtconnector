@@ -11,6 +11,7 @@ set(HEADERS
     composite_filter.h
     filter_edit_widget.h
     reg_filters.h
+    tools.h
 )
 
 set(MOC_HEADERS
@@ -26,6 +27,7 @@ set(SOURCES
     composite_filter.cpp
     filter_edit_widget.cpp
     reg_filters.cpp
+    tools.cpp
 )
 
 set(IFACES

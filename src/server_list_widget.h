@@ -14,6 +14,7 @@
 #include "server_options.h"
 #include "pointers.h"
 #include "filters/pointers.h"
+#include "settings/settings.h"
 
 class QLineEdit;
 class QToolButton;
@@ -25,6 +26,17 @@ class server_tree: public QTreeWidget
 public:
     server_tree(QWidget* parent);
     QModelIndex indexFromItem(QTreeWidgetItem *item) const;
+};
+
+
+class server_list_widget_settings: public settings_uid_provider<server_list_widget_settings>
+{
+public:
+    server_list_widget_settings(const QString& list_name);
+    filter_p load_root_filter(filter_factory_p factory);
+    void save_root_filter(filter_p f);
+private:
+    QString name_;
 };
 
 class server_list_widget : public QWidget
@@ -48,6 +60,9 @@ public:
 
     /*! Force update widget */
     void force_update();
+
+    void load_options();
+    void save_options();
 
 private slots:
     void timerEvent(QTimerEvent *event);

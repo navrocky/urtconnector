@@ -14,6 +14,7 @@
 #include <QPixmap>
 #include <QTimerEvent>
 #include <QDialog>
+#include <QSettings>
 
 #include <cl/syslog/syslog.h>
 
@@ -25,6 +26,7 @@
 #include "filters/filter_edit_widget.h"
 #include "filters/filter_list.h"
 #include "filters/composite_filter.h"
+#include "filters/tools.h"
 
 #include "server_list_widget.h"
 
@@ -46,6 +48,30 @@ QModelIndex server_tree::indexFromItem(QTreeWidgetItem* item) const
 {
     return QTreeWidget::indexFromItem(item);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// server_tree
+
+server_list_widget_settings::server_list_widget_settings(const QString& list_name)
+: name_(list_name)
+{
+}
+
+filter_p server_list_widget_settings::load_root_filter(filter_factory_p factory)
+{
+    part()->beginGroup(name_);
+    QByteArray ba = part()->value("root_filter").toByteArray();
+    part()->endGroup();
+    return filter_load(ba, factory);
+}
+
+void server_list_widget_settings::save_root_filter(filter_p f)
+{
+    part()->beginGroup(name_);
+    part()->setValue("root_filter", filter_save(f));
+    part()->endGroup();
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // server_list_widget
@@ -349,6 +375,28 @@ void server_list_widget::edit_filter()
     edit_widget_->show();
 }
 
+void server_list_widget::load_options()
+{
+    assert(!objectName().isEmpty());
+    try
+    {
+        server_list_widget_settings st(objectName());
+        filter_p f = st.load_root_filter(filters_->factory());
+        filters_->set_root_filter(f);
+    }
+    catch(const std::exception& e)
+    {
+        LOG_ERR << e.what();
+    }
+}
+
+void server_list_widget::save_options()
+{
+    assert(!objectName().isEmpty());
+    server_list_widget_settings st(objectName());
+    st.save_root_filter(filters_->root_filter());
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // status_item_delegate
 
@@ -411,3 +459,5 @@ void status_item_delegate::next_icon(QRect& icon) const
 { 
     icon.adjust( icon.width(), 0, icon.width(), 0 );
 }
+
+

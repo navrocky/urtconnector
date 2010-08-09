@@ -48,7 +48,8 @@ public:
     const filters_t& filters() const {return filters_;}
 
     virtual bool filter_server(const server_info& si);
-    
+    virtual QByteArray save();
+    virtual void load(const QByteArray& ba, filter_factory_p factory);
 
 private slots:
     void child_filter_changed();
