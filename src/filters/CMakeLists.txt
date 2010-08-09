@@ -12,12 +12,18 @@ set(HEADERS
     filter_edit_widget.h
     reg_filters.h
     tools.h
+    game_type_filter.h
+    hide_empty_filter.h
+    hide_full_filter.h
 )
 
 set(MOC_HEADERS
     filter.h
     composite_filter.h
     filter_edit_widget.h
+    game_type_filter.h
+    hide_empty_filter.h
+    hide_full_filter.h
 )
 
 set(SOURCES
@@ -28,6 +34,9 @@ set(SOURCES
     filter_edit_widget.cpp
     reg_filters.cpp
     tools.cpp
+    game_type_filter.cpp
+    hide_empty_filter.cpp
+    hide_full_filter.cpp
 )
 
 set(IFACES

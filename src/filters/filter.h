@@ -30,10 +30,10 @@ public:
     virtual bool filter_server(const server_info& si) = 0;
 
     /*! Save filter settings to QByteArray. */
-    virtual QByteArray save() = 0;
+    virtual QByteArray save();
 
     /*! Load filter settings from QByteArray. */
-    virtual void load(const QByteArray& ba, filter_factory_p factory) = 0;
+    virtual void load(const QByteArray& ba, filter_factory_p factory);
 
 signals:
     void changed_signal();

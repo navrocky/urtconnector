@@ -15,7 +15,7 @@ server_info::server_info()
 {
 }
 
-QString server_info::mode_name() const
+QString server_info::get_mode_name(game_mode mode)
 {
     switch (mode)
     {
@@ -29,6 +29,11 @@ QString server_info::mode_name() const
         case gm_bomb_mode: return QObject::tr("Bomb Mode");
     }
     return QObject::tr("Unknown");
+}
+
+QString server_info::mode_name() const
+{
+    return get_mode_name(mode);
 }
 
 QString server_info::status_name()

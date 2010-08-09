@@ -383,6 +383,7 @@ void server_list_widget::load_options()
         server_list_widget_settings st(objectName());
         filter_p f = st.load_root_filter(filters_->factory());
         filters_->set_root_filter(f);
+        connect(f.get(), SIGNAL(changed_signal()), SLOT(update_list()));
     }
     catch(const std::exception& e)
     {

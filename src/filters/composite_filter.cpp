@@ -57,16 +57,16 @@ bool composite_filter::filter_server(const server_info& si)
         case op_and:
         {
             foreach (filter_p f, filters_)
-                if (!f->filter_server(si))
+                if (f->enabled() && !f->filter_server(si))
                     return false;
             return true;
         }
         case op_or:
         {
             foreach (filter_p f, filters_)
-                if (f->filter_server(si))
+                if (f->enabled() && f->filter_server(si))
                     return true;
-            return filters_.size() > 0;
+            return filters_.size() > 0 ? false : true;
         }
 
         default:;
@@ -117,14 +117,14 @@ QByteArray composite_filter::save()
     ds << (qint32)(filters_.size());
     foreach (filter_p f, filters_)
         ds << filter_save(f);
+    return res;
 }
 
 void composite_filter::load(const QByteArray& ba, filter_factory_p factory)
 {
     assert(filters_.size() == 0);
 
-    QByteArray res;
-    QDataStream ds(&res, QIODevice::ReadOnly);
+    QDataStream ds(ba);
 
     qint32 version;
     ds >> version;
@@ -152,8 +152,36 @@ void composite_filter::load(const QByteArray& ba, filter_factory_p factory)
 
 composite_filter_quick_opt_widget::composite_filter_quick_opt_widget(filter_p f)
 : filter_(f)
+, block_filter_change_(false)
+, block_combo_change_(false)
 {
-    addItem(tr("AND"), QVariant::fromValue(composite_filter::op_and));
-    addItem(tr("OR"), QVariant::fromValue(composite_filter::op_or));
+    addItem(tr("AND"), QVariant::fromValue((int)composite_filter::op_and));
+    addItem(tr("OR"), QVariant::fromValue((int)composite_filter::op_or));
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(f.get(), SIGNAL(changed_signal()), SLOT(filter_changed()));
+    filter_changed();
+    connect(this, SIGNAL(currentIndexChanged(int)), SLOT(combo_changed()));
 }
+
+void composite_filter_quick_opt_widget::filter_changed()
+{
+    if (block_filter_change_)
+        return;
+    block_combo_change_ = true;
+    composite_filter* cf = qobject_cast<composite_filter*>(filter_.get());
+    int i = findData((int)cf->operation());
+    setCurrentIndex(i);
+    block_combo_change_ = false;
+}
+
+void composite_filter_quick_opt_widget::combo_changed()
+{
+    if (block_combo_change_)
+        return;
+    block_filter_change_ = true;
+    composite_filter* cf = qobject_cast<composite_filter*>(filter_.get());
+    cf->set_operation((composite_filter::operation_t)(itemData(currentIndex())
+        .value<int>()));
+    block_filter_change_ = false;
+}
+

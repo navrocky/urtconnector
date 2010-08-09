@@ -86,6 +86,12 @@ src/filters/filter_factory.cpp -text
 src/filters/filter_factory.h -text
 src/filters/filter_list.cpp -text
 src/filters/filter_list.h -text
+src/filters/game_type_filter.cpp -text
+src/filters/game_type_filter.h -text
+src/filters/hide_empty_filter.cpp -text
+src/filters/hide_empty_filter.h -text
+src/filters/hide_full_filter.cpp -text
+src/filters/hide_full_filter.h -text
 src/filters/pointers.h -text
 src/filters/reg_filters.cpp -text
 src/filters/reg_filters.h -text

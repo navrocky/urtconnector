@@ -12,8 +12,13 @@ class composite_filter_quick_opt_widget : public QComboBox
     Q_OBJECT
 public:
     composite_filter_quick_opt_widget(filter_p f);
+private slots:
+    void filter_changed();
+    void combo_changed();
 private:
     filter_p filter_;
+    bool block_filter_change_;
+    bool block_combo_change_;
 };
 
 class composite_filter_class : public filter_class

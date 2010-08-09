@@ -47,6 +47,7 @@ public:
     QString country_code;
     game_mode mode;
     QString mode_name() const;
+    static QString get_mode_name(game_mode mode);
     int ping;
     int retries;
     int red_score;

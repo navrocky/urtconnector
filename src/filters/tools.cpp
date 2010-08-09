@@ -12,6 +12,7 @@ QByteArray filter_save(filter_p f)
 
     ds << (qint32)1; //version
     ds << f->get_class()->id();
+    ds << f->enabled();
     ds << f->save();
 
     return res;
@@ -30,6 +31,10 @@ filter_p filter_load(const QByteArray& ba, filter_factory_p factory)
     QString id;
     ds >> id;
     filter_p res = factory->create_filter_by_id(id);
+
+    bool enabled;
+    ds >> enabled;
+    res->set_enabled(enabled);
     
     QByteArray ba2;
     ds >> ba2;

@@ -97,12 +97,6 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
     connect(enabled_check_, SIGNAL(stateChanged(int)), SLOT(enable_toggled()));
 
     label_ = new QLabel(this);
-//    label_->setText("<b>Filter name</b><br><small>Filter description here.</small>");
-//    lb->setForegroundRole(QPalette::HighlightedText);
-
-//    QFont fn = lb->font();
-//    fn.setBold(true);
-//    lb->setFont(fn);
     label_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     lay->addWidget(enabled_check_);
     lay->addWidget(label_);
@@ -111,27 +105,10 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
     options_lay_->setContentsMargins(0, 0, 0, 0);
     lay->addLayout(options_lay_);
 
-//    QComboBox* combo = new QComboBox(this);
-//    lay->addWidget(combo);
-//    combo->addItem("AND");
-//    combo->addItem("OR");
-//    combo->addItem("XOR %D");
-//    combo->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-
     options_button_ = new QToolButton(this);
     options_button_->setIcon(QIcon(":/icons/icons/configure.png"));
     options_button_->setToolTip(tr("Configure filter"));
     lay->addWidget(options_button_);
-
-//    btn = new QToolButton(this);
-//    btn->setIcon(QIcon(":/icons/icons/info.png"));
-//    btn->setAutoRaise(true);
-//    lay->addWidget(btn);
-//
-//    btn = new QToolButton(this);
-//    btn->setIcon(QIcon(":/icons/icons/delete.png"));
-////    btn->setAutoRaise(true);
-//    lay->addWidget(btn);
 
     update_contents();
 }
@@ -196,8 +173,8 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
 
     add_new_filter_action_ = new QAction(QIcon(":/icons/icons/add.png"),
                                          tr("Add new child filter"), this);
-    add_exist_filter_action_ = new QAction(QIcon(":/icons/icons/insert-link.png"),
-                                         tr("Add child link to existing filter"), this);
+//    add_exist_filter_action_ = new QAction(QIcon(":/icons/icons/insert-link.png"),
+//                                         tr("Add child link to existing filter"), this);
     delete_filter_action_ = new QAction(QIcon(":/icons/icons/remove.png"),
                                          tr("Delete filter"), this);
 
@@ -213,7 +190,7 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     tree_->setAlternatingRowColors(true);
 
     tree_->addAction(add_new_filter_action_);
-    tree_->addAction(add_exist_filter_action_);
+//    tree_->addAction(add_exist_filter_action_);
     
     QAction* sep = new QAction(this);
     sep->setSeparator(true);
@@ -267,6 +244,7 @@ void filter_edit_widget::update_contents()
 {
     tree_->clear();
     do_update(filters_->root_filter(), tree_, 0);
+    tree_->expandAll();
 }
 
 void filter_edit_widget::update_actions()
@@ -274,8 +252,7 @@ void filter_edit_widget::update_actions()
     QTreeWidgetItem* item = tree_->currentItem();
     QTreeWidgetItem* parent_item = item ? item->parent() : NULL;
 
-    add_exist_filter_action_->setEnabled(item);
-    add_exist_filter_action_->setEnabled(item);
+    add_new_filter_action_->setEnabled(item);
     delete_filter_action_->setEnabled(parent_item);
 }
 

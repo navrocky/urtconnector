@@ -124,12 +124,13 @@ main_window::main_window(QWidget *parent)
     serv_info_update_timer_->start();
 
     all_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabAll);
-    QBoxLayout* tab_all_lay = dynamic_cast<QBoxLayout*> (ui_->tabAll->layout());
-    tab_all_lay->insertWidget(0, all_list_);
+    all_list_->setObjectName("all_list");
+    dynamic_cast<QBoxLayout*>(ui_->tabAll->layout())->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
     fav_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabFav);
-    dynamic_cast<QBoxLayout*> (ui_->tabFav->layout())->insertWidget(0, fav_list_);
+    fav_list_->setObjectName("fav_list");
+    dynamic_cast<QBoxLayout*>(ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
     connect(ui_->tabWidget, SIGNAL(currentChanged(int)), SLOT(current_tab_changed(int)));
@@ -138,7 +139,6 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionFavAdd, SIGNAL(triggered()), SLOT(fav_add()));
     connect(ui_->actionFavEdit, SIGNAL(triggered()), SLOT(fav_edit()));
     connect(ui_->actionFavDelete, SIGNAL(triggered()), SLOT(fav_delete()));
-
     
     connect(ui_->actionRefreshSelected, SIGNAL(triggered()), SLOT(refresh_selected()));
     connect(ui_->actionRefreshAll, SIGNAL(triggered()), SLOT(refresh_all()));
@@ -404,6 +404,9 @@ void main_window::load_all_at_start()
 
     local::load_list(all_sl_, "all_state");
     local::load_list(fav_sl_, "favs_state");
+    
+    all_list_->load_options();
+    fav_list_->load_options();
 }
 
 void main_window::save_state_at_exit()
@@ -423,6 +426,9 @@ void main_window::save_state_at_exit()
     save_geometry();
     local::save_list(all_sl_, "all_state");
     local::save_list(fav_sl_, "favs_state");
+
+    all_list_->save_options();
+    fav_list_->save_options();
 }
 
 void main_window::save_favorites()
