@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include <boost/bind.hpp>
+#include <boost/assign/std/map.hpp>
 
 #include <QAction>
 #include <QString>
@@ -81,6 +82,44 @@ QString q3coloring(const QString & str, const QString& skip)
     //joining list to plain string
     return lst.join("");
 }
+
+QColor choose_for_background(Qt::GlobalColor standard, const QColor& background)
+{
+    static std::map<Qt::GlobalColor, QColor> light_colors;
+    static std::map<Qt::GlobalColor, QColor> dark_colors;
+
+    if( light_colors.empty() )
+    {
+        boost::assign::insert( light_colors )
+            ( Qt::white,  Qt::white )
+            ( Qt::red,    Qt::red   )
+            ( Qt::green,  Qt::green )
+            ( Qt::blue,   Qt::blue  )
+            ( Qt::cyan,   Qt::cyan  )
+            ( Qt::magenta,Qt::magenta )
+            ( Qt::yellow, Qt::yellow  )
+            ( Qt::gray,   Qt::gray  );
+    }
+
+    if( dark_colors.empty() )
+    {
+        boost::assign::insert( dark_colors )
+            ( Qt::white,  Qt::black )
+            ( Qt::red,    Qt::darkRed   )
+            ( Qt::green,  Qt::darkGreen )
+            ( Qt::blue,   Qt::darkBlue  )
+            ( Qt::cyan,   Qt::darkCyan  )
+            ( Qt::magenta,Qt::darkMagenta )
+            ( Qt::yellow, Qt::darkYellow  )
+            ( Qt::gray,   Qt::darkGray  );
+    }
+
+    if( background.lightness() > 128 )
+        return dark_colors[standard];
+    else
+        return light_colors[standard];
+}
+
 
 
 

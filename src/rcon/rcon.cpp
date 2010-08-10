@@ -1,12 +1,16 @@
 
 #include <iostream>
 
+#include <boost/bind.hpp>
 #include <boost/format.hpp>
 #include <boost/foreach.hpp>
+#include <boost/function.hpp>
+#include <boost/assign/std/map.hpp>
 
 #include <QLabel>
 #include <QTimer>
 #include <QUdpSocket>
+#include <QCompleter>
 
 #include <cl/syslog/syslog.h>
 
@@ -27,14 +31,16 @@ const char rcon_header_codes[10] = {0xff, 0xff, 0xff, 0xff, 'r', 'c', 'o', 'n', 
 const QByteArray answer_header_c( answer_header_codes );
 const QByteArray rcon_header_c( rcon_header_codes );
 
+typedef boost::function<void ( const QByteArray& )> Handler;
+
 struct rcon::Pimpl{
     Pimpl( const server_id& id, const server_options& options )
         : id(id), options(options)
         , connected(false), waiting(false)
     {}
-    void init()
-    {
+    void init() {
         ui.output->setFont( QFont("Terminus") );
+        ui.input->setFont( QFont("Terminus") );
 
         status = new QLabel(0);
         status->setFixedSize( QSize(16, 16) );
@@ -51,6 +57,29 @@ struct rcon::Pimpl{
         send_timer.setInterval( 2000 );
         send_timer.setSingleShot( true );
     }
+
+    void update_colors(){
+        rcon_settings s;
+        if( s.adaptive_pallete() )
+        {
+            QPalette p = ui.output->palette();
+            boost::assign::insert(colors)
+                (rcon_settings::Background, p.color( QPalette::Base ) )
+                (rcon_settings::Text,       p.color( QPalette::Text ) )
+                (rcon_settings::Command,    choose_for_background( Qt::yellow, p.color( QPalette::Base ) ) )
+                (rcon_settings::Info,       choose_for_background( Qt::cyan,   p.color( QPalette::Base ) ) )
+                (rcon_settings::Error,      choose_for_background( Qt::red,    p.color( QPalette::Base ) ) );
+        }
+        else
+        {
+            boost::assign::insert(colors)
+                (rcon_settings::Background, s.color(rcon_settings::Background) )
+                (rcon_settings::Text,       s.color(rcon_settings::Text)       )
+                (rcon_settings::Command,    s.color(rcon_settings::Command)    )
+                (rcon_settings::Info,       s.color(rcon_settings::Info)       )
+                (rcon_settings::Error,      s.color(rcon_settings::Error)      );
+        }
+    }
     
     Ui_rcon ui;
     server_id id;
@@ -61,6 +90,9 @@ struct rcon::Pimpl{
     
     QLabel* status;
     QTimer send_timer;
+
+    std::map<rcon_settings::Color, QColor> colors;
+    Handler handler;
 };
 
 rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
@@ -68,22 +100,12 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
     , p_( new Pimpl(id, options) )
 {
     p_->ui.setupUi(this);
-        p_->ui.output->setFont( QFont("Terminus") );
+    p_->init();
 
-        p_->status = new QLabel(0);
-        p_->status->setFixedSize( QSize(16, 16) );
-
-        //moving pixmap to Right-Up corner
-        QVBoxLayout* vl = new QVBoxLayout();
-        vl->addWidget(p_->status);
-        vl->addStretch();
-
-        QHBoxLayout* hl = new QHBoxLayout(p_->ui.output);
-        hl->addStretch();
-        hl->addLayout( vl );
-
-        p_->send_timer.setInterval( 2000 );
-        p_->send_timer.setSingleShot( true );
+    QStringList ls;
+    ls << "text1" << "text2" << "text3" << "text4" << "asdfslj" <<"asd  fgd [sdf ]";
+    
+    p_->ui.input->setCompleter( new my_completer(p_->ui.input, ls) );
 
     //UdpSoket always connected, but initialization required
     connect( &p_->socket, SIGNAL( connected() ),   SLOT( connected() ) );
@@ -93,6 +115,8 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
 
     connect( p_->ui.input, SIGNAL( returnPressed() ), SLOT( input_enter_pressed() ));
 
+    update_settings();
+    
     p_->socket.connectToHost( p_->id.ip_or_host(), p_->id.port() );
 }
 
@@ -123,13 +147,25 @@ void rcon::ready_read()
 
     QByteArray data = p_->socket.readAll();
     LOG_DEBUG << format( "%1% - recieved: %2%" ) % p_->id.address().toStdString() % data.constData();
-    
-    if ( !parse_data( data ) )
-    {
-        print( Error, tr("Unknown aswer type:") );
-        print( Error, data );
+
+    BOOST_FOREACH( const QByteArray& line, data.split('\n') ) {
+        parse_data( line );
     }
 }
+
+void rcon::update_settings()
+{
+    p_->update_colors();
+    QPalette p = p_->ui.output->palette();
+    p.setColor( QPalette::Base, p_->colors[rcon_settings::Background] );
+    p_->ui.output->setPalette( p );
+    p_->ui.output->setAutoFillBackground( !rcon_settings().adaptive_pallete() );
+
+    p.setColor( QPalette::Text, p_->colors[rcon_settings::Command] );
+    p_->ui.input->setPalette( p );
+    p_->ui.input->setAutoFillBackground( !rcon_settings().adaptive_pallete() );
+}
+
 
 void rcon::connected()
 {
@@ -169,51 +205,40 @@ void rcon::set_state( bool connected)
     p_->connected = connected;
 }
 
-bool rcon::parse_data( QByteArray ba )
+void rcon::parse_data( const QByteArray& line )
 {
-    bool processed = false;
-    if( ba.startsWith( answer_header_c ) )
+    if( line.startsWith( answer_header_c ) )
     {
-        ba.remove(0, answer_header_c.size() );
-        QByteArray command = ba.left( ba.indexOf('\n') );
-        ba.remove(0, command.size() );
+        QByteArray command = line.mid( answer_header_c.size(), -1 );
         if( command == "print" )
-        {
-            print( Simple, ba );
-            processed = true;
-        }
+            p_->handler = boost::bind( &rcon::print, this, Simple, _1 );
     }
-    return processed;
+    else
+    {
+        p_->handler( QString("<pre>%1</pre>").arg(line.data()).toUtf8() );
+    }
 }
 
-QString formatted_string( rcon::TextType type, const QString& text )
-{
-    switch (type)
-    {
-        case rcon::Command: return colorize( text, QColor(Qt::yellow).lighter() );
-        //hack to skip colorizing quake-default color(white)
-        case rcon::Simple:  return q3coloring(text, "7");
-        case rcon::Info:    return colorize( text, QColor(Qt::cyan).lighter() );
-        case rcon::Error:   return colorize( text, QColor(Qt::red).lighter() );
-        default:
-            return text;
-    }
-}
 
 void rcon::print(TextType type, const QString & text)
 {
     if( !text.isEmpty() )
-    {
-        p_->ui.output->append( formatted_string(type, text) );
-    }
+        p_->ui.output->append( colorize_string(type, text) );
 }
 
-void rcon::print(rcon::TextType type, const QByteArray& data)
+QString rcon::colorize_string( rcon::TextType type, const QString& text ) const
 {
-    BOOST_FOREACH( const QByteArray& line, data.split('\n') ) {
-        print( type, QString(line.constData()) );
-    }
+    switch (type)
+    {
+        case rcon::Command: return colorize( text, p_->colors[rcon_settings::Command] );
+        case rcon::Simple:  return colorize( text, p_->colors[rcon_settings::Text] );
+        case rcon::Info:    return colorize( text, p_->colors[rcon_settings::Info] );
+        case rcon::Error:   return colorize( text, p_->colors[rcon_settings::Error] );
+        default:
+            return text;
+    }    
 }
+
 
 
 

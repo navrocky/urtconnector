@@ -12,12 +12,15 @@
 #include "launcher/launcher.h"
 #include "app_options.h"
 #include "launcher/tools.h"
+#include "rcon/rcon_settings_form.h"
 
 options_dialog::options_dialog(QWidget *parent)
  : QDialog(parent)
 {
     ui.setupUi(this);
 
+    ui.tabWidget->addTab( new rcon_settings_form(), tr("RCon"));
+    
     connect( ui.select_bin_button, SIGNAL( clicked() ), SLOT( choose_binary() ));
     connect( ui.insertFileButton, SIGNAL( clicked() ), SLOT( insert_file_path() ));
     connect( ui.qstat_binary_choose_button, SIGNAL( clicked() ), SLOT( choose_qstat_binary() ));

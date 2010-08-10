@@ -88,6 +88,7 @@ main_window::main_window(QWidget *parent)
     settings set;
     //Регистрируем state_settings в отдельном файле
     set.register_file( state_settings::uid(), "state.ini" );
+    set.register_file( rcon_settings::uid(), "rcon.ini" );
 
     ui_->setupUi(this);
 

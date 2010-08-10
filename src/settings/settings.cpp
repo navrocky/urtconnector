@@ -7,15 +7,17 @@
 #include <QSettings>
 
 #include "settings.h"
+#include <iostream>
 
 const QSettings::Format format_c = QSettings::IniFormat;
 
 struct settings::Pimpl{
 
     typedef std::map<QString, settings_ptr > settings_map;
-    Pimpl()
-        : settings( new QSettings( QSettings::IniFormat, QSettings::UserScope,
-            QCoreApplication::organizationName(), QCoreApplication::applicationName() ) )
+    Pimpl( bool org )
+        : settings( new QSettings( format_c, QSettings::UserScope
+            , ( org ) ? QCoreApplication::organizationName() : QCoreApplication::applicationName()
+            , QCoreApplication::applicationName() ) )
         , registered(  boost::details::pool::singleton_default<settings_map>::instance() )
     {}
 
@@ -54,8 +56,8 @@ struct settings::Pimpl{
     settings_map& registered;
 };
 
-settings::settings()
-    : p_( new Pimpl )
+settings::settings( bool use_organization )
+    : p_( new Pimpl( use_organization ) )
 {}
 
 void settings::register_file(const QString& uid, const QString& filename, bool relative)

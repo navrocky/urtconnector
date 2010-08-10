@@ -418,6 +418,10 @@ src/qtsingleapplication/qtsinglecoreapplication.h -text
 src/rcon/rcon.cpp -text
 src/rcon/rcon.h -text
 src/rcon/rcon.ui -text
+src/rcon/rcon_settings.h -text
+src/rcon/rcon_settings_form.cpp -text
+src/rcon/rcon_settings_form.h -text
+src/rcon/rcon_settings_form.ui -text
 src/server_id.cpp -text
 src/server_id.h -text
 src/server_info.cpp -text

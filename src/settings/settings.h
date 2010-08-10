@@ -32,7 +32,7 @@ public:
     
     typedef boost::shared_ptr<QSettings> settings_ptr;
 
-    settings();
+    settings( bool use_organization = false);
 
     ///Register QSettings from \p filename to be accessible by \p uid
     void register_file( const QString& uid, const QString& filename, bool relative = true);

@@ -83,6 +83,7 @@ set(MOC_HEADERS
     job_update_from_master.h
     clipper.h
     rcon/rcon.h
+    rcon/rcon_settings_form.h
 )
 
 set(SOURCES
@@ -118,6 +119,7 @@ set(SOURCES
     tools.cpp
     launcher/tools.cpp
     rcon/rcon.cpp
+    rcon/rcon_settings_form.cpp
 )
 
 set(IFACES
@@ -128,6 +130,7 @@ set(IFACES
     jobs/job_monitor.ui
     jobs/job_item.ui
     rcon/rcon.ui
+    rcon/rcon_settings_form.ui
 )
 
 set(RESOURCES
