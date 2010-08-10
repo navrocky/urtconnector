@@ -58,12 +58,10 @@ using namespace std;
 // main_window
 
 
-//Получаем UID для state_settings
+//obtain UID for state_settings
 class state_settings: public settings_uid_provider<state_settings>
-//Если типизированные поля не нужны - дальше модно ничего не писать
 {
 public:
-    //Для простых данных это необязательно но можно типизировать сохраняемые поля
     QByteArray geometry(){
         return part()->value("geometry").toByteArray();
     }
@@ -71,8 +69,6 @@ public:
     void set_geometry( const QByteArray& g ){
         return part()->setValue("geometry", g );
     }
-   
-
 };
 
 main_window::main_window(QWidget *parent)
@@ -84,12 +80,12 @@ main_window::main_window(QWidget *parent)
 , old_state_(0)
 , clipper_( new clipper(this, opts_) )
 {
-    //Инициализируем объект настроек
+    //Initializing main settings
     settings set;
-    //Регистрируем state_settings в отдельном файле
+    //Registering state_settings in separate file
     set.register_file( state_settings::uid(), "state.ini" );
-    set.register_file( server_list_widget_settings::uid(), "options.ini" );
-    set.register_file( rcon_settings::uid(), "rcon.ini" );
+
+    set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
 
     ui_->setupUi(this);
 
@@ -606,13 +602,10 @@ void main_window::current_tab_changed(int)
 
 void main_window::save_geometry()
 {
-    //Используем типизированные и именованные точки доступа
     state_settings state_s;
     state_s.set_geometry( saveGeometry() );
 
-    //А можно использовать традиционный способ присвоения/запроса значений
     qsettings_p s = settings::get_settings( state_settings::uid() );
-    //s->setValue("geometry", saveGeometry());
     s->setValue("window_state", saveState());
     s->setValue("fav_list_state", fav_list_->tree()->header()->saveState());
     s->setValue("all_list_state", all_list_->tree()->header()->saveState());
@@ -622,24 +615,9 @@ void main_window::load_geometry()
 {
     qsettings_p s = settings::get_settings( state_settings::uid() );
                 
-    //Нужно незаметно для пользователя перенести старые настройки в новый формат
-    qsettings_p old_s = get_app_options_settings("state");
-    QStringList allkeys = old_s->allKeys();
-
-    if ( !allkeys.isEmpty() )
-    {
-        BOOST_FOREACH( const QString& key, allkeys ){
-            s->setValue( key, old_s->value(key) );
-        }
-        old_s->clear();
-    }
-    
-    //restoreGeometry(s->value("geometry").toByteArray());
-    //Используем типизированные и именованные точки доступа
     state_settings state_s;
     restoreGeometry( state_s.geometry() );
 
-    //или традиционный метод
     qApp->processEvents();
     restoreState(s->value("window_state").toByteArray());
     fav_list_->tree()->header()->restoreState(s->value("fav_list_state").toByteArray());

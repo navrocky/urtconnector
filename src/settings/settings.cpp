@@ -62,19 +62,26 @@ settings::settings( bool use_organization )
 
 void settings::register_file(const QString& uid, const QString& filename, bool relative)
 {
-    if ( filename.isEmpty() )
-        p_->registered.erase(uid);
-    else 
-        p_->registered[uid] = p_->create_file(filename, relative);
+    p_->registered[uid] = p_->create_file(filename, relative);
 }
 
 void settings::register_group(const QString& uid, const QString& group)
 {
-    if ( group.isEmpty() )
-        p_->registered.erase(uid);
-    else
-        p_->registered[uid] = p_->create_group(uid, group);
+    p_->registered[uid] = p_->create_group(uid, group);
 }
+
+void settings::register_group(const QString& uid, const QString& group, const QString& filename, bool relative)
+{
+    p_->registered[uid] = p_->create_file(filename, relative);
+    p_->registered[uid]->beginGroup( group );
+}
+
+void settings::unregister(const QString& uid)
+{
+    p_->registered.erase(uid);
+}
+
+
 
 settings::settings_ptr settings::main()
 {

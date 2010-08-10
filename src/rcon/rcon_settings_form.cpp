@@ -1,4 +1,6 @@
 
+#include <boost/bind.hpp>
+
 #include <QColorDialog>
 
 #include "ui_rcon_settings_form.h"
@@ -56,22 +58,29 @@ void rcon_settings_form::init()
     rcon_settings settings;
 
     p_->ui.custom_colors->setChecked( !settings.adaptive_pallete() );
-    
-    QPalette p = p_->ui.background->palette();
-    p.setColor( QPalette::Window, settings.color( rcon_settings::Background ) );
-    p_->ui.background->setPalette(p);
 
-    p.setColor( QPalette::WindowText, settings.color( rcon_settings::Info ) );
-    p_->ui.info_ex->setPalette(p);
+    if( p_->ui.custom_colors->isChecked() )
+    {
+        QPalette p = p_->ui.background->palette();
+        p.setColor( QPalette::Window, settings.color( rcon_settings::Background ) );
+        p_->ui.background->setPalette(p);
 
-    p.setColor( QPalette::WindowText, settings.color( rcon_settings::Text ) );
-    p_->ui.inc_ex->setPalette(p);
+        p.setColor( QPalette::WindowText, settings.color( rcon_settings::Info ) );
+        p_->ui.info_ex->setPalette(p);
 
-    p.setColor( QPalette::WindowText, settings.color( rcon_settings::Command ) );
-    p_->ui.out_ex->setPalette(p);
+        p.setColor( QPalette::WindowText, settings.color( rcon_settings::Text ) );
+        p_->ui.inc_ex->setPalette(p);
 
-    p.setColor( QPalette::WindowText, settings.color( rcon_settings::Error ) );
-    p_->ui.err_ex->setPalette(p);
+        p.setColor( QPalette::WindowText, settings.color( rcon_settings::Command ) );
+        p_->ui.out_ex->setPalette(p);
+
+        p.setColor( QPalette::WindowText, settings.color( rcon_settings::Error ) );
+        p_->ui.err_ex->setPalette(p);
+    }
+    else
+    {
+        std::for_each( p_->e_map.begin(), p_->e_map.end(), boost::bind<void>( &QWidget::setPalette, boost::bind( &ExamplesMap::value_type::second, _1 ), palette() ) );
+    }
 }
 
 
@@ -79,6 +88,7 @@ void rcon_settings_form::custom_checked(bool b)
 {
     rcon_settings settings;
     settings.set_adaptive_pallete( !b );
+    init();
 }
 
 
