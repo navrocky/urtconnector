@@ -230,7 +230,7 @@ void main_window::quick_connect() const
     // add to history if history is enabled
     if (opts_->keep_history)
     {
-        history_sl_->add(l.id(), l.userName(), l.password());
+        history_sl_->add(l.id(), "", l.userName(), l.password());
         history_list_->update_history();
     }
 
@@ -544,7 +544,7 @@ void main_window::connect_selected() const
     // add to history if history is enabled
     if (opts_->keep_history)
     {
-        history_sl_->add(l.id(), l.userName(), l.password());
+        history_sl_->add(l.id(), info->name, l.userName(), l.password());
         history_list_->update_history();
     }
 

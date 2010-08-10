@@ -12,16 +12,9 @@ history::history(app_options_p opts) :
     load();
 }
 
-void history::add(QString address, QString player_name, QString password)
-{
-    server_id id(address);
-    add(id, player_name, password);
-}
-
-void history::add(server_id id, QString player_name, QString password)
+void history::add(server_id id, QString server_name, QString player_name, QString password)
 {
     QDateTime date_time = QDateTime::currentDateTime();
-    QString server_name = "";
     history_item_p item_p(new history_item(id, server_name, password, player_name, date_time));
     add_history_item(item_p);
 }

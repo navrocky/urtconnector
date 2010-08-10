@@ -11,8 +11,7 @@ class history
 public:
     history(app_options_p opts);
 
-    void add(QString address, QString player_name, QString password);
-    void add(server_id id, QString player_name, QString password);
+    void add(server_id id, QString server_name, QString player_name, QString password);
 
     void remove(int i)
     {
