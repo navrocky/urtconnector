@@ -64,6 +64,9 @@ public:
     void load_options();
     void save_options();
 
+    /*! Visible server count passed through filters */
+    int visible_server_count() const {return visible_server_count_;}
+
 private slots:
     void timerEvent(QTimerEvent *event);
     void filter_text_changed(const QString&);
@@ -91,6 +94,7 @@ private:
     app_options_p opts_;
     filter_list_p filters_;
     QPointer<filter_edit_widget> edit_widget_;
+    int visible_server_count_;
 };
 
 class status_item_delegate : public QStyledItemDelegate

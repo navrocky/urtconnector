@@ -26,22 +26,11 @@ void filter::set_enabled(bool val)
 
 QByteArray filter::save()
 {
-    QByteArray res;
-    QDataStream ds(&res, QIODevice::WriteOnly);
-
-    ds << (qint32)1; // version
-
-    return res;
+    return QByteArray();
 }
 
 void filter::load(const QByteArray& ba, filter_factory_p factory)
 {
-    QDataStream ds(ba);
-
-    qint32 version;
-    ds >> version;
-    if (version < 1)
-        throw cl::except::error("Invalid filter version");
 }
 
 

@@ -85,6 +85,7 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
 , favs_(0)
 , opts_(opts)
 , filters_(new filter_list(factory))
+, visible_server_count_(0)
 {
     QBoxLayout* vert_lay = new QVBoxLayout(this);
     vert_lay->setContentsMargins(0, 0, 0, 0);
@@ -238,7 +239,11 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     item->setText(c_filter_info_column, QString("%1 %2 %3 %4 %5 %6 %7 %8").arg(name)
         .arg(si->id.address()).arg(si->country).arg(si->map).arg(si->mode_name()).arg(players)
         .arg(si->country).arg(status));
-    item->setHidden(!filter_item(item));
+
+    bool visible = filter_item(item);
+    if (visible)
+        visible_server_count_++;
+    item->setHidden(!visible);
 }
 
 bool server_list_widget::filter_item(QTreeWidgetItem* item)
@@ -284,6 +289,7 @@ void server_list_widget::update_list()
     QTreeWidget* tw = tree_;
     QTreeWidgetItem* cur_item = tw->currentItem();
 
+    visible_server_count_ = 0;
     tw->setUpdatesEnabled(false);
     try
     {
@@ -322,6 +328,7 @@ void server_list_widget::update_list()
             delete item;
             items_.erase(*it);
         }
+
         tw->setUpdatesEnabled(true);
     }
     catch(...)
@@ -369,7 +376,6 @@ void server_list_widget::edit_filter()
     if (!edit_widget_)
     {
         edit_widget_ = new filter_edit_widget(filters_);
-//        edit_widget_->setAttribute(Qt::WA_DeleteOnClose, true);
     }
     edit_widget_->move(show_filter_button_->mapToGlobal(QPoint(0, show_filter_button_->height())));
     edit_widget_->show();

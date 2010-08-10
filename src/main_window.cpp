@@ -88,6 +88,7 @@ main_window::main_window(QWidget *parent)
     settings set;
     //Регистрируем state_settings в отдельном файле
     set.register_file( state_settings::uid(), "state.ini" );
+    set.register_file( server_list_widget_settings::uid(), "options.ini" );
     set.register_file( rcon_settings::uid(), "rcon.ini" );
 
     ui_->setupUi(this);
@@ -744,8 +745,22 @@ void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
 
 void main_window::update_tabs()
 {
-    ui_->tabWidget->setTabText(0, tr("Favorites (%1)").arg(fav_sl_->list().size()));
-    ui_->tabWidget->setTabText(1, tr("All (%1)").arg(all_sl_->list().size()));
+    QString s;
+    int cnt1 = fav_list_->visible_server_count();
+    int cnt2 = fav_sl_->list().size();
+    if (cnt1 == cnt2)
+        s = QString("%1").arg(cnt1);
+    else
+        s = QString("%1/%2").arg(cnt1).arg(cnt2);
+    ui_->tabWidget->setTabText(0, tr("Favorites (%1)").arg(s));
+
+    cnt1 = all_list_->visible_server_count();
+    cnt2 = all_sl_->list().size();
+    if (cnt1 == cnt2)
+        s = QString("%1").arg(cnt1);
+    else
+        s = QString("%1/%2").arg(cnt1).arg(cnt2);
+    ui_->tabWidget->setTabText(1, tr("All (%1)").arg(s));
 }
 
 void main_window::clear_servers(server_list_widget* current, const server_id_list& to_delete)
@@ -836,7 +851,7 @@ void main_window::open_remote_console()
 
     server_fav_list& list = opts_->servers;
 
-    QDockWidget* dw = new QDockWidget( QString("RCon:%1").arg( id_list.front().address() ), this );
+    QDockWidget* dw = new QDockWidget( tr("RCon: %1").arg( id_list.front().address() ), this );
     dw->setAttribute( Qt::WA_DeleteOnClose  );
     dw->setWidget( new rcon(0, id_list.front(), list[id_list.front()]) );
     
