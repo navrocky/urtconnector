@@ -32,6 +32,7 @@
     <file>icons/view-filter.png</file>
     <file>icons/insert-link.png</file>
     <file>icons/zoom.png</file>
+    <file>icons/dialog-ok-apply.png</file>
   </qresource>
   <qresource prefix="images">
     <file>icons/logo.png</file>

@@ -173,12 +173,13 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
 
     add_new_filter_action_ = new QAction(QIcon(":/icons/icons/add.png"),
                                          tr("Add new child filter"), this);
-//    add_exist_filter_action_ = new QAction(QIcon(":/icons/icons/insert-link.png"),
-//                                         tr("Add child link to existing filter"), this);
     delete_filter_action_ = new QAction(QIcon(":/icons/icons/remove.png"),
                                          tr("Delete filter"), this);
+    select_toolbar_filter_action_ = new QAction(QIcon(":/icons/icons/dialog-ok-apply.png"),
+                                         tr("Select filter for toolbar"), this);
 
     connect(add_new_filter_action_, SIGNAL(triggered()), SLOT(add_new_filter()));
+    connect(select_toolbar_filter_action_, SIGNAL(triggered()), SLOT(select_toolbar_filter()));
     connect(delete_filter_action_, SIGNAL(triggered()), SLOT(delete_filter()));
 
     QVBoxLayout* lay = new QVBoxLayout(this);
@@ -190,8 +191,7 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     tree_->setAlternatingRowColors(true);
 
     tree_->addAction(add_new_filter_action_);
-//    tree_->addAction(add_exist_filter_action_);
-    
+    tree_->addAction(select_toolbar_filter_action_);
     QAction* sep = new QAction(this);
     sep->setSeparator(true);
     tree_->addAction(sep);
@@ -289,4 +289,14 @@ void filter_edit_widget::delete_filter()
     composite_filter* cf = qobject_cast<composite_filter*>(parent_f.get());
     cf->remove_filter(f);
     delete item;
+}
+
+void filter_edit_widget::select_toolbar_filter()
+{
+    QTreeWidgetItem* item = tree_->currentItem();
+    if (!item)
+        return;
+    filter_p f = item->data(0, Qt::UserRole).value<filter_p>();
+    filters_->set_toolbar_filter(f);
+    
 }

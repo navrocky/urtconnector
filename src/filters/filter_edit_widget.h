@@ -73,6 +73,7 @@ private slots:
     void add_new_filter();
     void delete_filter();
     void update_actions();
+    void select_toolbar_filter();
 
 private:
     void do_update(filter_p parent, QTreeWidget*, QTreeWidgetItem*);
@@ -85,6 +86,7 @@ private:
     QAction* add_new_filter_action_;
 //    QAction* add_exist_filter_action_;
     QAction* delete_filter_action_;
+    QAction* select_toolbar_filter_action_;
 };
 
 #endif	/* FILTER_EDIT_WIDGET_H */

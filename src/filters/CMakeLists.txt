@@ -19,6 +19,7 @@ set(HEADERS
 
 set(MOC_HEADERS
     filter.h
+    filter_list.h
     composite_filter.h
     filter_edit_widget.h
     game_type_filter.h

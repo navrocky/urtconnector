@@ -1,6 +1,7 @@
 #ifndef FILTER_LIST_H
 #define	FILTER_LIST_H
 
+#include <QObject>
 #include <QString>
 #include <map>
 
@@ -8,8 +9,9 @@
 
 class server_info;
 
-class filter_list
+class filter_list : public QObject
 {
+    Q_OBJECT
 public:
     filter_list(filter_factory_p factory);
 
@@ -34,10 +36,20 @@ public:
     /*! Take filter by his uid (name). Can be useful in metafilters. */
     filter_p get_filter_by_name(const QString& name) const;
 
+    /*! Filter selected for list toolbar. */
+    filter_weak_p toolbar_filter() const {return toolbar_filter_;}
+
+    /*! Change toolbar filter. */
+    void set_toolbar_filter(filter_weak_p f);
+
+signals:
+    void toolbar_filter_changed();
+
 private:
     filter_factory_p factory_;
     filters_t filters_;
     filter_p root_filter_;
+    filter_weak_p toolbar_filter_;
 };
 
 #endif	/* FILTER_LIST_H */

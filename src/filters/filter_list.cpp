@@ -45,3 +45,12 @@ void filter_list::set_root_filter(filter_p f)
     root_filter_ = f;
 }
 
+void filter_list::set_toolbar_filter(filter_weak_p f)
+{
+    if (toolbar_filter_.lock() == f.lock())
+        return;
+    toolbar_filter_ = f;
+    emit toolbar_filter_changed();
+}
+
+

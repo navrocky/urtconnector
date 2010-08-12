@@ -3,9 +3,11 @@
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 
 class filter;
 typedef boost::shared_ptr<filter> filter_p;
+typedef boost::weak_ptr<filter> filter_weak_p;
 
 typedef std::vector<filter_p> filters_t;
 

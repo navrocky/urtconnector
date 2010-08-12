@@ -340,6 +340,7 @@ src/icons/bookmarks.png -text
 src/icons/choose-file.png -text
 src/icons/close.png -text
 src/icons/configure.png -text
+src/icons/dialog-ok-apply.png -text
 src/icons/download.png -text
 src/icons/earth.png -text
 src/icons/edit-clear-history.png -text
