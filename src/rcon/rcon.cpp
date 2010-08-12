@@ -36,7 +36,7 @@ typedef boost::function<void ( const QByteArray& )> Handler;
 struct rcon::Pimpl{
     Pimpl( const server_id& id, const server_options& options )
         : id(id), options(options)
-        , connected(false), waiting(false)
+        , connected(false), waiting(false), skip_command(false)
     {}
     void init() {
         ui.output->setFont( QFont("Terminus") );
@@ -87,6 +87,9 @@ struct rcon::Pimpl{
     QUdpSocket socket;
     bool connected;
     bool waiting;
+    bool skip_command;
+
+    QStringList commands;
     
     QLabel* status;
     QTimer send_timer;
@@ -102,10 +105,7 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
     p_->ui.setupUi(this);
     p_->init();
 
-    QStringList ls;
-    ls << "text1" << "text2" << "text3" << "text4" << "asdfslj" <<"asd  fgd [sdf ]";
-    
-    p_->ui.input->setCompleter( new my_completer(p_->ui.input, ls) );
+    p_->ui.input->setCompleter( new completer(p_->ui.input) );
 
     //UdpSoket always connected, but initialization required
     connect( &p_->socket, SIGNAL( connected() ),   SLOT( connected() ) );
@@ -169,7 +169,10 @@ void rcon::update_settings()
 
 void rcon::connected()
 {
-    send_command("ping localhost");
+    p_->handler = boost::bind( &rcon::get_command, this, _1 );
+    p_->commands.clear();
+    p_->skip_command = true;
+    send_command("cmdlist");
 }
 
 
@@ -210,12 +213,12 @@ void rcon::parse_data( const QByteArray& line )
     if( line.startsWith( answer_header_c ) )
     {
         QByteArray command = line.mid( answer_header_c.size(), -1 );
-        if( command == "print" )
+        if( command == "print" && !p_->skip_command )
             p_->handler = boost::bind( &rcon::print, this, Simple, _1 );
     }
     else
     {
-        p_->handler( QString("<pre>%1</pre>").arg(line.data()).toUtf8() );
+        p_->handler( line );
     }
 }
 
@@ -225,6 +228,21 @@ void rcon::print(TextType type, const QString & text)
     if( !text.isEmpty() )
         p_->ui.output->append( colorize_string(type, text) );
 }
+
+void rcon::get_command(const QByteArray& command)
+{
+    QString text( command.data() );
+    if( text.contains( QRegExp("[0-9]+ command") ) )
+    {
+        p_->skip_command = false;
+        p_->ui.input->completer()->setModel( new QStringListModel(p_->commands, p_->ui.input->completer() ) );
+    }
+    else
+    {
+        p_->commands << text;
+    }
+}
+
 
 QString rcon::colorize_string( rcon::TextType type, const QString& text ) const
 {

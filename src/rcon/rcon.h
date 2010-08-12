@@ -52,6 +52,8 @@ private:
     ///print text with type-specifyed color
     void print( TextType type, const QString& text);
 
+    void get_command( const QByteArray& command );
+
     QString colorize_string( rcon::TextType type,  const QString& str ) const;
     
 private:
@@ -65,46 +67,40 @@ private:
 #include <QAbstractItemView>
 #include <QCoreApplication>
 #include <QStringListModel>
+#include <QDesktopWidget>
 
 #include <iostream>
+#include <qapplication.h>
+#include <boost/concept_check.hpp>
 
-class my_completer: public QCompleter{
+class completer: public QCompleter{
     Q_OBJECT
 public:
-    my_completer(QLineEdit* l, const QStringList& lst):QCompleter(lst, l), edit(l), items( popup() )
+    completer(QLineEdit* le, const QStringList& lst = QStringList() )
+        :QCompleter(lst, le), edit(le), items( popup() )
     {
         first = false;
-        setCompletionColumn(1);
-        connect( this, SIGNAL( activated(const QString&)), SLOT( activated1(const QString&) ) );
+        setCompletionColumn(-1);
+        connect( this, SIGNAL( activated(const QString&)), SLOT( text_selected(const QString&) ) );
     }
 
 private Q_SLOTS:
-    void activated1( const QString& text )
+    void text_selected( const QString& text )
     {
-        setCompletionColumn(1);
+        setCompletionColumn(-1);
         first = false;
     }
     
-    void highlited( const QString& text )
-    {
-//         edit->setText( edit->text() + text );
-    }
-
     bool edit_event( QEvent* e )
     {
         if( e->type() == QEvent::KeyPress )
         {
             QKeyEvent* event = static_cast<QKeyEvent*>(e);
-            std::cerr<<"Edit Key:"<<event->key()<<std::endl;
             if( event->key() == Qt::Key_Tab )
             {
                 start_completition();
                 first = true;
                 return true;
-            }
-            else if(event->key() == Qt::Key_Return)
-            {
-                std::cerr<<"Edit enteRR!!!!!!"<<std::endl;
             }
             else
             {
@@ -119,7 +115,6 @@ private Q_SLOTS:
         if( e->type() == QEvent::KeyPress )
         {
             QKeyEvent* event = static_cast<QKeyEvent*>(e);
-            std::cerr<<"Items Key:"<<event->key()<<std::endl;
             switch ( event->key() )
             {
                 case Qt::Key_Tab:
@@ -132,19 +127,32 @@ private Q_SLOTS:
                     break;
                 case Qt::Key_Escape:
                     items->hide();
-                    setCompletionColumn(1);
+                    setCompletionColumn(-1);
                     return true;
                     break;
                 case Qt::Key_Return:
-                    //QModelIndex m = items->currentIndex();
                     apply_completition( items->currentIndex().data().toString() );
-                    setCompletionColumn(1);
+                    setCompletionColumn(-1);
                     emit activated( items->currentIndex() );
                     return true;
                 default:
                     break;
             }
         }
+        else if( e->type() == QEvent::Hide )
+        {
+            first = true;
+        }
+        else if( e->type() == QEvent::Show )
+        {
+            set_correct_geometry();
+        }
+        else if( e->type() == QEvent::Move || e->type() == QEvent::Resize )
+        {
+            if( items->isVisible() )
+                set_correct_geometry();
+        }
+
         return false;
     }
 
@@ -168,13 +176,12 @@ protected:
 
     QString find_equal_begin( const QStringList& lst, const QString& begin)
     {
-        std::cerr<<"1"<<std::endl;
         if( lst.isEmpty() || lst[0].size() <= begin.size() )
             return begin;
-        std::cerr<<"2"<<std::endl;
+
         QString b(begin);
         b+=lst[0][begin.size()];
-        std::cerr<<"3"<<std::endl;
+
         bool equal = true;
         for (uint i = 0; i<lst.size(); ++i)
         {
@@ -187,7 +194,7 @@ protected:
                 break;
             }
         }
-        std::cerr<<"4"<<std::endl;
+
         if( equal )
             return find_equal_begin(lst, b);
         else
@@ -201,8 +208,20 @@ private:
         line = edit->text();
         start_pos = line.lastIndexOf( " ", edit->cursorPosition()-1 ) +1;
         current_word = line.mid( start_pos, edit->cursorPosition() - start_pos );
-        std::cerr<<"Start pos:"<<start_pos<<std::endl;
-        std::cerr<<"Current w:"<<current_word.toStdString()<<std::endl;
+    }
+
+    void set_correct_geometry()
+    {
+        QRect geom = items->geometry();
+        QRect avail = QApplication::desktop()->availableGeometry();
+
+        if( geom.y() + geom.height() > avail.y() + avail.height() )
+        {
+            geom.moveBottom( geom.y() - edit->height() );
+            items->setGeometry( geom );
+        }
+        disconnect( edit->completer(), SIGNAL( highlighted(QString) ), edit, 0 );
+        disconnect( edit->completer(), SIGNAL( highlighted(QModelIndex) ), edit, 0 );
     }
     
     void start_completition()
@@ -214,7 +233,7 @@ private:
         edit->completer()->setCompletionPrefix( current_word );
         QAbstractItemModel* im = completionModel();
         int rows = im->rowCount();
-        std::cerr<<"Rows:"<<rows<<std::endl;
+        
         QStringList lst;
         for(uint i=0; i<rows; ++i)
         {
@@ -223,19 +242,18 @@ private:
 
         QString eb = find_equal_begin( lst, QString() );
 
-        std::cerr<<"equal:"<<(current_word + eb).toStdString()<<std::endl;
-
-        //line.replace( start_pos, current_word.size(), current_word + eb );
         apply_completition( current_word + eb );
 
         if( first && edit->completer()->completionCount() > 1 )
         {
             edit->completer()->setCompletionPrefix( current_word + eb );
             edit->completer()->complete();
+
+            set_correct_geometry();
+            
             edit->completer()->popup()->show();
 
-            disconnect( edit->completer(), SIGNAL( highlighted(QString) ), edit, 0 );
-            disconnect( edit->completer(), SIGNAL( highlighted(QModelIndex) ), edit, 0 );
+
             disconnect( edit->completer(), SIGNAL( activated(QString) ), edit, 0 );
             disconnect( edit->completer(), SIGNAL( activated(QModelIndex) ), edit, 0 );
         }
