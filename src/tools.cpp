@@ -1,5 +1,6 @@
 
 #include <algorithm>
+#include <stdexcept>
 
 #include <boost/bind.hpp>
 #include <boost/assign/std/map.hpp>
@@ -7,6 +8,10 @@
 #include <QAction>
 #include <QString>
 #include <QWidget>
+#include <QLabel>
+#include <QEvent>
+#include <QDockWidget>
+#include <QStyle>
 
 #include "tools.h"
 
@@ -118,6 +123,49 @@ QColor choose_for_background(Qt::GlobalColor standard, const QColor& background)
         return dark_colors[standard];
     else
         return light_colors[standard];
+}
+
+
+
+
+title_icon_adder::title_icon_adder(QDockWidget* d, const QString& t, const QIcon& p)
+    : QObject(d)
+    , dock(d)
+    , title( new QLabel( dock ) )
+    , icon( new QLabel( dock ) )
+{
+    if ( dock->features() & QDockWidget::DockWidgetVerticalTitleBar )
+        throw std::runtime_error("DockWidgetVerticalTitleBar not handled yet!");
+
+    dock->setWindowTitle(t);
+    title->setText(t);
+    title->setMaximumHeight( 20 );
+    title->setAutoFillBackground(true);
+    icon->setPixmap( p.pixmap( QSize(20,20) ) );
+    icon->setFixedSize( QSize( 20,20 ) );
+    icon->setAutoFillBackground(true);
+
+    
+    
+    dock->installEventFilter(this);
+}
+
+title_icon_adder::~title_icon_adder()
+{}
+
+bool title_icon_adder::eventFilter(QObject* o, QEvent* e)
+{
+    if( o == dock )
+    {
+        if( e->type() == QEvent::Resize )
+        {
+            int margin = dock->style()->pixelMetric( QStyle::PM_DockWidgetTitleMargin );
+            icon->move( margin, margin );
+            title->move( icon->width() + margin, margin );
+            title->setFixedWidth( dock->width() - 60 );
+        }
+    }
+    return QObject::eventFilter(o, e);
 }
 
 
