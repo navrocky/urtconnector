@@ -329,7 +329,7 @@ void main_window::sync_fav_list()
 
             server_info_p si( new server_info );
             si->id = id;
-//             si->name = opts.name;
+
             dstlist[id] = si;
             changed = true;
         }
@@ -813,13 +813,12 @@ void main_window::open_remote_console()
 
     server_fav_list& list = opts_->servers;
 
-    QDockWidget* dw = new QDockWidget( this );
+    QDockWidget* dw = new QDockWidget( id_list.front().address(), this );
     dw->setAttribute( Qt::WA_DeleteOnClose  );
     dw->setWidget( new rcon(0, id_list.front(), list[id_list.front()]) );
 
-    //hack dock widget to show nice icon in title
-    new title_icon_adder(dw, id_list.front().address(), QIcon(":/icons/icons/utilities-terminal.png") );
-    
+    dw->setStyle( new iconned_dock_style( QIcon(":/icons/icons/utilities-terminal.png"), dw->style() ) );
+
     addDockWidget(Qt::BottomDockWidgetArea,  dw );
 }
 

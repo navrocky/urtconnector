@@ -84,6 +84,7 @@ set(MOC_HEADERS
     clipper.h
     rcon/rcon.h
     rcon/rcon_settings_form.h
+    tools.h
 )
 
 set(SOURCES

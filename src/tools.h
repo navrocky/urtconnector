@@ -2,6 +2,9 @@
 #define TOOLS_H
 
 #include <QObject>
+#include <QProxyStyle>
+#include <QStyleOption>
+#include <QPainter>
 
 class QColor;
 class QWidget;
@@ -25,20 +28,35 @@ QString q3coloring( const QString& str, const QString& skip = QString() );
 ///test function
 QColor choose_for_background( Qt::GlobalColor standard, const QColor& background );
 
-
-
-///Class that hacks QDockWidget title to show an icon. Legal icon realiation will be added in later Qt releases
-class title_icon_adder: public QObject{
-    QDockWidget* dock;
-    QLabel* title;
-    QLabel* icon;
+class iconned_dock_style: public QProxyStyle{
+    Q_OBJECT
+    QIcon icon_;
 public:
-    explicit title_icon_adder(QDockWidget* d, const QString& t, const QIcon& p);
-    virtual ~title_icon_adder();
+    iconned_dock_style(const QIcon& icon,  QStyle* style = 0 )
+        : QProxyStyle(style)
+        , icon_(icon)
+    {}
+    virtual ~iconned_dock_style(){};
 
-protected:
-    virtual bool eventFilter(QObject* o, QEvent* e);
+    virtual void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget = 0) const
+    {
+        if( element == QStyle::CE_DockWidgetTitle)
+        {
+            //width of the icon
+            int width = pixelMetric(QStyle::PM_ToolBarIconSize);
+            //margin of title from frame
+            int margin = baseStyle()->pixelMetric( QStyle::PM_DockWidgetTitleMargin );
+            //spacing between icon and title
+            int spacing = baseStyle()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing );
+          
+            QPoint icon_point( margin + option->rect.left(), margin + option->rect.center().y() - width/2 );
+            
+            painter->drawPixmap(icon_point, icon_.pixmap( width, width ) );
+            
+            const_cast<QStyleOption*>(option)->rect = option->rect.adjusted(width, 0, 0, 0);
+        }
+        baseStyle()->drawControl(element, option, painter, widget);
+    }
 };
-
 
 #endif
