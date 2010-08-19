@@ -73,6 +73,7 @@ private slots:
     void filter_clear();
     void edit_filter();
     void update_list();
+    void update_toolbar_filter();
     
 private:
     typedef std::map<server_id, QTreeWidgetItem*> server_items;
@@ -95,6 +96,7 @@ private:
     filter_list_p filters_;
     QPointer<filter_edit_widget> edit_widget_;
     int visible_server_count_;
+    QWidget* filter_holder_;
 };
 
 class status_item_delegate : public QStyledItemDelegate

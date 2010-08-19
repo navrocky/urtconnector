@@ -1,4 +1,5 @@
 #include <vector>
+#include <cassert>
 
 #include <QTreeWidgetItem>
 #include <QPainter>
@@ -100,6 +101,10 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
 
     horiz_lay->addWidget(show_filter_button_);
 
+    filter_holder_ = new QWidget(this);
+    QHBoxLayout* lay = new QHBoxLayout(filter_holder_);
+    horiz_lay->addWidget(filter_holder_);
+
     filter_edit_ = new QLineEdit(this);
 
     horiz_lay->addWidget(filter_edit_);
@@ -163,11 +168,35 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     filter_p f = filters_->create_by_class_id(composite_filter_class::get_id());
     filters_->set_root_filter(f);
     connect(f.get(), SIGNAL(changed_signal()), SLOT(update_list()));
+    filters_->set_toolbar_filter(f);
+    connect(filters_.get(), SIGNAL(toolbar_filter_changed()), SLOT(update_toolbar_filter()));
+    update_toolbar_filter();
 }
 
 server_list_widget::~server_list_widget()
 {
     delete edit_widget_;
+}
+
+void server_list_widget::update_toolbar_filter()
+{
+    // remove old
+    foreach (QObject* o, filter_holder_->children())
+    {
+        if (qobject_cast<QWidget*>(o))
+            delete o;
+    }
+
+    // create new
+    filter_p f = filters_->toolbar_filter().lock();
+    if (f)
+    {
+        QWidget* w = f->get_class()->create_quick_opts_widget(f);
+        if (w)
+            filter_holder_->layout()->addWidget(w);
+
+        filter_holder_->setToolTip(f->get_class()->caption());
+    }
 }
 
 void server_list_widget::set_server_list(server_list_p ptr)
