@@ -73,6 +73,20 @@ void server_list_widget_settings::save_root_filter(filter_p f)
     part()->endGroup();
 }
 
+filter_p server_list_widget_settings::load_toolbar_filter(filter_factory_p factory)
+{
+    part()->beginGroup(name_);
+    QByteArray ba = part()->value("toolbar_filter").toByteArray();
+    part()->endGroup();
+    return filter_load(ba, factory);
+}
+
+void server_list_widget_settings::save_toolbar_filter(filter_p f)
+{
+    part()->beginGroup(name_);
+    part()->setValue("toolbar_filter", filter_save(f));
+    part()->endGroup();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // server_list_widget
@@ -418,6 +432,9 @@ void server_list_widget::load_options()
         server_list_widget_settings st(objectName());
         filter_p f = st.load_root_filter(filters_->factory());
         filters_->set_root_filter(f);
+
+        f = st.load_toolbar_filter(filters_->factory());
+        filters_->set_toolbar_filter(f);
         connect(f.get(), SIGNAL(changed_signal()), SLOT(update_list()));
     }
     catch(const std::exception& e)
@@ -431,6 +448,7 @@ void server_list_widget::save_options()
     assert(!objectName().isEmpty());
     server_list_widget_settings st(objectName());
     st.save_root_filter(filters_->root_filter());
+    st.save_toolbar_filter(filters_->toolbar_filter().lock());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

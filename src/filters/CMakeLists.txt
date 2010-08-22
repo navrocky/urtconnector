@@ -15,6 +15,7 @@ set(HEADERS
     game_type_filter.h
     hide_empty_filter.h
     hide_full_filter.h
+    regexp_filter.h
 )
 
 set(MOC_HEADERS
@@ -25,6 +26,7 @@ set(MOC_HEADERS
     game_type_filter.h
     hide_empty_filter.h
     hide_full_filter.h
+    regexp_filter.h
 )
 
 set(SOURCES
@@ -38,6 +40,7 @@ set(SOURCES
     game_type_filter.cpp
     hide_empty_filter.cpp
     hide_full_filter.cpp
+    regexp_filter.cpp
 )
 
 set(IFACES

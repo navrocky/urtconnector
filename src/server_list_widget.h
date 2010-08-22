@@ -35,6 +35,9 @@ public:
     server_list_widget_settings(const QString& list_name);
     filter_p load_root_filter(filter_factory_p factory);
     void save_root_filter(filter_p f);
+
+    filter_p load_toolbar_filter(filter_factory_p factory);
+    void save_toolbar_filter(filter_p f);
 private:
     QString name_;
 };

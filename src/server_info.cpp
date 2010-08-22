@@ -36,7 +36,7 @@ QString server_info::mode_name() const
     return get_mode_name(mode);
 }
 
-QString server_info::status_name()
+QString server_info::status_name() const
 {
     if (updating)
         return QObject::tr("Updating");
@@ -93,8 +93,21 @@ void server_info::update_from(const server_info& src)
     update_stamp++;
 }
 
-//void server_info::update_from(const server_info& src)
-//{}
+const QString& server_info::meta_info_string() const
+{
+    if (meta_info_string_.isEmpty())
+    {
+        QStringList pl;
+        foreach (const player_info& pi, players)
+            pl += pi.nick_name;
+
+        meta_info_string_ = QString("%1 %2 %3 %4 %5 %6 %7").arg(name)
+            .arg(id.address()).arg(country).arg(map).arg(mode_name()).arg(pl.join(" "))
+            .arg(status_name());
+
+    }
+    return meta_info_string_;
+}
 
 
 

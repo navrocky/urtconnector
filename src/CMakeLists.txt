@@ -29,6 +29,7 @@ add_subdirectory(qtsingleapplication)
 add_subdirectory(cl)
 add_subdirectory(filters)
 add_subdirectory(settings)
+add_subdirectory(common)
 
 set(HEADERS
     about_dialog.h

@@ -38,7 +38,7 @@ public:
     server_id id;
     bool updating;
     status_t status;
-    QString status_name();
+    QString status_name() const;
     QString name;
     QString game_type; /* q3ut4 */
     player_info_list players;
@@ -67,7 +67,11 @@ public:
     /*! Correctly update from anoter server_info */
     void update_from(const server_info& src);
 
+    /*! String contains all useful information about server. Primarily used for search. */
+    const QString& meta_info_string() const;
+
 private:
+    mutable QString meta_info_string_;
 
 };
 
