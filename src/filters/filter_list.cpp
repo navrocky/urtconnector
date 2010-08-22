@@ -4,6 +4,8 @@
 #include "filter_factory.h"
 
 #include "filter_list.h"
+#include "filter_edit_widget.h"
+#include "composite_filter.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // filter_list
@@ -15,29 +17,7 @@ filter_list::filter_list(filter_factory_p factory)
 
 filter_p filter_list::create_by_class_id(const QString& id)
 {
-    filter_p res = factory_->create_filter_by_id(id);
-    add_filter(res);
-    return res;
-}
-
-void filter_list::add_filter(filter_p f)
-{
-    filters_.push_back(f);
-}
-
-void filter_list::delete_filter(filter_p f)
-{
-    filters_t::iterator it = std::find(filters_.begin(), filters_.end(), f);
-    assert(it != filters_.end());
-    filters_.erase(it);
-}
-
-filter_p filter_list::get_filter_by_name(const QString& name) const
-{
-    foreach (filter_p f, filters_)
-        if (f->name() == name)
-            return f;
-    return filter_p();
+    return factory_->create_filter_by_id(id);
 }
 
 void filter_list::set_root_filter(filter_p f)
@@ -52,5 +32,45 @@ void filter_list::set_toolbar_filter(filter_weak_p f)
     toolbar_filter_ = f;
     emit toolbar_filter_changed();
 }
+
+filter_p do_find_by_name(filter_p par, const QString& name)
+{
+    if (par->name() == name)
+        return par;
+
+    composite_filter* cf = dynamic_cast<composite_filter*>(par.get());
+    if (!cf)
+        return filter_p();
+    foreach (filter_p f, cf->filters())
+    {
+        filter_p res = do_find_by_name(f, name);
+        if (res)
+            return res;
+    }
+    return filter_p();
+}
+
+filter_p filter_list::find_by_name(const QString& name)
+{
+    return do_find_by_name(root_filter_, name);
+}
+
+bool filter_list::is_name_correct(const QString& name)
+{
+    return !find_by_name(name);
+}
+
+QString filter_list::correct_name(const QString& name)
+{
+    QString res = name;
+    int i = 1;
+    while (!is_name_correct(res))
+    {
+        res = QString("%1 %2").arg(name).arg(i);
+        i++;
+    }
+    return res;
+}
+
 
 

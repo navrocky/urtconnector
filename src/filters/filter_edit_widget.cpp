@@ -11,6 +11,7 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <qmessagebox.h>
+#include <qapplication.h>
 
 #include "filter.h"
 #include "filter_list.h"
@@ -78,9 +79,6 @@ void select_filter_class_dialog::update_list()
     }
 }
 
-
-
-
 ////////////////////////////////////////////////////////////////////////////////
 // filter_item_widget
 
@@ -96,9 +94,15 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
     enabled_check_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(enabled_check_, SIGNAL(stateChanged(int)), SLOT(enable_toggled()));
 
+    int is = QApplication::style()->pixelMetric(QStyle::PM_SmallIconSize);
+    pin_label_ = new QLabel(this);
+    pin_label_->setPixmap(QIcon(":/icons/icons/pin.png").pixmap(is));
+    pin_label_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+
     label_ = new QLabel(this);
     label_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     lay->addWidget(enabled_check_);
+    lay->addWidget(pin_label_);
     lay->addWidget(label_);
 
     options_lay_ = new QHBoxLayout;
@@ -126,6 +130,13 @@ void filter_item_widget::set_selected(bool val)
     update_selected();
 }
 
+void filter_item_widget::set_pin(bool val)
+{
+    if (pin_label_->isVisible() == val)
+        return;
+    pin_label_->setVisible(val);
+}
+
 void filter_item_widget::update_selected()
 {
     QList<QLabel*> labels = findChildren<QLabel*>();
@@ -141,10 +152,7 @@ void filter_item_widget::update_selected()
 void filter_item_widget::update_contents()
 {
     filter_class_p fc = filter_->get_class();
-    QString name = filter_->name();
-    if (name.isEmpty())
-        name = fc->caption();
-
+    QString name = fc->caption();
     label_->setText(name);
     label_->setToolTip(fc->description());
     options_button_->setVisible(fc->has_additional_options());
@@ -175,7 +183,7 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
                                          tr("Add new child filter"), this);
     delete_filter_action_ = new QAction(QIcon(":/icons/icons/remove.png"),
                                          tr("Delete filter"), this);
-    select_toolbar_filter_action_ = new QAction(QIcon(":/icons/icons/dialog-ok-apply.png"),
+    select_toolbar_filter_action_ = new QAction(QIcon(":/icons/icons/pin.png"),
                                          tr("Select filter for toolbar"), this);
 
     connect(add_new_filter_action_, SIGNAL(triggered()), SLOT(add_new_filter()));
@@ -199,10 +207,16 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     connect(tree_, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-            SLOT(update_actions()));
+            SLOT(item_changed()));
 
     resize(400, 250);
     update_contents();
+}
+
+void filter_edit_widget::item_changed()
+{
+    update_actions();
+    update_items();
 }
 
 composite_filter* filter_edit_widget::composite_cast(filter_p f)
@@ -237,7 +251,8 @@ void filter_edit_widget::update_item(QTreeWidgetItem* item)
         w = new filter_item_widget(filter, tree_);
         tree_->setItemWidget(item, 0, w);
     }
-
+    w->set_pin(filter == filters_->toolbar_filter().lock());
+    w->set_selected(tree_->currentItem() == item);
 }
 
 void filter_edit_widget::update_contents()
@@ -247,6 +262,15 @@ void filter_edit_widget::update_contents()
     tree_->expandAll();
 }
 
+void filter_edit_widget::update_items()
+{
+    QList<QTreeWidgetItem*> l = tree_->findItems("", Qt::MatchRecursive | Qt::MatchContains);
+    foreach (QTreeWidgetItem* i, l)
+    {
+        update_item(i);
+    }
+}
+
 void filter_edit_widget::update_actions()
 {
     QTreeWidgetItem* item = tree_->currentItem();
@@ -254,6 +278,9 @@ void filter_edit_widget::update_actions()
 
     add_new_filter_action_->setEnabled(item);
     delete_filter_action_->setEnabled(parent_item);
+
+    filter_p f = item->data(0, Qt::UserRole).value<filter_p>();
+    select_toolbar_filter_action_->setEnabled(f != filters_->toolbar_filter().lock());
 }
 
 void filter_edit_widget::add_new_filter()
@@ -266,7 +293,13 @@ void filter_edit_widget::add_new_filter()
     QTreeWidgetItem* parent_item = tree_->currentItem();
     filter_p parent_f = parent_item->data(0, Qt::UserRole).value<filter_p>();
     composite_filter* cf = qobject_cast<composite_filter*>(parent_f.get());
+
+    // create filter
     filter_p f = fc->create_filter();
+
+    // assign auto-generated name
+    f->set_name(filters_->correct_name(fc->caption()));
+
     cf->add_filter(f);
     QTreeWidgetItem* item = new QTreeWidgetItem(parent_item);
     item->setData(0, Qt::UserRole, QVariant::fromValue(f));
@@ -298,5 +331,5 @@ void filter_edit_widget::select_toolbar_filter()
         return;
     filter_p f = item->data(0, Qt::UserRole).value<filter_p>();
     filters_->set_toolbar_filter(f);
-    
+    update_items();
 }

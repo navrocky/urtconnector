@@ -77,7 +77,6 @@ src/debug_help.h -text
 src/exception.cpp -text
 src/exception.h -text
 src/filters/CMakeLists.txt -text
-src/filters/alternative.h -text
 src/filters/composite_filter.cpp -text
 src/filters/composite_filter.h -text
 src/filters/filter.cpp -text
@@ -360,6 +359,7 @@ src/icons/help-contents.png -text
 src/icons/insert-link.png -text
 src/icons/launch.png -text
 src/icons/logo.png -text
+src/icons/pin.png -text
 src/icons/remove.png -text
 src/icons/status-none.png -text
 src/icons/status-offline.png -text

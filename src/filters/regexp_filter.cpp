@@ -44,6 +44,7 @@ QWidget* regexp_filter_class::create_quick_opts_widget(filter_p f)
 regexp_filter::regexp_filter(filter_class_p fc)
 : filter(fc)
 {
+    rx_.setCaseSensitivity(Qt::CaseInsensitive);
 }
 
 bool regexp_filter::filter_server(const server_info& si)
@@ -103,6 +104,7 @@ regexp_filter_quick_opt_widget::regexp_filter_quick_opt_widget(filter_p f)
     lay->setContentsMargins(0, 0, 0, 0);
 
     edit_ = new QLineEdit(this);
+    edit_->setToolTip(tr("Filter expression. You can use here a regular expressions."));
     lay->addWidget(edit_);
 
     clear_btn_ = new QToolButton(this);
@@ -110,6 +112,8 @@ regexp_filter_quick_opt_widget::regexp_filter_quick_opt_widget(filter_p f)
     clear_btn_->setIcon(QIcon(":/icons/icons/edit-clear-locationbar-rtl.png"));
     clear_btn_->setToolButtonStyle(Qt::ToolButtonIconOnly);
     clear_btn_->setAutoRaise(true);
+    clear_btn_->setToolTip(tr("Clear expression"));
+    connect(clear_btn_, SIGNAL(clicked()), edit_, SLOT(clear()));
     
     connect(f.get(), SIGNAL(changed_signal()), SLOT(filter_changed()));
     filter_changed();

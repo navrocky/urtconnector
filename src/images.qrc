@@ -33,6 +33,7 @@
     <file>icons/insert-link.png</file>
     <file>icons/zoom.png</file>
     <file>icons/dialog-ok-apply.png</file>
+    <file>icons/pin.png</file>
   </qresource>
   <qresource prefix="images">
     <file>icons/logo.png</file>

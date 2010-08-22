@@ -10,11 +10,12 @@ QByteArray filter_save(filter_p f)
     QByteArray res;
     QDataStream ds(&res, QIODevice::WriteOnly);
 
-    ds << (qint32)1; //version
+    ds << (qint32)2; //version
     if (f)
     {
         ds << f->get_class()->id();
         ds << f->enabled();
+        ds << f->name();
         ds << f->save();
     } else
         ds << QString(); // empty class name - no filter
@@ -44,6 +45,13 @@ filter_p filter_load(const QByteArray& ba, filter_factory_p factory)
     bool enabled;
     ds >> enabled;
     res->set_enabled(enabled);
+
+    if (version >= 2)
+    {
+        QString name;
+        ds >> name;
+        res->set_name(name);
+    }
     
     QByteArray ba2;
     ds >> ba2;

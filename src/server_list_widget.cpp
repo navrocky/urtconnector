@@ -28,6 +28,7 @@
 #include "filters/filter_list.h"
 #include "filters/composite_filter.h"
 #include "filters/tools.h"
+#include "filters/regexp_filter.h"
 
 #include "server_list_widget.h"
 
@@ -73,18 +74,18 @@ void server_list_widget_settings::save_root_filter(filter_p f)
     part()->endGroup();
 }
 
-filter_p server_list_widget_settings::load_toolbar_filter(filter_factory_p factory)
+QString server_list_widget_settings::load_toolbar_filter()
 {
     part()->beginGroup(name_);
-    QByteArray ba = part()->value("toolbar_filter").toByteArray();
+    QString res = part()->value("toolbar_filter_name").toString();
     part()->endGroup();
-    return filter_load(ba, factory);
+    return res;
 }
 
-void server_list_widget_settings::save_toolbar_filter(filter_p f)
+void server_list_widget_settings::save_toolbar_filter(const QString& name)
 {
     part()->beginGroup(name_);
-    part()->setValue("toolbar_filter", filter_save(f));
+    part()->setValue("toolbar_filter_name", name);
     part()->endGroup();
 }
 
@@ -96,7 +97,6 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
 : QWidget(parent)
 , old_state_(0)
 , update_timer_(0)
-, filter_timer_(0)
 , favs_(0)
 , opts_(opts)
 , filters_(new filter_list(factory))
@@ -119,17 +119,6 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     QHBoxLayout* lay = new QHBoxLayout(filter_holder_);
     horiz_lay->addWidget(filter_holder_);
 
-    filter_edit_ = new QLineEdit(this);
-
-    horiz_lay->addWidget(filter_edit_);
-
-    clear_filter_button_ = new QToolButton(this);
-    clear_filter_button_->setIcon(QIcon(":/icons/icons/edit-clear-locationbar-rtl.png"));
-    clear_filter_button_->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    clear_filter_button_->setAutoRaise(true);
-
-    horiz_lay->addWidget(clear_filter_button_);
-
     vert_lay->addLayout(horiz_lay);
 
     tree_ = new server_tree(this);
@@ -145,11 +134,6 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
 
     vert_lay->addWidget(tree_);
 
-    clear_filter_button_->setText(tr("Clear filter"));
-    clear_filter_button_->setToolTip(tr("Clear current filter"));
-
-    filter_edit_->setToolTip(tr("Filter line. You can use here a regular expressions."));
-
     QTreeWidgetItem *hi = tree_->headerItem();
     hi->setText(7, tr("Players"));
     hi->setText(6, tr("Map"));
@@ -164,8 +148,6 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     hi->setToolTip(0, tr("Server status"));
 
     update_timer_ = startTimer(500);
-    connect(filter_edit_, SIGNAL(textChanged(const QString&)), SLOT(filter_text_changed(const QString&)));
-    connect(clear_filter_button_, SIGNAL(clicked()), SLOT(filter_clear()));
 
     tree_->setItemDelegateForColumn( 0, new status_item_delegate(this) );
     
@@ -179,10 +161,23 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     hdr->resizeSection(7, 60);
     hdr->setSortIndicator(4, Qt::AscendingOrder);
 
+    // initialize filters
+
+    // create composite root filter
     filter_p f = filters_->create_by_class_id(composite_filter_class::get_id());
+    f->set_name(f->get_class()->caption());
     filters_->set_root_filter(f);
-    connect(f.get(), SIGNAL(changed_signal()), SLOT(update_list()));
+    composite_filter* cf = dynamic_cast<composite_filter*>(f.get());
+    
+    // create regexp filter as composite child
+    f = filters_->create_by_class_id(regexp_filter_class::get_id());
+    f->set_name(f->get_class()->caption());
+    cf->add_filter(f);
+
+    // select regexp filter for toolbar
     filters_->set_toolbar_filter(f);
+
+    connect(filters_->root_filter().get(), SIGNAL(changed_signal()), SLOT(update_list()));
     connect(filters_.get(), SIGNAL(toolbar_filter_changed()), SLOT(update_toolbar_filter()));
     update_toolbar_filter();
 }
@@ -269,19 +264,10 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     item->setText(4, QString("%1").arg(si->ping, 5));
     item->setText(5, si->mode_name());
     item->setText(6, si->map);
-
     item->setText(7, QString("%1/%2/%3").arg(si->players.size())
         .arg(si->max_player_count - private_slots).arg(si->max_player_count));
     item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
         .arg(si->players.size()).arg(si->max_player_count - private_slots).arg(si->max_player_count));
-
-    QString players;
-    for (player_info_list::const_iterator it = si->players.begin(); it != si->players.end(); it++)
-        players += (*it).nick_name + " ";
-
-    item->setText(c_filter_info_column, QString("%1 %2 %3 %4 %5 %6 %7 %8").arg(name)
-        .arg(si->id.address()).arg(si->country).arg(si->map).arg(si->mode_name()).arg(players)
-        .arg(si->country).arg(status));
 
     bool visible = filter_item(item);
     if (visible)
@@ -298,8 +284,7 @@ bool server_list_widget::filter_item(QTreeWidgetItem* item)
             return false;
     }
 
-    return filter_rx_.isEmpty() ||
-            filter_rx_.indexIn(item->text(c_filter_info_column)) != -1;
+    return true;
 }
 
 void server_list_widget::timerEvent(QTimerEvent *te)
@@ -311,12 +296,6 @@ void server_list_widget::timerEvent(QTimerEvent *te)
         if (serv_list_->state() == old_state_) return;
         old_state_ = serv_list_->state();
         update_list();
-    } else
-    if (te->timerId() == filter_timer_)
-    {
-        update_list();
-        killTimer(filter_timer_);
-        filter_timer_ = 0;
     }
 }
 
@@ -383,15 +362,6 @@ void server_list_widget::update_list()
         tw->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
 }
 
-void server_list_widget::filter_text_changed(const QString& val)
-{
-    filter_rx_ = QRegExp(val);
-    filter_rx_.setCaseSensitivity(Qt::CaseInsensitive);
-    if (filter_timer_ != 0)
-        killTimer(filter_timer_);
-    filter_timer_ = startTimer(500);
-}
-
 server_id_list server_list_widget::selection()
 {
     server_id_list res;
@@ -402,11 +372,6 @@ server_id_list server_list_widget::selection()
             res.push_back(si->id);
     }
     return res;
-}
-
-void server_list_widget::filter_clear()
-{
-    filter_edit_->clear();
 }
 
 QTreeWidget* server_list_widget::tree() const
@@ -424,6 +389,18 @@ void server_list_widget::edit_filter()
     edit_widget_->show();
 }
 
+void correct_names(filter_list_p fl, filter_p par)
+{
+    if (par->name().isEmpty())
+        par->set_name(fl->correct_name(par->get_class()->caption()));
+
+    composite_filter* cf = dynamic_cast<composite_filter*>(par.get());
+    if (!cf)
+        return;
+    foreach (filter_p f, cf->filters())
+        correct_names(fl, f);
+}
+
 void server_list_widget::load_options()
 {
     assert(!objectName().isEmpty());
@@ -432,10 +409,12 @@ void server_list_widget::load_options()
         server_list_widget_settings st(objectName());
         filter_p f = st.load_root_filter(filters_->factory());
         filters_->set_root_filter(f);
-
-        f = st.load_toolbar_filter(filters_->factory());
-        filters_->set_toolbar_filter(f);
         connect(f.get(), SIGNAL(changed_signal()), SLOT(update_list()));
+        correct_names(filters_, filters_->root_filter());
+
+        QString name = st.load_toolbar_filter();
+        f = filters_->find_by_name(name);
+        filters_->set_toolbar_filter(f);
     }
     catch(const std::exception& e)
     {
@@ -448,7 +427,11 @@ void server_list_widget::save_options()
     assert(!objectName().isEmpty());
     server_list_widget_settings st(objectName());
     st.save_root_filter(filters_->root_filter());
-    st.save_toolbar_filter(filters_->toolbar_filter().lock());
+    filter_p tbf = filters_->toolbar_filter().lock();
+    if (tbf)
+        st.save_toolbar_filter(tbf->name());
+    else
+        st.save_toolbar_filter("");
 }
 
 ////////////////////////////////////////////////////////////////////////////////

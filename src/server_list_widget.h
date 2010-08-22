@@ -36,8 +36,8 @@ public:
     filter_p load_root_filter(filter_factory_p factory);
     void save_root_filter(filter_p f);
 
-    filter_p load_toolbar_filter(filter_factory_p factory);
-    void save_toolbar_filter(filter_p f);
+    QString load_toolbar_filter();
+    void save_toolbar_filter(const QString&);
 private:
     QString name_;
 };
@@ -72,8 +72,6 @@ public:
 
 private slots:
     void timerEvent(QTimerEvent *event);
-    void filter_text_changed(const QString&);
-    void filter_clear();
     void edit_filter();
     void update_list();
     void update_toolbar_filter();
@@ -86,14 +84,11 @@ private:
 
     server_tree* tree_;
     QToolButton* show_filter_button_;
-    QLineEdit* filter_edit_;
-    QToolButton* clear_filter_button_;
     server_list_p serv_list_;
     server_items items_;
     int old_state_;
     QRegExp filter_rx_;
     int update_timer_;
-    int filter_timer_;
     server_fav_list* favs_;
     app_options_p opts_;
     filter_list_p filters_;

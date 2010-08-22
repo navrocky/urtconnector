@@ -45,6 +45,7 @@ class filter_item_widget : public QWidget
 public:
     filter_item_widget(filter_p filter, QWidget* parent);
     void set_selected(bool val);
+    void set_pin(bool val);
 
 private slots:
     void enable_toggled();
@@ -55,6 +56,7 @@ private:
 
     bool selected_;
     filter_p filter_;
+    QLabel* pin_label_;
     QLabel* label_;
     QCheckBox* enabled_check_;
     QToolButton* options_button_;
@@ -74,12 +76,14 @@ private slots:
     void delete_filter();
     void update_actions();
     void select_toolbar_filter();
+    void item_changed();
 
 private:
     void do_update(filter_p parent, QTreeWidget*, QTreeWidgetItem*);
     void update_item(QTreeWidgetItem*);
     void update_contents();
     composite_filter* composite_cast(filter_p);
+    void update_items();
 
     filter_list_p filters_;
     QTreeWidget* tree_;
