@@ -15,9 +15,61 @@
 
 #include <QTemporaryFile>
 
+#include <QStringList>
+#include <QString>
+#include <map>
+#include <set>
+#include "tools.h"
+
 using namespace cl::syslog;
 
 SYSLOG_MODULE("main");
+
+
+void filter(const QStringList& sl, int min_tag_size)
+{
+    typedef std::set<QString> map_t;
+    map_t m;
+
+    foreach (const QString& s1, sl)
+    {
+        foreach (const QString& s2, sl)
+        {
+            if (s1 == s2)
+                continue;
+            QString s = common_substring_from_begin(s1, s2);
+            if (s.length() >= min_tag_size)
+                m.insert(s);
+        }
+    }
+
+    foreach (map_t::const_reference r, m)
+    {
+        int cnt = 0;
+        foreach (const QString& s, sl)
+        {
+            if (s.startsWith(r))
+                cnt++;
+        }
+        LOG_DEBUG << "%1 = %2", r.toLocal8Bit().data(), cnt;
+    }
+}
+
+void test()
+{
+    QStringList sl;
+    sl << "Vasja";
+    sl << "Petja";
+    sl << "ABG=Tolik";
+    sl << "ABG=Nikonor";
+    sl << "ABG=Petr";
+    sl << "ABG=Nekodim";
+
+//    LOG_DEBUG << get_longest_common_subsequence("ABG=Nikonor", "ABG=Petr").toStdString();
+
+    filter(sl, 2);
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -32,6 +84,9 @@ int main(int argc, char *argv[])
     logman().output_add(cerr_out);
     
     LOG_DEBUG << "Syslog started";
+
+//    test();
+//    return 0;
     
     // this needed to link debug functions
     //    debug_help_init();

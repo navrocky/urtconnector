@@ -43,7 +43,7 @@ public:
         if( element == QStyle::CE_DockWidgetTitle)
         {
             //width of the icon
-            int width = pixelMetric(QStyle::PM_ToolBarIconSize);
+            int width = pixelMetric(QStyle::PM_SmallIconSize);
             //margin of title from frame
             int margin = baseStyle()->pixelMetric( QStyle::PM_DockWidgetTitleMargin );
             //spacing between icon and title
@@ -58,5 +58,11 @@ public:
         baseStyle()->drawControl(element, option, painter, widget);
     }
 };
+
+QString get_longest_common_subsequence(const QString& a, const QString& b);
+
+QString common_substring_from_begin(const QString& s1, const QString& s2);
+QString common_substring_from_end(const QString& s1, const QString& s2);
+
 
 #endif

@@ -98,6 +98,7 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
     pin_label_ = new QLabel(this);
     pin_label_->setPixmap(QIcon(":/icons/icons/pin.png").pixmap(is));
     pin_label_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    pin_label_->setVisible(false);
 
     label_ = new QLabel(this);
     label_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
@@ -275,11 +276,11 @@ void filter_edit_widget::update_actions()
 {
     QTreeWidgetItem* item = tree_->currentItem();
     QTreeWidgetItem* parent_item = item ? item->parent() : NULL;
+    filter_p f = item->data(0, Qt::UserRole).value<filter_p>();
 
-    add_new_filter_action_->setEnabled(item);
+    add_new_filter_action_->setEnabled(composite_cast(f));
     delete_filter_action_->setEnabled(parent_item);
 
-    filter_p f = item->data(0, Qt::UserRole).value<filter_p>();
     select_toolbar_filter_action_->setEnabled(f != filters_->toolbar_filter().lock());
 }
 

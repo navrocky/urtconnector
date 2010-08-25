@@ -49,6 +49,7 @@
 #include "settings/settings.h"
 
 #include "main_window.h"
+#include "filters/filter_edit_widget.h"
 
 SYSLOG_MODULE("main_window");
 
@@ -123,7 +124,8 @@ main_window::main_window(QWidget *parent)
 
     all_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabAll);
     all_list_->setObjectName("all_list");
-    dynamic_cast<QBoxLayout*>(ui_->tabAll->layout())->insertWidget(0, all_list_);
+    QBoxLayout* l = dynamic_cast<QBoxLayout*>(ui_->tabAll->layout());
+    l->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
     fav_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabFav);

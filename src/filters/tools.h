@@ -1,5 +1,5 @@
-#ifndef TOOLS_H
-#define	TOOLS_H
+#ifndef FILTER_TOOLS_H
+#define	FILTER_TOOLS_H
 
 #include <QByteArray>
 #include "pointers.h"
@@ -10,5 +10,5 @@ QByteArray filter_save(filter_p f);
 /*! Load filter from QByteArray. */
 filter_p filter_load(const QByteArray& ba, filter_factory_p factory);
 
-#endif	/* TOOLS_H */
+#endif	/* FILTER_TOOLS_H */
 
