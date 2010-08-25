@@ -93,6 +93,8 @@ src/filters/hide_empty_filter.cpp -text
 src/filters/hide_empty_filter.h -text
 src/filters/hide_full_filter.cpp -text
 src/filters/hide_full_filter.h -text
+src/filters/hide_private_filter.cpp -text
+src/filters/hide_private_filter.h -text
 src/filters/online_clans_filter.cpp -text
 src/filters/online_clans_filter.h -text
 src/filters/pointers.h -text

@@ -246,7 +246,6 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionAddToFav"/>
    <addaction name="separator"/>
    <addaction name="actionClearSelected"/>
-   <addaction name="actionClearOffline"/>
    <addaction name="actionClearAll"/>
    <addaction name="separator"/>
    <addaction name="actionRefreshSelected"/>

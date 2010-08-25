@@ -44,17 +44,17 @@ p, li { white-space: pre-wrap; }
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.ui" line="157"/>
+        <location filename="../src/about_dialog.ui" line="126"/>
         <source>Developers</source>
         <translation>Разработчики</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.ui" line="205"/>
+        <location filename="../src/about_dialog.ui" line="143"/>
         <source>Thanks to</source>
         <translation>Отдельное спасибо</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.ui" line="253"/>
+        <location filename="../src/about_dialog.ui" line="160"/>
         <source>Translation</source>
         <translation>Перевод</translation>
     </message>
@@ -284,24 +284,24 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Любимые</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="201"/>
-        <location filename="../src/main_window.ui" line="316"/>
-        <location filename="../src/main_window.ui" line="328"/>
+        <location filename="../src/main_window.ui" line="222"/>
+        <location filename="../src/main_window.ui" line="345"/>
+        <location filename="../src/main_window.ui" line="357"/>
         <source>Connect</source>
         <translation>Соединение</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="210"/>
+        <location filename="../src/main_window.ui" line="233"/>
         <source>Toolbar</source>
         <translation>Панель инструментов</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="274"/>
+        <location filename="../src/main_window.ui" line="303"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="289"/>
+        <location filename="../src/main_window.ui" line="318"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
@@ -310,17 +310,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Найти</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="46"/>
+        <location filename="../src/main_window.ui" line="50"/>
         <source>All</source>
         <translation>Все</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="319"/>
+        <location filename="../src/main_window.ui" line="348"/>
         <source>Connect to selected server</source>
         <translation>Соединиться с выбранным сервером</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="340"/>
+        <location filename="../src/main_window.ui" line="369"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
@@ -329,13 +329,13 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Файл</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="85"/>
-        <location filename="../src/main_window.ui" line="253"/>
+        <location filename="../src/main_window.ui" line="93"/>
+        <location filename="../src/main_window.ui" line="282"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="65"/>
+        <location filename="../src/main_window.ui" line="73"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
@@ -345,17 +345,17 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/main_window.ui" line="36"/>
-        <location filename="../src/main_window.ui" line="71"/>
+        <location filename="../src/main_window.ui" line="79"/>
         <source>Favorites</source>
         <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="79"/>
+        <location filename="../src/main_window.ui" line="87"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="98"/>
+        <location filename="../src/main_window.ui" line="106"/>
         <source>Server info</source>
         <translation>Информация о сервере</translation>
     </message>
@@ -370,8 +370,8 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;Информация&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;О программе&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:600;&quot;&gt;Сервер&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="301"/>
-        <location filename="../src/main_window.ui" line="304"/>
+        <location filename="../src/main_window.ui" line="330"/>
+        <location filename="../src/main_window.ui" line="333"/>
         <source>Edit</source>
         <translation>Редактировать</translation>
     </message>
@@ -384,23 +384,23 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Игрок2</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="124"/>
-        <location filename="../src/main_window.ui" line="331"/>
+        <location filename="../src/main_window.ui" line="132"/>
+        <location filename="../src/main_window.ui" line="360"/>
         <source>Quick connect</source>
         <translation>Быстрое соединение</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="145"/>
+        <location filename="../src/main_window.ui" line="150"/>
         <source>Server host:port</source>
         <translation>Сервер адрес:порт</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="161"/>
+        <location filename="../src/main_window.ui" line="166"/>
         <source>Player name</source>
         <translation>Ник игрока</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="177"/>
+        <location filename="../src/main_window.ui" line="182"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
@@ -409,7 +409,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Тулбар</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="111"/>
+        <location filename="../src/main_window.ui" line="119"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -418,69 +418,101 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="235"/>
+        <location filename="../src/main_window.ui" line="202"/>
+        <source>Add server to favorites</source>
+        <translation>Добавить сервер в закладки</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.ui" line="264"/>
         <source>Quit</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="244"/>
+        <location filename="../src/main_window.ui" line="273"/>
         <source>About UrTConnector</source>
         <translation>О программе UrTConnector</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="265"/>
+        <location filename="../src/main_window.ui" line="294"/>
         <source>Options</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="277"/>
+        <location filename="../src/main_window.ui" line="306"/>
         <source>Add favorite server to list</source>
         <translation>Добавить в закладки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="292"/>
+        <location filename="../src/main_window.ui" line="321"/>
         <source>Delete favorite server from list</source>
         <translation>Удалить из закладок</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="307"/>
+        <location filename="../src/main_window.ui" line="336"/>
         <source>Edit favorite server</source>
         <translation>Редактировать закладку</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="343"/>
+        <location filename="../src/main_window.ui" line="372"/>
         <source>Refresh all servers in list</source>
         <translation>Обновить все сервера в списке</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="352"/>
+        <location filename="../src/main_window.ui" line="381"/>
         <source>Add to favorites</source>
         <translation>Добавить в закладки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="355"/>
+        <location filename="../src/main_window.ui" line="384"/>
         <source>Add selected server to favorites list</source>
         <translation>Добавить выбранный сервер в закладки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="364"/>
+        <location filename="../src/main_window.ui" line="393"/>
         <source>Refresh selected</source>
         <translation>Обновить выделенный</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="367"/>
+        <location filename="../src/main_window.ui" line="396"/>
         <source>Refresh selected server</source>
         <translation>Обновить выделенный сервер</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="376"/>
+        <location filename="../src/main_window.ui" line="405"/>
         <source>Show/hide urtconnector</source>
         <translation>Показать/скрыть UrTConnector</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="381"/>
+        <location filename="../src/main_window.ui" line="410"/>
         <source>About Qt</source>
         <translation>О Qt</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.ui" line="419"/>
+        <source>Clear all</source>
+        <translation>Очистить все</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.ui" line="428"/>
+        <location filename="../src/main_window.ui" line="431"/>
+        <source>Clear Offline</source>
+        <translation>Очистить сервера не в сети</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.ui" line="440"/>
+        <source>Update from master server</source>
+        <translation>Обновление списка с мастер-сервера</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.ui" line="449"/>
+        <location filename="../src/main_window.ui" line="452"/>
+        <source>Clear Selected</source>
+        <translation>Удалить выделенные</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.ui" line="461"/>
+        <source>Open Remote Console</source>
+        <translation>Открыть RCON</translation>
     </message>
     <message>
         <source>Shortcuts</source>
@@ -499,7 +531,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Профиль2</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="280"/>
+        <location filename="../src/main_window.ui" line="309"/>
         <source>Add server favorite to list</source>
         <translation>Добавить сервер в любимые</translation>
     </message>
@@ -572,42 +604,57 @@ p, li { white-space: pre-wrap; }
         <translation>Предпросмотр командной строки</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="189"/>
+        <location filename="../src/options_dialog.ui" line="155"/>
+        <source>Launch UrbanTerror is separate X session</source>
+        <translation>Запустить UrbanTerror в отдельной X-сессии</translation>
+    </message>
+    <message>
+        <location filename="../src/options_dialog.ui" line="175"/>
+        <source>Autodetect</source>
+        <translation>Автоопределение</translation>
+    </message>
+    <message>
+        <location filename="../src/options_dialog.ui" line="211"/>
+        <source>Centering on current server row during update</source>
+        <translation>Центрировать на текущей строке при обновлении списка серверов</translation>
+    </message>
+    <message>
+        <location filename="../src/options_dialog.ui" line="227"/>
         <source>Choose QStat binary file</source>
         <translation>Укажите бинарник QStat</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="206"/>
+        <location filename="../src/options_dialog.ui" line="244"/>
         <source>GeoIP database file</source>
         <translation>Файл базы данных GeoIP</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="215"/>
+        <location filename="../src/options_dialog.ui" line="253"/>
         <source>Choose GeoIP database file</source>
         <translation>Укажите файл базы GeoIP</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="232"/>
+        <location filename="../src/options_dialog.ui" line="270"/>
         <source>Clipboard watching for server info and password</source>
         <translation>Слежение за появлением информации о сервере и пароле в буфере обмена</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="243"/>
+        <location filename="../src/options_dialog.ui" line="281"/>
         <source>RegExp for watch</source>
         <translation>Регулярное выражение (RegExp)</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="259"/>
+        <location filename="../src/options_dialog.ui" line="297"/>
         <source>Host match num</source>
         <translation>Номер совпадения для хоста или ip</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="273"/>
+        <location filename="../src/options_dialog.ui" line="311"/>
         <source>Port match num</source>
         <translation>Номер совпадения для порта</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="287"/>
+        <location filename="../src/options_dialog.ui" line="325"/>
         <source>Password match num</source>
         <translation>Номер совпадения для пароля</translation>
     </message>
@@ -632,12 +679,12 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;%rcon%&lt;/span&gt; - пароль к RCON&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="167"/>
+        <location filename="../src/options_dialog.ui" line="198"/>
         <source>Application</source>
         <translation>Приложение</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="173"/>
+        <location filename="../src/options_dialog.ui" line="204"/>
         <source>Hide main window on startup</source>
         <translation>Скрывать главное окно программы при запуске</translation>
     </message>
@@ -646,8 +693,8 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Папка с бинарниками UrbanTerror</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="192"/>
-        <location filename="../src/options_dialog.ui" line="218"/>
+        <location filename="../src/options_dialog.ui" line="230"/>
+        <location filename="../src/options_dialog.ui" line="256"/>
         <source>Choose</source>
         <translation>Указать</translation>
     </message>
@@ -657,7 +704,7 @@ p, li { white-space: pre-wrap; }
         <translation>Расширенная строка запуска</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.ui" line="180"/>
+        <location filename="../src/options_dialog.ui" line="218"/>
         <source>QStat binary path</source>
         <translation>Путь к утилите QStat</translation>
     </message>
@@ -684,13 +731,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/application.cpp" line="28"/>
-        <location filename="../src/main.cpp" line="91"/>
+        <location filename="../src/application.cpp" line="32"/>
+        <location filename="../src/main.cpp" line="105"/>
         <source>Unknown error</source>
         <translation>Неизвестная ошибка</translation>
     </message>
     <message>
-        <location filename="../src/application.cpp" line="35"/>
+        <location filename="../src/application.cpp" line="39"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -751,22 +798,22 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/server_info.cpp" line="31"/>
-        <location filename="../src/server_info.cpp" line="44"/>
+        <location filename="../src/server_info.cpp" line="49"/>
         <source>Unknown</source>
         <translation>Неизвестный</translation>
     </message>
     <message>
-        <location filename="../src/server_info.cpp" line="37"/>
+        <location filename="../src/server_info.cpp" line="42"/>
         <source>Updating</source>
         <translation>Обновляется</translation>
     </message>
     <message>
-        <location filename="../src/server_info.cpp" line="41"/>
+        <location filename="../src/server_info.cpp" line="46"/>
         <source>Offline</source>
         <translation>Не в сети</translation>
     </message>
     <message>
-        <location filename="../src/server_info.cpp" line="42"/>
+        <location filename="../src/server_info.cpp" line="47"/>
         <source>Online</source>
         <translation>В сети</translation>
     </message>
@@ -775,88 +822,142 @@ p, li { white-space: pre-wrap; }
         <source>Can&apos;t open GeoIP database %1</source>
         <translation>Не возможно открыть базу данных GeoIP: %1</translation>
     </message>
+    <message>
+        <location filename="../src/filters/composite_filter.cpp" line="16"/>
+        <source>Composite filter</source>
+        <translation>Композитный фильтр</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/composite_filter.cpp" line="17"/>
+        <source>Composite child filters using logical operations.</source>
+        <translation>Объединяет дочерние фильтры используя логические операции.</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/game_type_filter.cpp" line="15"/>
+        <source>Game mode filter</source>
+        <translation>Режим игры</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/game_type_filter.cpp" line="16"/>
+        <source>Hides all servers thats don&apos;s match selected game mode.</source>
+        <translation>Скрывает сервера, которые не соответствуют указанному режиму игры.</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/hide_empty_filter.cpp" line="10"/>
+        <source>Hide empty servers</source>
+        <translation>Скрывать пустые</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/hide_empty_filter.cpp" line="11"/>
+        <source>Hides all empty servers.</source>
+        <translation>Скрывает все пустые (без людей) сервера.</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/hide_full_filter.cpp" line="10"/>
+        <source>Hide full servers</source>
+        <translation>Скрывать заполненные</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/hide_full_filter.cpp" line="11"/>
+        <source>Hides all full servers.</source>
+        <translation>Скрывает все заполненные сервера.</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/hide_private_filter.cpp" line="10"/>
+        <source>Hide private servers</source>
+        <translation>Скрыть приватные</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/hide_private_filter.cpp" line="11"/>
+        <source>Hides all private servers.</source>
+        <translation>Скрывает все приватные сервера (под паролем).</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/online_clans_filter.cpp" line="21"/>
+        <source>Online clans</source>
+        <translation>Кланы в онлайн</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/online_clans_filter.cpp" line="22"/>
+        <source>Shows servers on which present a some number of players with the same tag.</source>
+        <translation>Показывает сервера, на которые присутствуют несколько игроков с одинаковым тэгом.</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/regexp_filter.cpp" line="21"/>
+        <source>Quick filter</source>
+        <translation>Простой фильтр</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/regexp_filter.cpp" line="22"/>
+        <source>Filters server info using regular expressions.</source>
+        <translation>Фильтрует сервера по сводной информации, используя синтаксис регулярных выражений.</translation>
+    </message>
 </context>
 <context>
     <name>ServListWidgetClass</name>
     <message>
-        <location filename="../src/server_list_widget.ui" line="14"/>
         <source>Server list</source>
-        <translation>Список серверов</translation>
+        <translation type="obsolete">Список серверов</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="35"/>
         <source>Filter line. You can use here a regular expressions.</source>
-        <translation>Строка фильтра. Здесь вы можете указать регулярное выражение.</translation>
+        <translation type="obsolete">Строка фильтра. Здесь вы можете указать регулярное выражение.</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="42"/>
         <source>clear</source>
-        <translation>Очистить</translation>
+        <translation type="obsolete">Очистить</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="89"/>
         <source>Status</source>
-        <translation>Состояние</translation>
+        <translation type="obsolete">Состояние</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="92"/>
         <source>Server status</source>
-        <translation>Состояние сервера</translation>
+        <translation type="obsolete">Состояние сервера</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="97"/>
         <source>Name</source>
-        <translation>Имя</translation>
+        <translation type="obsolete">Имя</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="100"/>
         <source>Server name</source>
-        <translation>Имя сервера</translation>
+        <translation type="obsolete">Имя сервера</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="105"/>
         <source>Address</source>
-        <translation>Адрес</translation>
+        <translation type="obsolete">Адрес</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="108"/>
         <source>Server address (ip:port)</source>
-        <translation>Адрес сервера (ip:port)</translation>
+        <translation type="obsolete">Адрес сервера (ip:port)</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="113"/>
         <source>Country</source>
-        <translation>Страна</translation>
+        <translation type="obsolete">Страна</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="118"/>
         <source>Ping</source>
-        <translation>Пинг</translation>
+        <translation type="obsolete">Пинг</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="123"/>
         <source>Game mode</source>
-        <translation>Тип игры</translation>
+        <translation type="obsolete">Тип игры</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="128"/>
         <source>Map</source>
-        <translation>Карта</translation>
+        <translation type="obsolete">Карта</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="133"/>
         <source>Players</source>
-        <translation>Игроки</translation>
+        <translation type="obsolete">Игроки</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="145"/>
         <source>Clear filter</source>
-        <translation>Очистить фильтр</translation>
+        <translation type="obsolete">Очистить фильтр</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.ui" line="148"/>
         <source>Clear current filter</source>
-        <translation>Очистить текущий фильтр</translation>
+        <translation type="obsolete">Очистить текущий фильтр</translation>
     </message>
 </context>
 <context>
@@ -967,29 +1068,84 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">О программе UrTConnector</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="21"/>
+        <location filename="../src/about_dialog.cpp" line="23"/>
         <source>version %1 &quot;%2&quot;</source>
         <translation>версия %1 &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="22"/>
+        <location filename="../src/about_dialog.cpp" line="30"/>
         <source>&lt;p&gt;UrTConnector intended for help in everyday life of professional &lt;a href=&quot;http://www.urbanterror.net&quot;&gt;UrbanTerror&lt;/a&gt; player.&lt;/p&gt;&lt;p&gt;Search for game servers, players, online clans, bookmarks, miscellaneous information about servers, quick connect to server and many other features you will find in this application.&lt;/p&gt;&lt;p&gt;Project page &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;http://code.google.com/p/urtconnector&lt;/a&gt;&lt;/p&gt;&lt;p&gt;License: &lt;a href=&quot;http://www.gnu.org/licenses/gpl.html&quot;&gt;GNU General Public License Version 3&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;UrTConnector предназначен для помощи в ежедневной жизни профессионального игрока &lt;a href=&quot;http://www.urbanterror.net&quot;&gt;UrbanTerror&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;В этой программе вы найдете: поиск по игровым серверам, поиск игроков, закладки на сервера, расширенную информацию о сервере, функции быстрого соединения и еще много других полезных функций.&lt;/p&gt;&lt;p&gt;Страница проекта &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;http://code.google.com/p/urtconnector&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Лицензия: &lt;a href=&quot;http://www.gnu.org/licenses/gpl.html&quot;&gt;GNU General Public License Version 3&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="33"/>
+        <location filename="../src/about_dialog.cpp" line="42"/>
         <source>&lt;p&gt;Developed by members of the best russian clan &lt;a href=&quot;http://www.urt-xaoc.ru&quot;&gt;=XaoC=&lt;/a&gt;.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Navrocky Vladislav (=XaoC=vlad.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:navrocky@visualdata.ru&quot;&gt;navrocky@visualdata.ru&lt;/a&gt;&lt;br&gt;Project leader, maintainer, architecture, windows and rpm packager.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;EnD3n1s&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:endenis@mail.ru&quot;&gt;endenis@mail.ru&lt;/a&gt;&lt;br&gt;Founder, base concept, first release, tester.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Samoilenko Yuri (jerry.gkb.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:kinallru@gmail.com&quot;&gt;kinallru@gmail.com&lt;/a&gt;&lt;br&gt;Code, ideas, Gentoo packager.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Разрабатывается членами русского клана &lt;a href=&quot;http://www.urt-xaoc.ru&quot;&gt;=XaoC=&lt;/a&gt;.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Навроцкий Владислав (=XaoC=vlad.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:navrocky@visualdata.ru&quot;&gt;navrocky@visualdata.ru&lt;/a&gt;&lt;br&gt;Лидер проекта, мэнтейнер, архитектор, сборка rpm и пакетов для windows.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;EnD3n1s&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:endenis@mail.ru&quot;&gt;endenis@mail.ru&lt;/a&gt;&lt;br&gt;Основатель, первоначальная идея и реализация, тестер.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Самойленко Юрий (jerry.gkb.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:kinallru@gmail.com&quot;&gt;kinallru@gmail.com&lt;/a&gt;&lt;br&gt;Код, идеи, сборка пакета под Gentoo.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="46"/>
+        <location filename="../src/about_dialog.cpp" line="56"/>
         <source>&lt;p class=&quot;name&quot;&gt;Tsyss Dmitry (=XaoC=Dmitro)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:dtsyss@gmail.com&quot;&gt;dtsyss@gmail.com&lt;/a&gt;&lt;br&gt;Clan leader, help on project, tester.&lt;/p&gt;</source>
         <translation>&lt;p class=&quot;name&quot;&gt;Цысс Дмитрий (=XaoC=Dmitro)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:dtsyss@gmail.com&quot;&gt;dtsyss@gmail.com&lt;/a&gt;&lt;br&gt;Лидер клана, помощь проекту, тестирование.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="51"/>
+        <location filename="../src/about_dialog.cpp" line="62"/>
         <source>&lt;p&gt;UrTConnector translated to many languages. Thanks to people who helped with translation.&lt;/p&gt;&lt;p&gt;If you want help with translation UrTConnector to your language - &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;join&lt;/a&gt; us!&lt;/p&gt;</source>
         <translation>&lt;p class=&quot;name&quot;&gt;Навроцкий Владислав (=XaoC=vlad.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:navrocky@visualdata.ru&quot;&gt;navrocky@visualdata.ru&lt;/a&gt;&lt;br&gt;Русский перевод.&lt;/p&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>composite_filter_quick_opt_widget</name>
+    <message>
+        <location filename="../src/filters/composite_filter.cpp" line="158"/>
+        <source>AND</source>
+        <translation>И</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/composite_filter.cpp" line="159"/>
+        <source>OR</source>
+        <translation>ИЛИ</translation>
+    </message>
+</context>
+<context>
+    <name>filter_edit_widget</name>
+    <message>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="180"/>
+        <source>Filter options</source>
+        <translation>Настройки фильтра</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="184"/>
+        <source>Add new child filter</source>
+        <translation>Добавить дочерний фильтр</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="186"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="313"/>
+        <source>Delete filter</source>
+        <translation>Удалить фильтр</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="188"/>
+        <source>Select filter for toolbar</source>
+        <translation>Разместить фильтр на панели инструментов</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="313"/>
+        <source>Continue with delete selected filter?</source>
+        <translation>Удалить фильтр?</translation>
+    </message>
+</context>
+<context>
+    <name>filter_item_widget</name>
+    <message>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="93"/>
+        <source>Enable filter</source>
+        <translation>Включить фильтр</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="115"/>
+        <source>Configure filter</source>
+        <translation>Настроить фильтр</translation>
     </message>
 </context>
 <context>
@@ -1041,7 +1197,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>job_update_from_master</name>
     <message>
-        <location filename="../src/job_update_from_master.cpp" line="8"/>
+        <location filename="../src/job_update_from_master.cpp" line="9"/>
         <source>Update from master server</source>
         <translation>Обновление списка с мастер-сервера</translation>
     </message>
@@ -1049,7 +1205,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>job_update_selected</name>
     <message>
-        <location filename="../src/job_update_selected.cpp" line="9"/>
+        <location filename="../src/job_update_selected.cpp" line="10"/>
         <source>Update selected servers</source>
         <translation>Обновление выделенных серверов</translation>
     </message>
@@ -1065,7 +1221,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">ошибка при запуске. Проверьте установленные параметры запуска</translation>
     </message>
     <message>
-        <location filename="../src/launcher.cpp" line="106"/>
+        <location filename="../src/launcher/launcher.cpp" line="107"/>
         <source>Failed to start UrbanTerror. Check launch parameters in options dialog.</source>
         <translation>Ошибка при запуске UrbanTerror. Проверьте настройки запуска игры в диалоге настройки программы.</translation>
     </message>
@@ -1073,17 +1229,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main_window.cpp" line="77"/>
+        <location filename="../src/main_window.cpp" line="115"/>
         <source>Click to show/hide UrTConnector or middle click to quick launch</source>
         <translation>Щелкните левой кнопкой для открытия окна UrTConnector или средней кнопкой для быстрого запуска</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="160"/>
+        <location filename="../src/main_window.cpp" line="214"/>
         <source>Server info catched</source>
         <translation>Информация о сервере получена</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="161"/>
+        <location filename="../src/main_window.cpp" line="215"/>
         <source>Address: %1
 Password: %2
 
@@ -1094,72 +1250,138 @@ Click this message to open UrTConnector.</source>
 Щелкните по этому сообщению чтобы открыть UrTConnector.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="232"/>
+        <location filename="../src/main_window.cpp" line="525"/>
+        <source>Server require password</source>
+        <translation>Сервер требует пароль</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="525"/>
+        <source>Enter password</source>
+        <translation>Введите пароль</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="533"/>
+        <source>Server is full</source>
+        <translation>Сервер полный</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="534"/>
+        <source>Server is full do you want to continue ?</source>
+        <translation>Сервер полный. Продолжить подключение?</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="743"/>
+        <source>Deleting a favorite</source>
+        <translation>Удаление закладки</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="744"/>
+        <source>Continue to delete a favorite?</source>
+        <translation>Вы уверены?</translation>
+    </message>
+    <message>
         <source>Delete a favorite</source>
-        <translation>Удалить закладку</translation>
+        <translation type="obsolete">Удалить закладку</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="233"/>
         <source>Continue to delete a favorite</source>
-        <translation>Продолжить удаление</translation>
+        <translation type="obsolete">Продолжить удаление</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="615"/>
+        <location filename="../src/main_window.cpp" line="720"/>
         <source>Favorites (%1)</source>
         <translation>Закладки (%1)</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="616"/>
+        <location filename="../src/main_window.cpp" line="728"/>
         <source>All (%1)</source>
         <translation>Все (%1)</translation>
     </message>
 </context>
 <context>
+    <name>online_clans_filter_quick_opt_widget</name>
+    <message>
+        <location filename="../src/filters/online_clans_filter.cpp" line="155"/>
+        <source>Minimal tag length in chars</source>
+        <translation>Минимальная длина тэга в символах</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/online_clans_filter.cpp" line="159"/>
+        <source>Minimal players number</source>
+        <translation>Минимальное количество игроков с одинаковым тэгом</translation>
+    </message>
+</context>
+<context>
     <name>options_dialog</name>
     <message>
-        <location filename="../src/options_dialog.cpp" line="20"/>
+        <location filename="../src/options_dialog.cpp" line="22"/>
+        <source>RCon</source>
+        <translation>RCon</translation>
+    </message>
+    <message>
+        <location filename="../src/options_dialog.cpp" line="31"/>
         <source>&lt;b&gt;%bin%&lt;/b&gt; - UrbanTerror binary path&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - player name&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - password&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - hostname or ip and port&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - RCON password</source>
         <translation>&lt;b&gt;%bin%&lt;/b&gt; - бинарник UrbanTerror&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - имя игрока&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - пароль&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - имя хоста или ip и порт&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - пароль RCON</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.cpp" line="73"/>
+        <location filename="../src/options_dialog.cpp" line="88"/>
         <source>Urban Terror executable</source>
         <translation>Бинарник UrbanTerror</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.cpp" line="74"/>
+        <location filename="../src/options_dialog.cpp" line="89"/>
         <source>Executables (*.i386 *.x86_64 *.exe);;All Files (*)</source>
         <translation>Бинарники (*.i386 *.x86_64 *.exe);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.cpp" line="83"/>
+        <location filename="../src/options_dialog.cpp" line="98"/>
         <source>GeoIP database</source>
         <translation>База данных GeoIP</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.cpp" line="84"/>
+        <location filename="../src/options_dialog.cpp" line="99"/>
         <source>DataBase (*.dat);;All Files (*)</source>
         <translation>Базы данных GeoIP (*.dat);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.cpp" line="93"/>
+        <location filename="../src/options_dialog.cpp" line="108"/>
         <source>QStat binary</source>
         <translation>Бинарник QStat</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.cpp" line="94"/>
+        <location filename="../src/options_dialog.cpp" line="109"/>
         <source>Executables (*);;All Files (*)</source>
         <translation>Бинарники (*);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.cpp" line="103"/>
+        <location filename="../src/options_dialog.cpp" line="118"/>
         <source>Select file to insert</source>
         <translation>Выберите файл для вставки</translation>
     </message>
     <message>
-        <location filename="../src/options_dialog.cpp" line="104"/>
+        <location filename="../src/options_dialog.cpp" line="119"/>
         <source>All Files (*)</source>
         <translation>Все файлы</translation>
+    </message>
+    <message>
+        <location filename="../src/options_dialog.cpp" line="157"/>
+        <source>This may take about 30 seconds</source>
+        <translation>Эта проверка может занять примерно 30 секунд</translation>
+    </message>
+    <message>
+        <location filename="../src/options_dialog.cpp" line="166"/>
+        <source>X session autodetection</source>
+        <translation>Автоопределение X-сессии</translation>
+    </message>
+    <message>
+        <location filename="../src/options_dialog.cpp" line="168"/>
+        <source>Another X session started succesfully</source>
+        <translation>Дополнительная X-сессия запущена успешно</translation>
+    </message>
+    <message>
+        <location filename="../src/options_dialog.cpp" line="169"/>
+        <source>Another X session failed</source>
+        <translation>Не удалось запустить дополнительную X-сессию</translation>
     </message>
 </context>
 <context>
@@ -1197,44 +1419,153 @@ Click this message to open UrTConnector.</source>
     </message>
 </context>
 <context>
+    <name>rcon</name>
+    <message>
+        <location filename="../src/rcon/rcon.ui" line="14"/>
+        <source>Form</source>
+        <translation>Форма</translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon.ui" line="41"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Tahoma&apos;;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon.cpp" line="199"/>
+        <source>connection failed</source>
+        <translation>Ошибка соединения</translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon.cpp" line="205"/>
+        <source>connected</source>
+        <translation>Соединено</translation>
+    </message>
+</context>
+<context>
+    <name>rcon_settings_form</name>
+    <message>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="14"/>
+        <source>Form</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="20"/>
+        <source>Use custom colors</source>
+        <translation>Использовать произвольные цвета</translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="168"/>
+        <source>info messages</source>
+        <translation>Информационные сообщения</translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="181"/>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="205"/>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="266"/>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="327"/>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="336"/>
+        <source>select...</source>
+        <translation>Выбрать...</translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="192"/>
+        <source>incoming messages</source>
+        <translation>Входящие сообщения</translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="253"/>
+        <source>outgoing messages</source>
+        <translation>Исходящие сообщения</translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="314"/>
+        <source>error messages</source>
+        <translation>Сообщения об ошибке</translation>
+    </message>
+    <message>
+        <location filename="../src/rcon/rcon_settings_form.ui" line="345"/>
+        <source>Reset to defaults</source>
+        <translation>По умолчанию</translation>
+    </message>
+</context>
+<context>
+    <name>regexp_filter_quick_opt_widget</name>
+    <message>
+        <location filename="../src/filters/regexp_filter.cpp" line="107"/>
+        <source>Filter expression. You can use here a regular expressions.</source>
+        <translation>Выражения для фильтра. Вы можете использовать здесь синтаксис регулярных выражений.</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/regexp_filter.cpp" line="115"/>
+        <source>Clear expression</source>
+        <translation>Очистить</translation>
+    </message>
+</context>
+<context>
+    <name>select_filter_class_dialog</name>
+    <message>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="34"/>
+        <source>Select filter type</source>
+        <translation>Выбор типа фильтра</translation>
+    </message>
+</context>
+<context>
     <name>server_info_html</name>
     <message>
-        <location filename="../src/server_info_html.cpp" line="52"/>
+        <location filename="../src/server_info_html.cpp" line="64"/>
         <source>&lt;hr&gt;%1 players:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Nick&lt;/td&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;Score&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;hr&gt;%1 игрок(а,ов):&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Имя&lt;/td&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;Счет&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="66"/>
+        <location filename="../src/server_info_html.cpp" line="84"/>
         <source>* Unnamed *</source>
         <translation>* Без названия *</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="79"/>
+        <location filename="../src/server_info_html.cpp" line="100"/>
         <source>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-none.png&quot;&gt; Unknown</source>
         <translation>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-none.png&quot;&gt; Неизвестно</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="85"/>
+        <location filename="../src/server_info_html.cpp" line="106"/>
         <source>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-passwd.png&quot;&gt; Online</source>
         <translation>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-passwd.png&quot;&gt; В сети</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="90"/>
+        <location filename="../src/server_info_html.cpp" line="111"/>
         <source>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-online.png&quot;&gt; Online</source>
         <translation>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-online.png&quot;&gt; В сети</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="106"/>
-        <source>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Country&lt;/td&gt;&lt;td&gt;%5 %6&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Max players&lt;/td&gt;&lt;td&gt;%7&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
-        <translation>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Состояние&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Тип игры&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Карта&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Страна&lt;/td&gt;&lt;td&gt;%5 %6&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Макс. кол. игроков&lt;/td&gt;&lt;td&gt;%7&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
+        <location filename="../src/server_info_html.cpp" line="132"/>
+        <source>&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Country&lt;/td&gt;&lt;td&gt;%5 %6&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Public slots&lt;/td&gt;&lt;td&gt;%7&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Total slots&lt;/td&gt;&lt;td&gt;%8&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
+        <translation>&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Статус&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Режим игры&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Карта&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Страна&lt;/td&gt;&lt;td&gt;%5 %6&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Публичные слоты&lt;/td&gt;&lt;td&gt;%7&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Всего слотов&lt;/td&gt;&lt;td&gt;%8&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="73"/>
+        <location filename="../src/server_info_html.cpp" line="150"/>
+        <source>&lt;hr&gt;Extended info:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Key&lt;/td&gt;&lt;td&gt;Value&lt;/td&gt;&lt;/tr&gt;</source>
+        <translation>&lt;hr&gt;Дополнительная информация:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Ключ&lt;/td&gt;&lt;td&gt;Значение&lt;/td&gt;&lt;/tr&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Country&lt;/td&gt;&lt;td&gt;%5 %6&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Max players&lt;/td&gt;&lt;td&gt;%7&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
+        <translation type="obsolete">&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Состояние&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Тип игры&lt;/td&gt;&lt;td&gt;%2&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Карта&lt;/td&gt;&lt;td&gt;%3&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;%4&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Страна&lt;/td&gt;&lt;td&gt;%5 %6&lt;/td&gt;&lt;/tr&gt;&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Макс. кол. игроков&lt;/td&gt;&lt;td&gt;%7&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/server_info_html.cpp" line="94"/>
         <source>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-update.png&quot;&gt; Updating</source>
         <translation>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-update.png&quot;&gt; Обновляется</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="95"/>
+        <location filename="../src/server_info_html.cpp" line="116"/>
+        <source>, Full</source>
+        <translation>, Полный</translation>
+    </message>
+    <message>
+        <location filename="../src/server_info_html.cpp" line="119"/>
         <source>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-offline.png&quot;&gt; Offline</source>
         <translation>&lt;img class=&quot;img1&quot; src=&quot;:/icons/icons/status-offline.png&quot;&gt; Не в сети</translation>
     </message>
@@ -1251,22 +1582,86 @@ Click this message to open UrTConnector.</source>
         <translation type="obsolete">&lt;table width=100%&gt;&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Состояние&lt;/td&gt;&lt;td&gt;Не доступен&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_html.cpp" line="121"/>
         <source>&lt;hr&gt;Extended info:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Key&lt;/td&gt;&lt;td&gt;Value&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation>&lt;hr&gt;Расширенная информация:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Ключ&lt;/td&gt;&lt;td&gt;Значение&lt;/td&gt;&lt;/tr&gt;</translation>
+        <translation type="obsolete">&lt;hr&gt;Расширенная информация:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Ключ&lt;/td&gt;&lt;td&gt;Значение&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
 </context>
 <context>
     <name>server_list_widget</name>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="103"/>
+        <location filename="../src/server_list_widget.cpp" line="112"/>
+        <source>View and edit filter</source>
+        <translation>Просмотр и редакция фильтра</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="138"/>
+        <source>Players</source>
+        <translation>Игроки</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="139"/>
+        <source>Map</source>
+        <translation>Карта</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="140"/>
+        <source>Game mode</source>
+        <translation>Тип игры</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="141"/>
+        <source>Ping</source>
+        <translation>Пинг</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="142"/>
+        <source>Country</source>
+        <translation>Страна</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="143"/>
+        <source>Address</source>
+        <translation>Адрес</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="144"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="145"/>
+        <source>Status</source>
+        <translation>Состояние</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="146"/>
+        <source>Server address (ip:port)</source>
+        <translation>Адрес сервера (ip:port)</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="147"/>
+        <source>Server name</source>
+        <translation>Имя сервера</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="148"/>
+        <source>Server status</source>
+        <translation>Состояние сервера</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="251"/>
         <source>Private</source>
         <translation>Частный</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="105"/>
+        <location filename="../src/server_list_widget.cpp" line="253"/>
         <source>Not pure</source>
         <translation>Из игры</translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="269"/>
+        <source>Current %1 / Public slots %2 / Total %3</source>
+        <translation>Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
     </message>
 </context>
 <context>
@@ -1282,7 +1677,7 @@ Click this message to open UrTConnector.</source>
         <translation>Редактирование закладки</translation>
     </message>
     <message>
-        <location filename="../src/server_options_dialog.cpp" line="43"/>
+        <location filename="../src/server_options_dialog.cpp" line="47"/>
         <source>Server address must be non empty</source>
         <translation>Адрес сервера не должен быть пустым</translation>
     </message>

@@ -59,8 +59,6 @@ public:
     }
 };
 
-QString get_longest_common_subsequence(const QString& a, const QString& b);
-
 QString common_substring_from_begin(const QString& s1, const QString& s2);
 QString common_substring_from_end(const QString& s1, const QString& s2);
 

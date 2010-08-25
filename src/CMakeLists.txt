@@ -20,7 +20,9 @@ endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
     add_definitions(-DDEBUG)
-endif()    
+endif()
+
+add_definitions(-DUSE_SINGLE_APP)
 
 configure_file(config.h.in config.h)
 

@@ -7,6 +7,7 @@
 #include "hide_full_filter.h"
 #include "regexp_filter.h"
 #include "online_clans_filter.h"
+#include "hide_private_filter.h"
 
 #include "reg_filters.h"
 
@@ -18,4 +19,5 @@ void register_filters(filter_factory_p f)
     f->add_class(boost::make_shared<hide_empty_filter_class>());
     f->add_class(boost::make_shared<hide_full_filter_class>());
     f->add_class(boost::make_shared<online_clans_filter_class>());
+    f->add_class(boost::make_shared<hide_private_filter_class>());
 }

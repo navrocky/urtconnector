@@ -13,7 +13,7 @@ Release: 1
 AutoReq: off
 License: GPL
 BuildRequires: cmake boost-devel libqt4-devel
-Requires: libqt4>=4.3.0 qstat>=2.6
+#Requires: libqt4 >= 4.3.0 qstat>=2.6
 
 %description
 

@@ -54,7 +54,8 @@ bool online_clans_filter::filter_server(const server_info& si)
         return true;
 
     typedef std::set<QString> sset_t;
-    sset_t m;
+    sset_t begin_m;
+    sset_t end_m;
 
     foreach (const player_info& p1, si.players)
     {
@@ -64,18 +65,29 @@ bool online_clans_filter::filter_server(const server_info& si)
                 continue;
             QString s = common_substring_from_begin(p1.nick_name, p2.nick_name);
             if (s.length() >= minimal_tag_length_)
-                m.insert(s);
+                begin_m.insert(s);
+            s = common_substring_from_end(p1.nick_name, p2.nick_name);
+            if (s.length() >= minimal_tag_length_)
+                end_m.insert(s);
         }
     }
 
-    foreach (sset_t::const_reference r, m)
+    foreach(const QString& s, begin_m)
     {
         int cnt = 0;
-        foreach (const player_info& p, si.players)
-        {
-            if (p.nick_name.startsWith(r))
+        foreach(const player_info& p, si.players)
+            if (p.nick_name.startsWith(s))
                 cnt++;
-        }
+        if (cnt >= minimal_players_)
+            return true;
+    }
+
+    foreach(const QString& s, end_m)
+    {
+        int cnt = 0;
+        foreach(const player_info& p, si.players)
+            if (p.nick_name.endsWith(s))
+                cnt++;
         if (cnt >= minimal_players_)
             return true;
     }

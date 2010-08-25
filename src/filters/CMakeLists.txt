@@ -17,6 +17,7 @@ set(HEADERS
     hide_full_filter.h
     regexp_filter.h
     online_clans_filter.h
+    hide_private_filter.h
 )
 
 set(MOC_HEADERS
@@ -29,6 +30,7 @@ set(MOC_HEADERS
     hide_full_filter.h
     regexp_filter.h
     online_clans_filter.h
+    hide_private_filter.h
 )
 
 set(SOURCES
@@ -44,6 +46,7 @@ set(SOURCES
     hide_full_filter.cpp
     regexp_filter.cpp
     online_clans_filter.cpp
+    hide_private_filter.cpp
 )
 
 set(IFACES

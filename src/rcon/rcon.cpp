@@ -39,8 +39,8 @@ struct rcon::Pimpl{
         , connected(false), waiting(false), skip_command(false)
     {}
     void init() {
-        ui.output->setFont( QFont("Terminus") );
-        ui.input->setFont( QFont("Terminus") );
+        ui.output->setFont( QFont("Monospace") );
+        ui.input->setFont( QFont("Monospace") );
 
         status = new QLabel(0);
         status->setFixedSize( QSize(16, 16) );
@@ -161,9 +161,9 @@ void rcon::update_settings()
     p_->ui.output->setPalette( p );
     p_->ui.output->setAutoFillBackground( !rcon_settings().adaptive_pallete() );
 
-    p.setColor( QPalette::Text, p_->colors[rcon_settings::Command] );
-    p_->ui.input->setPalette( p );
-    p_->ui.input->setAutoFillBackground( !rcon_settings().adaptive_pallete() );
+//    p.setColor( QPalette::Text, p_->colors[rcon_settings::Command] );
+//    p_->ui.input->setPalette( p );
+//    p_->ui.input->setAutoFillBackground( !rcon_settings().adaptive_pallete() );
 }
 
 
