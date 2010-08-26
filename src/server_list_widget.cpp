@@ -105,6 +105,7 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     QBoxLayout* vert_lay = new QVBoxLayout(this);
     vert_lay->setContentsMargins(0, 0, 0, 0);
     QBoxLayout* horiz_lay = new QHBoxLayout();
+    horiz_lay->setContentsMargins(0, 0, 0, 0);
 
     show_filter_button_ = new QToolButton(this);
     show_filter_button_->setIcon(QIcon(":/icons/icons/view-filter.png"));
@@ -117,6 +118,7 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
 
     filter_holder_ = new QWidget(this);
     QHBoxLayout* lay = new QHBoxLayout(filter_holder_);
+    lay->setContentsMargins(0, 0, 0, 0);
     horiz_lay->addWidget(filter_holder_);
 
     vert_lay->addLayout(horiz_lay);
