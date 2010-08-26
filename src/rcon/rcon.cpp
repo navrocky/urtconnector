@@ -39,8 +39,10 @@ struct rcon::Pimpl{
         , connected(false), waiting(false), skip_command(false)
     {}
     void init() {
-        ui.output->setFont( QFont("Monospace") );
-        ui.input->setFont( QFont("Monospace") );
+        QFont f("Monospace");
+        f.setStyleHint(QFont::TypeWriter);
+        ui.output->setFont(f);
+        ui.input->setFont(f);
 
         status = new QLabel(0);
         status->setFixedSize( QSize(16, 16) );
