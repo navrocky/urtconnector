@@ -87,6 +87,7 @@ set(MOC_HEADERS
     clipper.h
     rcon/rcon.h
     rcon/rcon_settings_form.h
+    rcon/rcon_completer.h
     tools.h
 )
 
@@ -124,6 +125,7 @@ set(SOURCES
     launcher/tools.cpp
     rcon/rcon.cpp
     rcon/rcon_settings_form.cpp
+    rcon/rcon_completer.cpp
 )
 
 set(IFACES

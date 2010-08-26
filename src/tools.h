@@ -28,6 +28,7 @@ QString q3coloring( const QString& str, const QString& skip = QString() );
 ///test function
 QColor choose_for_background( Qt::GlobalColor standard, const QColor& background );
 
+#include <iostream>
 class iconned_dock_style: public QProxyStyle{
     Q_OBJECT
     QIcon icon_;
@@ -43,18 +44,38 @@ public:
         if( element == QStyle::CE_DockWidgetTitle)
         {
             //width of the icon
-            int width = pixelMetric(QStyle::PM_SmallIconSize);
-            //margin of title from frame
-            int margin = baseStyle()->pixelMetric( QStyle::PM_DockWidgetTitleMargin );
-            //spacing between icon and title
-            int spacing = baseStyle()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing );
-          
-            QPoint icon_point( margin + option->rect.left(), margin + option->rect.center().y() - width/2 );
+            int width = std::min( pixelMetric(QStyle::PM_SmallIconSize), option->rect.height() );
+
+            const QStyleOptionDockWidget* s = static_cast<const QStyleOptionDockWidget*>(option);
+
+            QString stored_title = s->title;
+            const_cast<QStyleOptionDockWidget*>(s)->title.clear();
+
+            QPoint icon_point;
             
+            //calculating top-left icon point( hard-hack around terrible oxygen-style )
+            if( baseStyle()->objectName().toStdString() == "oxygen" )
+                icon_point = QPoint( 5 + option->rect.left(), option->rect.center().y() - width/2 + 1 );
+            else
+                icon_point = QPoint( 2 + option->rect.left(), option->rect.center().y() - width/2 + 1 );
+
+            //drawing default-styled title back
+            baseStyle()->drawControl(element, option, painter, widget);
+
+            //Adjusting title rect with icon width( hard-hack around terrible oxygen-style )
+            if( baseStyle()->objectName().toStdString() == "oxygen" )
+                const_cast<QStyleOption*>(option)->rect = option->rect.adjusted( width, 0, 0, 0);
+            else
+                const_cast<QStyleOption*>(option)->rect = option->rect.adjusted( 2 + width, 0, 0, 0);
+
+            //restoring title text
+            const_cast<QStyleOptionDockWidget*>(s)->title = stored_title;
+
+            //drawing pixmap
             painter->drawPixmap(icon_point, icon_.pixmap( width, width ) );
-            
-            const_cast<QStyleOption*>(option)->rect = option->rect.adjusted(width, 0, 0, 0);
         }
+
+        //drawing default(but adjusted if any) title
         baseStyle()->drawControl(element, option, painter, widget);
     }
 };
