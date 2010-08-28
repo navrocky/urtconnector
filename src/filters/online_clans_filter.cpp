@@ -1,5 +1,4 @@
 #include <set>
-#include <boost/make_shared.hpp>
 
 #include <QObject>
 #include <QSpinBox>
@@ -29,7 +28,7 @@ const char* online_clans_filter_class::get_id()
 
 filter_p online_clans_filter_class::create_filter()
 {
-    return boost::make_shared<online_clans_filter>(shared_from_this());
+    return filter_p(new online_clans_filter(shared_from_this()));
 }
 
 QWidget* online_clans_filter_class::create_quick_opts_widget(filter_p f)

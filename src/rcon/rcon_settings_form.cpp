@@ -1,6 +1,5 @@
 
 #include <boost/bind.hpp>
-
 #include <QColorDialog>
 
 #include "ui_rcon_settings_form.h"
@@ -96,16 +95,16 @@ void rcon_settings_form::color_clicked()
 {
     rcon_settings settings;
     QWidget* s = qobject_cast< QWidget* >( sender() );
-    QColorDialog dlg( settings.color( p_->c_map[s] ) );
-    if ( dlg.exec() ==  QDialog::Accepted )
-    {
-        settings.set_color( p_->c_map[s], dlg.selectedColor() );
-        QPalette p = p_->e_map[s]->palette();
-        p.setColor( QPalette::WindowText, dlg.selectedColor() );
-        p.setColor( QPalette::Window, dlg.selectedColor() );
-        p_->e_map[s]->setPalette(p);
-    }
-
+    
+    QColor col = settings.color( p_->c_map[s] );
+    col = QColorDialog::getColor(col);
+    if (!col.isValid())
+        return;
+    settings.set_color( p_->c_map[s], col );
+    QPalette p = p_->e_map[s]->palette();
+    p.setColor( QPalette::WindowText, col );
+    p.setColor( QPalette::Window, col );
+    p_->e_map[s]->setPalette(p);
 }
 
 void rcon_settings_form::reset_to_defaults()

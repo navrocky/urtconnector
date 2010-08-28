@@ -1,5 +1,4 @@
 #include <QObject>
-#include <boost/make_shared.hpp>
 
 #include "hide_empty_filter.h"
 
@@ -18,7 +17,7 @@ const char* hide_empty_filter_class::get_id()
 
 filter_p hide_empty_filter_class::create_filter()
 {
-    return boost::make_shared<hide_empty_filter>(shared_from_this());
+    return filter_p(new hide_empty_filter(shared_from_this()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

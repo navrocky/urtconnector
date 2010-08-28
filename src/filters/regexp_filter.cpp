@@ -1,5 +1,3 @@
-#include <boost/make_shared.hpp>
-
 #include <QObject>
 #include <QLineEdit>
 #include <QToolButton>
@@ -29,7 +27,7 @@ const char* regexp_filter_class::get_id()
 
 filter_p regexp_filter_class::create_filter()
 {
-    return boost::make_shared<regexp_filter>(shared_from_this());
+    return filter_p(new regexp_filter(shared_from_this()));
 }
 
 QWidget* regexp_filter_class::create_quick_opts_widget(filter_p f)

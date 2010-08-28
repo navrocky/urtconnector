@@ -118,7 +118,11 @@ QColor choose_for_background(Qt::GlobalColor standard, const QColor& background)
             ( Qt::gray,   Qt::darkGray  );
     }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
     if( background.lightness() > 128 )
+#else
+    if (true)
+#endif
         return dark_colors[standard];
     else
         return light_colors[standard];

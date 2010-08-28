@@ -10,6 +10,13 @@ set(HEADERS
 set(MOC_HEADERS
 )
 
+if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.6)
+set(MOC_HEADERS ${MOC_HEADERS}
+    iconned_dock_style.h
+)
+
+endif()
+
 set(SOURCES
 )
 

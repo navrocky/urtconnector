@@ -1,6 +1,6 @@
 #include <QObject>
 #include <QComboBox>
-#include <boost/make_shared.hpp>
+//#include <boost/make_shared.hpp>
 #include <cl/except/error.h>
 
 #include "composite_filter.h"
@@ -24,7 +24,7 @@ const char* composite_filter_class::get_id()
 
 filter_p composite_filter_class::create_filter()
 {
-    return boost::make_shared<composite_filter>(shared_from_this());
+    return filter_p(new composite_filter(shared_from_this()));
 }
 
 QWidget* composite_filter_class::create_quick_opts_widget(filter_p f)

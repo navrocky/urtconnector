@@ -3,7 +3,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 
 #include <QAction>
 #include <QTimer>
@@ -95,7 +94,7 @@ main_window::main_window(QWidget *parent)
     ui_->status_bar->addPermanentWidget(jm);
 
     // initialize filter system
-    filter_factory_ = boost::make_shared<filter_factory>();
+    filter_factory_ = filter_factory_p(new filter_factory);
     register_filters(filter_factory_);
 
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 5, 0))
@@ -819,8 +818,9 @@ void main_window::open_remote_console()
     dw->setAttribute( Qt::WA_DeleteOnClose  );
     dw->setWidget( new rcon(0, id_list.front(), list[id_list.front()]) );
 
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
     dw->setStyle( new iconned_dock_style( QIcon(":/icons/icons/utilities-terminal.png"), dw->style() ) );
-
+#endif
     addDockWidget(Qt::BottomDockWidgetArea,  dw );
 }
 

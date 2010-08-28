@@ -1,6 +1,6 @@
 #include <QObject>
 #include <QComboBox>
-#include <boost/make_shared.hpp>
+
 #include <cl/except/error.h>
 
 #include "filter_edit_widget.h"
@@ -23,7 +23,7 @@ const char* game_type_filter_class::get_id()
 
 filter_p game_type_filter_class::create_filter()
 {
-    return boost::make_shared<game_type_filter>(shared_from_this());
+    return filter_p(new game_type_filter(shared_from_this()));
 }
 
 QWidget* game_type_filter_class::create_quick_opts_widget(filter_p f)

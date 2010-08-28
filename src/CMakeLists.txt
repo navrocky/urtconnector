@@ -88,7 +88,6 @@ set(MOC_HEADERS
     rcon/rcon.h
     rcon/rcon_settings_form.h
     rcon/rcon_completer.h
-    tools.h
 )
 
 set(SOURCES
