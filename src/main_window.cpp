@@ -47,6 +47,10 @@
 
 #include "settings/settings.h"
 
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
+#include "common/iconned_dock_style.h"
+#endif
+
 #include "main_window.h"
 #include "filters/filter_edit_widget.h"
 

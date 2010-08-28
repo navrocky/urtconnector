@@ -4,6 +4,7 @@
 #include <QProxyStyle>
 #include <QIcon>
 #include <QStyleOption>
+#include <QPainter>
 #include <iostream>
 
 class iconned_dock_style: public QProxyStyle{

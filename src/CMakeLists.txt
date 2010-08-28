@@ -155,6 +155,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES}
     clsyslog
     filters
     settings
+    common
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
