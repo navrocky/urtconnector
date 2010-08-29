@@ -372,6 +372,7 @@ src/icons/status-offline.png -text
 src/icons/status-online.png -text
 src/icons/status-passwd.png -text
 src/icons/status-update.png -text
+src/icons/urtconnector-48.png -text
 src/icons/urtconnector.png -text
 src/icons/user-identity.png -text
 src/icons/utilities-terminal.png -text

@@ -9,7 +9,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 find_package( Boost COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})
 
-find_package(Qt4 COMPONENTS QtCore QtGui QtXml QtNetwork REQUIRED)
+find_package(Qt4)
+set(QT_USE_QTXML true)
+set(QT_USE_QTNETWORK true)
+
 include(${QT_USE_FILE})
 
 if (WIN32)
@@ -161,6 +164,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES}
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 install(FILES icons/urtconnector.png DESTINATION share/icons)
 install(FILES icons/urtconnector.png DESTINATION share/pixmaps)
+install(FILES icons/urtconnector-48.png DESTINATION share/icons/hicolor/48x48/apps RENAME urtconnector.png)
 install(FILES urtconnector.desktop DESTINATION share/applications)
 install(FILES GeoIP.dat DESTINATION share/urtconnector)
 

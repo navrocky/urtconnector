@@ -1,10 +1,13 @@
 [Desktop Entry]
-Name=urtconnector
-GenericName=UrbanTerror connector
+Version=1.0
+Name=UrTConnector
+Name[ru]=UrTConnector
+GenericName=UrbanTerror browser and launcher
+GenericName[ru]=Просмотр игровых серверов и запуск UrbanTerror
 Comment=UrbanTerror connector
+Comment[ru]=Просмотр игровых серверов и запуск UrbanTerror
 Exec=urtconnector
-Icon=/usr/share/icons/urtconnector.png
+Icon=urtconnector
 Terminal=false
 Type=Application
 Categories=Game;X-SuSE-Core-Game;
-Version=0.4.0
