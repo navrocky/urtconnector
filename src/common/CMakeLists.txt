@@ -7,6 +7,10 @@ set(HEADERS
     scoped_tools.h
 )
 
+set(SOURCES
+    stub.cpp
+)
+
 set(MOC_HEADERS
 )
 
@@ -14,11 +18,11 @@ if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)
 set(MOC_HEADERS ${MOC_HEADERS}
     iconned_dock_style.h
 )
-endif()
 
-set(SOURCES
-    stub.cpp
+set(SOURCES ${SOURCES}
+    iconned_dock_style.cpp
 )
+endif()
 
 set(IFACES
 )

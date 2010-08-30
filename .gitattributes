@@ -70,6 +70,7 @@ src/cl/syslog/syslog.h -text
 src/clipper.cpp -text
 src/clipper.h -text
 src/common/CMakeLists.txt -text
+src/common/iconned_dock_style.cpp -text
 src/common/iconned_dock_style.h -text
 src/common/scoped_tools.h -text
 src/common/stub.cpp -text

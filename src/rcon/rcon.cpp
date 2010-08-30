@@ -56,6 +56,8 @@ struct rcon::Pimpl{
         hl->addStretch();
         hl->addLayout( vl );
 
+        ui.output->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+        
         send_timer.setInterval( 2000 );
         send_timer.setSingleShot( true );
     }
