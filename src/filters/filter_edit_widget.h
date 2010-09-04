@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QDialog>
+#include <QMainWindow>
 
 #include "pointers.h"
 
@@ -65,7 +66,7 @@ private:
 };
 
 
-class filter_edit_widget : public QWidget
+class filter_edit_widget : public QMainWindow
 {
     Q_OBJECT
 public:

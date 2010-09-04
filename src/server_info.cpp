@@ -91,6 +91,7 @@ void server_info::update_from(const server_info& src)
     if (src.max_player_count != 0)
         max_player_count = src.max_player_count;
     update_stamp++;
+    meta_info_string_ = QString();
 }
 
 const QString& server_info::meta_info_string() const

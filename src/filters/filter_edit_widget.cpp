@@ -10,8 +10,9 @@
 #include <QListWidget>
 #include <QDialogButtonBox>
 #include <QPushButton>
-#include <qmessagebox.h>
-#include <qapplication.h>
+#include <QMessageBox>
+#include <QApplication>
+#include <QToolBar>
 
 #include "filter.h"
 #include "filter_list.h"
@@ -174,7 +175,7 @@ void filter_item_widget::update_contents()
 // filter_edit_widget
 
 filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
-: QWidget(parent, Qt::Tool)
+: QMainWindow(parent, Qt::Tool)
 , filters_(filters)
 {
     setWindowTitle(tr("Filter options"));
@@ -191,11 +192,15 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     connect(select_toolbar_filter_action_, SIGNAL(triggered()), SLOT(select_toolbar_filter()));
     connect(delete_filter_action_, SIGNAL(triggered()), SLOT(delete_filter()));
 
-    QVBoxLayout* lay = new QVBoxLayout(this);
-    lay->setContentsMargins(0, 0, 0, 0);
+    QToolBar* tb = new QToolBar;
+    tb->addAction(add_new_filter_action_);
+    tb->addAction(select_toolbar_filter_action_);
+    tb->addSeparator();
+    tb->addAction(delete_filter_action_);
+    addToolBar(Qt::RightToolBarArea, tb);
 
     tree_ = new QTreeWidget(this);
-    lay->addWidget(tree_);
+    setCentralWidget(tree_);
     tree_->header()->setVisible(false);
     tree_->setAlternatingRowColors(true);
 

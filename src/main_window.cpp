@@ -84,6 +84,7 @@ main_window::main_window(QWidget *parent)
 , old_state_(0)
 , clipper_( new clipper(this, opts_) )
 {
+//    setAttribute(Qt::WA_TranslucentBackground, true);
     //Initializing main settings
     settings set;
     //Registering state_settings in separate file
