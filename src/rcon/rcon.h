@@ -77,9 +77,8 @@ class completer: public QCompleter{
     Q_OBJECT
 public:
     completer(QLineEdit* le, const QStringList& lst = QStringList() )
-        :QCompleter(lst, le), edit(le), items( popup() )
+        :QCompleter(lst, le), edit(le), items( popup() ), start_pos(0), first(false)
     {
-        first = false;
         setCompletionColumn(-1);
         connect( this, SIGNAL( activated(const QString&)), SLOT( text_selected(const QString&) ) );
     }
