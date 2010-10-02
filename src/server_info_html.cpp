@@ -40,19 +40,6 @@ QString get_css()
     return css.arg(window).arg(window).arg(base).arg(alternate);
 }
 
-QString plain_to_html(const QString& src)
-{
-    // TODO Make this more effective. You need to find same function in
-    //      the guts of Qt.
-    static QTextEdit te;
-    static QRegExp rx(">([^>]+)</p></body></html>$");
-    te.setPlainText(src);
-    if (rx.indexIn(te.toHtml()) >= 0)
-        return rx.cap(1);
-    else
-        return "";
-}
-
 QString get_server_info_html(const server_info& si)
 {
     QString html, players;
@@ -67,15 +54,13 @@ QString get_server_info_html(const server_info& si)
         for (player_info_list::const_iterator it = pil.begin(); it != pil.end(); it++)
         {
             players += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td><td>%4</td></tr>")
-                    .arg(i % 2 + 1).arg(/*plain_to_html(*/it->nick_name/*)*/).arg(it->ping).arg(it->score);
+                       .arg(i % 2 + 1).arg(Qt::escape(it->nick_name)).arg(it->ping).arg(it->score);
             i++;
         }
         players += "</table>";
     }
 
-    //FIXME plain_to_html dont work!!
-    //QString name = plain_to_html(si.name);
-    QString name = si.get_info("sv_hostname");
+    QString name = Qt::escape(si.get_info("sv_hostname"));
     if (name.isEmpty())
         name = si.get_info("hostname");
     if (name.isEmpty())
@@ -156,7 +141,7 @@ QString get_server_info_html(const server_info& si)
                 it != si.info.end(); it++)
         {
             ext_info += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td></tr>")
-                    .arg(i % 2 + 1).arg(it->first).arg(/*plain_to_html(*/it->second/*)*/); // plain_to_html dont works with it->second
+                        .arg(i % 2 + 1).arg(it->first).arg(Qt::escape(it->second));
             i++;
         }
         ext_info += "</table>";

@@ -32,6 +32,7 @@ void clipper::changed(QClipboard::Mode mode)
     LOG_HARD << "Clipboard has new value";
 
     QRegExp rx(opts_->lfc_regexp);
+    rx.setCaseSensitivity(Qt::CaseInsensitive);
     if (!rx.isValid())
     {
         LOG_ERR << "Error in regexp: %1", to_str(rx.errorString());
