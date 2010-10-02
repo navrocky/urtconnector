@@ -35,6 +35,7 @@ add_subdirectory(cl)
 add_subdirectory(filters)
 add_subdirectory(settings)
 add_subdirectory(common)
+add_subdirectory(history)
 
 set(HEADERS
     about_dialog.h
@@ -159,6 +160,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES}
     filters
     settings
     common
+    history
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)

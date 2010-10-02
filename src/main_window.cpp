@@ -35,6 +35,7 @@
 #include "item_view_dblclick_action_link.h"
 #include "str_convert.h"
 #include "tools.h"
+#include "history/history.h"
 
 #include "jobs/job_monitor.h"
 #include "job_update_selected.h"
@@ -81,6 +82,7 @@ main_window::main_window(QWidget *parent)
 , opts_(new app_options())
 , all_sl_(new server_list)
 , fav_sl_(new server_list)
+, history_sl_(new history(opts_))
 , old_state_(0)
 , clipper_( new clipper(this, opts_) )
 {
@@ -192,10 +194,17 @@ main_window::main_window(QWidget *parent)
 
     fav_list_->set_favs(&(opts_->servers));
     all_list_->set_favs(&(opts_->servers));
+    // history_list_->set_favs(&(opts_->servers));
 
     // loading all options
     load_all_at_start();
     load_geometry();
+
+    // history
+    history_sl_->change_max();
+    load_history_tab();
+
+    update_actions();
 
     sync_fav_list();
     update_server_info();
@@ -233,10 +242,26 @@ void main_window::raise_window()
 
 void main_window::show_options()
 {
+    bool wasHistoryEnabled = opts_->keep_history;
+    unsigned int oldNumberInHistory = opts_->number_in_history;
+
     options_dialog d;
     d.set_opts(opts_);
     if (d.exec() == QDialog::Rejected) return;
     save_options();
+
+    if (wasHistoryEnabled != opts_->keep_history)
+    {
+        load_history_tab();
+    }
+    if (oldNumberInHistory != opts_->number_in_history)
+    {
+        history_sl_->change_max();
+        if (opts_->keep_history)
+        {
+            history_list_->update_history();
+        }
+    }
 }
 
 void main_window::quick_connect() const
@@ -245,6 +270,14 @@ void main_window::quick_connect() const
     l.set_server_id(server_id(ui_->qlServerEdit->text()));
     l.set_user_name(ui_->qlPlayerEdit->text());
     l.set_password(ui_->qlPasswordEdit->text());
+
+    // add to history if history is enabled
+    if (opts_->keep_history)
+    {
+        history_sl_->add(l.id(), "", l.userName(), l.password());
+        history_list_->update_history();
+    }
+
     l.launch();
 }
 
@@ -544,6 +577,14 @@ void main_window::connect_selected() const
 
     l.set_referee(opts.ref_password);
     l.set_rcon(opts.rcon_password);
+
+    // add to history if history is enabled
+    if (opts_->keep_history)
+    {
+        history_sl_->add(l.id(), info->name, l.userName(), l.password());
+        history_list_->update_history();
+    }
+
     l.launch();
 }
 
@@ -810,7 +851,6 @@ void main_window::clear_selected()
     clear_servers(current, id_list);
 }
 
-
 void main_window::open_remote_console()
 {
     server_id_list id_list( selected_list_widget()->selection() );
@@ -829,5 +869,38 @@ void main_window::open_remote_console()
     addDockWidget(Qt::BottomDockWidgetArea,  dw );
 }
 
+void main_window::load_history_tab()
+{
+    if (opts_->keep_history)
+    {
+        if (!ui_->tabWidget->isTabEnabled(2))
+        {
+            ui_->tabWidget->setTabEnabled(2, true);
+        }
+        history_list_ = new history_widget(opts_, ui_->tabHistory, history_sl_);
+        dynamic_cast<QBoxLayout*> (ui_->tabHistory->layout())->insertWidget(0, history_list_);
+        connect(history_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
+        history_list_->update_history();
 
+        history_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
+        history_list_->tree()->addAction(ui_->actionConnect);
+        add_separator_action(history_list_->tree());
+        history_list_->tree()->addAction(ui_->actionAddToFav);
+        history_list_->tree()->addAction(ui_->actionHistoryDelete);
+        add_separator_action(history_list_->tree());
+        history_list_->tree()->addAction(ui_->actionRefreshSelected);
+
+        new item_view_dblclick_action_link(this, history_list_->tree(), ui_->actionConnect);
+    }
+    else
+    {
+        QBoxLayout* tab_history_lay = dynamic_cast<QBoxLayout*> (ui_->tabHistory->layout());
+        if (tab_history_lay->indexOf(history_list_) != -1)
+        {
+            tab_history_lay->removeWidget(history_list_);
+            delete history_list_;
+        }
+        ui_->tabWidget->setTabEnabled(2, false);
+    }
+}

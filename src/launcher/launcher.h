@@ -24,6 +24,19 @@ public:
     void set_referee(const QString& value);
     void set_config_url(const QString& value);
 
+    server_id id() const
+    {
+        return id_;
+    }
+    QString userName() const
+    {
+        return userName_;
+    }
+    QString password() const
+    {
+        return password_;
+    }
+
     // Launch string
     QString launch_string();
 

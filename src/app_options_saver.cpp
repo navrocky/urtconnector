@@ -20,6 +20,8 @@ void save_app_options(qsettings_p s, app_options_p opts)
     s->setValue("adv_cmd_line", opts->adv_cmd_line);
     s->setValue("binary_path", opts->binary_path);
     s->setValue("geoip_database", opts->geoip_database);
+    s->setValue("keep_history", opts->keep_history);
+    s->setValue("number_in_history", opts->number_in_history);
     s->endGroup();
 
     s->beginGroup("qstat_opts");
@@ -46,6 +48,8 @@ void load_app_options(qsettings_p s, app_options_p opts)
     opts->adv_cmd_line = s->value("adv_cmd_line", opts->adv_cmd_line).toString();
     opts->binary_path = s->value("binary_path", opts->binary_path).toString();
     opts->geoip_database = s->value( "geoip_database", opts->geoip_database ).toString();
+    opts->keep_history = s->value("keep_history", opts->keep_history).toBool();
+    opts->number_in_history = s->value("number_in_history", opts->number_in_history).toUInt();
     s->endGroup();
 
     s->beginGroup("qstat_opts");
@@ -103,4 +107,3 @@ void load_server_favs(qsettings_p s, app_options_p opts)
     }
     s->endArray();
 }
-

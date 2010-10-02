@@ -16,6 +16,7 @@
 #include "geoip/geoip.h"
 #include "clipper.h"
 #include "filters/pointers.h"
+#include "history/history_widget.h"
 
 class QTimer;
 class Ui_MainWindowClass;
@@ -68,6 +69,8 @@ private slots:
 private:
     void sync_fav_list();
 
+    void load_history_tab();
+
     void load_all_at_start();
     void save_state_at_exit();
     void save_geometry();
@@ -87,8 +90,10 @@ private:
     app_options_p opts_;
     server_list_widget* all_list_;
     server_list_widget* fav_list_;
+    history_widget* history_list_;
     server_list_p all_sl_;
     server_list_p fav_sl_;
+    history_p history_sl_;
     QTimer* serv_info_update_timer_;
     server_id old_id_;
     int old_state_;

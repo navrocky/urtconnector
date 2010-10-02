@@ -15,5 +15,10 @@ typedef boost::shared_ptr<QSettings> qsettings_p;
 class server_info;
 typedef boost::shared_ptr<server_info> server_info_p;
 
-#endif	/* _POINTERS_H */
+class history_item;
+typedef boost::shared_ptr<history_item> history_item_p;
 
+class history;
+typedef boost::shared_ptr<history> history_p;
+
+#endif	/* _POINTERS_H */
