@@ -36,6 +36,9 @@ src/GeoIP.dat -text
 src/about_dialog.cpp -text
 src/about_dialog.h -text
 src/about_dialog.ui -text
+src/anticheat/CMakeLists.txt -text
+src/anticheat/anticheat.cpp -text
+src/anticheat/anticheat.h -text
 src/app_options.cpp -text
 src/app_options.h -text
 src/app_options_saver.cpp -text
@@ -422,6 +425,7 @@ src/player_info.h -text
 src/pointers.h -text
 src/push_button_action_link.cpp -text
 src/push_button_action_link.h -text
+src/q3proto/CMakeLists.txt -text
 src/qstat_options.cpp -text
 src/qstat_options.h -text
 src/qstat_updater.cpp -text

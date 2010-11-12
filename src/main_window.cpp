@@ -54,6 +54,7 @@
 
 #include "main_window.h"
 #include "filters/filter_edit_widget.h"
+#include "anticheat/anticheat.h"
 
 SYSLOG_MODULE("main_window");
 
@@ -214,6 +215,10 @@ main_window::main_window(QWidget *parent)
     all_list_->force_update();
     fav_list_->force_update();
     update_tabs();
+
+    anticheat* ac = new anticheat(this);
+    ac->set_interval(5000);
+//    ac->start();
 }
 
 main_window::~main_window()

@@ -36,6 +36,7 @@ add_subdirectory(filters)
 add_subdirectory(settings)
 add_subdirectory(common)
 add_subdirectory(history)
+add_subdirectory(anticheat)
 
 set(HEADERS
     about_dialog.h
@@ -161,6 +162,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES}
     settings
     common
     history
+    anticheat
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)

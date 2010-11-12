@@ -6,6 +6,7 @@
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QTemporaryFile>
+#include <QDesktopWidget>
 
 #include <cl/syslog/syslog.h>
 #include <cl/syslog/output_stream.h>
@@ -46,6 +47,10 @@ int main(int argc, char *argv[])
     }
 #endif
     application::setQuitOnLastWindowClosed(false);
+
+//    LOG_DEBUG << "Screen count %1", QApplication::desktop()->screenCount();
+
+//    return 0;
 
     try
     {
