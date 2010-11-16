@@ -2,7 +2,7 @@
 #define _SERVER_LIST_H
 
 #include "server_info.h"
-#include "server_id.h"
+#include "common/server_id.h"
 
 /*! Server list, used by server_list_widget to fetching server_info. */
 class server_list

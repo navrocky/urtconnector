@@ -14,7 +14,7 @@
 
 #include <cl/syslog/syslog.h>
 
-#include "server_id.h"
+#include "common/server_id.h"
 #include "server_options.h"
 #include "tools.h"
 

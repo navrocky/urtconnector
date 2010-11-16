@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "pointers.h"
-#include "server_id.h"
+#include "common/server_id.h"
 
 /*! \brief Game launcher.
 

@@ -76,8 +76,10 @@ src/clipper.h -text
 src/common/CMakeLists.txt -text
 src/common/iconned_dock_style.cpp -text
 src/common/iconned_dock_style.h -text
+src/common/implicit_sharing.h -text
 src/common/scoped_tools.h -text
-src/common/stub.cpp -text
+src/common/server_id.cpp -text
+src/common/server_id.h -text
 src/config.h.in -text
 src/debug_help.cpp -text
 src/debug_help.h -text
@@ -451,8 +453,6 @@ src/rcon/rcon_settings.h -text
 src/rcon/rcon_settings_form.cpp -text
 src/rcon/rcon_settings_form.h -text
 src/rcon/rcon_settings_form.ui -text
-src/server_id.cpp -text
-src/server_id.h -text
 src/server_info.cpp -text
 src/server_info.h -text
 src/server_info_html.cpp -text

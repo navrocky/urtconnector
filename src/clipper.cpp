@@ -5,7 +5,7 @@
 
 #include "str_convert.h"
 #include "app_options.h"
-#include "server_id.h"
+#include "common/server_id.h"
 #include "clipper.h"
 
 SYSLOG_MODULE("clipper");

@@ -216,8 +216,10 @@ main_window::main_window(QWidget *parent)
     fav_list_->force_update();
     update_tabs();
 
-    anticheat* ac = new anticheat(this);
-    ac->set_interval(5000);
+//    anticheat* ac = new anticheat(this);
+//    ac->set_interval(5000);
+//    ac->set_ftp_connection_info(server_id("visualdata.ru", 21), "visuald5", "ramaemooG4");
+//    ac->set_ftp_folder("screenshots");
 //    ac->start();
 }
 

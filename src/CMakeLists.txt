@@ -49,7 +49,6 @@ set(HEADERS
     options_dialog.h
     player_info.h
     push_button_action_link.h
-    server_id.h
     server_info.h
     server_list.h
     server_list_saver.h
@@ -107,7 +106,6 @@ set(SOURCES
     options_dialog.cpp
     player_info.cpp
     push_button_action_link.cpp
-    server_id.cpp
     server_info.cpp
     server_list.cpp
     server_list_saver.cpp

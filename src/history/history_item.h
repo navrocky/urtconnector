@@ -2,7 +2,7 @@
 #define HISTORY_ITEM_H
 
 #include <QDateTime>
-#include "server_id.h"
+#include "common/server_id.h"
 
 class history_item
 {

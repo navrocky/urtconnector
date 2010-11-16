@@ -5,10 +5,11 @@ include(${QT_USE_FILE})
 
 set(HEADERS
     scoped_tools.h
+    server_id.h
 )
 
 set(SOURCES
-    stub.cpp
+    server_id.cpp
 )
 
 set(MOC_HEADERS

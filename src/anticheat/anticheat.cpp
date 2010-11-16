@@ -22,7 +22,28 @@ anticheat::anticheat(QObject* parent)
 , ftp_(new QFtp(this))
 , nick_name_(tr("Player"))
 {
-//    ftp_->
+    connect(ftp_, SIGNAL(done(bool)), SLOT(ftp_done(bool)));
+}
+
+void anticheat::ftp_done(bool error)
+{
+    if (error)
+        LOG_ERR << "Ftp error %1", ftp_->errorString().toStdString();
+    else
+        LOG_DEBUG << "Ftp command done.";
+}
+
+void anticheat::set_ftp_connection_info(const server_id& addr, const QString& login,
+    const QString& password)
+{
+    addr_ = addr;
+    login_ = login;
+    password_ = password;
+}
+
+void anticheat::set_ftp_folder(const QString& folder)
+{
+    ftp_folder_ = folder;
 }
 
 void anticheat::set_interval(int val)
@@ -59,15 +80,37 @@ void anticheat::start()
 {
     if (timer_)
         return;
+
+    LOG_DEBUG << "Anticheat started";
+
     update_timer();
+    ftp_connection_needed();
+}
+
+void anticheat::ftp_connection_needed()
+{
+    if (ftp_->state() != QFtp::Unconnected)
+        return;
+    ftp_->connectToHost(addr_.ip_or_host(), addr_.port());
+    ftp_->login(login_, password_);
+    ftp_->mkdir(ftp_folder_);
+    ftp_->cd(ftp_folder_);
 }
 
 void anticheat::stop()
 {
     if (!timer_)
         return;
+    LOG_DEBUG << "Anticheat stopped";
+
     killTimer(timer_);
     timer_ = 0;
+
+    if (ftp_->state() != QFtp::Unconnected)
+    {
+        LOG_DEBUG << "Closing FTP connection";
+        ftp_->close();
+    }
 }
 
 bool anticheat::event(QEvent* e)
@@ -81,6 +124,8 @@ bool anticheat::event(QEvent* e)
 
 void anticheat::screen_shot()
 {
+    ftp_connection_needed();
+
     QPixmap pm = QPixmap::grabWindow(QApplication::desktop()->winId());
     QByteArray ba;
     {

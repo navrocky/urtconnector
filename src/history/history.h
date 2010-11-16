@@ -4,7 +4,7 @@
 #include <QList>
 #include "history_item.h"
 #include "pointers.h"
-#include "server_id.h"
+#include "common/server_id.h"
 
 class history
 {

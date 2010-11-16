@@ -5,7 +5,7 @@
 #include <QString>
 
 #include "jobs/job.h"
-#include "server_id.h"
+#include "common/server_id.h"
 #include "qstat_updater.h"
 #include "pointers.h"
 

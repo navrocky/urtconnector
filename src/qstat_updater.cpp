@@ -1,7 +1,7 @@
 #include <cl/syslog/syslog.h>
 
 #include "exception.h"
-#include "server_id.h"
+#include "common/server_id.h"
 #include "server_list.h"
 
 #include "qstat_updater.h"

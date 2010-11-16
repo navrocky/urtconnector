@@ -10,7 +10,7 @@
 #include <QTreeWidget>
 
 #include "pointers.h"
-#include "server_id.h"
+#include "common/server_id.h"
 #include "server_options.h"
 #include "pointers.h"
 #include "filters/pointers.h"
