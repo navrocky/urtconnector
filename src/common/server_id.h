@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <QString>
-#include <QSharedData>
 
 #include "implicit_sharing.h"
 
@@ -11,16 +10,6 @@
 
     Unique server identificator.
 */
-//    class impl : public QSharedData
-//    {
-//    public:
-//        impl():port_(0){}
-//        impl(const impl& src):QSharedData(src), ip_(src.ip_),host_name_(src.host_name_), port_(src.port_){}
-//        ~impl(){}
-//        QString ip_;
-//        QString host_name_;
-//        int port_;
-//    };
 class server_id
 {
 public:

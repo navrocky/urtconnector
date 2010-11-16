@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>801</width>
-    <height>566</height>
+    <width>799</width>
+    <height>564</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,6 +25,9 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <property name="margin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="enabled">
@@ -90,7 +93,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>801</width>
+     <width>799</width>
      <height>25</height>
     </rect>
    </property>

@@ -315,50 +315,46 @@ void server_list_widget::update_list()
 
     visible_server_count_ = 0;
     tw->setUpdatesEnabled(false);
-    try
+    tw->setSortingEnabled(false);
+
+    const server_info_list& list = serv_list_->list();
+
+    // who changed, appeared?
+    for (server_info_list::const_iterator it = list.begin(); it != list.end(); it++)
     {
-        const server_info_list& list = serv_list_->list();
+        const server_id& id = it->first;
+        server_items::iterator it2 = items_.find(id);
 
-        // who changed, appeared?
-        for (server_info_list::const_iterator it = list.begin(); it != list.end(); it++)
+        if (it2 != items_.end())
         {
-            const server_id& id = it->first;
-            server_items::iterator it2 = items_.find(id);
-
-            if (it2 != items_.end())
-            {
-                update_item(it2->second);
-            } else
-            {
-                QTreeWidgetItem* item = new QTreeWidgetItem(tw);
-                item->setData(0, c_info_role, QVariant::fromValue(it->second));
-                items_[id] = item;
-                update_item(item);
-            }
-        }
-        // who removed ?
-        std::vector<server_id> to_remove;
-        for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
+            update_item(it2->second);
+        } else
         {
-            const server_id& id = it->first;
-            if (list.find(id) == list.end())
-                to_remove.push_back(id);
+            QTreeWidgetItem* item = new QTreeWidgetItem(tw);
+            item->setData(0, c_info_role, QVariant::fromValue(it->second));
+            items_[id] = item;
+            update_item(item);
         }
-        for (std::vector<server_id>::iterator it = to_remove.begin(); it != to_remove.end(); it++)
-        {
-            QTreeWidgetItem* item = items_[*it];
-            if (item == cur_item)
-                cur_item == 0;
-            delete item;
-            items_.erase(*it);
-        }
-
-        tw->setUpdatesEnabled(true);
     }
-    catch(...)
+    // who removed ?
+    std::vector<server_id> to_remove;
+    for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
     {
-        tw->setUpdatesEnabled(true);
+        const server_id& id = it->first;
+        if (list.find(id) == list.end())
+            to_remove.push_back(id);
     }
+    for (std::vector<server_id>::iterator it = to_remove.begin(); it != to_remove.end(); it++)
+    {
+        QTreeWidgetItem* item = items_[*it];
+        if (item == cur_item)
+            cur_item == 0;
+        delete item;
+        items_.erase(*it);
+    }
+
+    tw->setSortingEnabled(true);
+    tw->setUpdatesEnabled(true);
 
     if (tw->topLevelItemCount() > 0 && cur_item && opts_->center_current_row)
         tw->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
