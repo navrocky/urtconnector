@@ -19,31 +19,8 @@ anticheat::anticheat(QObject* parent)
 , interval_(10)
 , quality_(40)
 , timer_(0)
-, ftp_(new QFtp(this))
 , nick_name_(tr("Player"))
 {
-    connect(ftp_, SIGNAL(done(bool)), SLOT(ftp_done(bool)));
-}
-
-void anticheat::ftp_done(bool error)
-{
-    if (error)
-        LOG_ERR << "Ftp error %1", ftp_->errorString().toStdString();
-    else
-        LOG_DEBUG << "Ftp command done.";
-}
-
-void anticheat::set_ftp_connection_info(const server_id& addr, const QString& login,
-    const QString& password)
-{
-    addr_ = addr;
-    login_ = login;
-    password_ = password;
-}
-
-void anticheat::set_ftp_folder(const QString& folder)
-{
-    ftp_folder_ = folder;
 }
 
 void anticheat::set_interval(int val)
@@ -84,17 +61,12 @@ void anticheat::start()
     LOG_DEBUG << "Anticheat started";
 
     update_timer();
-    ftp_connection_needed();
-}
 
-void anticheat::ftp_connection_needed()
-{
-    if (ftp_->state() != QFtp::Unconnected)
-        return;
-    ftp_->connectToHost(addr_.ip_or_host(), addr_.port());
-    ftp_->login(login_, password_);
-    ftp_->mkdir(ftp_folder_);
-    ftp_->cd(ftp_folder_);
+    foreach (sshot_output* out, outputs_)
+    {
+        if (out)
+            out->start();
+    }
 }
 
 void anticheat::stop()
@@ -106,10 +78,10 @@ void anticheat::stop()
     killTimer(timer_);
     timer_ = 0;
 
-    if (ftp_->state() != QFtp::Unconnected)
+    foreach (sshot_output* out, outputs_)
     {
-        LOG_DEBUG << "Closing FTP connection";
-        ftp_->close();
+        if (out)
+            out->stop();
     }
 }
 
@@ -124,7 +96,20 @@ bool anticheat::event(QEvent* e)
 
 void anticheat::screen_shot()
 {
-    ftp_connection_needed();
+    bool can_send = false;
+    foreach (sshot_output* out, outputs_)
+    {
+        if (out && out->can_send_now())
+        {
+            can_send = true;
+            break;
+        }
+    }
+    if (!can_send)
+    {
+        LOG_DEBUG << "There are pending output commands, screenshot send skipped";
+        return;
+    }
 
     QPixmap pm = QPixmap::grabWindow(QApplication::desktop()->winId());
     QByteArray ba;
@@ -136,30 +121,19 @@ void anticheat::screen_shot()
 
     QString fn = QString("%1_%2").arg(nick_name_).arg(QDateTime::currentDateTime().toString(Qt::ISODate));
 
-    QFile f_pic(fn + ".jpg");
-    if (!f_pic.open(QIODevice::WriteOnly))
+    foreach (sshot_output* out, outputs_)
     {
-        LOG_ERR << "Can't open file to write \"%1\"", f_pic.fileName().toLocal8Bit().data();
-        return;
-    }
-    if (f_pic.write(ba) < 0)
-    {
-        LOG_ERR << "Error while writing file \"%1\"", f_pic.fileName().toLocal8Bit().data();
-        return;
-    }
-
-    QFile f_md5(fn + ".md5");
-    if (!f_md5.open(QIODevice::WriteOnly))
-    {
-        LOG_ERR << "Can't open file to write \"%1\"", f_md5.fileName().toLocal8Bit().data();
-        return;
-    }
-    if (f_md5.write(md5.toHex()) < 0)
-    {
-        LOG_ERR << "Error while writing file \"%1\"", f_md5.fileName().toLocal8Bit().data();
-        return;
+        if (!out || !out->can_send_now())
+            continue;
+        out->send_file(fn + ".jpg", ba);
+        out->send_file(fn + ".md5", md5);
     }
 
     LOG_DEBUG << "Screenshot taken";
+}
+
+void anticheat::add_output(sshot_output* output)
+{
+    outputs_.append(output);
 }
 
