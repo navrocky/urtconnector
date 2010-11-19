@@ -6,6 +6,9 @@
 
 SYSLOG_MODULE("sshot_ftp_output")
 
+namespace anticheat
+{
+
 sshot_ftp_output::sshot_ftp_output(QObject* parent)
 : sshot_output(parent)
 {
@@ -71,3 +74,4 @@ void sshot_ftp_output::ftp_done(bool error)
         LOG_DEBUG << "Ftp command done.";
 }
 
+}

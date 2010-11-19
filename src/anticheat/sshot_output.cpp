@@ -1,5 +1,8 @@
 #include "sshot_output.h"
 
+namespace anticheat
+{
+
 sshot_output::sshot_output(QObject* parent)
 : QObject(parent)
 , enabled_(true)
@@ -19,3 +22,4 @@ void sshot_output::stop()
 {
 }
 
+}

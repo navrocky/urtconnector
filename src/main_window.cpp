@@ -89,7 +89,7 @@ main_window::main_window(QWidget *parent)
 {
 //    setAttribute(Qt::WA_TranslucentBackground, true);
     //Initializing main settings
-    settings set;
+    base_settings set;
     //Registering state_settings in separate file
     set.register_file( state_settings::uid(), "state.ini" );
     set.register_file( server_list_widget_settings::uid(), "options.ini" );
@@ -643,7 +643,7 @@ void main_window::save_geometry()
     state_settings state_s;
     state_s.set_geometry( saveGeometry() );
 
-    qsettings_p s = settings::get_settings( state_settings::uid() );
+    qsettings_p s = base_settings::get_settings( state_settings::uid() );
     s->setValue("window_state", saveState());
     s->setValue("fav_list_state", fav_list_->tree()->header()->saveState());
     s->setValue("all_list_state", all_list_->tree()->header()->saveState());
@@ -651,7 +651,7 @@ void main_window::save_geometry()
 
 void main_window::load_geometry()
 {
-    qsettings_p s = settings::get_settings( state_settings::uid() );
+    qsettings_p s = base_settings::get_settings( state_settings::uid() );
                 
     state_settings state_s;
     restoreGeometry( state_s.geometry() );

@@ -6,6 +6,9 @@
 
 SYSLOG_MODULE("sshot_file_output")
 
+namespace anticheat
+{
+
 sshot_file_output::sshot_file_output(QObject* parent)
 : sshot_output(parent)
 {
@@ -34,3 +37,4 @@ void sshot_file_output::send_file(const QString& name, const QByteArray& data)
     }
 }
 
+}

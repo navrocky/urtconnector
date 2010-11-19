@@ -2,6 +2,9 @@
 
 #include "sshot_output.h"
 
+namespace anticheat
+{
+
 class sshot_file_output : public sshot_output
 {
     Q_OBJECT
@@ -12,3 +15,4 @@ public:
     virtual void send_file(const QString& name, const QByteArray& data);
 };
 
+}

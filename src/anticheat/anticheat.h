@@ -5,9 +5,13 @@
 #include <QPointer>
 
 #include <common/server_id.h>
-#include "sshot_output.h"
 
 class QEvent;
+
+namespace anticheat
+{
+
+class sshot_output;
 
 /*! Anticheat sends a screenshots with md5 to the public ftp server */
 
@@ -34,9 +38,6 @@ public:
 
     void add_output(sshot_output* output);
 
-//private slots:
-//    void ftp_done(bool error);
-
 private:
     void update_timer();
     void screen_shot();
@@ -48,3 +49,5 @@ private:
     int timer_;
     QString nick_name_;
 };
+
+}

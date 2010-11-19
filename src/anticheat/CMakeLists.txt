@@ -8,6 +8,7 @@ set(HEADERS
     sshot_output.h
     sshot_file_output.h
     sshot_ftp_output.h
+    settings.h
 )
 
 set(MOC_HEADERS
@@ -22,6 +23,7 @@ set(SOURCES
     sshot_output.cpp
     sshot_file_output.cpp
     sshot_ftp_output.cpp
+    settings.cpp
 )
 
 set(IFACES

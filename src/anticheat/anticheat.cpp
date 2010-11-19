@@ -4,15 +4,17 @@
 #include <QCryptographicHash>
 #include <QBuffer>
 #include <QByteArray>
-#include <QFtp>
 #include <QDateTime>
-#include <QFile>
 
-#include "../cl/syslog/syslog.h"
+#include <cl/syslog/syslog.h>
 
+#include "sshot_output.h"
 #include "anticheat.h"
 
 SYSLOG_MODULE("anticheat")
+
+namespace anticheat
+{
 
 anticheat::anticheat(QObject* parent)
 : QObject(parent)
@@ -137,3 +139,4 @@ void anticheat::add_output(sshot_output* output)
     outputs_.append(output);
 }
 
+}

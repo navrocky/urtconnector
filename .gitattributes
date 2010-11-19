@@ -39,6 +39,8 @@ src/about_dialog.ui -text
 src/anticheat/CMakeLists.txt -text
 src/anticheat/anticheat.cpp -text
 src/anticheat/anticheat.h -text
+src/anticheat/settings.cpp -text
+src/anticheat/settings.h -text
 src/anticheat/sshot_file_output.cpp -text
 src/anticheat/sshot_file_output.h -text
 src/anticheat/sshot_ftp_output.cpp -text

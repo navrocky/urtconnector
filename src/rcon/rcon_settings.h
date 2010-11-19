@@ -5,7 +5,7 @@
 #include <QColor>
 #include <QSettings>
 
-#include "settings/settings.h"
+#include <settings/settings.h>
 
 class rcon_settings: public settings_uid_provider<rcon_settings>
 {

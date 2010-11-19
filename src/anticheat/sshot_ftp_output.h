@@ -7,6 +7,10 @@
 
 class QFtp;
 
+
+namespace anticheat
+{
+
 class sshot_ftp_output : public sshot_output
 {
     Q_OBJECT
@@ -35,3 +39,4 @@ private:
     QString folder_;
 };
 
+}

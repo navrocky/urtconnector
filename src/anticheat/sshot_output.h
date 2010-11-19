@@ -4,6 +4,9 @@
 #include <QByteArray>
 #include <QString>
 
+namespace anticheat
+{
+
 class sshot_output : public QObject
 {
     Q_OBJECT
@@ -26,3 +29,4 @@ private:
     bool enabled_;
 };
 
+}
