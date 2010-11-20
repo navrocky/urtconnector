@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QUdpSocket>
 #include <QCompleter>
+#include <QCompleter>
 
 #include <cl/syslog/syslog.h>
 
@@ -20,6 +21,7 @@
 
 #include "ui_rcon.h"
 #include "rcon.h"
+#include "rcon/rcon_completer.h"
 
 SYSLOG_MODULE("rcon");
 
@@ -112,43 +114,46 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
 
     p_->ui.input->setCompleter( new completer(p_->ui.input) );
 
-/*
-QTimer::singleShot( 7000, this, SLOT( timer() ) );
 
-//    rcon_completer* rc = new rcon_completer();
+// QTimer::singleShot( 7000, this, SLOT( timer() ) );
 
-    QRegExp r_exp("^%[a-zA-Z0-1]+%$");
-
-    QString str("%yeep%");
-    if( str.indexOf(r_exp) == -1 )
-    {
-        std::cerr<<"not found!"<<std::endl;
-    }
-    else
-    {
-        std::cerr<<"good!"<<std::endl;
-    }
+   rcon_completer* rc = new rcon_completer();
+    rc->setSeparator(" ");
+//     QRegExp r_exp("^%[a-zA-Z0-1]+%$");
+// 
+//     QString str("%yeep%");
+//     if( str.indexOf(r_exp) == -1 )
+//     {
+//         std::cerr<<"not found!"<<std::endl;
+//     }
+//     else
+//     {
+//         std::cerr<<"good!"<<std::endl;
+//     }
 //     exit(0);
 //     p_->ui.input->setCompleter( rc );
 
 
+//     QStandardItemModel *model = new my_item_model(0);
     QStandardItemModel *model = new my_item_model(0);
     QVector<QStandardItem *> parents(10);
 
-
+    rc->setModel( model );
 
     QStandardItem* command_item = model->invisibleRootItem();
 
     QStandardItem* kick_item = new QStandardItem("kick");
+    QStandardItem* k_item = new QStandardItem("kickerator !!!");
     QStandardItem* map_item  = new QStandardItem("map");
 
     command_item->appendRow( kick_item );
     command_item->appendRow( map_item );
+    command_item->appendRow( k_item );
 
 
-    p_->ind = kick_item->index();
+//     p_->ind = kick_item->index();
 
-    kick_item -> appendRow( new QStandardItem("jerry") );
+    kick_item -> appendRow( new QStandardItem("%jerry%") );
 //     kick_item -> appendRow( new QStandardItem("vlad") );
 //     kick_item -> appendRow( new QStandardItem("phoenix") );
 //     kick_item -> appendRow( new QStandardItem("ettset") );
@@ -157,12 +162,12 @@ QTimer::singleShot( 7000, this, SLOT( timer() ) );
     map_item -> appendRow( new QStandardItem("ut4_kingdom") );
     map_item -> appendRow( new QStandardItem("ut4_abbey") );
 
-    p_->ui.input->setCompleter( new completer( p_->ui.input, model) );
+    p_->ui.input->setCompleter(rc );
 
-    disconnect( model, SIGNAL(itemChanged(QStandardItem*)) ,0 ,0);
-    disconnect( model, SIGNAL(rowsInserted ( const QModelIndex & , int , int )) ,0 ,0);
-    disconnect( model, SIGNAL(rowsRemoved ( const QModelIndex & , int , int )) ,0 ,0);
-    disconnect( model, SIGNAL(rowsMoved ( const QModelIndex & , int , int , const QModelIndex & , int  )) ,0 ,0);*/
+//     disconnect( model, SIGNAL(itemChanged(QStandardItem*)) ,0 ,0);
+//     disconnect( model, SIGNAL(rowsInserted ( const QModelIndex & , int , int )) ,0 ,0);
+//     disconnect( model, SIGNAL(rowsRemoved ( const QModelIndex & , int , int )) ,0 ,0);
+//     disconnect( model, SIGNAL(rowsMoved ( const QModelIndex & , int , int , const QModelIndex & , int  )) ,0 ,0);*/
     
     
     //UdpSoket always connected, but initialization required

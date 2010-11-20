@@ -4,6 +4,10 @@
 
 #include <tr1/tuple>
 
+#include <stdexcept>
+
+#include <boost/function.hpp>
+
  #include <QCompleter>
 
 #include <QStandardItemModel>
@@ -11,9 +15,34 @@
 
 #include <iostream>
 
+#include <cl/syslog/syslog.h>
+
 typedef std::tr1::tuple<int, std::string> Expanding;
 
 typedef std::map<std::string, int> Expandings;
+
+struct recurse_locker{
+    bool& recurse;
+    recurse_locker( bool& r ) :recurse(r){
+        if( recurse )
+            throw std::runtime_error("Recurse collision detected!");
+        
+        recurse = true;
+    }
+
+    ~recurse_locker(){
+        recurse = false;
+    }
+};
+
+inline QStringList simple_list(){
+    QStringList ret;
+    ret << "1" <<"2" <<"3" <<"4"<<"5"<<"6"<<"7"<<"8"<<"9";
+/*
+    std::cerr<<"--------SIMPLE LIAST ----------";*/
+    
+    return ret;
+}
 
 class my_item_model: public QStandardItemModel{
     Q_OBJECT
@@ -21,218 +50,163 @@ public:
 
     mutable bool in_resurse;
     mutable int counter_;
-    mutable std::map<int, QPersistentModelIndex> parents_map;
 
-    
 
+    typedef std::map<QPersistentModelIndex, int>    Ids;
+    mutable Ids parent_ids_;
+
+    typedef boost::function< QStringList () > Expander;
+    typedef std::map<std::string, Expander> ExpandersByKey;
     
-    my_item_model(QObject* parent):QStandardItemModel(parent), in_resurse(false), counter_(0), expanding_recurse(false)
-    {}
+    mutable ExpandersByKey  expanders_;
+
+    QRegExp expander_exp;
+    
+    my_item_model(QObject* parent):QStandardItemModel(parent), in_resurse(false), counter_(0), expander_exp("%(.*)%")
+    {
+        expanders_["jerry"] = simple_list;
+    }
+    
     virtual ~my_item_model(){};
 
-    mutable bool expanding_recurse;
-    Expandings create_expanding(const QModelIndex& parent ) const
-    {
-        static const QRegExp r_exp = QRegExp("^%[a-zA-Z0-1]+%$");
-        Expandings exp;
-        if( expanding_recurse ) exp;
+    //Если у элемента есть дочерние %элементы% то этот элемент "расширяем"
+    bool is_expandable( const QModelIndex& parent ) const {
+        if( is_proxy(parent) || in_resurse ) return false;
 
-        expanding_recurse = true;
-        
-        if( parent.isValid() )
+        recurse_locker locker( in_resurse );
+
+        int count = QStandardItemModel::rowCount( parent );
+        for( int row = 0; row < count; ++row )
         {
-            QString text;
-            int count = QStandardItemModel::rowCount( parent );
-            for( int row = 0; row < count; ++row )
-            {
-                text = data( parent.child( row, 0 ) ).toString();
-                if( text.indexOf( r_exp ) != -1 )
-                {
-                    std::cerr<<"FINDED TEXT:"<<text.toStdString()<<std::endl;
-                    exp[ text.mid(1, text.size() -2 ).toStdString() ] = row;
-                }
-            }
+            if( data( parent.child( row, 0 ) ).toString().indexOf( expander_exp ) != -1 )
+                return true;
         }
-        return exp;
+
+        return false;
     }
-    
-    QString expand_command( const QModelIndex& parent ) const
-    {
-        if( in_resurse )
-             return QString();
 
-        QString ret;
-        in_resurse = true;
-        std::cerr<<"e1"<<std::endl;
-        if( parent.isValid() )
+    //Список ключевых слов, которые будут расширяться
+    QStringList keywords( const QModelIndex& parent ) const {
+        if( !is_expandable(parent) )
+            throw std::runtime_error("index is not expandable!");
+        
+        if( in_resurse ) return QStringList();
+
+        recurse_locker locker( in_resurse );
+        
+        QStringList kwds;
+        QString text;
+        int count = QStandardItemModel::rowCount( parent );
+        for( int row = 0; row < count; ++row )
         {
-            std::cerr<<"e2"<<std::endl;
-            int count = QStandardItemModel::rowCount( parent );
-            std::cerr<<"e3"<<std::endl;
-            for( int row = 0; row < count; ++row )
-            {
-                std::cerr<<"e333"<<std::endl;
-                if( data( parent.child( row, 0 ) ).toString() == "jerry" )
-                {
-
-                    create_expanding(parent);
-                    
-                    std::cerr<<"e4"<<std::endl;
-                    ret = "jerry";
-                    ;
-                }
-            }
+            text = data( parent.child( row, 0 ) ).toString();
+            if( text.indexOf( expander_exp ) != -1 )
+                kwds.push_back( text.mid(1, text.size() -2 ) );
         }
-        std::cerr<<"e5"<<std::endl;
-        in_resurse = false;
+
+        return kwds;
+    }
+
+    QStringList expand_index( const QModelIndex& parent ) const {
+
+        QStringList ret;
+
+        foreach( const QString& str, keywords( parent ) ){
+            ret << expanders_[ str.toStdString() ]();
+        }
+
         return ret;
     }
+    
 
-    bool can_expand( const QModelIndex& parent ) const
-    {
-        if( in_resurse )
-             return false;
-
-        bool expandable = false;
-        in_resurse = true;
-
-        if( parent.isValid() )
-        {
-            int count = QStandardItemModel::rowCount( parent );
-            for( int row = 0; row < count; ++row )
-            {
-                if( data( parent.child( row, 0 ) ).toString() == "jerry" )
-                    expandable = true;
-            }
-        }
-        in_resurse = false;
-        return expandable;
-    }
-
+    //Является ли этот индекс виртуальным?
     bool is_proxy( const QModelIndex& index ) const
     {
         if( index.isValid() )
-        {
-            return parents_map.find( index.internalId() ) != parents_map.end();
-        }
+            return parent_by_id( index.internalId() ).isValid();
         else
             return false;
     }
 
-    QModelIndex proxy_parent( const QModelIndex& ind ) const
+    //Получить родительский элемент для любого(даже виртуального) игдекса
+    QModelIndex parent_index( const QModelIndex& ind ) const
     {
         if( is_proxy(ind) )
-        { 
-            QPersistentModelIndex i = parents_map[ ind.internalId() ];
-            return index( i.row(), i.column(), i.parent() );
-        }
+            return parent_by_id( ind.internalId() );
         else
-        {
             return ind.parent();
-        }
-        
     }
-     
+
     virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const
     {
-        std::cerr<<"rowcount..."<<std::endl;
         if( is_proxy( parent ) )
-        {
             return 0;
-        }
-        else if( expand_command( parent ).isEmpty() )
-        {
-            std::cerr<<"rowcount... ok"<<std::endl;
-            return QStandardItemModel::rowCount( parent );
-        }
+        else if( is_expandable( parent ) )
+            return expand_index(parent).size();
         else
-        {
-            std::cerr<<"rowCount"<<std::endl;
-            return 5;
-        }
+            return QStandardItemModel::rowCount( parent );
     }
 
     virtual int columnCount( const QModelIndex& parent = QModelIndex() ) const
     {
-        std::cerr<<"columnCount..."<<std::endl;
-        QString expand = expand_command( parent );
-
         if( is_proxy(parent) )
-        {
             return 0;
-        }
-        else if( expand.isEmpty() )
-        {
-            std::cerr<<"columnCount... ok"<<std::endl;
-            return QStandardItemModel::columnCount( parent );
-        }
+        else if( is_expandable( parent ) )
+            return 0;
         else
-        {
-            std::cerr<<"columnCount"<<std::endl;
-            return 0;
-        }
+            return QStandardItemModel::columnCount( parent );
     }
 
     virtual QModelIndex parent( const QModelIndex& child ) const
     {
-        std::cerr<<"parent...."<<std::endl;
         if( is_proxy(child) )
-        {
-            std::cerr<<"parent... ok 1"<<std::endl;
-            return proxy_parent(child);
-        }
+            return parent_index(child);
         else
-        {
-            std::cerr<<"parent... ok 2"<<std::endl;
             return QStandardItemModel::parent(child);
+    }
+
+    int generate_id( const QModelIndex& parent ) const {
+        QPersistentModelIndex item(parent);
+        
+        if( parent_ids_.find(item) == parent_ids_.end() )
+            return parent_ids_[item] = counter_++;
+
+       return parent_ids_[item];
+    }
+
+    QModelIndex parent_by_id( int id ) const {
+        for( Ids::const_iterator it = parent_ids_.begin(); it != parent_ids_.end(); ++it )
+        {
+            if ( it->second == id )
+                return it->first;
         }
+        return QModelIndex();
     }
 
     virtual QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const
     {
-        std::cerr<<"index..."<<std::endl;
-        QString expand = expand_command( parent );
-
         if ( is_proxy( parent ) )
-        {
-            std::cerr<<"procy_index"<<std::endl;
             return QModelIndex();
-        }
-        else if( expand.isEmpty() )
-        {
-            std::cerr<<"index...ok"<<std::endl;
-            return QStandardItemModel::index(row, column, parent);
-        }
+        else if( is_expandable(parent) )
+            return createIndex( row, column, generate_id(parent) );
         else
-        {
-
-            QModelIndex ind = createIndex( row, column, counter_ );
-            parents_map[ counter_ ] = QPersistentModelIndex(parent);
-            ++counter_;
-            std::cerr<<"index created"<<std::endl;
-            return ind;
-        }
+            return QStandardItemModel::index(row, column, parent);
     }
     
-    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const
+    virtual QVariant data( const QModelIndex& index, int role = Qt::DisplayRole ) const
     {
-        std::cerr<<"data..."<<std::endl;
-
         if( is_proxy(index) )
         {
-            std::cerr<<"DATA for procy!!!"<<std::endl;
-            if( role == Qt::DisplayRole )
-                return QVariant( QString( "123123123123" ) );
+            QModelIndex p_index = parent_index(index);
+
+            if( ( role == Qt::DisplayRole ) || ( role == Qt::EditRole ) )
+                return QVariant( expand_index(p_index)[index.row()] );
             else
-                return QVariant();
+                return data( p_index, role );
         }
 
         QVariant data = QStandardItemModel::data(index, role);
 
-        if( data.canConvert<QString>() )
-            std::cerr<<"DATA for REAL:"<<data.toString().toStdString()<<std::endl;
-        
-        std::cerr<<"data... ok"<<std::endl;
         return data;
     }
 
@@ -240,112 +214,105 @@ public:
 
     virtual bool hasChildren(const QModelIndex& parent = QModelIndex()) const
     {
-        std::cerr<<"hasChildren..."<<std::endl;
-        bool child = QStandardItemModel::hasChildren( parent );
-        if( parent.isValid() )
-        {
-//             std::cerr<<"child for:"<<get_name(parent)<<" is:"<<child<<std::endl;;
-        }
-        std::cerr<<"hasChildren... ok"<<std::endl;
-        return child;
-
+//         LOG_HARD << "enter hasChildren";
+        bool b = QStandardItemModel::hasChildren( parent );
+//         LOG_HARD << "leave hasChildren";
+        return b;
     }
 
     virtual bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
     {
-        std::cerr<<"drop"<<std::endl;
+//         LOG_HARD << "enter dropMimeData";
         bool b = QStandardItemModel::dropMimeData(data, action, row, column, parent);
-        std::cerr<<"drop ok"<<std::endl;
+//         LOG_HARD << "leave dropMimeData";
         return b;
     }
 
     virtual bool canFetchMore(const QModelIndex& parent) const
     {
-        std::cerr<<"canFetchMore"<<std::endl;
+//         LOG_HARD << "enter canFetchMore";
         bool b = QStandardItemModel::canFetchMore(parent);
-        std::cerr<<"canFetchMore ok"<<std::endl;
+//         LOG_HARD << "leave canFetchMore";
         return b;
 
     }
 
-    
-
     virtual void fetchMore(const QModelIndex& parent)
     {
-        std::cerr<<"fetch more..."<<std::endl;
+//         LOG_HARD << "enter fetchMore";
         QStandardItemModel::fetchMore(parent);;
-        std::cerr<<"fetch more ok"<<std::endl;
+//         LOG_HARD << "leave fetchMore";
     }
 
     virtual Qt::ItemFlags flags(const QModelIndex& index) const
     {
-        std::cerr<<"flags..."<<std::endl;
-        
+//         LOG_HARD << "enter flags";
         Qt::ItemFlags f;
         if ( is_proxy(index) )
-        {
-            f = Qt::ItemIsEnabled;
-            f |= Qt::ItemIsSelectable;
-        }   
+            f = QStandardItemModel::flags( parent_index(index) );
         else
-            f = QStandardItemModel::flags(index);
-        std::cerr<<"flags... OK"<<std::endl;
+            f = QStandardItemModel::flags( index );
+//         LOG_HARD << "leave flags";
         return f;
     }
 
     virtual bool insertColumns(int column, int count, const QModelIndex& parent = QModelIndex())
     {
-        std::cerr<<"insertColumns"<<std::endl;
+//         LOG_HARD << "enter insertColumns";
         bool b = QStandardItemModel::insertColumns(column, count, parent);
-        std::cerr<<"insertColumns ok"<<std::endl;
+//         LOG_HARD << "leave insertColumns";
         return b;
     }
 
     virtual bool insertRows(int row, int count, const QModelIndex& parent = QModelIndex())
     {
-        std::cerr<<"insertRows"<<std::endl;
+//         LOG_HARD << "enter insertRows";
         bool b = QStandardItemModel::insertRows(row, count, parent);
-        std::cerr<<"insertRows ok"<<std::endl;
+//         LOG_HARD << "leave insertRows";
         return b;
     }
 
     virtual QMap< int, QVariant > itemData(const QModelIndex& index) const
     {
-        std::cerr<<"itemData"<<std::endl;
+//         LOG_HARD << "enter itemData";
         QMap< int, QVariant > v = QStandardItemModel::itemData(index);
-        std::cerr<<"itemData ok"<<std::endl;
+//         LOG_HARD << "leave itemData";
         return v;
     }
 
     virtual bool removeColumns(int column, int count, const QModelIndex& parent = QModelIndex())
     {
-        std::cerr<<"removeColumns"<<std::endl;
+//         LOG_HARD << "enter removeColumns";
         bool b = QStandardItemModel::removeColumns(column, count, parent);
-        std::cerr<<"removeColumns ok"<<std::endl;
+//         LOG_HARD << "leave removeColumns";
         return b;
     }
 
     virtual bool removeRows(int row, int count, const QModelIndex& parent = QModelIndex())
     {
-        std::cerr<<"removeRows"<<std::endl;
-        bool b = QStandardItemModel::removeRows(row, count, parent);
-        std::cerr<<"removeRows ok"<<std::endl;
+//         LOG_HARD << "enter removeRows";
+        bool b;
+        if( is_proxy(parent) )
+            b = parent_ids_.erase( parent_by_id( parent.internalId() ) );
+        else
+            b = QStandardItemModel::removeRows(row, count, parent);
+//         LOG_HARD << "leave removeRows";
         return b;
     }
 
     virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole)
     {
-        std::cerr<<"setData"<<std::endl;
+//         LOG_HARD << "enter setData";
         bool b = QStandardItemModel::setData(index, value, role);
-        std::cerr<<"setData ok"<<std::endl;
+//         LOG_HARD << "leave setData";
         return b;
     }
 
     virtual QSize span(const QModelIndex& index) const
     {
-        std::cerr<<"span"<<std::endl;
+//         LOG_HARD << "enter span";
         QSize b = QStandardItemModel::span(index);
-        std::cerr<<"span ok"<<std::endl;
+//         LOG_HARD << "leave span";
         return b;
     }
 

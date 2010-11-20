@@ -2,6 +2,9 @@
  #include "rcon_completer.h"
  #include <QStringList>
 
+#include <stdio.h>
+
+
  rcon_completer::rcon_completer(QObject *parent)
      : QCompleter(parent)
  {
