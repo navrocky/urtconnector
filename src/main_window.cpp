@@ -46,15 +46,17 @@
 #include "filters/filter_factory.h"
 #include "filters/reg_filters.h"
 
-#include "settings/settings.h"
+#include <settings/settings.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
 #include "common/iconned_dock_style.h"
 #endif
 
+#include <filters/filter_edit_widget.h>
+#include <anticheat/anticheat.h>
+#include <anticheat/settings.h>
+
 #include "main_window.h"
-#include "filters/filter_edit_widget.h"
-#include "anticheat/anticheat.h"
 
 SYSLOG_MODULE("main_window");
 
@@ -94,7 +96,7 @@ main_window::main_window(QWidget *parent)
     set.register_file( state_settings::uid(), "state.ini" );
     set.register_file( server_list_widget_settings::uid(), "options.ini" );
     set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
-
+    set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
     ui_->setupUi(this);
 
     que_ = new job_queue(this);

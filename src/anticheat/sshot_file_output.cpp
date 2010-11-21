@@ -23,8 +23,13 @@ void sshot_file_output::send_file(const QString& name, const QByteArray& data)
 {
     if (!is_enabled())
         return;
+    QString fn;
+    if (folder_.isEmpty())
+        fn = name;
+    else
+        fn = QString("%1/%2").arg(folder_).arg(name);
 
-    QFile f(name);
+    QFile f(fn);
     if (!f.open(QIODevice::WriteOnly))
     {
         LOG_ERR << "Can't open file to write \"%1\"", name.toLocal8Bit().data();
@@ -35,6 +40,11 @@ void sshot_file_output::send_file(const QString& name, const QByteArray& data)
         LOG_ERR << "Error while writing file \"%1\"", name.toLocal8Bit().data();
         return;
     }
+}
+
+void sshot_file_output::set_folder(const QString& val)
+{
+    folder_ = val;
 }
 
 }

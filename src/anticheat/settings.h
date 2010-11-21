@@ -16,6 +16,10 @@ public:
     int interval() const;
     void set_interval(int val);
 
+    /// screenshots jpeg quality
+    int quality() const;
+    void set_quality(int val);
+
     bool use_ftp() const;
     void set_use_ftp(bool val);
 

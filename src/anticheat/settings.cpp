@@ -15,6 +15,16 @@ void settings::set_interval(int val)
     part()->setValue("interval", val);
 }
 
+int settings::quality() const
+{
+    return part()->value("quality", 50).toInt();
+}
+
+void settings::set_quality(int val)
+{
+    part()->setValue("quality", val);
+}
+
 bool settings::use_ftp() const
 {
     return part()->value("use_ftp", true).toBool();

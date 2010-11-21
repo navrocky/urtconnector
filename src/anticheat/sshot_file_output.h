@@ -13,6 +13,11 @@ public:
 
     virtual bool can_send_now();
     virtual void send_file(const QString& name, const QByteArray& data);
+
+    void set_folder(const QString& val);
+
+private:
+    QString folder_;
 };
 
 }

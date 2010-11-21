@@ -39,8 +39,13 @@ src/about_dialog.ui -text
 src/anticheat/CMakeLists.txt -text
 src/anticheat/anticheat.cpp -text
 src/anticheat/anticheat.h -text
+src/anticheat/manager.cpp -text
+src/anticheat/manager.h -text
 src/anticheat/settings.cpp -text
 src/anticheat/settings.h -text
+src/anticheat/settings_widget.cpp -text
+src/anticheat/settings_widget.h -text
+src/anticheat/settings_widget.ui -text
 src/anticheat/sshot_file_output.cpp -text
 src/anticheat/sshot_file_output.h -text
 src/anticheat/sshot_ftp_output.cpp -text
@@ -88,6 +93,8 @@ src/common/implicit_sharing.h -text
 src/common/scoped_tools.h -text
 src/common/server_id.cpp -text
 src/common/server_id.h -text
+src/common/settings_base_widget.cpp -text
+src/common/settings_base_widget.h -text
 src/config.h.in -text
 src/debug_help.cpp -text
 src/debug_help.h -text
