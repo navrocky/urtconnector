@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QDir>
 
 #include <cl/syslog/syslog.h>
 
@@ -24,10 +25,19 @@ void sshot_file_output::send_file(const QString& name, const QByteArray& data)
     if (!is_enabled())
         return;
     QString fn;
+
     if (folder_.isEmpty())
         fn = name;
     else
+    {
+        QDir d;
+        if (!d.exists(folder_))
+        {
+            if (!d.mkpath(folder_))
+                LOG_ERR << "Can't create folder \"%1\"", folder_.toLocal8Bit().data();
+        }
         fn = QString("%1/%2").arg(folder_).arg(name);
+    }
 
     QFile f(fn);
     if (!f.open(QIODevice::WriteOnly))

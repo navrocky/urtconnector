@@ -22,6 +22,9 @@ public:
     virtual void update_contents();
     virtual void apply();
 
+private slots:
+    void choose_local_folder();
+
 private:
     Ui::settings_widget *ui_;
 };

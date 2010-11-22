@@ -17,6 +17,9 @@ public:
 
     void set_nick_name(const QString& val);
 
+    // is anticheat used?
+    bool is_used();
+
     void start();
     void stop();
 

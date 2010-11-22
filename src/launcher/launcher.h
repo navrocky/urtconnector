@@ -2,9 +2,12 @@
 #define LAUNCHER_H
 
 #include <QObject>
+#include <QProcess>
+#include <QPointer>
 
-#include "pointers.h"
-#include "common/server_id.h"
+#include "../pointers.h"
+#include <common/server_id.h>
+#include <anticheat/manager.h>
 
 /*! \brief Game launcher.
 
@@ -13,9 +16,9 @@
 
 class launcher: public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    launcher(app_options_p launch);
+    launcher(app_options_p launch, anticheat::manager* anticheat, QObject* parent = NULL);
 
     void set_server_id(const server_id& id);
     void set_user_name(const QString& value);
@@ -42,6 +45,10 @@ public:
 
 public slots:
     void launch();
+    
+private slots:
+    void proc_finished(int exitCode, QProcess::ExitStatus exitStatus);
+    void proc_error(QProcess::ProcessError error);
 
 private:
     QString get_work_dir();
@@ -52,6 +59,8 @@ private:
     QString configURL_;
     QString rcon_;
     QString referee_;
+    anticheat::manager* anticheat_;
+    QPointer<QProcess> proc_;
 };
 
 #endif

@@ -39,7 +39,7 @@ void manager::update_settings()
 {
     settings s;
 
-    anticheat_->set_interval(s.interval());
+    anticheat_->set_interval(s.interval() * 1000);
     anticheat_->set_quality(s.quality());
 
     ftp_out_->set_enabled(s.use_ftp());
@@ -48,6 +48,12 @@ void manager::update_settings()
 
     file_out_->set_enabled(s.use_local_folder());
     file_out_->set_folder(s.local_folder());
+}
+
+bool manager::is_used()
+{
+    settings s;
+    return s.use_ftp() || s.use_local_folder();
 }
 
 }

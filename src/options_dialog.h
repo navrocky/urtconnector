@@ -6,6 +6,11 @@
 #include "ui_options_dialog.h"
 #include "pointers.h"
 
+namespace anticheat
+{
+class settings_widget;
+}
+
 class options_dialog : public QDialog
 {
 Q_OBJECT
@@ -30,6 +35,7 @@ private:
 
     Ui::OptionsDialogClass ui;
     app_options_p opts_;
+    anticheat::settings_widget* anticheat_;
 };
 
 class dialog_syncer: public QObject

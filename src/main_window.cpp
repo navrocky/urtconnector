@@ -23,7 +23,7 @@
 #include "config.h"
 #include "ui_main_window.h"
 #include "options_dialog.h"
-#include "launcher/launcher.h"
+#include <launcher/launcher.h>
 #include "exception.h"
 #include "server_options_dialog.h"
 #include "push_button_action_link.h"
@@ -88,6 +88,8 @@ main_window::main_window(QWidget *parent)
 , history_sl_(new history(opts_))
 , old_state_(0)
 , clipper_( new clipper(this, opts_) )
+, anticheat_( new anticheat::manager(this))
+, launcher_(new launcher(opts_, anticheat_, this))
 {
 //    setAttribute(Qt::WA_TranslucentBackground, true);
     //Initializing main settings
@@ -217,11 +219,6 @@ main_window::main_window(QWidget *parent)
     all_list_->force_update();
     fav_list_->force_update();
     update_tabs();
-
-//    anticheat* ac = new anticheat(this);
-//    ac->set_interval(5000);
-//    ac->set_ftp_folder("screenshots");
-//    ac->start();
 }
 
 main_window::~main_window()
@@ -274,19 +271,19 @@ void main_window::show_options()
 
 void main_window::quick_connect() const
 {
-    launcher l( opts_ );
-    l.set_server_id(server_id(ui_->qlServerEdit->text()));
-    l.set_user_name(ui_->qlPlayerEdit->text());
-    l.set_password(ui_->qlPasswordEdit->text());
+    launcher* l = launcher_;
+    l->set_server_id(server_id(ui_->qlServerEdit->text()));
+    l->set_user_name(ui_->qlPlayerEdit->text());
+    l->set_password(ui_->qlPasswordEdit->text());
 
     // add to history if history is enabled
     if (opts_->keep_history)
     {
-        history_sl_->add(l.id(), "", l.userName(), l.password());
+        history_sl_->add(l->id(), "", l->userName(), l->password());
         history_list_->update_history();
     }
 
-    l.launch();
+    l->launch();
 }
 
 void main_window::quick_add_favorite()
@@ -558,18 +555,17 @@ void main_window::connect_selected() const
     if ( it != opts_->servers.end() )
         opts = it->second;
 
-    // i think launcher can be created on stack
-    launcher l(opts_);
-    l.set_server_id( info->id );
-    l.set_user_name("");
-    l.set_password(opts.password);
+    launcher* l = launcher_;
+    l->set_server_id( info->id );
+    l->set_user_name(ui_->qlPlayerEdit->text());
+    l->set_password(opts.password);
 
     if ( opts.password.isEmpty() && info && info->get_info("g_needpass").toInt() )
     {
         bool ok;
         QString password = QInputDialog::getText(0, tr("Server require password"), tr("Enter password"), QLineEdit::Normal, "", &ok );
         if ( !ok ) return;
-        l.set_password(password);
+        l->set_password(password);
     }
 
     if ( info && info->players.size() == info->max_player_count )
@@ -583,17 +579,17 @@ void main_window::connect_selected() const
         if( selected == QMessageBox::No ) return;           
     }
 
-    l.set_referee(opts.ref_password);
-    l.set_rcon(opts.rcon_password);
+    l->set_referee(opts.ref_password);
+    l->set_rcon(opts.rcon_password);
 
     // add to history if history is enabled
     if (opts_->keep_history)
     {
-        history_sl_->add(l.id(), info->name, l.userName(), l.password());
+        history_sl_->add(l->id(), info->name, l->userName(), l->password());
         history_list_->update_history();
     }
 
-    l.launch();
+    l->launch();
 }
 
 server_list_widget* main_window::selected_list_widget() const

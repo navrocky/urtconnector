@@ -9,7 +9,7 @@
 #include "pointers.h"
 
 #include "app_options.h"
-#include "launcher/launcher.h"
+#include <launcher/launcher.h>
 #include "server_list_widget.h"
 #include "server_list.h"
 #include "jobs/job_queue.h"
@@ -17,6 +17,7 @@
 #include "clipper.h"
 #include "filters/pointers.h"
 #include "history/history_widget.h"
+#include <anticheat/manager.h>
 
 class QTimer;
 class Ui_MainWindowClass;
@@ -105,6 +106,8 @@ private:
     geoip gi_;
     clipper* clipper_;
     filter_factory_p filter_factory_;
+    anticheat::manager* anticheat_;
+    launcher* launcher_;
 };
 
 #endif

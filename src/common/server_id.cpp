@@ -21,6 +21,8 @@ server_id::server_id(const QString & ip, const QString & hostName, int port)
 
 server_id::server_id(const QString & address, int default_port)
 {
+    if (address.isEmpty())
+        return;
     QRegExp rx("^((\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|([^:]+))(:(\\d{1,5}))?$");
     if (!(rx.exactMatch(address)))
         throw qexception(QObject::tr("Address syntax error"));
@@ -34,7 +36,10 @@ server_id::server_id(const QString & address, int default_port)
 
 QString server_id::address() const
 {
-    return QString("%1:%2").arg(ip_or_host()).arg(d->port_);
+    if (is_empty())
+        return QString();
+    else
+        return QString("%1:%2").arg(ip_or_host()).arg(d->port_);
 }
 
 QString server_id::ip_or_host() const

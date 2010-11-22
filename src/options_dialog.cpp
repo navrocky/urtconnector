@@ -8,21 +8,23 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 
-#include "options_dialog.h"
-#include "launcher/launcher.h"
-#include "app_options.h"
-#include "launcher/tools.h"
-#include "anticheat/anticheat.h"
-#include <rcon/rcon_settings_form.h>
+#include <launcher/launcher.h>
+#include <launcher/tools.h>
+#include <anticheat/anticheat.h>
 #include <anticheat/settings_widget.h>
+#include <rcon/rcon_settings_form.h>
+#include "options_dialog.h"
+#include "app_options.h"
 
 options_dialog::options_dialog(QWidget *parent)
  : QDialog(parent)
 {
     ui.setupUi(this);
 
-    ui.tabWidget->addTab( new rcon_settings_form(), tr("RCon"));
-    ui.tabWidget->addTab( new anticheat::anticheat)
+    ui.tabWidget->addTab( new rcon_settings_form, tr("RCon"));
+
+    anticheat_ = new anticheat::settings_widget(this);
+    ui.tabWidget->addTab(anticheat_, tr("Anticheat"));
     
     connect( ui.select_bin_button, SIGNAL( clicked() ), SLOT( choose_binary() ));
     connect( ui.insertFileButton, SIGNAL( clicked() ), SLOT( insert_file_path() ));
@@ -38,6 +40,11 @@ options_dialog::options_dialog(QWidget *parent)
         "<b>%addr%</b> - hostname or ip and port<br>"
         "<b>%rcon%</b> - RCON password"
     ));
+
+#ifndef Q_OS_UNIX
+    ui.separate_x_check->setVisible(false);
+    ui.x_check_button->setVisible(false);
+#endif
 }
 
 options_dialog::~options_dialog()
@@ -67,6 +74,8 @@ void options_dialog::update_dialog()
     ui.center_current_row_check->setChecked( opts_->center_current_row );
     ui.group_keep_history->setChecked(opts_->keep_history);
     ui.number_in_history_spin->setValue(opts_->number_in_history);
+
+    anticheat_->update_contents();
 }
 
 void options_dialog::accept()
@@ -87,6 +96,8 @@ void options_dialog::accept()
     opts_->center_current_row = ui.center_current_row_check->isChecked();
     opts_->keep_history = ui.group_keep_history->isChecked();
     opts_->number_in_history = ui.number_in_history_spin->value();
+
+    anticheat_->apply();
 }
 
 void options_dialog::choose_binary()
@@ -136,7 +147,7 @@ void options_dialog::adv_text_changed(const QString& text)
     opts->adv_cmd_line = text;
     opts->binary_path = ui.binary_edit->text();
 
-    launcher l(opts);
+    launcher l(opts, NULL);
     l.set_server_id(server_id("server:12345"));
     l.set_user_name("New_URT_Player");
     l.set_rcon("rcon_pAsSwOrD");

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>512</width>
-    <height>477</height>
+    <height>523</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -155,7 +155,7 @@
          <item>
           <widget class="QCheckBox" name="separate_x_check">
            <property name="text">
-            <string>Launch UrbanTerror is separate X session</string>
+            <string>Launch UrbanTerror in separate X session</string>
            </property>
           </widget>
          </item>
