@@ -12,7 +12,9 @@
 #include "launcher/launcher.h"
 #include "app_options.h"
 #include "launcher/tools.h"
-#include "rcon/rcon_settings_form.h"
+#include "anticheat/anticheat.h"
+#include <rcon/rcon_settings_form.h>
+#include <anticheat/settings_widget.h>
 
 options_dialog::options_dialog(QWidget *parent)
  : QDialog(parent)
@@ -20,6 +22,7 @@ options_dialog::options_dialog(QWidget *parent)
     ui.setupUi(this);
 
     ui.tabWidget->addTab( new rcon_settings_form(), tr("RCon"));
+    ui.tabWidget->addTab( new anticheat::anticheat)
     
     connect( ui.select_bin_button, SIGNAL( clicked() ), SLOT( choose_binary() ));
     connect( ui.insertFileButton, SIGNAL( clicked() ), SLOT( insert_file_path() ));
