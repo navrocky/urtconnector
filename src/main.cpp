@@ -1,4 +1,5 @@
 #include <iostream>
+#include <boost/program_options.hpp>
 
 #include <QString>
 #include <QMessageBox>
@@ -10,6 +11,11 @@
 
 #include <cl/syslog/syslog.h>
 #include <cl/syslog/output_stream.h>
+#include <launcher/launcher.h>
+#include <anticheat/manager.h>
+#include <anticheat/settings.h>
+#include <rcon/rcon_settings.h>
+#include <settings/settings.h>
 
 #include "main_window.h"
 #include "application.h"
@@ -17,26 +23,73 @@
 #include "debug_help.h"
 #include "str_convert.h"
 #include "tools.h"
+#include "config.h"
+#include "pointers.h"
 
 using namespace cl::syslog;
+using namespace std;
 
 SYSLOG_MODULE("main");
 
 int main(int argc, char *argv[])
 {
+    // parsing program options
+    namespace po = boost::program_options;
+
+    po::options_description desc("Allowed options");
+    desc.add_options()
+        ("help", "produce help message")
+        ("debug", "produce debug messages")
+        ("launch", "quick launch game")
+    ;
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if (vm.count("help"))
+    {
+        cout << "UrTConnector " << URT_VERSION << "\n\n";
+        cout << desc << "\n";
+        return 0;
+    }
+
+    bool debug_enabled = vm.count("debug");
+    
     output_p cerr_out(new output_stream(std::cerr));
-    
-    #ifdef DEBUG
-    logman().level_set(debug);
-    #else
-    logman().level_set(info);
-    #endif
-    
     logman().output_add(cerr_out);
+
+    if (debug_enabled)
+        logman().level_set(debug);
+    else
+        logman().level_set(info);
     
     LOG_DEBUG << "Syslog started";
 
+//    //Initializing main settings
+//    base_settings set;
+//    //Registering state_settings in separate file
+//    set.register_file( state_settings::uid(), "state.ini" );
+//    set.register_file( server_list_widget_settings::uid(), "options.ini" );
+//    set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
+//    set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
+
+
+    if (vm.count("launch"))
+    {
+        LOG_DEBUG << "Quick launch";
+        QApplication a(argc, argv, false);
+
+        app_options_p opts;
+        anticheat::manager anticheat;
+        launcher l(opts, &anticheat);
+        l.launch();
+        a.exec();
+        return 0;
+    }
+
     application a(argc, argv);
+
 #ifdef USE_SINGLE_APP
     if ( a.isRunning() )
     {
@@ -47,10 +100,6 @@ int main(int argc, char *argv[])
     }
 #endif
     application::setQuitOnLastWindowClosed(false);
-
-//    LOG_DEBUG << "Screen count %1", QApplication::desktop()->screenCount();
-
-//    return 0;
 
     try
     {

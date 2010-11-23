@@ -92,6 +92,8 @@ main_window::main_window(QWidget *parent)
 , launcher_(new launcher(opts_, anticheat_, this))
 {
 //    setAttribute(Qt::WA_TranslucentBackground, true);
+    ui_->setupUi(this);
+
     //Initializing main settings
     base_settings set;
     //Registering state_settings in separate file
@@ -99,7 +101,7 @@ main_window::main_window(QWidget *parent)
     set.register_file( server_list_widget_settings::uid(), "options.ini" );
     set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
     set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
-    ui_->setupUi(this);
+
 
     que_ = new job_queue(this);
     job_monitor* jm = new job_monitor(que_, this);

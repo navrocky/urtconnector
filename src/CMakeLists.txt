@@ -6,7 +6,9 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-find_package( Boost COMPONENTS)
+
+set(Boost_USE_STATIC_LIBS ON)
+find_package( Boost COMPONENTS program_options thread date_time filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
 
 find_package(Qt4)
@@ -152,7 +154,7 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_executable(${TARGET} WIN32 ${HEADERS} ${SOURCES})
 
-target_link_libraries(${TARGET} ${QT_LIBRARIES} 
+target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     geoip
     qtsingleapplication
     clsyslog
