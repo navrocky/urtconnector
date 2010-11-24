@@ -1,4 +1,6 @@
 
+#include <set>
+#include <list>
 #include <iostream>
 
 #include <boost/bind.hpp>
@@ -6,18 +8,14 @@
 #include <boost/foreach.hpp>
 #include <boost/function.hpp>
 #include <boost/assign/list_inserter.hpp>
+#include <boost/iterator/filter_iterator.hpp>
 
 #include <QLabel>
 #include <QTimer>
 #include <QUdpSocket>
-#include <QCompleter>
-#include <QCompleter>
-#include <QTableView>
-#include <QProxyModel>
 #include <QTime>
 #include <QTreeView>
 #include <QStandardItemModel>
-
 
 #include <cl/syslog/syslog.h>
 
@@ -28,6 +26,7 @@
 #include "ui_rcon.h"
 #include "rcon.h"
 #include "rcon/rcon_completer.h"
+#include <boost/concept_check.hpp>
 
 
 SYSLOG_MODULE("rcon");
@@ -43,93 +42,127 @@ const char rcon_header_codes[10] = {0xff, 0xff, 0xff, 0xff, 'r', 'c', 'o', 'n', 
 const QByteArray answer_header_c( answer_header_codes );
 const QByteArray rcon_header_c( rcon_header_codes );
 
-const QString cmd_parser_c = "cmd_parser";
-const QString plr_parser_c = "plr_parser";
-const QString map_parser_c = "map_parser";
+///Comand to remote server and flag of answer visibility
+typedef std::pair<std::string, bool>    CommandOpt;
+typedef std::list<CommandOpt>           CommandQueue;
 
-
-typedef std::pair<QString, bool>        CommandOpt;
-typedef QList<CommandOpt>               CommandQueue;
-
+///Type to store pointer to base class of any parser
 typedef boost::shared_ptr<base_parser>  Parser;
-typedef std::map<QString, Parser>       ParsersByName;
+typedef std::map<std::string, Parser>   ParsersByName;
 
+///List of unique strings
+typedef std::set<std::string>           Strings;
+typedef std::map<std::string, Strings>  ExpandersByName;
 
+///base_parser = class for handling lines, that coms from remote server
 struct base_parser{
+    ///type of action that executes on start/stop
     typedef boost::function<void ()> Action;
     
     base_parser():enabled_(false){}
-    
     virtual ~base_parser(){}
 
+    ///Enable parser and execute apropriate function( callback )
     void enable(){ enabled_ = true; if( start ) start(); };
+    
+    ///Disable parser and execute apropriate function( callback )
     void disable(){ enabled_ = false; if( stop ) stop(); };
+    
     bool is_enabled() const { return enabled_; }
 
+    ///Main function that handles incoming line
     virtual void operator()( const QByteArray& line ) = 0;
 
+    ///Public callbacks executes on start/stop action
     Action start; Action stop;
 private:
     bool enabled_;
 };
 
-
+/*!Parser that interprets incoming lines as command and stores it.
+ * Quake engine does not mark begining of the command "cmdlist", so this parser mut be enabled manually
+*/
 struct command_list_parser: base_parser{
-    QStringList& commands;
-    const QRegExp cmdlist_end;
+    Strings& commands;
+    const QRegExp list_end_rx;
     
-    command_list_parser( QStringList& c ) :commands(c), cmdlist_end("(\\d+) commands")
+    command_list_parser( Strings& c )
+        : commands(c)
+        , list_end_rx("(\\d+) commands")
     {}
 
     virtual void operator()(const QByteArray& line){
         if( !is_enabled() ) return;
 
-        if( cmdlist_end.exactMatch(line) )
+        if( list_end_rx.exactMatch(line) )
             disable();
         else
-            commands << line;
+            commands.insert( line.data() );
     }
 };
 
-
+/*! Parser that handles begin and end of players list, and stores it */
 struct player_list_parser: base_parser{
-    QStringList& players;
-    const QRegExp player;
+    Strings& players;
+    const QString list_begin;
+    const QString list_end;
+    const QRegExp player_rx;
     
-    player_list_parser( QStringList& p ) :players(p), player("\\s+(\\d+):\\s+\\[(.*)\\]")
+    player_list_parser( Strings& p )
+        : players(p)
+        , list_begin( "Current players:" )
+        , list_end  ( "End current player list." )
+        , player_rx ("\\s+(\\d+):\\s+\\[(.*)\\]")
     {}
 
     virtual void operator()(const QByteArray& line){
 
-        if( line == "Current players:" )
+        if( line == list_begin )
             enable();
-        else if( line == "End current player list." )
+        else if( line == list_end )
             disable();
-        else if( is_enabled() && player.exactMatch(line) )
-            players << player.cap(2);
+        else if( is_enabled() && player_rx.exactMatch(line) )
+            players.insert( player_rx.cap(2).toStdString() );
     }
 };
 
-
+/*! Handling of map list*/
 struct map_list_parser: base_parser{
-    QStringList& maps;
+    Strings& maps;
+    const QString list_begin;
+    const QRegExp list_end_rx;
     const QRegExp map;
-    const QRegExp maplist_end;
 
-    map_list_parser( QStringList& m ) :maps(m), map("maps/(.*).bsp"), maplist_end( "(\\d+) files listed" )
+    map_list_parser( Strings& m )
+        : maps(m)
+        , list_begin( "---------------" )
+        , list_end_rx( "(\\d+) files listed" )
+        , map("maps/(.*).bsp")
     {}
 
     virtual void operator()(const QByteArray& line){
 
-        if( line == "---------------" )
+        if( line == list_begin )
             enable();
-        else if( maplist_end.exactMatch(line) )
+        else if( list_end_rx.exactMatch(line) )
             disable();
         else if( is_enabled() && map.exactMatch(line) )
-            maps << map.cap(1);
+            maps.insert( map.cap(1).toStdString() );
     }
 };
 
+
+///Type thar represents Item in completition model
+struct Item{
+    ///item which has static childs and dynamic expanders
+    QStandardItem*  item;
+    ///list of static childs
+    Strings         st_list;
+    ///list of expander names
+    Strings         ex_list;
+};
+
+typedef std::list<Item> Items;
 
 
 struct rcon::Pimpl{
@@ -199,10 +232,6 @@ struct rcon::Pimpl{
 
     std::map<rcon_settings::Color, QColor> colors;
 
-    QStringList commands;
-    QStringList players;
-    QStringList maps;
-
     //last sended command
     CommandOpt      current;
     CommandQueue    queue;
@@ -214,10 +243,28 @@ struct rcon::Pimpl{
     QTime           last_send;
 
     QStandardItemModel  model;
-    QStandardItem*      kick_item;
-    QStandardItem*      map_item;
 
-    ParsersByName parsers;
+    Items               items;
+    ParsersByName       parsers;
+    ExpandersByName     expanders;
+};
+
+
+
+Items::iterator get_item( Items& items, QStandardItem* item ){
+    Items::iterator it = std::find_if( items.begin(), items.end(), bind(&Item::item, _1) == item );
+    if( it == items.end() )
+    {
+        it = items.insert( items.end(), Item() );
+        it->item = item;
+    }
+    return it;
+}
+
+struct find_by_expander: std::binary_function<const Item&, const std::string&, bool>{
+    bool operator()( const Item& item, const std::string& expander ){
+        return std::find( item.ex_list.begin(), item.ex_list.end(), expander ) != item.ex_list.end();
+    }
 };
 
 rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
@@ -227,28 +274,66 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
     p_->ui.setupUi(this);
     p_->init();
 
-   
-    p_->kick_item = new QStandardItem("kick");
-    p_->map_item  = new QStandardItem("map");
-    
-    p_->model.invisibleRootItem()->appendRow( p_->kick_item );
-    p_->model.invisibleRootItem()->appendRow( p_->map_item );
+    //TODO move to config file
+    QStringList lst;
+    lst << "%commands%" <<  "kick %players%" << "map %maps%" << "forceteam blue,red %players%" ;
 
+    //FIXME make separate
+    BOOST_FOREACH ( const QString& cmd_str, lst ) {
 
+        QStringList splitted = cmd_str.split(" ");
+
+        QStandardItem* p_item = p_->model.invisibleRootItem();
+        for (uint i=0; i< splitted.size(); ++i) {
+            Items::iterator it = get_item( p_->items, p_item );
+
+            QRegExp rx("%(.*)%");
+            QRegExp rx2("(.*),(.*)");
+            if( rx.exactMatch( splitted[i]) )
+                it->ex_list.insert( rx.cap(1).toStdString() );
+            else if( rx2.exactMatch( splitted[i]) )
+            {
+                BOOST_FOREACH( const QString& str, splitted[i].split(",") )
+                {
+                    it->st_list.insert( str.toStdString() );
+                    QStandardItem* item = new QStandardItem( str );
+                    p_item->appendRow( item );
+                    it = get_item( p_->items, item );
+                    //FIXME error...
+                    p_item = item;
+                }
+            }
+            else
+            {
+                it->st_list.insert( splitted[i].toStdString() );
+                QStandardItem* item = new QStandardItem( splitted[i] );
+                p_item->appendRow( item );
+                it = get_item( p_->items, item );
+                p_item = item;
+            }
+        }
+
+    }
+
+//     QTreeView* v = new QTreeView(0);
+//     v->show();
+//     v->setModel( &p_->model );
+
+    //Configuring parsers
     insert( p_->parsers )
-        ( cmd_parser_c  , Parser( new command_list_parser( p_->commands ) ) )
-        ( plr_parser_c  , Parser( new player_list_parser ( p_->players ) )  )
-        ( map_parser_c  , Parser( new map_list_parser    ( p_->maps ) )     )
+        ( "commands" , Parser( new command_list_parser( p_->expanders["commands"] ) ) )
+        ( "players"  , Parser( new player_list_parser ( p_->expanders["players"]  ) ) )
+        ( "maps"     , Parser( new map_list_parser    ( p_->expanders["maps"]     ) ) )
     ;
 
-    p_->parsers[cmd_parser_c]->start = bind( &QStringList::clear, ref( p_->commands ) );
-    p_->parsers[cmd_parser_c]->stop  = bind( &rcon::update_model, this, p_->model.invisibleRootItem(), ref( p_->commands ) );
+    p_->parsers["commands"]->start = bind( &Strings::clear, ref( p_->expanders["commands"] ) );
+    p_->parsers["commands"]->stop  = bind( &rcon::refresh_expander, this,  "commands" );
 
-    p_->parsers[plr_parser_c]->start = bind( &QStringList::clear, ref( p_->players ) );
-    p_->parsers[plr_parser_c]->stop  = bind( &rcon::update_model, this, p_->kick_item, ref( p_->players ) );
+    p_->parsers["players"]->start  = bind( &Strings::clear, ref( p_->expanders["players"] ) );
+    p_->parsers["players"]->stop   = bind( &rcon::refresh_expander, this,  "players" );
 
-    p_->parsers[map_parser_c]->start = bind( &QStringList::clear, ref( p_->maps ) );
-    p_->parsers[map_parser_c]->stop  = bind( &rcon::update_model, this, p_->map_item, ref( p_->maps ) );
+    p_->parsers["maps"]->start     = bind( &Strings::clear, ref( p_->expanders["maps"] ) );
+    p_->parsers["maps"]->stop      = bind( &rcon::refresh_expander, this,  "maps" );
 
     
     rcon_completer* rc = new rcon_completer(p_->ui.input, &p_->model, this );
@@ -267,10 +352,6 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
     update_settings();
     
     p_->socket.connectToHost( p_->id.ip_or_host(), p_->id.port() );
-
-//     QTreeView* v = new QTreeView(0);
-//     v->show();
-//     v->setModel( &p_->model );    
 }
 
 rcon::~rcon()
@@ -281,7 +362,7 @@ void rcon::send_command( const QString& command, bool supress )
     if( command.isEmpty() )
         return;
     
-    p_->queue.push_back( CommandOpt(command, supress) );
+    p_->queue.push_back( CommandOpt(command.toStdString(), supress) );
     if ( abs(p_->last_send.msecsTo( QTime::currentTime() )) >= 2000 )
     {
         process_queue();
@@ -322,7 +403,7 @@ void rcon::connected()
 {
     p_->queue_timer.start();
 
-    p_->parsers[cmd_parser_c]->enable();
+    p_->parsers["commands"]->enable();
     send_command( "cmdlist", true );
     
     refresh_players();
@@ -414,10 +495,19 @@ void rcon::refresh_maps()
     QTimer::singleShot( 50000, this, SLOT( refresh_maps() ) );
 }
 
+void rcon::refresh_expander( const std::string& exp )
+{
+    std::for_each(
+        make_filter_iterator( bind( find_by_expander(), _1, exp ), p_->items.begin(), p_->items.end() ),
+        make_filter_iterator( bind( find_by_expander(), _1, exp ), p_->items.end()  , p_->items.end() ),
+        bind( &rcon::update_item, this, _1)
+    );
+}
+
+
 void rcon::process_queue()
 {
-    if( p_->queue.isEmpty() )
-        return;
+    if( p_->queue.empty() ) return;
 
     p_->current = p_->queue.front();
     p_->queue.pop_front();
@@ -425,7 +515,7 @@ void rcon::process_queue()
     QString cmd = QString( "%1 %2 %3" )
         .arg( rcon_header_c.data() )
         .arg( p_->options.rcon_password )
-        .arg( p_->current.first );
+        .arg( p_->current.first.data() );
 
     p_->waiting = true;
     p_->send_timer.start();
@@ -436,29 +526,39 @@ void rcon::process_queue()
     p_->last_send = QTime::currentTime();
 }
 
-
-void rcon::update_model( QStandardItem* parent, const QStringList& childs )
+void rcon::update_item(const Item& item)
 {
     QList<QStandardItem*> to_delete;
-    QStringList items( childs );
 
+    //List of all autocompletition elements of item
+    Strings full_list;
+    //...static items
+    std::copy( item.st_list.begin(), item.st_list.end(), std::inserter( full_list, full_list.end() ) );
+
+    //...dynamically expanded items
+    BOOST_FOREACH( const std::string& exp, item.ex_list )
+        std::copy( p_->expanders[exp].begin(), p_->expanders[exp].end(), std::inserter( full_list, full_list.end() ) );
+  
+
+    //checking QStandardItemModel structure
     QStandardItem* child(0);
-    QStringList::iterator cmd;
-    for( int i = 0; i < parent->rowCount(); ++i ) {
-        child = parent->child( i );
-        
-        if( cmd = std::find( items.begin(), items.end(), child->text() ), cmd != items.end() )
-            items.erase( cmd );
-        else
+    Strings::iterator cmd;
+    for( int i = 0; i < item.item->rowCount(); ++i ) {
+        child = item.item->child( i );
+
+        if( cmd = full_list.find( child->text().toStdString() ), cmd != full_list.end() ) //Item exixst all ok
+            full_list.erase( cmd );
+        else // Item does not exist and model item must be removed
             to_delete.push_back( child );
     }
 
     BOOST_FOREACH( const QStandardItem* it, to_delete   )
-        p_->model.removeRow( it->row(), parent->index() );
-    
-    BOOST_FOREACH( const QString& cmd, items )
-        parent->appendRow( new QStandardItem( cmd ) );
+        p_->model.removeRow( it->row(), item.item->index() );
+
+    BOOST_FOREACH( const std::string& cmd, full_list )
+        item.item->appendRow( new QStandardItem( cmd.data() ) );
 }
+
 
 
 

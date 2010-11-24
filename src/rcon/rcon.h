@@ -14,6 +14,8 @@ class QStandardItem;
 class server_id;
 class server_options;
 
+struct Item;
+
 class rcon : public QWidget{
     Q_OBJECT
 public:
@@ -46,6 +48,8 @@ private Q_SLOTS:
     void refresh_maps();
 
     void process_queue();
+
+    void refresh_expander( const std::string& expander );
     
 private:
     ///Connected/disconnected state
@@ -54,7 +58,8 @@ private:
     ///parse recieved data
     void parse_line( const QByteArray& line );
 
-    void update_model( QStandardItem* parent, const QStringList& childs );
+    ///Update autocompletition of item
+    void update_item( const Item& item);
     
     enum TextType{
         Command,
