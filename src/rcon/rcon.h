@@ -49,7 +49,7 @@ private Q_SLOTS:
 
     void process_queue();
 
-    void refresh_expander( const std::string& expander );
+    void refresh_expander( const QString& expander );
     
 private:
     ///Connected/disconnected state

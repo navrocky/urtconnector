@@ -42,6 +42,12 @@ const char rcon_header_codes[10] = {0xff, 0xff, 0xff, 0xff, 'r', 'c', 'o', 'n', 
 const QByteArray answer_header_c( answer_header_codes );
 const QByteArray rcon_header_c( rcon_header_codes );
 
+const QString exp_rx_c( "%(\\w+)%" );
+const QString group_rx_c( "\\{(.*)\\}" );
+const QString word_rx_c( "\\w+" );
+
+const QString config_rx_c( QString("%1|%2|%3").arg(exp_rx_c).arg(group_rx_c).arg(word_rx_c) );
+
 ///Comand to remote server and flag of answer visibility
 typedef std::pair<std::string, bool>    CommandOpt;
 typedef std::list<CommandOpt>           CommandQueue;
@@ -51,8 +57,8 @@ typedef boost::shared_ptr<base_parser>  Parser;
 typedef std::map<std::string, Parser>   ParsersByName;
 
 ///List of unique strings
-typedef std::set<std::string>           Strings;
-typedef std::map<std::string, Strings>  ExpandersByName;
+typedef std::set<QString>           Strings;
+typedef std::map<QString, Strings>  ExpandersByName;
 
 ///base_parser = class for handling lines, that coms from remote server
 struct base_parser{
@@ -122,7 +128,7 @@ struct player_list_parser: base_parser{
         else if( line == list_end )
             disable();
         else if( is_enabled() && player_rx.exactMatch(line) )
-            players.insert( player_rx.cap(2).toStdString() );
+            players.insert( player_rx.cap(2) );
     }
 };
 
@@ -147,7 +153,7 @@ struct map_list_parser: base_parser{
         else if( list_end_rx.exactMatch(line) )
             disable();
         else if( is_enabled() && map.exactMatch(line) )
-            maps.insert( map.cap(1).toStdString() );
+            maps.insert( map.cap(1) );
     }
 };
 
@@ -160,6 +166,8 @@ struct Item{
     Strings         st_list;
     ///list of expander names
     Strings         ex_list;
+    ///If this item is dynamically expanded holds completition config
+    std::list<QString>         config_list;
 };
 
 typedef std::list<Item> Items;
@@ -258,14 +266,65 @@ Items::iterator get_item( Items& items, QStandardItem* item ){
         it = items.insert( items.end(), Item() );
         it->item = item;
     }
+
     return it;
 }
 
 struct find_by_expander: std::binary_function<const Item&, const std::string&, bool>{
-    bool operator()( const Item& item, const std::string& expander ){
+    bool operator()( const Item& item, const QString& expander ){
         return std::find( item.ex_list.begin(), item.ex_list.end(), expander ) != item.ex_list.end();
     }
 };
+
+QStringList split( const QString& str ){
+    static const QRegExp rx( config_rx_c );
+    QStringList ret;
+    int pos = 0;
+    while ( ( pos = rx.indexIn(str, pos) ) != -1 ) {
+        pos += rx.cap(0).size();
+        ret << rx.cap(0);
+    }
+    return ret;
+}
+
+///Function for recursevly creating items from config
+template <typename Iterator>
+void create_items( QStandardItem* parent, Iterator begin, Iterator end, Items& items, bool static_item = true){
+    static const QRegExp expander_rx(exp_rx_c);
+    static const QRegExp group_rx(group_rx_c);
+
+    if( begin == end ) return;
+    
+    Items::iterator it = get_item( items, parent );
+    
+    Iterator next(begin); ++next;
+
+    //If element is expander
+    if(  expander_rx.exactMatch( *begin ) ){
+        it->ex_list.insert( expander_rx.cap(1) );
+        //storing config for dynamicaly created items
+        it->config_list = std::list<QString>( next, end );
+    }
+    //If element is grounp
+    else if( group_rx.exactMatch( *begin ) ){
+        //For ech element in group create items
+        BOOST_FOREACH( const QString& sub_str, split( group_rx.cap(1) ) ){
+            std::list<typename Iterator::value_type> lst(next, end);
+            lst.push_front(sub_str);
+            create_items( parent, lst.begin(), lst.end(), items );
+        }
+    }
+    //If element is simple word create item
+    else{
+        if( static_item ) it->st_list.insert( *begin );
+        QStandardItem* item = new QStandardItem( *begin );
+        parent->appendRow( item );
+        it = get_item( items, item );
+        
+        create_items( item, next, end, items );
+    }
+}
+
 
 rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
     : QWidget(parent)
@@ -276,45 +335,17 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
 
     //TODO move to config file
     QStringList lst;
-    lst << "%commands%" <<  "kick %players%" << "map %maps%" << "forceteam blue,red %players%" ;
+    lst << "%commands%"
+        << "kick %players%"
+        << "map %maps%"
+        << "forceteam %players% { blue, red }" ;
+ 
 
-    //FIXME make separate
     BOOST_FOREACH ( const QString& cmd_str, lst ) {
-
-        QStringList splitted = cmd_str.split(" ");
-
-        QStandardItem* p_item = p_->model.invisibleRootItem();
-        for (uint i=0; i< splitted.size(); ++i) {
-            Items::iterator it = get_item( p_->items, p_item );
-
-            QRegExp rx("%(.*)%");
-            QRegExp rx2("(.*),(.*)");
-            if( rx.exactMatch( splitted[i]) )
-                it->ex_list.insert( rx.cap(1).toStdString() );
-            else if( rx2.exactMatch( splitted[i]) )
-            {
-                BOOST_FOREACH( const QString& str, splitted[i].split(",") )
-                {
-                    it->st_list.insert( str.toStdString() );
-                    QStandardItem* item = new QStandardItem( str );
-                    p_item->appendRow( item );
-                    it = get_item( p_->items, item );
-                    //FIXME error...
-                    p_item = item;
-                }
-            }
-            else
-            {
-                it->st_list.insert( splitted[i].toStdString() );
-                QStandardItem* item = new QStandardItem( splitted[i] );
-                p_item->appendRow( item );
-                it = get_item( p_->items, item );
-                p_item = item;
-            }
-        }
-
+        QStringList sp = split( cmd_str );
+        create_items( p_->model.invisibleRootItem(), sp.begin(), sp.end(), p_->items );
     }
-
+    
 //     QTreeView* v = new QTreeView(0);
 //     v->show();
 //     v->setModel( &p_->model );
@@ -376,9 +407,8 @@ void rcon::ready_read()
     QByteArray data = p_->socket.readAll();
     LOG_DEBUG << format( "%1% - recieved: %2%" ) % p_->id.address().toStdString() % data.constData();
 
-    BOOST_FOREACH( const QByteArray& line, data.split('\n') ) {
+    BOOST_FOREACH( const QByteArray& line, data.split('\n') )
         parse_line( line );
-    }
 
     p_->send_timer.stop();
     p_->waiting = false;
@@ -453,9 +483,8 @@ void rcon::parse_line( const QByteArray& line )
             throw std::runtime_error("uncnown response command in RCon");
     }
 
-    if( p_->current.second == false ){
+    if( p_->current.second == false )
         print( Simple, line );
-    }
 
     BOOST_FOREACH( ParsersByName::value_type& parser, p_->parsers )
         parser.second->operator()( line );
@@ -495,7 +524,7 @@ void rcon::refresh_maps()
     QTimer::singleShot( 50000, this, SLOT( refresh_maps() ) );
 }
 
-void rcon::refresh_expander( const std::string& exp )
+void rcon::refresh_expander( const QString& exp )
 {
     std::for_each(
         make_filter_iterator( bind( find_by_expander(), _1, exp ), p_->items.begin(), p_->items.end() ),
@@ -503,7 +532,6 @@ void rcon::refresh_expander( const std::string& exp )
         bind( &rcon::update_item, this, _1)
     );
 }
-
 
 void rcon::process_queue()
 {
@@ -526,8 +554,18 @@ void rcon::process_queue()
     p_->last_send = QTime::currentTime();
 }
 
+void erase_item( QStandardItem* item, Items& items ){
+    for( int i = 0; i < item->rowCount(); ++i )
+        erase_item(item->child( i ), items);
+
+    Items::iterator it = std::find_if( items.begin(), items.end(), bind(&Item::item, _1) == item );
+    if( it != items.end() )
+        items.erase( it );
+}
+
 void rcon::update_item(const Item& item)
 {
+    LOG_DEBUG << "Updating item " << item.item->text().toStdString();
     QList<QStandardItem*> to_delete;
 
     //List of all autocompletition elements of item
@@ -536,9 +574,8 @@ void rcon::update_item(const Item& item)
     std::copy( item.st_list.begin(), item.st_list.end(), std::inserter( full_list, full_list.end() ) );
 
     //...dynamically expanded items
-    BOOST_FOREACH( const std::string& exp, item.ex_list )
+    BOOST_FOREACH( const QString& exp, item.ex_list )
         std::copy( p_->expanders[exp].begin(), p_->expanders[exp].end(), std::inserter( full_list, full_list.end() ) );
-  
 
     //checking QStandardItemModel structure
     QStandardItem* child(0);
@@ -546,17 +583,35 @@ void rcon::update_item(const Item& item)
     for( int i = 0; i < item.item->rowCount(); ++i ) {
         child = item.item->child( i );
 
-        if( cmd = full_list.find( child->text().toStdString() ), cmd != full_list.end() ) //Item exixst all ok
+        //Item exixst all ok
+        if( cmd = full_list.find( child->text() ), cmd != full_list.end() )
             full_list.erase( cmd );
-        else // Item does not exist and model item must be removed
+        // Item does not exist and model item must be removed
+        else
             to_delete.push_back( child );
     }
 
-    BOOST_FOREACH( const QStandardItem* it, to_delete   )
-        p_->model.removeRow( it->row(), item.item->index() );
+    BOOST_FOREACH( QStandardItem* it, to_delete   )
+    {
+        LOG_DEBUG << "Removing item" << it->text().toStdString();
+        erase_item( it, p_->items );
+        p_->model.removeRow( it->row(), item.item->index() );        
+    }
 
-    BOOST_FOREACH( const std::string& cmd, full_list )
-        item.item->appendRow( new QStandardItem( cmd.data() ) );
+    BOOST_FOREACH( const QString& cmd, full_list )
+    {
+        if ( item.config_list.empty() )
+            item.item->appendRow( new QStandardItem( cmd ) );
+        else
+        {
+            std::list<QString> lst( item.config_list.begin(), item.config_list.end() );
+            lst.push_front(cmd);
+            LOG_DEBUG << "Creating dynamyc item" << cmd.toStdString();
+            create_items( item.item, lst.begin(), lst.end(), p_->items, false);
+        }
+        
+    }
+    LOG_DEBUG << "Items size:" << p_->items.size();
 }
 
 
