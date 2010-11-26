@@ -2,6 +2,7 @@
 #include <memory>
 
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 
 #include <QApplication>
 #include <QTextEdit>
@@ -68,7 +69,16 @@ QString get_server_info_html(const server_info& si)
     if ( name.isEmpty() )
         name = qApp->translate("server_info_html", "* Unnamed *");
 
-    name = q3coloring(name);
+    static Q3ColorMap html_colors;
+
+    if( html_colors.empty() )
+    {
+        html_colors = default_colors();
+        BOOST_FOREACH( Q3ColorMap::value_type& p, html_colors )
+            p.second = p.second.lighter();
+    }
+    
+    name = q3coloring(name, html_colors);
     
     QString serv_info;
     QString status_str;
@@ -153,3 +163,4 @@ QString get_server_info_html(const server_info& si)
             .arg(ext_info);
     return html;
 }
+

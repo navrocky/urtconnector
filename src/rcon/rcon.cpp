@@ -26,8 +26,6 @@
 #include "ui_rcon.h"
 #include "rcon.h"
 #include "rcon/rcon_completer.h"
-#include <boost/concept_check.hpp>
-
 
 SYSLOG_MODULE("rcon");
 
@@ -179,8 +177,12 @@ struct rcon::Pimpl{
         , connected(false), waiting(false)
     {}
     void init() {
-      
+
+#if defined(Q_OS_UNIX)
+        QFont f("terminus");
+#elif defined(Q_OS_WIN)
         QFont f("");
+#endif
         f.setStyleHint(QFont::TypeWriter);
         ui.output->setFont( f );
         ui.input->setFont( f );
@@ -422,10 +424,6 @@ void rcon::update_settings()
     p.setColor( QPalette::Base, p_->colors[rcon_settings::Background] );
     p_->ui.output->setPalette( p );
     p_->ui.output->setAutoFillBackground( !rcon_settings().adaptive_pallete() );
-
-//    p.setColor( QPalette::Text, p_->colors[rcon_settings::Command] );
-//    p_->ui.input->setPalette( p );
-//    p_->ui.input->setAutoFillBackground( !rcon_settings().adaptive_pallete() );
 }
 
 
@@ -484,7 +482,11 @@ void rcon::parse_line( const QByteArray& line )
     }
 
     if( p_->current.second == false )
-        print( Simple, line );
+    {
+        Q3ColorMap map;
+        map[Q3DefaultColor] = p_->colors[rcon_settings::Text];
+        print( Simple, q3coloring(line, map) );
+    }
 
     BOOST_FOREACH( ParsersByName::value_type& parser, p_->parsers )
         parser.second->operator()( line );
@@ -493,8 +495,10 @@ void rcon::parse_line( const QByteArray& line )
 
 void rcon::print( TextType type, const QString & text )
 {
+    QString str = QString("<pre><font face=\"Terminus\",\"monospace\">%1</font></pre>").arg(colorize_string(type, text));
+
     if( !text.isEmpty() )
-        p_->ui.output->append( colorize_string(type, text) );
+        p_->ui.output->append( str );
 }
 
 QString rcon::colorize_string( rcon::TextType type, const QString& text ) const

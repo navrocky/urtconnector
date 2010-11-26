@@ -1,6 +1,8 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
+#include <map>
+
 #include <QObject>
 #include <QPainter>
 
@@ -12,16 +14,39 @@ class QDockWidget;
 class QLabel;
 class QIcon;
 
+
+enum Q3Color {
+    Q3Black,
+    Q3Red,
+    Q3Green,
+    Q3Yellow,
+    Q3Blue,
+    Q3Cyan,
+    Q3Magenta,
+    Q3White
+};
+
+static const Q3Color Q3DefaultColor = Q3White;
+
+typedef std::map<Q3Color, QColor> Q3ColorMap;
+
+///Map of Quake 3 defaults colors
+const Q3ColorMap& default_colors();
+
+///Get color from color map by id, uses substitute map if exists
+const QColor& color( Q3Color c, const Q3ColorMap& substitute = Q3ColorMap() );
+
+///Get color from color map by string-id, uses substitute map if exists
+const QColor& color( const QString& str, const Q3ColorMap& custom = Q3ColorMap() );
+
+///Colorize string like html: <font color="color.name">text</font>
+QString colorize( const QString& token, const QColor& color );
+
+///Find Quake 3 color mark in string and add apropriate html color tags
+QString q3coloring( const QString& str, const Q3ColorMap& custom = Q3ColorMap()  );
+
 /*! Adds menu separator action to widget with optional text. */
 QAction*  add_separator_action(QWidget* w, const QString& text = "");
-
-QColor color( const QString& str );
-
-QString colorize( const QString& str, const QColor& color );
-
-QString make_css_colored(QString str, const QString& skip = QString());
-
-QString q3coloring( const QString& str, const QString& skip = QString() );
 
 ///test function
 QColor choose_for_background( Qt::GlobalColor standard, const QColor& background );

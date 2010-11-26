@@ -27,62 +27,70 @@ QAction* add_separator_action(QWidget* w, const QString& text)
     return separator;
 }
 
-
-QColor color(const QString & str)
+const Q3ColorMap& default_colors()
 {
-    static QMap<int, QColor> color_map;
+    static Q3ColorMap colors;
 
-    if( color_map.isEmpty() )
+    if( colors.empty() )
     {
-        color_map[0] = QColor(Qt::black);
-        color_map[1] = QColor(Qt::red);
-        color_map[2] = QColor(Qt::green);
-        color_map[3] = QColor(Qt::yellow);
-        color_map[4] = QColor(Qt::blue);
-        color_map[5] = QColor(Qt::cyan);
-        color_map[6] = QColor(Qt::magenta);
-        color_map[7] = QColor(Qt::white);
+        boost::assign::insert( colors )
+            ( Q3Black,   Qt::black   )
+            ( Q3Red,     Qt::red     )
+            ( Q3Green,   Qt::green   )
+            ( Q3Yellow,  Qt::yellow  )
+            ( Q3Blue,    Qt::blue    )
+            ( Q3Cyan,    Qt::cyan    )
+            ( Q3Magenta, Qt::magenta )
+            ( Q3White,   Qt::white   );
     }
 
-    bool ok;
-    int col_num = str.toInt(&ok) % 8;
-    if (!ok)
-        col_num = 7;
-    
-    return color_map[col_num].lighter();
+    return colors;
 }
 
-QString colorize(const QString& str, const QColor& color)
+
+const QColor& color( Q3Color c, const Q3ColorMap& substitute )
+{
+    if( substitute.find(c) != substitute.end() )
+        return substitute.find(c)->second;
+    else
+        return default_colors().find(c)->second;
+}
+
+
+const QColor& color( const QString & str, const Q3ColorMap& substitute )
+{
+    bool ok;
+    static const int colors_count = default_colors().size();
+
+    Q3Color c = Q3Color( str.toInt(&ok) % colors_count );
+    if (!ok) c = Q3DefaultColor;
+
+    return color( c, substitute );
+}
+
+QString colorize( const QString& token, const QColor& color )
 {
     static QString colored("<font color=\"%1\">%2</font>");
-    return colored.arg( color.name(), str );
+    return colored.arg( color.name(), token);
 }
 
-QString make_css_colored(QString str, const QString& skip)
+QString colorize_token(const QString& str, const Q3ColorMap& substitute )
 {
-    static QStringList markers;
-    if ( markers.isEmpty() ) markers <<"1"<<"2"<<"3"<<"4"<<"5"<<"6"<<"7";
-
-    for( QStringList::iterator it = markers.begin(); it != markers.end(); ++it )
-    {
-        if( str.startsWith( *it ) )
-        {
-            str.remove(0,1);
-            if (*it != skip ) return colorize( str, color(*it) );
-        }
-    }
-    
-    return str;
+    static const QRegExp color_rx("^(\\d).*");
+    if( color_rx.exactMatch(str) )
+        return colorize( str.right( str.size() -1 ), color( color_rx.cap(1), substitute ) );
+    else
+        return str;
 }
 
-QString q3coloring(const QString & str, const QString& skip)
+QString q3coloring(const QString & str, const Q3ColorMap& custom)
 {
     //split incoming string by quake3 color-markers
-    QStringList lst = str.split( QRegExp("\\^") );
+    QStringList lst = str.split( "^" );
     //removing empty lines
     lst.erase( std::remove_if( lst.begin(), lst.end(), bind( &QString::isEmpty, _1 ) ), lst.end() );
     //replacing quake3 color-markers by html-formated text
-    std::transform(lst.begin(), lst.end(), lst.begin(), boost::bind(make_css_colored, _1, skip) );
+    std::transform(lst.begin(), lst.end(), lst.begin(), boost::bind(colorize_token, _1, boost::ref(custom)) );
     //joining list to plain string
     return lst.join("");
 }
