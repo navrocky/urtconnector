@@ -27,7 +27,7 @@
 #include "rcon.h"
 #include "rcon/rcon_completer.h"
 
-SYSLOG_MODULE("rcon");
+SYSLOG_MODULE(rcon)
 
 using namespace boost;
 using namespace boost::assign;

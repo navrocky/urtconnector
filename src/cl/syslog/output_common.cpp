@@ -3,10 +3,7 @@
 
 #include "common.h"
 #include "output_common.h"
-
-using namespace boost;
-using namespace boost::posix_time;
-using namespace std;
+#include "thread_info.h"
 
 namespace cl
 {
@@ -35,13 +32,14 @@ std::string level_to_str(syslog::level_t lv)
     return "unkn";
 }
 
-std::string message_to_str(const message& msg)
+std::string message_to_str(const message& msg, const thread_info& info)
 {
-    ptime tm = microsec_clock::local_time();
-    return str(format("%1% (%3%)%2% %4%: %5%\n") % tm %
-            level_to_str(msg.level) % msg.level %
-            msg.module % msg.msg);
-
+    using namespace boost::posix_time;
+    int delta = int((info.time - info.prev_time).total_microseconds());
+    return (boost::format("%1% D:%2$6d TH:%3% (%4%)%5% %6%: %7%\n") % info.time
+            % delta % info.num
+            % level_to_str(msg.level) % msg.level %
+            msg.module % msg.msg ).str();
 }
 
 }

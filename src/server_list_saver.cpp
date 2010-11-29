@@ -11,7 +11,7 @@
 
 #include "server_list_saver.h"
 
-SYSLOG_MODULE("server_list_saver");
+SYSLOG_MODULE(server_list_saver)
 
 void save_server_info(qsettings_p s, const server_info_p& info)
 {

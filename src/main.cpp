@@ -16,6 +16,7 @@
 #include <anticheat/settings.h>
 #include <rcon/rcon_settings.h>
 #include <settings/settings.h>
+#include <common/state_settings.h>
 
 #include "main_window.h"
 #include "application.h"
@@ -29,7 +30,7 @@
 using namespace cl::syslog;
 using namespace std;
 
-SYSLOG_MODULE("main");
+SYSLOG_MODULE(main)
 
 int main(int argc, char *argv[])
 {
@@ -66,13 +67,13 @@ int main(int argc, char *argv[])
     
     LOG_DEBUG << "Syslog started";
 
-//    //Initializing main settings
-//    base_settings set;
-//    //Registering state_settings in separate file
-//    set.register_file( state_settings::uid(), "state.ini" );
-//    set.register_file( server_list_widget_settings::uid(), "options.ini" );
-//    set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
-//    set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
+    //Initializing main settings
+    base_settings set;
+    //Registering state_settings in separate file
+    set.register_file( state_settings::uid(), "state.ini" );
+    set.register_file( server_list_widget_settings::uid(), "options.ini" );
+    set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
+    set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
 
 
     if (vm.count("launch"))

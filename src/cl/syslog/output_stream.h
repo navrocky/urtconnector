@@ -11,6 +11,7 @@ namespace syslog
 {
 
 class message;
+class thread_info;
 
 /*! \brief Stream log output. */
 class output_stream : public output
@@ -18,7 +19,7 @@ class output_stream : public output
 public:
     output_stream(std::ostream& stream);
 protected:
-    void do_write(const message& msg);
+    void do_write(const message& msg, const thread_info& info);
 private:
     std::ostream& stream_;
 };

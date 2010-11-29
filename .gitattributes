@@ -66,7 +66,6 @@ src/cl/except/error.cpp -text
 src/cl/except/error.h -text
 src/cl/syslog/CMakeLists.txt -text
 src/cl/syslog/common.h -text
-src/cl/syslog/filter.cpp -text
 src/cl/syslog/filter.h -text
 src/cl/syslog/manager.cpp -text
 src/cl/syslog/manager.h -text
@@ -84,6 +83,7 @@ src/cl/syslog/output_syslog.cpp -text
 src/cl/syslog/output_syslog.h -text
 src/cl/syslog/syslog.cpp -text
 src/cl/syslog/syslog.h -text
+src/cl/syslog/thread_info.h -text
 src/clipper.cpp -text
 src/clipper.h -text
 src/common/CMakeLists.txt -text
@@ -95,6 +95,8 @@ src/common/server_id.cpp -text
 src/common/server_id.h -text
 src/common/settings_base_widget.cpp -text
 src/common/settings_base_widget.h -text
+src/common/state_settings.cpp -text
+src/common/state_settings.h -text
 src/config.h.in -text
 src/debug_help.cpp -text
 src/debug_help.h -text
@@ -374,6 +376,7 @@ src/history/history_widget.cpp -text
 src/history/history_widget.h -text
 src/history/history_widget.ui -text
 src/icons/add.png -text
+src/icons/anticheat.png -text
 src/icons/application-exit.png -text
 src/icons/bookmarks.png -text
 src/icons/choose-file.png -text

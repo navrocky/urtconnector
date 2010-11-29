@@ -6,6 +6,9 @@ namespace cl
 namespace syslog
 {
 
+/*! defined if thread logging needed */
+#define USE_THREADS
+
 /*! Log message level */
 enum level_t
 {

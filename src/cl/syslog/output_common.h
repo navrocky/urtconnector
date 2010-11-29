@@ -9,11 +9,15 @@ namespace cl
 {
 namespace syslog
 {
+
+class thread_info;
+
 namespace internal
 {
 
+
 /*! Take a string message representation, commonly used in stream and file outputs. */
-std::string message_to_str(const message& msg);
+std::string message_to_str(const message& msg, const thread_info& info);
 
 }
 }

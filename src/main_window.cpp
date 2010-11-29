@@ -19,6 +19,8 @@
 #include <QHeaderView>
 
 #include <cl/syslog/syslog.h>
+#include <settings/settings.h>
+#include <common/state_settings.h>
 
 #include "config.h"
 #include "ui_main_window.h"
@@ -46,10 +48,8 @@
 #include "filters/filter_factory.h"
 #include "filters/reg_filters.h"
 
-#include <settings/settings.h>
-
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
-#include "common/iconned_dock_style.h"
+#include <common/iconned_dock_style.h>
 #endif
 
 #include <filters/filter_edit_widget.h>
@@ -58,26 +58,12 @@
 
 #include "main_window.h"
 
-SYSLOG_MODULE("main_window");
+SYSLOG_MODULE(main_window)
 
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
 // main_window
-
-
-//obtain UID for state_settings
-class state_settings: public settings_uid_provider<state_settings>
-{
-public:
-    QByteArray geometry(){
-        return part()->value("geometry").toByteArray();
-    }
-
-    void set_geometry( const QByteArray& g ){
-        return part()->setValue("geometry", g );
-    }
-};
 
 main_window::main_window(QWidget *parent)
 : QMainWindow(parent)
@@ -95,13 +81,22 @@ main_window::main_window(QWidget *parent)
     ui_->setupUi(this);
 
     //Initializing main settings
-    base_settings set;
+//    base_settings set;
     //Registering state_settings in separate file
-    set.register_file( state_settings::uid(), "state.ini" );
-    set.register_file( server_list_widget_settings::uid(), "options.ini" );
-    set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
-    set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
+//    set.register_file( state_settings::uid(), "state.ini" );
+//    set.register_file( server_list_widget_settings::uid(), "options.ini" );
+//    set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
+//    set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
 
+    anticheat_enabled_action_ = new QAction(QIcon(":/icons/anticheat.png"), tr("Enable anticheat"), this);
+    anticheat_open_action_ = new QAction(QIcon(":/icons/zoom.png"), tr("Enable anticheat"), this);
+    anticheat_configure_action_ = new QAction(QIcon(":/icons/configure.png"), tr("Enable anticheat"), this);
+    QMenu* m = new QMenu(this);
+    m->addAction(anticheat_open_action_);
+    m->addAction(anticheat_configure_action_);
+    anticheat_enabled_action_->setMenu(m);
+
+    ui_->toolBar->addAction(anticheat_enabled_action_);
 
     que_ = new job_queue(this);
     job_monitor* jm = new job_monitor(que_, this);

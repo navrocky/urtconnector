@@ -22,6 +22,7 @@
 class QTimer;
 class Ui_MainWindowClass;
 class QSessionManager;
+class QAction;
 
 class main_window : public QMainWindow
 {
@@ -108,6 +109,9 @@ private:
     filter_factory_p filter_factory_;
     anticheat::manager* anticheat_;
     launcher* launcher_;
+    QAction* anticheat_enabled_action_;
+    QAction* anticheat_open_action_;
+    QAction* anticheat_configure_action_;
 };
 
 #endif

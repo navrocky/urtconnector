@@ -7,6 +7,7 @@ set(HEADERS
     scoped_tools.h
     server_id.h
     settings_base_widget.h
+    state_settings.h
 )
 
 set(MOC_HEADERS
@@ -16,6 +17,7 @@ set(MOC_HEADERS
 set(SOURCES
     server_id.cpp
     settings_base_widget.cpp
+    state_settings.cpp
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)

@@ -11,7 +11,7 @@
 #include "sshot_output.h"
 #include "anticheat.h"
 
-SYSLOG_MODULE("anticheat")
+SYSLOG_MODULE(anticheat)
 
 namespace anticheat
 {

@@ -1,7 +1,6 @@
 #ifndef _CL_SYSLOG_MANAGER_H
 #define	_CL_SYSLOG_MANAGER_H
 
-#include <vector>
 #include <memory>
 
 #include <cl/syslog/common.h>

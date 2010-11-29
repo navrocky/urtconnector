@@ -4,7 +4,7 @@
 
 #include "sshot_ftp_output.h"
 
-SYSLOG_MODULE("sshot_ftp_output")
+SYSLOG_MODULE(sshot_ftp_output)
 
 namespace anticheat
 {

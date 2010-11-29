@@ -6,7 +6,7 @@
 
 #include "qstat_updater.h"
 
-SYSLOG_MODULE("qstat_updater");
+SYSLOG_MODULE(qstat_updater)
 
 namespace
 {

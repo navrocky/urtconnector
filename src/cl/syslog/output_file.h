@@ -18,7 +18,7 @@ class output_file : public output
 public:
     output_file(const std::string& file_name, bool append = false);
 protected:
-    void do_write(const message& msg);
+    void do_write(const message& msg, const thread_info& info);
 private:
     std::fstream f_;
 };

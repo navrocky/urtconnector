@@ -10,7 +10,7 @@
 #include "launcher.h"
 #include "tools.h"
 
-SYSLOG_MODULE("launcher")
+SYSLOG_MODULE(launcher)
 
 // it's code from qprocess.cpp
 static QStringList parseCombinedArgString(const QString &program)
