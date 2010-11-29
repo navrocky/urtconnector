@@ -96,6 +96,10 @@ src/common/server_id.h -text
 src/common/settings_base_widget.cpp -text
 src/common/settings_base_widget.h -text
 src/config.h.in -text
+src/database/CMakeLists.txt -text
+src/database/simple_database.h -text
+src/database/sqlite_database.cpp -text
+src/database/sqlite_database.h -text
 src/debug_help.cpp -text
 src/debug_help.h -text
 src/exception.cpp -text

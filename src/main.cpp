@@ -16,6 +16,8 @@
 #include <anticheat/settings.h>
 #include <rcon/rcon_settings.h>
 #include <settings/settings.h>
+#include <database/simple_database.h>
+#include <database/sqlite_database.h>
 
 #include "main_window.h"
 #include "application.h"
@@ -31,8 +33,12 @@ using namespace std;
 
 SYSLOG_MODULE("main");
 
+extern simple_database* simple_database::db;
+
 int main(int argc, char *argv[])
 {
+    simple_database *db = new sqlite_database("urtconnector.sqlite");
+
     // parsing program options
     namespace po = boost::program_options;
 
