@@ -1,7 +1,7 @@
-#include <cl/syslog/syslog.h>
+#include <common/qt_syslog.h>
+#include <common/exception.h>
+#include <common/server_id.h>
 
-#include "exception.h"
-#include "common/server_id.h"
 #include "server_list.h"
 
 #include "qstat_updater.h"
@@ -159,7 +159,7 @@ void qstat_updater::error(QProcess::ProcessError error)
 
 void qstat_updater::finished(int, QProcess::ExitStatus)
 {
-    LOG_HARD << "QStat output: %1", qstat_output_.toStdString();
+    LOG_HARD << "QStat output: %1", qstat_output_;
     do_refresh_stopped();
 }
 
@@ -302,8 +302,8 @@ void qstat_updater::process_xml()
                     }
                     si->update_from(*cur_server_info_);
                     si->updating = false;
-                    LOG_HARD << "Received server info: %1, %2, ", si->id.address().toStdString(),
-                        si->name.toStdString();
+                    LOG_HARD << "Received server info: %1, %2, ", si->id.address(),
+                        si->name;
                 }
 
                 cur_server_info_.reset( new server_info() );

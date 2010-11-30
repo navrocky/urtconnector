@@ -9,18 +9,18 @@
 #include <QTemporaryFile>
 #include <QDesktopWidget>
 
-#include <cl/syslog/syslog.h>
 #include <cl/syslog/output_stream.h>
+#include <common/qt_syslog.h>
+#include <common/state_settings.h>
+#include <common/exception.h>
 #include <launcher/launcher.h>
 #include <anticheat/manager.h>
 #include <anticheat/settings.h>
 #include <rcon/rcon_settings.h>
 #include <settings/settings.h>
-#include <common/state_settings.h>
 
 #include "main_window.h"
 #include "application.h"
-#include "exception.h"
 #include "debug_help.h"
 #include "str_convert.h"
 #include "tools.h"
@@ -113,9 +113,9 @@ int main(int argc, char *argv[])
         bool loaded = qt_trans.load(trans_name,
                       QLibraryInfo::location(QLibraryInfo::TranslationsPath));
         if (loaded)
-            LOG_DEBUG << "Translation \"%1\" loaded", trans_name.toStdString();
+            LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
         else
-            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name.toStdString();
+            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
             
         a.installTranslator(&qt_trans);
 
@@ -131,9 +131,9 @@ int main(int argc, char *argv[])
         loaded = urt_tr.load(trans_name);
 #endif
         if (loaded)
-            LOG_DEBUG << "Translation \"%1\" loaded", trans_name.toStdString();
+            LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
         else
-            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name.toStdString();
+            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
         
         a.installTranslator(&urt_tr);
 

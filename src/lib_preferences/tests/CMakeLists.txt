@@ -5,7 +5,7 @@ project(${TARGET})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-#include_directories(../src)
+include_directories(../src)
 
 find_package( Boost COMPONENTS)
 include_directories(${Boost_INCLUDE_DIRS})

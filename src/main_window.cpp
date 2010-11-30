@@ -18,15 +18,16 @@
 #include <QFile>
 #include <QHeaderView>
 
-#include <cl/syslog/syslog.h>
-#include <settings/settings.h>
+#include <common/qt_syslog.h>
 #include <common/state_settings.h>
+#include <settings/settings.h>
 
 #include "config.h"
 #include "ui_main_window.h"
 #include "options_dialog.h"
 #include <launcher/launcher.h>
-#include "exception.h"
+#include <common/exception.h>
+#include <anticheat/settings.h>
 #include "server_options_dialog.h"
 #include "push_button_action_link.h"
 #include "server_list.h"
@@ -74,25 +75,19 @@ main_window::main_window(QWidget *parent)
 , history_sl_(new history(opts_))
 , old_state_(0)
 , clipper_( new clipper(this, opts_) )
-, anticheat_( new anticheat::manager(this))
-, launcher_(new launcher(opts_, anticheat_, this))
+, anticheat_(NULL)
+, launcher_(new launcher(opts_, this))
 {
 //    setAttribute(Qt::WA_TranslucentBackground, true);
     ui_->setupUi(this);
 
-    //Initializing main settings
-//    base_settings set;
-    //Registering state_settings in separate file
-//    set.register_file( state_settings::uid(), "state.ini" );
-//    set.register_file( server_list_widget_settings::uid(), "options.ini" );
-//    set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
-//    set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
+    anticheat_enabled_action_ = new QAction(QIcon(":/icons/icons/anticheat.png"), tr("Enable anticheat"), this);
+    anticheat_enabled_action_->setCheckable(true);
 
-    anticheat_enabled_action_ = new QAction(QIcon(":/icons/anticheat.png"), tr("Enable anticheat"), this);
-    anticheat_open_action_ = new QAction(QIcon(":/icons/zoom.png"), tr("Enable anticheat"), this);
-    anticheat_configure_action_ = new QAction(QIcon(":/icons/configure.png"), tr("Enable anticheat"), this);
+//    anticheat_open_action_ = new QAction(QIcon(":/images/icons/zoom.png"), tr("Enable anticheat"), this);
+    anticheat_configure_action_ = new QAction(QIcon(":/icons/icons/configure.png"), tr("Configure anticheat"), this);
     QMenu* m = new QMenu(this);
-    m->addAction(anticheat_open_action_);
+//    m->addAction(anticheat_open_action_);
     m->addAction(anticheat_configure_action_);
     anticheat_enabled_action_->setMenu(m);
 
@@ -219,8 +214,8 @@ main_window::main_window(QWidget *parent)
 }
 
 main_window::~main_window()
-{}
-
+{
+}
 
 void main_window::clipboard_info_obtained()
 {
@@ -276,7 +271,7 @@ void main_window::quick_connect() const
     // add to history if history is enabled
     if (opts_->keep_history)
     {
-        history_sl_->add(l->id(), "", l->userName(), l->password());
+        history_sl_->add(l->id(), "", l->user_name(), l->password());
         history_list_->update_history();
     }
 
@@ -342,7 +337,7 @@ void main_window::fav_edit()
 
 void main_window::fav_delete()
 {
-    LOG_HARD << "deleting favorite server(s)";
+    LOG_HARD << "Deleting favorite server(s)";
     clear_selected();
 }
 
@@ -582,7 +577,7 @@ void main_window::connect_selected() const
     // add to history if history is enabled
     if (opts_->keep_history)
     {
-        history_sl_->add(l->id(), info->name, l->userName(), l->password());
+        history_sl_->add(l->id(), info->name, l->user_name(), l->password());
         history_list_->update_history();
     }
 
@@ -778,7 +773,7 @@ void main_window::clear_servers(server_list_widget* current, const server_id_lis
 {
     if ( current == all_list_ )
     {
-        LOG_DEBUG << "deleting entries from All-list";
+        LOG_DEBUG << "Deleting entries from All-list";
         server_info_list& info_lst = current->server_list()->list();
         BOOST_FOREACH( const server_id_list::value_type& id, to_delete ){
             info_lst.erase(id);
@@ -792,7 +787,7 @@ void main_window::clear_servers(server_list_widget* current, const server_id_lis
         )
             return;
 
-        LOG_DEBUG << "deleting entries from Fav-list";
+        LOG_DEBUG << "Deleting entries from Fav-list";
         server_fav_list& fav_lst = opts_->servers;
         BOOST_FOREACH( const server_id_list::value_type& id, to_delete ){
             fav_lst.erase(id);
@@ -803,13 +798,13 @@ void main_window::clear_servers(server_list_widget* current, const server_id_lis
     }
     update_actions();
     current->force_update();
-    LOG_DEBUG << to_delete.size() << " entries deleted";
+    LOG_DEBUG << "%1 entries deleted", to_delete.size();
 }
 
 
 void main_window::clear_all()
 {
-    LOG_HARD << "deleting all entries";
+    LOG_HARD << "Deleting all entries";
     server_list_widget* current = selected_list_widget();
 
     server_id_list id_list;
@@ -827,7 +822,7 @@ bool is_offline( const server_info_list::value_type& info )
 
 void main_window::clear_offline()
 {
-    LOG_HARD << "deleting offline entries";
+    LOG_HARD << "Deleting offline entries";
     server_list_widget* current = selected_list_widget();
 
     server_id_list id_list;
@@ -843,7 +838,7 @@ void main_window::clear_offline()
 
 void main_window::clear_selected()
 {
-    LOG_HARD << "deleting selected entries";
+    LOG_HARD << "Deleting selected entries";
     server_list_widget* current = selected_list_widget();
 
     //if current item will removed during clearing, scrollToItem crashes
@@ -905,3 +900,23 @@ void main_window::load_history_tab()
         ui_->tabWidget->setTabEnabled(2, false);
     }
 }
+
+void main_window::launcher_started()
+{
+    if (!anticheat_enabled_action_->isChecked())
+        return;
+
+    anticheat_ = new anticheat::anticheat(this);
+
+    anticheat::settings s;
+    anticheat_->set_interval(s.interval());
+    
+
+    anticheat_->start();
+}
+
+void main_window::launcher_stopped()
+{
+    delete anticheat_;
+}
+

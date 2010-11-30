@@ -20,6 +20,7 @@ public:
     // is anticheat used?
     bool is_used();
 
+public slots:
     void start();
     void stop();
 

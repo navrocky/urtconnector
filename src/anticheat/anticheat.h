@@ -20,6 +20,7 @@ class anticheat : public QObject
     Q_OBJECT
 public:
     anticheat(QObject* parent = NULL);
+    ~anticheat();
     
     // interval between screenshots in milliseconds
     int interval() const {return interval_;}
@@ -33,6 +34,8 @@ public:
 
     void start();
     void stop();
+
+    bool is_started();
 
     virtual bool event(QEvent* e);
 

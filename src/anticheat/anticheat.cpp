@@ -25,6 +25,11 @@ anticheat::anticheat(QObject* parent)
 {
 }
 
+anticheat::~anticheat()
+{
+    stop();
+}
+
 void anticheat::set_interval(int val)
 {
     if (interval_ == val)
@@ -137,6 +142,11 @@ void anticheat::screen_shot()
 void anticheat::add_output(sshot_output* output)
 {
     outputs_.append(output);
+}
+
+bool anticheat::is_started()
+{
+    return timer_ != 0;
 }
 
 }

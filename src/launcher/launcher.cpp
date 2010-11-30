@@ -3,17 +3,20 @@
 #include <QFileInfo>
 #include <QProcess>
 
-#include <cl/syslog/syslog.h>
-#include "../exception.h"
+#include <common/qt_syslog.h>
+#include <common/exception.h>
 #include "../app_options.h"
 
-#include "launcher.h"
 #include "tools.h"
+#include "launcher.h"
 
 SYSLOG_MODULE(launcher)
 
+namespace
+{
+
 // it's code from qprocess.cpp
-static QStringList parseCombinedArgString(const QString &program)
+static QStringList parse_combined_arg_string(const QString &program)
 {
     QStringList args;
     QString tmp;
@@ -61,13 +64,15 @@ static QStringList parseCombinedArgString(const QString &program)
     return args;
 }
 
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // launcher
 
-launcher::launcher(app_options_p opts, anticheat::manager* anticheat, QObject* parent)
+launcher::launcher(app_options_p opts, QObject* parent)
 : QObject(parent)
 , opts_(opts)
-, anticheat_(anticheat)
+, detach_(false)
 {
 }
 
@@ -108,49 +113,45 @@ void launcher::set_referee(const QString& value)
 
 void launcher::launch()
 {
-    if (proc_)
-    {
-        throw qexception(tr("Game already started. Close it if you want and try again."));
-        return;
-    }
-
-    QStringList args = parseCombinedArgString(launch_string());
+    // prepare launch parameters
+    QString ls = launch_string();
+    QStringList args = parse_combined_arg_string(ls);
     QString prog = args.first();
     args.removeFirst();
 
-    if (anticheat_ && anticheat_->is_used())
+    if (detach_)
     {
-        LOG_DEBUG << "Anticheat started";
+        LOG_DEBUG << "Detached game launch: \"%1\"", ls;
+        if (!QProcess::startDetached(prog, args, get_work_dir()))
+            throw qexception(tr("Failed to start UrbanTerror. Check launch parameters in options dialog."));
+    } else
+    {
+        if (proc_)
+            throw qexception(tr("Game already started. Close it if you want and try again."));
+
+        LOG_DEBUG << "Game launch: \"%1\"", ls;
         proc_ = new QProcess(this);
         connect(proc_, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(proc_finished(int, QProcess::ExitStatus)));
         connect(proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(proc_error(QProcess::ProcessError)));
+        connect(proc_, SIGNAL(started()), SIGNAL(started()));
         proc_->setWorkingDirectory(get_work_dir());
         proc_->start(prog, args);
-        anticheat_->start();
-        LOG_DEBUG << "Game started";
-    } else
-    {
-        if (!QProcess::startDetached(prog, args, get_work_dir()))
-            throw qexception(tr("Failed to start UrbanTerror. Check launch parameters in options dialog."));
     }
 }
 
 void launcher::proc_finished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    LOG_DEBUG << "Game and anticheat stopped";
-    if (anticheat_)
-        anticheat_->stop();
+    LOG_DEBUG << "Game finished";
     delete proc_;
+    emit stopped();
 }
 
 void launcher::proc_error(QProcess::ProcessError error)
 {
-    if (anticheat_)
-        anticheat_->stop();
     delete proc_;
-    throw qexception(tr("Game launch error %1.").arg(error));
+    emit stopped();
+    throw qexception(tr("Game launch error \"%1\".").arg(error));
 }
-
 
 QString launcher::launch_string()
 {

@@ -1,7 +1,7 @@
 #include <QMessageBox>
 
+#include <common/exception.h>
 #include "application.h"
-#include "exception.h"
 #include "str_convert.h"
 
 application::application(int &argc, char * argv[])

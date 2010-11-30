@@ -17,7 +17,7 @@
 #include "clipper.h"
 #include "filters/pointers.h"
 #include "history/history_widget.h"
-#include <anticheat/manager.h>
+#include <anticheat/anticheat.h>
 
 class QTimer;
 class Ui_MainWindowClass;
@@ -68,6 +68,9 @@ private slots:
     void clear_selected();
     void clear_offline();
     void about_qt();
+
+    void launcher_started();
+    void launcher_stopped();
 private:
     void sync_fav_list();
 
@@ -107,7 +110,7 @@ private:
     geoip gi_;
     clipper* clipper_;
     filter_factory_p filter_factory_;
-    anticheat::manager* anticheat_;
+    anticheat::anticheat* anticheat_;
     launcher* launcher_;
     QAction* anticheat_enabled_action_;
     QAction* anticheat_open_action_;
