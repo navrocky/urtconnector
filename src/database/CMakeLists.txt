@@ -10,6 +10,7 @@ set(HEADERS
 
 set(SOURCES
     sqlite_database.cpp
+    simple_database.cpp
 )
 
 set(IFACES

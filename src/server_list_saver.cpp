@@ -5,16 +5,42 @@
 #include <QByteArray>
 
 #include <cl/syslog/syslog.h>
-
+#include "exception.h"
 #include "pointers.h"
 #include "server_list.h"
 
 #include "server_list_saver.h"
+#include <database/simple_database.h>
 
 SYSLOG_MODULE("server_list_saver");
 
-void save_server_info(qsettings_p s, const server_info_p& info)
+void save_server_info(const QString &name, qsettings_p s, const server_info_p& info)
 {
+    QString db_field_info = "";
+    const server_info::info_t& inf = info->info;
+    for (server_info::info_t::const_iterator it = inf.begin(); it!=inf.end(); ++it)
+    {
+        db_field_info += simple_database::db->qqencode_string(it->first);
+        db_field_info += " = ";
+        db_field_info += simple_database::db->qqencode_string(it->second);
+        db_field_info += " & ";
+    }
+    QString query = QString("INSERT INTO %0 VALUES(NULL,'%1','%2','%3','%4','%5','%6','%7','%8','%9','%10','%11');")
+    .arg(name)
+    .arg(simple_database::db->qqencode_string(info->id.address()))
+    .arg(simple_database::db->qqencode_string(info->name))
+    .arg(simple_database::db->qqencode_string(info->game_type))
+    .arg(simple_database::db->qqencode_string(info->map))
+    .arg(simple_database::db->qqencode_string(info->map_url))
+    .arg(info->max_player_count)
+    .arg(info->mode)
+    .arg(info->ping)
+    .arg(simple_database::db->qqencode_string(info->country))
+    .arg(simple_database::db->qqencode_string(info->country_code))
+    .arg(db_field_info);
+
+    simple_database::db->query(query.toStdString());
+/*
     s->setValue("address", info->id.address());
     s->setValue("name", info->name);
     s->setValue("game_type", info->game_type);
@@ -35,6 +61,7 @@ void save_server_info(qsettings_p s, const server_info_p& info)
         s->setValue("value", it->second);
     }
     s->endArray();
+*/
 }
 
 // typedef QMap<QString, QVariant> props_t;
@@ -139,19 +166,21 @@ void save_server_list(qsettings_p s, const QString& name, const server_list_p li
     LOG_DEBUG << "Saving server list \"%1\"", s->fileName().toStdString();
     try
     {
+        simple_database::db->query(QString("DELETE FROM %1;").arg(name).toStdString());
         const server_info_list& l = list->list();
         s->beginWriteArray(name);
         int i = 0;
         for (server_info_list::const_iterator it = l.begin(); it != l.end(); it++)
         {
             s->setArrayIndex(i++);
-            save_server_info(s, it->second);
+            save_server_info(name, s, it->second);
         }
         s->endArray();
     }
-    catch(...)
+    catch(qexception ex)
     {
         LOG_ERR << "Error occured while saving server list";
+        LOG_ERR << ex.message().toStdString();
     }
 }
 
@@ -161,6 +190,47 @@ void load_server_list(qsettings_p s, const QString& name, server_list_p list)
     try
     {
         server_info_list& l = list->list();
+        simple_database::result_set servers = simple_database::db->query(QString("SELECT * FROM %1;").arg(name).toStdString());
+        size_t rows = servers.size();
+        for (size_t i=0; i<rows; ++i)
+        {
+            server_info_p info(new server_info());
+            info->id = server_id(simple_database::db->sqdecode_string(servers[i][1]));
+            info->name = simple_database::db->sqdecode_string(servers[i][2]);
+            info->game_type = simple_database::db->sqdecode_string(servers[i][3]).toInt();
+            info->map = simple_database::db->sqdecode_string(servers[i][4]);
+            info->map_url = simple_database::db->sqdecode_string(servers[i][5]);
+            info->max_player_count = simple_database::db->sqdecode_string(servers[i][6]).toInt();
+            info->mode = static_cast<server_info::game_mode>(simple_database::db->sqdecode_string(servers[i][7]).toInt());
+            info->ping = simple_database::db->sqdecode_string(servers[i][8]).toInt();
+            info->country = simple_database::db->sqdecode_string(servers[i][9]);
+            info->country_code = simple_database::db->sqdecode_string(servers[i][10]);
+
+            server_info::info_t& inf = info->info;
+
+            QString d_inf = simple_database::db->sqdecode_string(servers[i][11]);
+            size_t len = d_inf.size();
+            size_t prev = 0;
+            //a = b & c = d
+            for (size_t i=1; i<len; ++i)
+            {
+                if (d_inf[i] == '&' && d_inf[i-1] == ' ')
+                {
+                    size_t j = i-1;
+                    for (; j>0; --j)
+                    {
+                        if (d_inf[j] == '=' && d_inf[j-1] == ' ')
+                        {
+                            break;
+                        }
+                    }
+                    inf[d_inf.mid(prev,j-prev-1)] = d_inf.mid(j+2,i-j-3);
+                    prev = i+2;
+                }
+            }
+            l[info->id] = info;
+        }
+/*        server_info_list& l = list->list();
         int size = s->beginReadArray(name);
         for (int i = 0; i < size; i++)
         {
@@ -174,7 +244,7 @@ void load_server_list(qsettings_p s, const QString& name, server_list_p list)
             catch(...)
             {}
         }
-        s->endArray();
+        s->endArray();*/
     }
     catch(...)
     {}

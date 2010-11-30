@@ -97,6 +97,7 @@ src/common/settings_base_widget.cpp -text
 src/common/settings_base_widget.h -text
 src/config.h.in -text
 src/database/CMakeLists.txt -text
+src/database/simple_database.cpp -text
 src/database/simple_database.h -text
 src/database/sqlite_database.cpp -text
 src/database/sqlite_database.h -text
@@ -514,6 +515,7 @@ src/server_options_dialog.ui -text
 src/settings/CMakeLists.txt -text
 src/settings/settings.cpp -text
 src/settings/settings.h -text
+src/sql/populate_sqlite.sql -text
 src/str_convert.h -text
 src/tools.cpp -text
 src/tools.h -text

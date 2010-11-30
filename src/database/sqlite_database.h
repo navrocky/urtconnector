@@ -15,6 +15,8 @@ class sqlite_database : public simple_database
         ~sqlite_database();
 
         virtual result_set query(std::string sql, size_t limit = 0);
+        virtual void populate();
+
     private:
         std::string m_filename;
         sqlite3 *m_handle;

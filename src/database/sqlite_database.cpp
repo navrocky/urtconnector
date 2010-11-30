@@ -1,4 +1,5 @@
 #include "database/sqlite_database.h"
+#include <fstream>
 
 sqlite_database::sqlite_database(std::string filename)
 {
@@ -8,6 +9,7 @@ sqlite_database::sqlite_database(std::string filename)
         throw qexception((std::string("Cannot open SQLite database file: ")+sqlite3_errmsg(m_handle)).c_str());
     }
     simple_database::db = this;
+    populate();
 }
 sqlite_database::~sqlite_database()
 {
@@ -63,4 +65,33 @@ sqlite_database::result_set sqlite_database::query(std::string sql, size_t limit
         throw qexception((std::string("Unable to finalize query: ")+sqlite3_errmsg(m_handle)).c_str());
     }
     return answer;
+}
+
+void sqlite_database::populate()
+{
+    std::fstream sql_file;
+    sql_file.open("sql/populate_sqlite.sql");
+    if (!sql_file.is_open())
+    {
+        throw qexception("Unable to populate database!");
+    }
+    std::string sql = "";
+    while (!sql_file.eof())
+    {
+        std::string tmp;
+        sql_file >> tmp;
+        sql += tmp;
+        sql += " ";
+    }
+    size_t len = sql.length();
+    size_t prev = 0;
+    for (size_t i = 0; i<len; ++i)
+    {
+        if (sql[i] == ';')
+        {
+            std::string sql_part = sql.substr(prev, i-prev+1);
+            query(sql_part);
+            prev = i+1;
+        }
+    }
 }
