@@ -167,15 +167,14 @@ void save_server_list(qsettings_p s, const QString& name, const server_list_p li
     try
     {
         simple_database::db->query(QString("DELETE FROM %1;").arg(name).toStdString());
+        simple_database::db->query("BEGIN TRANSACTION;");
         const server_info_list& l = list->list();
-        s->beginWriteArray(name);
         int i = 0;
         for (server_info_list::const_iterator it = l.begin(); it != l.end(); it++)
         {
-            s->setArrayIndex(i++);
             save_server_info(name, s, it->second);
         }
-        s->endArray();
+        simple_database::db->query("END TRANSACTION;");
     }
     catch(qexception ex)
     {
@@ -208,7 +207,7 @@ void load_server_list(qsettings_p s, const QString& name, server_list_p list)
 
             server_info::info_t& inf = info->info;
 
-            QString d_inf = simple_database::db->sqdecode_string(servers[i][11]);
+            QString d_inf = servers[i][11].c_str();
             size_t len = d_inf.size();
             size_t prev = 0;
             //a = b & c = d
@@ -224,7 +223,8 @@ void load_server_list(qsettings_p s, const QString& name, server_list_p list)
                             break;
                         }
                     }
-                    inf[d_inf.mid(prev,j-prev-1)] = d_inf.mid(j+2,i-j-3);
+                    inf[simple_database::db->qqdecode_string(d_inf.mid(prev,j-prev-1))] = 
+                        simple_database::db->qqdecode_string(d_inf.mid(j+2,i-j-3));
                     prev = i+2;
                 }
             }

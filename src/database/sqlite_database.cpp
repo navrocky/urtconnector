@@ -9,6 +9,7 @@ sqlite_database::sqlite_database(std::string filename)
         throw qexception((std::string("Cannot open SQLite database file: ")+sqlite3_errmsg(m_handle)).c_str());
     }
     simple_database::db = this;
+    query("PRAGMA auto_vacuum = 1");
     populate();
 }
 sqlite_database::~sqlite_database()
