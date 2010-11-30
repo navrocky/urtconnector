@@ -2,8 +2,6 @@
 
 #include <common/settings_base_widget.h>
 
-#include "manager.h"
-
 namespace Ui
 {
     class settings_widget;

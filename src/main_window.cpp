@@ -18,16 +18,16 @@
 #include <QFile>
 #include <QHeaderView>
 
+#include <common/exception.h>
 #include <common/qt_syslog.h>
 #include <common/state_settings.h>
 #include <settings/settings.h>
+#include <anticheat/tools.h>
+#include <launcher/launcher.h>
 
 #include "config.h"
 #include "ui_main_window.h"
 #include "options_dialog.h"
-#include <launcher/launcher.h>
-#include <common/exception.h>
-#include <anticheat/settings.h>
 #include "server_options_dialog.h"
 #include "push_button_action_link.h"
 #include "server_list.h"
@@ -263,6 +263,7 @@ void main_window::show_options()
 
 void main_window::quick_connect() const
 {
+    check_anticheat_prereq();
     launcher* l = launcher_;
     l->set_server_id(server_id(ui_->qlServerEdit->text()));
     l->set_user_name(ui_->qlPlayerEdit->text());
@@ -539,6 +540,8 @@ server_info_p main_window::selected_info() const
 
 void main_window::connect_selected() const
 {
+    check_anticheat_prereq();
+
     // info MUST be correct or connect-action is disabled!
     server_info_p info = selected_info();
 
@@ -906,17 +909,23 @@ void main_window::launcher_started()
     if (!anticheat_enabled_action_->isChecked())
         return;
 
-    anticheat_ = new anticheat::anticheat(this);
+    QString player_name = ui_->qlPlayerEdit->text();
 
-    anticheat::settings s;
-    anticheat_->set_interval(s.interval());
-    
-
+    anticheat_ = anticheat::create_anticheat(player_name, this);
     anticheat_->start();
 }
 
 void main_window::launcher_stopped()
 {
     delete anticheat_;
+}
+
+void main_window::check_anticheat_prereq() const
+{
+    if (!anticheat_enabled_action_->isChecked())
+        return;
+    QString player_name = ui_->qlPlayerEdit->text();
+    if (player_name.isEmpty())
+        throw qexception(tr("A player's name must be defined in the quick launch window for anti-cheat!"));
 }
 

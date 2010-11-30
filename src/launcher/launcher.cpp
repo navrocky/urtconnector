@@ -88,7 +88,7 @@ void launcher::set_server_id(const server_id & id)
 
 void launcher::set_user_name(const QString & value)
 {
-    userName_ = value;
+    user_name_ = value;
 }
 
 void launcher::set_password(const QString & value)
@@ -98,7 +98,7 @@ void launcher::set_password(const QString & value)
 
 void launcher::set_config_url(const QString & value)
 {
-    configURL_ = value;
+    config_url_ = value;
 }
 
 void launcher::set_rcon(const QString & value)
@@ -160,17 +160,17 @@ QString launcher::launch_string()
     {
         res = opts_->adv_cmd_line;
         res.replace("%bin%", opts_->binary_path, Qt::CaseInsensitive)
-                .replace("%name%", userName_, Qt::CaseInsensitive)
+                .replace("%name%", user_name_, Qt::CaseInsensitive)
                 .replace("%pwd%", password_, Qt::CaseInsensitive)
                 .replace("%addr%", id_.address(), Qt::CaseInsensitive)
                 .replace("%rcon%", rcon_, Qt::CaseInsensitive)
-                .replace("%config%", configURL_, Qt::CaseInsensitive);
+                .replace("%config%", config_url_, Qt::CaseInsensitive);
     }
     else
     {
         res = QString("\"%1\"").arg(opts_->binary_path);
-        if (!userName_.isEmpty())
-            res += QString(" +name \"%1\"").arg(userName_);
+        if (!user_name_.isEmpty())
+            res += QString(" +name \"%1\"").arg(user_name_);
 
         if (!password_.isEmpty())
             res += QString(" +password \"%1\"").arg(password_);

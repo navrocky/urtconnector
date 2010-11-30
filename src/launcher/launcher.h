@@ -7,7 +7,6 @@
 
 #include "../pointers.h"
 #include <common/server_id.h>
-#include <anticheat/manager.h>
 
 /*! \brief Game launcher.
 
@@ -23,7 +22,7 @@ public:
     server_id id() const {return id_;}
     void set_server_id(const server_id& id);
 
-    QString user_name() const {return userName_;}
+    QString user_name() const {return user_name_;}
     void set_user_name(const QString& value);
 
     QString password() const {return password_;}
@@ -55,10 +54,10 @@ private:
     QString get_work_dir();
 
     app_options_p opts_;
-    QString userName_;
+    QString user_name_;
     QString password_;
     server_id id_;
-    QString configURL_;
+    QString config_url_;
     QString rcon_;
     QString referee_;
     bool detach_;

@@ -27,7 +27,7 @@ void settings::set_quality(int val)
 
 bool settings::use_ftp() const
 {
-    return part()->value("use_ftp", true).toBool();
+    return part()->value("use_ftp", false).toBool();
 }
 
 void settings::set_use_ftp(bool val)

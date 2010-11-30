@@ -86,6 +86,7 @@ private:
     void clear_servers(server_list_widget* current, const server_id_list& to_delete);
     
     void update_tabs();
+    void check_anticheat_prereq() const;
 
     server_id selected() const;
     server_list_widget* selected_list_widget() const;
