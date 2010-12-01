@@ -39,12 +39,16 @@ public:
     /*! Launch string calculated from options above */
     QString launch_string();
 
+    /*! Game is started */
+    bool is_started() const {return proc_;}
+
 signals:
     void started();
     void stopped();
 
 public slots:
     void launch();
+    void stop();
     
 private slots:
     void proc_finished(int exitCode, QProcess::ExitStatus exitStatus);

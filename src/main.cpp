@@ -8,8 +8,10 @@
 #include <QLibraryInfo>
 #include <QTemporaryFile>
 #include <QDesktopWidget>
+#include <QDesktopServices>
 
 #include <cl/syslog/output_stream.h>
+#include <cl/syslog/output_file.h>
 #include <common/qt_syslog.h>
 #include <common/state_settings.h>
 #include <common/exception.h>
@@ -44,6 +46,12 @@ int main(int argc, char *argv[])
     bool gui_enabled = false;
     output_p cerr_out(new output_stream(std::cerr));
     logman().output_add(cerr_out);
+
+//#ifdef Q_OS_WIN32
+    output_p log_out(new output_file(to_str(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)) + "/urtconnector.log"));
+    logman().output_add(log_out);
+//#endif
+
     QString error_str;
     try
     {

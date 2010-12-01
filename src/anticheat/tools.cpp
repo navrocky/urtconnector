@@ -14,7 +14,7 @@ anticheat* create_anticheat(const QString& player_name, QObject* parent)
 
     res->set_nick_name(player_name);
     res->set_quality(s.quality());
-    res->set_interval(s.interval());
+    res->set_interval(s.interval() * 1000);
 
     if (s.use_ftp())
     {

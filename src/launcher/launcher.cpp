@@ -190,3 +190,10 @@ QString launcher::launch_string()
     
     return res;
 }
+
+void launcher::stop()
+{
+    if (!proc_)
+        return;
+    delete proc_;
+}

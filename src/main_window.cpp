@@ -162,6 +162,8 @@ main_window::main_window(QWidget *parent)
     connect(qApp, SIGNAL(commitDataRequest(QSessionManager&)), SLOT(commit_data_request(QSessionManager&)));
     connect(ui_->action_about_qt, SIGNAL(triggered()), SLOT(about_qt()));
     connect(ui_->quick_favorite_button, SIGNAL(clicked()), SLOT(quick_add_favorite()));
+    connect(launcher_, SIGNAL(started()), SLOT(launcher_started()));
+    connect(launcher_, SIGNAL(stopped()), SLOT(launcher_stopped()));
 
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
 
@@ -733,11 +735,19 @@ void main_window::commit_data_request(QSessionManager&)
 
 void main_window::quit_action()
 {
+    if (launcher_->is_started())
+    {
+        if (QMessageBox::question(this, tr("Quit"), tr("The game is started at this moment.\n\nKill the game and quit now?"),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes)
+            return;
+    }
+
     LOG_DEBUG << "Quit action";
     hide();
     tray_->hide();
     save_state_at_exit();
     qApp->quit();
+    launcher_->stop();
 }
 
 void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
