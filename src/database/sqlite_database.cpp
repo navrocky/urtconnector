@@ -70,29 +70,43 @@ sqlite_database::result_set sqlite_database::query(std::string sql, size_t limit
 
 void sqlite_database::populate()
 {
-    std::fstream sql_file;
-    sql_file.open("sql/populate_sqlite.sql");
-    if (!sql_file.is_open())
-    {
-        throw qexception("Unable to populate database!");
-    }
-    std::string sql = "";
-    while (!sql_file.eof())
-    {
-        std::string tmp;
-        sql_file >> tmp;
-        sql += tmp;
-        sql += " ";
-    }
-    size_t len = sql.length();
-    size_t prev = 0;
-    for (size_t i = 0; i<len; ++i)
-    {
-        if (sql[i] == ';')
-        {
-            std::string sql_part = sql.substr(prev, i-prev+1);
-            query(sql_part);
-            prev = i+1;
-        }
-    }
+    query
+    (
+        "CREATE TABLE IF NOT EXISTS all_state"
+        "("
+        "    id INTEGER,"
+        "    address VARCHAR(255),"
+        "    name VARCHAR(255),"
+        "    gametype INTEGER,"
+        "    map VARCHAR(255),"
+        "    mapurl VARCHAR(255),"
+        "    maxplayercount VARCHAR(255),"
+        "    mode INTEGER,"
+        "    ping INTEGER,"
+        "    country VARCHAR(255),"
+        "    countrycode VARCHAR(255),"
+        "    info TEXT,"
+        "    PRIMARY KEY(id)"
+        ");"
+    );
+    query
+    (
+        "CREATE TABLE IF NOT EXISTS favs_state"
+        "("
+        "    id INTEGER,"
+        "    address VARCHAR(255),"
+        "    name VARCHAR(255),"
+        "    gametype INTEGER,"
+        "    map VARCHAR(255),"
+        "    mapurl VARCHAR(255),"
+        "    maxplayercount VARCHAR(255),"
+        "    mode INTEGER,"
+        "    ping INTEGER,"
+        "    country VARCHAR(255),"
+        "    countrycode VARCHAR(255),"
+        "    info TEXT,"
+        "    PRIMARY KEY(id)"
+        ");"
+    );
+
 }
