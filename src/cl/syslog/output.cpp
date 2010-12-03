@@ -26,10 +26,10 @@ bool output::check(const message& msg)
     return true;
 }
 
-void output::write(const message& msg)
+void output::write(const message& msg, const thread_info& thread)
 {
     if (check(msg))
-        do_write(msg);
+        do_write(msg, thread);
 }
 
 }

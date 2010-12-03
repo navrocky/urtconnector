@@ -1,10 +1,10 @@
-#include "ui_server_options_dialog.h"
 
+#include <common/exception.h>
 #include "server_list.h"
 #include "server_options_dialog.h"
-#include "exception.h"
 #include "job_update_selected.h"
 #include "jobs/job_queue.h"
+#include "ui_server_options_dialog.h"
 
 server_options_dialog::server_options_dialog(QWidget *parent)
 : QDialog(parent)

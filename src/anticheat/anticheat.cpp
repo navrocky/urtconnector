@@ -11,7 +11,7 @@
 #include "sshot_output.h"
 #include "anticheat.h"
 
-SYSLOG_MODULE("anticheat")
+SYSLOG_MODULE(anticheat)
 
 namespace anticheat
 {
@@ -23,6 +23,11 @@ anticheat::anticheat(QObject* parent)
 , timer_(0)
 , nick_name_(tr("Player"))
 {
+}
+
+anticheat::~anticheat()
+{
+    stop();
 }
 
 void anticheat::set_interval(int val)
@@ -119,16 +124,18 @@ void anticheat::screen_shot()
         QBuffer buf(&ba);
         pm.save(&buf, "JPG", quality_);
     }
-    QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5);
 
     QString fn = QString("%1_%2").arg(nick_name_).arg(QDateTime::currentDateTime().toString(Qt::ISODate));
+
+    QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5);
+    QString md5_s = QString("%1  %2.jpg\n").arg(QString(md5.toHex())).arg(fn);
 
     foreach (sshot_output* out, outputs_)
     {
         if (!out || !out->can_send_now())
             continue;
         out->send_file(fn + ".jpg", ba);
-        out->send_file(fn + ".md5", md5);
+        out->send_file(fn + ".jpg.md5", md5_s.toUtf8());
     }
 
     LOG_DEBUG << "Screenshot taken";
@@ -137,6 +144,11 @@ void anticheat::screen_shot()
 void anticheat::add_output(sshot_output* output)
 {
     outputs_.append(output);
+}
+
+bool anticheat::is_started()
+{
+    return timer_ != 0;
 }
 
 }

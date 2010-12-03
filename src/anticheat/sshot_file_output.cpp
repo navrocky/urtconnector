@@ -5,7 +5,7 @@
 
 #include "sshot_file_output.h"
 
-SYSLOG_MODULE("sshot_file_output")
+SYSLOG_MODULE(sshot_file_output)
 
 namespace anticheat
 {

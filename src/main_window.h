@@ -17,11 +17,12 @@
 #include "clipper.h"
 #include "filters/pointers.h"
 #include "history/history_widget.h"
-#include <anticheat/manager.h>
+#include <anticheat/anticheat.h>
 
 class QTimer;
 class Ui_MainWindowClass;
 class QSessionManager;
+class QAction;
 
 class main_window : public QMainWindow
 {
@@ -67,6 +68,9 @@ private slots:
     void clear_selected();
     void clear_offline();
     void about_qt();
+
+    void launcher_started();
+    void launcher_stopped();
 private:
     void sync_fav_list();
 
@@ -82,6 +86,7 @@ private:
     void clear_servers(server_list_widget* current, const server_id_list& to_delete);
     
     void update_tabs();
+    void check_anticheat_prereq() const;
 
     server_id selected() const;
     server_list_widget* selected_list_widget() const;
@@ -106,8 +111,11 @@ private:
     geoip gi_;
     clipper* clipper_;
     filter_factory_p filter_factory_;
-    anticheat::manager* anticheat_;
+    anticheat::anticheat* anticheat_;
     launcher* launcher_;
+    QAction* anticheat_enabled_action_;
+    QAction* anticheat_open_action_;
+    QAction* anticheat_configure_action_;
 };
 
 #endif

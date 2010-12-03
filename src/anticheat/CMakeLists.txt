@@ -9,8 +9,8 @@ set(HEADERS
     sshot_file_output.h
     sshot_ftp_output.h
     settings.h
-    manager.h
     settings_widget.h
+    tools.h
 )
 
 set(MOC_HEADERS
@@ -18,7 +18,6 @@ set(MOC_HEADERS
     sshot_output.h
     sshot_file_output.h
     sshot_ftp_output.h
-    manager.h
     settings_widget.h
 )
 
@@ -28,8 +27,8 @@ set(SOURCES
     sshot_file_output.cpp
     sshot_ftp_output.cpp
     settings.cpp
-    manager.cpp
     settings_widget.cpp
+    tools.cpp
 )
 
 set(IFACES

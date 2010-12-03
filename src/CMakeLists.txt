@@ -40,14 +40,13 @@ add_subdirectory(common)
 add_subdirectory(history)
 add_subdirectory(anticheat)
 add_subdirectory(database)
+add_subdirectory(launcher)
 
 set(HEADERS
     about_dialog.h
     application.h
     app_options.h
     debug_help.h
-    exception.h
-    launcher/launcher.h
     main_window.h
     options_dialog.h
     player_info.h
@@ -83,7 +82,6 @@ set(MOC_HEADERS
     push_button_action_link.h
     server_list_widget.h
     server_options_dialog.h
-    launcher/launcher.h
     item_view_dblclick_action_link.h
     qstat_updater.h
     jobs/job.h
@@ -103,8 +101,6 @@ set(SOURCES
     application.cpp
     app_options.cpp
     debug_help.cpp
-    exception.cpp
-    launcher/launcher.cpp
     main_window.cpp
     options_dialog.cpp
     player_info.cpp
@@ -127,7 +123,6 @@ set(SOURCES
     job_update_from_master.cpp
     clipper.cpp
     tools.cpp
-    launcher/tools.cpp
     rcon/rcon.cpp
     rcon/rcon_settings_form.cpp
     rcon/rcon_completer.cpp
@@ -158,6 +153,7 @@ add_executable(${TARGET} WIN32 ${HEADERS} ${SOURCES})
 target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     geoip
     qtsingleapplication
+    clexcept
     clsyslog
     filters
     settings
@@ -165,6 +161,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     history
     anticheat
     database
+    launcher
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)

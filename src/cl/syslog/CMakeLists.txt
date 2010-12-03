@@ -1,6 +1,6 @@
 project(clsyslog)
 
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 2.6)
 
 find_package( Boost COMPONENTS thread filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
@@ -11,7 +11,6 @@ set(SOURCES
     message.h
     message.cpp
     filter.h
-    filter.cpp
     output.h
     output.cpp
     manager.h
@@ -30,6 +29,6 @@ set(SOURCES
 
 add_library(${TARGET} STATIC ${SOURCES})
 
-target_link_libraries(${TARGET} ${Boost_LIBRARIES} clexcept)
+target_link_libraries(${TARGET} ${Boost_LIBRARIES})
 
  

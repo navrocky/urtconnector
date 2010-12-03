@@ -29,20 +29,46 @@ autolog operator<< <level_t>(const module& m, const level_t& value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// autolog_ptr
+
+autolog_ptr::autolog_ptr()
+: al_(NULL)
+{}
+
+autolog_ptr::~autolog_ptr()
+{
+    delete al_;
+}
+
+autolog& autolog_ptr::change(autolog* al)
+{
+    delete al_;
+    al_ = al;
+    return *al_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // autolog
 ////////////////////////////////////////////////////////////////////////////////
 
 
 autolog::autolog(const message& msg)
-    : msg_(new message(msg))
-    , ins_num_(0)
+: msg_(new message(msg))
+, ins_num_(0)
 {
 }
 
 autolog::autolog(const autolog& lg)
-    : msg_(lg.msg_)
-    , ins_num_(lg.ins_num_)
+: msg_(lg.msg_)
+, ins_num_(lg.ins_num_)
 {
+}
+
+autolog::autolog(const module& m)
+: msg_(new message)
+, ins_num_(0)
+{
+    msg_->module = m.module_name();
 }
 
 autolog::~autolog()
@@ -51,7 +77,8 @@ autolog::~autolog()
     if (ins_num_ > 0)
         boost::replace_all(msg_->msg, "\\%", "%");
     
-    logman().write(*msg_);
+    if (!msg_->msg.empty())
+        logman().write(*msg_);
 }
 
 void autolog::append_to_msg(const std::string& str) const

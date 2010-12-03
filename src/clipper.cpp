@@ -8,7 +8,7 @@
 #include "common/server_id.h"
 #include "clipper.h"
 
-SYSLOG_MODULE("clipper");
+SYSLOG_MODULE(clipper)
 
 clipper::clipper( QObject* parent, app_options_p opts )
         : QObject(parent)

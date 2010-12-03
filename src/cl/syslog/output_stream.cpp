@@ -18,9 +18,9 @@ output_stream::output_stream(std::ostream& stream)
 {
 }
 
-void output_stream::do_write(const message& msg)
+void output_stream::do_write(const message& msg, const thread_info& info)
 {
-    stream_ << internal::message_to_str(msg);
+    stream_ << internal::message_to_str(msg, info);
 }
 
 }

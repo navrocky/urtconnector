@@ -32,7 +32,7 @@
 
 #include "server_list_widget.h"
 
-SYSLOG_MODULE("server_list_widget")
+SYSLOG_MODULE(server_list_widget)
 
 const int c_filter_info_column = 100;
 

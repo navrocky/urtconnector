@@ -13,6 +13,8 @@ namespace cl
 namespace syslog
 {
 
+class thread_info;
+
 /*! Base class for log outputs */
 class output
 {
@@ -27,11 +29,11 @@ public:
     bool check(const message& msg);
     
     /*! Write a message to output. */
-    void write(const message& msg);
+    void write(const message& msg, const thread_info& thread);
 protected:
 
     /*! You need to redefine this method for specific out */
-    virtual void do_write(const message& msg) = 0;
+    virtual void do_write(const message& msg, const thread_info& thread) = 0;
 
 private:
     typedef std::vector<filter_t> filter_list;

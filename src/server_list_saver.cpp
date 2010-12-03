@@ -5,14 +5,14 @@
 #include <QByteArray>
 
 #include <cl/syslog/syslog.h>
-#include "exception.h"
+#include <common/exception.h>
 #include "pointers.h"
 #include "server_list.h"
 
 #include "server_list_saver.h"
 #include <database/simple_database.h>
 
-SYSLOG_MODULE("server_list_saver");
+SYSLOG_MODULE(server_list_saver)
 
 void save_server_info(const QString &name, qsettings_p s, const server_info_p& info)
 {

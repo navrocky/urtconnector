@@ -19,7 +19,7 @@ public:
     output_syslog(const std::string& ident);
     ~output_syslog();
 protected:
-    void do_write(const message& msg);
+    virtual void do_write(const message& msg, const thread_info& thread);
 private:
     std::string ident_;
 };

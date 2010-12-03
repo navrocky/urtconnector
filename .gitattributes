@@ -39,8 +39,6 @@ src/about_dialog.ui -text
 src/anticheat/CMakeLists.txt -text
 src/anticheat/anticheat.cpp -text
 src/anticheat/anticheat.h -text
-src/anticheat/manager.cpp -text
-src/anticheat/manager.h -text
 src/anticheat/settings.cpp -text
 src/anticheat/settings.h -text
 src/anticheat/settings_widget.cpp -text
@@ -52,6 +50,8 @@ src/anticheat/sshot_ftp_output.cpp -text
 src/anticheat/sshot_ftp_output.h -text
 src/anticheat/sshot_output.cpp -text
 src/anticheat/sshot_output.h -text
+src/anticheat/tools.cpp -text
+src/anticheat/tools.h -text
 src/app_options.cpp -text
 src/app_options.h -text
 src/app_options_saver.cpp -text
@@ -66,7 +66,6 @@ src/cl/except/error.cpp -text
 src/cl/except/error.h -text
 src/cl/syslog/CMakeLists.txt -text
 src/cl/syslog/common.h -text
-src/cl/syslog/filter.cpp -text
 src/cl/syslog/filter.h -text
 src/cl/syslog/manager.cpp -text
 src/cl/syslog/manager.h -text
@@ -84,17 +83,26 @@ src/cl/syslog/output_syslog.cpp -text
 src/cl/syslog/output_syslog.h -text
 src/cl/syslog/syslog.cpp -text
 src/cl/syslog/syslog.h -text
+src/cl/syslog/thread_info.h -text
 src/clipper.cpp -text
 src/clipper.h -text
 src/common/CMakeLists.txt -text
+src/common/exception.cpp -text
+src/common/exception.h -text
 src/common/iconned_dock_style.cpp -text
 src/common/iconned_dock_style.h -text
 src/common/implicit_sharing.h -text
+src/common/qt_syslog.cpp -text
+src/common/qt_syslog.h -text
 src/common/scoped_tools.h -text
 src/common/server_id.cpp -text
 src/common/server_id.h -text
 src/common/settings_base_widget.cpp -text
 src/common/settings_base_widget.h -text
+src/common/state_settings.cpp -text
+src/common/state_settings.h -text
+src/common/string_escape.cpp -text
+src/common/string_escape.h -text
 src/config.h.in -text
 src/database/CMakeLists.txt -text
 src/database/simple_database.cpp -text
@@ -103,8 +111,6 @@ src/database/sqlite_database.cpp -text
 src/database/sqlite_database.h -text
 src/debug_help.cpp -text
 src/debug_help.h -text
-src/exception.cpp -text
-src/exception.h -text
 src/filters/CMakeLists.txt -text
 src/filters/composite_filter.cpp -text
 src/filters/composite_filter.h -text
@@ -379,6 +385,7 @@ src/history/history_widget.cpp -text
 src/history/history_widget.h -text
 src/history/history_widget.ui -text
 src/icons/add.png -text
+src/icons/anticheat.png -text
 src/icons/application-exit.png -text
 src/icons/bookmarks.png -text
 src/icons/choose-file.png -text
@@ -431,6 +438,7 @@ src/jobs/job_monitor.h -text
 src/jobs/job_monitor.ui -text
 src/jobs/job_queue.cpp -text
 src/jobs/job_queue.h -text
+src/launcher/CMakeLists.txt -text
 src/launcher/launcher.cpp -text
 src/launcher/launcher.h -text
 src/launcher/tools.cpp -text

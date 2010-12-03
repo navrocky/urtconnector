@@ -2,7 +2,7 @@
 #define _SQLITE_DATABASE_H
 
 #include "database/simple_database.h"
-#include "exception.h"
+#include <common/exception.h>
 #include <string>
 #include <sqlite3.h>
 

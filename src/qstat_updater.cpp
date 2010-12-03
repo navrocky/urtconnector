@@ -1,12 +1,12 @@
-#include <cl/syslog/syslog.h>
+#include <common/qt_syslog.h>
+#include <common/exception.h>
+#include <common/server_id.h>
 
-#include "exception.h"
-#include "common/server_id.h"
 #include "server_list.h"
 
 #include "qstat_updater.h"
 
-SYSLOG_MODULE("qstat_updater");
+SYSLOG_MODULE(qstat_updater)
 
 namespace
 {
@@ -159,7 +159,7 @@ void qstat_updater::error(QProcess::ProcessError error)
 
 void qstat_updater::finished(int, QProcess::ExitStatus)
 {
-    LOG_HARD << "QStat output: %1", qstat_output_.toStdString();
+    LOG_HARD << "QStat output: %1", qstat_output_;
     do_refresh_stopped();
 }
 
@@ -289,8 +289,9 @@ void qstat_updater::process_xml()
         {
             if (cur_state_ == s_server)
             {
+                static const QString c_ut_game_type = "q3ut4";
                 if (cur_server_info_->status != server_info::s_error &&
-                    !cur_server_info_->id.is_empty())
+                    !cur_server_info_->id.is_empty() && cur_server_info_->game_type == c_ut_game_type)
                 {
                     prepare_info();
                     server_info_list& list = serv_list_->list();
@@ -302,8 +303,8 @@ void qstat_updater::process_xml()
                     }
                     si->update_from(*cur_server_info_);
                     si->updating = false;
-                    LOG_HARD << "Received server info: %1, %2, ", si->id.address().toStdString(),
-                        si->name.toStdString();
+                    LOG_HARD << "Received server info: %1, %2, ", si->id.address(),
+                        si->name;
                 }
 
                 cur_server_info_.reset( new server_info() );
