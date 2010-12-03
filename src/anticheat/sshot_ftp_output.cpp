@@ -56,8 +56,8 @@ void sshot_ftp_output::connection_needed()
     LOG_DEBUG << "Connecting to FTP server \"%1\"", addr_.address().toStdString();
     ftp_->connectToHost(addr_.ip_or_host(), addr_.port());
     ftp_->login(login_, password_);
-    ftp_->mkdir(folder_);
-    ftp_->cd(folder_);
+    if (!folder_.isEmpty())
+        ftp_->cd(folder_);
 }
 
 void sshot_ftp_output::send_file(const QString& name, const QByteArray& data)

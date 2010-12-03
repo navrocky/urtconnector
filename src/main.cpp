@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <boost/program_options.hpp>
 
 #include <QString>
@@ -28,6 +29,7 @@
 #include "tools.h"
 #include "config.h"
 #include "pointers.h"
+#include "app_options_saver.h"
 
 using namespace cl::syslog;
 using namespace std;
@@ -59,8 +61,14 @@ int main(int argc, char *argv[])
         po::options_description desc("Allowed options");
         desc.add_options()
                 ("help", "Produce help message")
-                ("debug", "Produce debug messages")
-                ("launch", "Quick launch game")
+                ("debug,D", "Produce debug messages")
+                ("anticheat,A", "Activate anticheat")
+                ("launch,L", "Launch a game")
+                ("player", po::value<string>(), "Player name")
+                ("addr", po::value<string>(), "Server address")
+                ("pass", po::value<string>(), "Password")
+                ("rcon", po::value<string>(), "RCON password")
+                ("referee", po::value<string>(), "Referee password")
                 ;
 
         po::variables_map vm;
@@ -102,11 +110,26 @@ int main(int argc, char *argv[])
         {
             LOG_DEBUG << "Quick launch";
             QApplication a(argc, argv, false);
+            a.setOrganizationName("urtcommunity");
+            a.setApplicationName("urtconnector");
 
-            app_options_p opts;
+            app_options_p opts(new app_options);
+            load_app_options(get_app_options_settings("options"), opts);
 //            anticheat::manager anticheat;
             launcher l(opts);
+            l.set_detach(false);
+            if (vm.count("addr"))
+                l.set_server_id(server_id(to_qstr(vm["addr"].as<string>())));
+            if (vm.count("player"))
+                l.set_user_name(to_qstr(vm["player"].as<string>()));
+            if (vm.count("pass"))
+                l.set_password(to_qstr(vm["pass"].as<string>()));
+            if (vm.count("rcon"))
+                l.set_rcon(to_qstr(vm["rcon"].as<string>()));
+            if (vm.count("referee"))
+                l.set_referee(to_qstr(vm["referee"].as<string>()));
             l.launch();
+            QObject::connect(&l, SIGNAL(stopped()), &a, SLOT(quit()));
             a.exec();
             return 0;
         }

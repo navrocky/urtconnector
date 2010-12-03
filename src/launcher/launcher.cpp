@@ -197,3 +197,8 @@ void launcher::stop()
         return;
     delete proc_;
 }
+
+void launcher::set_detach(bool val)
+{
+    detach_ = val;
+}
