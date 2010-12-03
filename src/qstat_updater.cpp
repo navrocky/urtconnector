@@ -289,8 +289,9 @@ void qstat_updater::process_xml()
         {
             if (cur_state_ == s_server)
             {
+                static const QString c_ut_game_type = "q3ut4";
                 if (cur_server_info_->status != server_info::s_error &&
-                    !cur_server_info_->id.is_empty())
+                    !cur_server_info_->id.is_empty() && cur_server_info_->game_type == c_ut_game_type)
                 {
                     prepare_info();
                     server_info_list& list = serv_list_->list();

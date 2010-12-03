@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>512</width>
-    <height>523</height>
+    <width>510</width>
+    <height>521</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -200,7 +200,7 @@
       <attribute name="title">
        <string>Application</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_10">
+      <layout class="QVBoxLayout" name="verticalLayout_11">
        <item>
         <widget class="QCheckBox" name="hide_mainwindow_check">
          <property name="text">
@@ -237,6 +237,18 @@
               <normaloff>:/icons/icons/choose-file.png</normaloff>:/icons/icons/choose-file.png</iconset>
             </property>
            </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>UrbanTerror master server</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <item>
+           <widget class="QLineEdit" name="qstat_master_edit"/>
           </item>
          </layout>
         </widget>
