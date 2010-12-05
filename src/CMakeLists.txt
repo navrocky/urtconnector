@@ -8,7 +8,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 
 set(Boost_USE_STATIC_LIBS ON)
-find_package( Boost COMPONENTS program_options thread date_time filesystem)
+find_package( Boost COMPONENTS
+    program_options
+    thread
+    date_time
+    filesystem
+    system
+)
+
 include_directories(${Boost_INCLUDE_DIRS})
 
 find_package(Qt4)
