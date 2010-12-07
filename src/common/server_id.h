@@ -1,7 +1,7 @@
 #ifndef SERVER_ID_H
 #define SERVER_ID_H
 
-#include <vector>
+#include <QList>
 #include <QString>
 
 #include "implicit_sharing.h"
@@ -50,8 +50,7 @@ bool operator==(const server_id& a, const server_id& b);
 bool operator!=(const server_id& a, const server_id& b);
 bool operator<(const server_id& a, const server_id& b);
 bool operator>(const server_id& a, const server_id& b);
-// bool operator<=(const ServerID& a, const ServerID& b);
-// bool operator>=(const ServerID& a, const ServerID& b);
-typedef std::vector<server_id> server_id_list;
+
+typedef QList<server_id> server_id_list;
 
 #endif

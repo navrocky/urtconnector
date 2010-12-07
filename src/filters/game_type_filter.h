@@ -6,7 +6,7 @@
 
 #include "pointers.h"
 #include "filter.h"
-#include "../server_info.h"
+#include <common/server_info.h>
 
 class game_type_filter_quick_opt_widget : public QComboBox
 {

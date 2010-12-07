@@ -8,7 +8,7 @@
 
 #include <common/server_id.h>
 #include "player_info.h"
-#include "pointers.h"
+#include "../pointers.h"
 
 class server_info
 {
@@ -75,7 +75,7 @@ private:
 
 };
 
-Q_DECLARE_METATYPE(server_info_p);
+Q_DECLARE_METATYPE(server_info_p)
 
 typedef std::map<server_id, server_info_p> server_info_list;
 

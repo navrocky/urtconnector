@@ -100,7 +100,7 @@ const QString& server_info::meta_info_string() const
     {
         QStringList pl;
         foreach (const player_info& pi, players)
-            pl += pi.nick_name;
+            pl += pi.nick_name();
 
         meta_info_string_ = QString("%1 %2 %3 %4 %5 %6 %7").arg(name)
             .arg(id.address()).arg(country).arg(map).arg(mode_name()).arg(pl.join(" "))

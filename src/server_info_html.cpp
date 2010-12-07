@@ -52,10 +52,10 @@ QString get_server_info_html(const server_info& si)
         players = qApp->translate("server_info_html", "<hr>%1 players:<table width=100%>"
                                   "<tr class=\"header\"><td>Nick</td><td>Ping</td><td>Score</td></tr>").arg(pil.size());
         int i = 0;
-        for (player_info_list::const_iterator it = pil.begin(); it != pil.end(); it++)
+        foreach (const player_info& pi, pil)
         {
             players += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td><td>%4</td></tr>")
-                       .arg(i % 2 + 1).arg(Qt::escape(it->nick_name)).arg(it->ping).arg(it->score);
+                       .arg(i % 2 + 1).arg(Qt::escape(pi.nick_name())).arg(pi.ping()).arg(pi.score());
             i++;
         }
         players += "</table>";

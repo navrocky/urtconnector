@@ -11,13 +11,14 @@
 #include "app_options.h"
 #include <launcher/launcher.h>
 #include "server_list_widget.h"
-#include "server_list.h"
+#include <common/server_list.h>
 #include "jobs/job_queue.h"
 #include "geoip/geoip.h"
 #include "clipper.h"
 #include "filters/pointers.h"
 #include "history/history_widget.h"
 #include <anticheat/anticheat.h>
+#include "server_options.h"
 
 class QTimer;
 class Ui_MainWindowClass;
@@ -39,14 +40,14 @@ protected:
 private slots:
     void show_options();
     void show_about();
-    void quick_connect() const;
+    void quick_connect();
     void quick_add_favorite();
-    void connect_selected() const;
+    void connect_selected();
     void fav_add();
     void fav_edit();
     void fav_delete();
 
-    void refresh_all();
+    void refresh_all_bookmarks();
     void refresh_selected();
     void refresh_master();
 
@@ -66,30 +67,29 @@ private slots:
     
     void clear_all();
     void clear_selected();
-    void clear_offline();
     void about_qt();
 
     void launcher_started();
     void launcher_stopped();
-private:
-    void sync_fav_list();
 
+    void save_bookmarks();
+private:
     void load_history_tab();
 
     void load_all_at_start();
     void save_state_at_exit();
     void save_geometry();
     void load_geometry();
-    void save_favorites();
 
     void refresh_servers(server_list_widget* current, const server_id_list& to_update, bool master );
-    void clear_servers(server_list_widget* current, const server_id_list& to_delete);
+//    void clear_servers(server_list_widget* current, const server_id_list& to_delete);
     
     void update_tabs();
     void check_anticheat_prereq() const;
+    void connect_to_server(const server_id& id, const QString& player_name, const QString& password);
 
     server_id selected() const;
-    server_list_widget* selected_list_widget() const;
+    server_list_widget* current_list_widget() const;
     server_info_p selected_info() const;
 
     boost::shared_ptr<Ui_MainWindowClass> ui_;
@@ -98,7 +98,8 @@ private:
     server_list_widget* fav_list_;
     history_widget* history_list_;
     server_list_p all_sl_;
-    server_list_p fav_sl_;
+//    server_list_p fav_sl_;
+    server_bookmark_list* bookmarks_;
     history_p history_sl_;
     QTimer* serv_info_update_timer_;
     server_id old_id_;

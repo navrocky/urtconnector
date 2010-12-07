@@ -7,9 +7,9 @@
 
 #include "qstat_options.h"
 #include "pointers.h"
-#include "server_info.h"
-#include "player_info.h"
-#include "geoip/geoip.h"
+#include <common/server_info.h>
+#include <common/player_info.h>
+#include <geoip/geoip.h>
 
 class qstat_updater : public QObject
 {

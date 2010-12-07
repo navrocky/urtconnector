@@ -1,6 +1,6 @@
 
 #include <common/exception.h>
-#include "server_list.h"
+#include <common/server_list.h>
 #include "server_options_dialog.h"
 #include "job_update_selected.h"
 #include "jobs/job_queue.h"
@@ -16,7 +16,7 @@ server_options_dialog::server_options_dialog(QWidget *parent)
     setWindowTitle(tr("Add new server favorite"));
 }
 
-server_options_dialog::server_options_dialog(QWidget * parent, const server_options & src)
+server_options_dialog::server_options_dialog(QWidget * parent, const server_bookmark & src)
 : QDialog(parent)
 , opts_(src)
 , gi_(NULL)

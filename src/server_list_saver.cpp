@@ -7,7 +7,7 @@
 #include <cl/syslog/syslog.h>
 
 #include "pointers.h"
-#include "server_list.h"
+#include <common/server_list.h>
 
 #include "server_list_saver.h"
 
@@ -160,7 +160,7 @@ void load_server_list(qsettings_p s, const QString& name, server_list_p list)
     LOG_DEBUG << "Loading server list \"%1\"", s->fileName().toStdString();
     try
     {
-        server_info_list& l = list->list();
+//        server_info_list& l = list->list();
         int size = s->beginReadArray(name);
         for (int i = 0; i < size; i++)
         {
@@ -169,7 +169,7 @@ void load_server_list(qsettings_p s, const QString& name, server_list_p list)
             try
             {
                 load_server_info(s, info);
-                l[info->id] = info;
+                list->add(info);
             }
             catch(...)
             {}

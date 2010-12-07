@@ -55,10 +55,7 @@ set(HEADERS
     debug_help.h
     main_window.h
     options_dialog.h
-    player_info.h
     push_button_action_link.h
-    server_info.h
-    server_list.h
     server_list_saver.h
     server_options.h
     server_list_widget.h
@@ -87,6 +84,7 @@ set(MOC_HEADERS
     options_dialog.h
     push_button_action_link.h
     server_list_widget.h
+    server_options.h
     server_options_dialog.h
     item_view_dblclick_action_link.h
     qstat_updater.h
@@ -109,10 +107,7 @@ set(SOURCES
     debug_help.cpp
     main_window.cpp
     options_dialog.cpp
-    player_info.cpp
     push_button_action_link.cpp
-    server_info.cpp
-    server_list.cpp
     server_list_saver.cpp
     server_options.cpp
     server_list_widget.cpp

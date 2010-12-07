@@ -9,12 +9,13 @@
 #include <QStyledItemDelegate>
 #include <QTreeWidget>
 
+#include <common/server_id.h>
+#include <common/qaccumulatingconnection.h>
+#include <filters/pointers.h>
+#include <settings/settings.h>
+
 #include "pointers.h"
-#include "common/server_id.h"
 #include "server_options.h"
-#include "pointers.h"
-#include "filters/pointers.h"
-#include "settings/settings.h"
 
 class QLineEdit;
 class QToolButton;
@@ -27,7 +28,6 @@ public:
     server_tree(QWidget* parent);
     QModelIndex indexFromItem(QTreeWidgetItem *item) const;
 };
-
 
 class server_list_widget_settings: public settings_uid_provider<server_list_widget_settings>
 {
@@ -52,8 +52,8 @@ public:
     void set_server_list(server_list_p ptr);
     server_list_p server_list() const {return serv_list_;}
     
-    /*! Favorites list */
-    void set_favs(server_fav_list* favs);
+    /*! Bookmark list */
+    void set_bookmarks(server_bookmark_list* bms);
 
     /*! Access to internal QTreeWidget */
     QTreeWidget* tree() const;
@@ -71,7 +71,6 @@ public:
     int visible_server_count() const {return visible_server_count_;}
 
 private slots:
-    void timerEvent(QTimerEvent *event);
     void edit_filter();
     void update_list();
     void update_toolbar_filter();
@@ -86,15 +85,14 @@ private:
     QToolButton* show_filter_button_;
     server_list_p serv_list_;
     server_items items_;
-    int old_state_;
     QRegExp filter_rx_;
-    int update_timer_;
-    server_fav_list* favs_;
+    QPointer<server_bookmark_list> bms_;
     app_options_p opts_;
     filter_list_p filters_;
     QPointer<filter_edit_widget> edit_widget_;
     int visible_server_count_;
     QWidget* filter_holder_;
+    QAccumulatingConnection* accum_updater_;
 };
 
 class status_item_delegate : public QStyledItemDelegate

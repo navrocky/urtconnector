@@ -19,11 +19,11 @@ class server_options_dialog : public QDialog
     Q_OBJECT
 public:
     server_options_dialog(QWidget *parent = 0);
-    server_options_dialog(QWidget *parent, const server_options& src);
+    server_options_dialog(QWidget *parent, const server_bookmark& src);
 
     ~server_options_dialog();
 
-    const server_options& options() const {return opts_;}
+    const server_bookmark& options() const {return opts_;}
 
     void set_update_params(geoip* gi, qstat_options* opts, job_queue* que);
 
@@ -41,7 +41,7 @@ private:
     void init();
 
     boost::shared_ptr<Ui_ServOptsDialogClass> ui_;
-    server_options opts_;
+    server_bookmark opts_;
     server_id_list ids_;
     server_list_p list_;
     geoip* gi_;

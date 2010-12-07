@@ -66,44 +66,39 @@ void load_app_options(qsettings_p s, app_options_p opts)
     s->endGroup();
 }
 
-void save_server_favs(qsettings_p s, app_options_p opts)
+void save_server_bookmarks(qsettings_p s, server_bookmark_list* bml)
 {
-    const server_fav_list& ol = opts->servers;
-
     s->beginWriteArray("favorites");
     int i = 0;
-    for (server_fav_list::const_iterator it = ol.begin(); it != ol.end(); it++)
+    foreach (const server_bookmark& bm, bml->list())
     {
-        const server_options& so = it->second;
         s->setArrayIndex(i);
-        s->setValue("name", so.name);
-        s->setValue("address", so.id.address());
-        s->setValue("comment", so.comment);
-        s->setValue("password", so.password);
-        s->setValue("rcon_password", so.rcon_password);
-        s->setValue("ref_password", so.ref_password);
+        s->setValue("name", bm.name);
+        s->setValue("address", bm.id.address());
+        s->setValue("comment", bm.comment);
+        s->setValue("password", bm.password);
+        s->setValue("rcon_password", bm.rcon_password);
+        s->setValue("ref_password", bm.ref_password);
         i++;
     }
     s->endArray();
 }
 
-void load_server_favs(qsettings_p s, app_options_p opts)
+void load_server_bookmarks(qsettings_p s, server_bookmark_list* bml)
 {
-    server_fav_list& ol = opts->servers;
-
-    ol.clear();
+    bml->remove_all();
     int size = s->beginReadArray("favorites");
     for (int i = 0; i < size; i++)
     {
         s->setArrayIndex(i);
-        server_options so;
-        so.name = s->value("name", so.name).toString();
-        so.id = server_id( s->value("address", so.id.address()).toString() );
-        so.comment = s->value("comment", so.comment).toString();
-        so.password = s->value("password", so.password).toString();
-        so.rcon_password = s->value("rcon_password", so.rcon_password).toString();
-        so.ref_password = s->value("ref_password", so.ref_password).toString();
-        ol[so.id] = so;
+        server_bookmark bm;
+        bm.name = s->value("name", bm.name).toString();
+        bm.id = server_id( s->value("address", bm.id.address()).toString() );
+        bm.comment = s->value("comment", bm.comment).toString();
+        bm.password = s->value("password", bm.password).toString();
+        bm.rcon_password = s->value("rcon_password", bm.rcon_password).toString();
+        bm.ref_password = s->value("ref_password", bm.ref_password).toString();
+        bml->add(bm);
     }
     s->endArray();
 }

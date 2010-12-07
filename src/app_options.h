@@ -26,8 +26,8 @@ public:
     /*! Path to UrT binary, used when not advanced command line. */
     QString binary_path;
 
-    /*! Servers options list. */
-    server_fav_list servers;
+//    /*! Servers options list. */
+//    server_fav_list servers;
     
     qstat_options qstat_opts;
 

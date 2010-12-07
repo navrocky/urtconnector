@@ -19,16 +19,16 @@
 
 #include <cl/syslog/syslog.h>
 
-#include "server_info.h"
-#include "server_list.h"
-#include "geoip/geoip.h"
+#include <common/server_info.h>
+#include <common/server_list.h>
+#include <geoip/geoip.h>
 #include "app_options.h"
-#include "filters/filter.h"
-#include "filters/filter_edit_widget.h"
-#include "filters/filter_list.h"
-#include "filters/composite_filter.h"
-#include "filters/tools.h"
-#include "filters/regexp_filter.h"
+#include <filters/filter.h>
+#include <filters/filter_edit_widget.h>
+#include <filters/filter_list.h>
+#include <filters/composite_filter.h>
+#include <filters/tools.h>
+#include <filters/regexp_filter.h>
 
 #include "server_list_widget.h"
 
@@ -95,13 +95,14 @@ void server_list_widget_settings::save_toolbar_filter(const QString& name)
 server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p factory,
     QWidget *parent)
 : QWidget(parent)
-, old_state_(0)
-, update_timer_(0)
-, favs_(0)
 , opts_(opts)
 , filters_(new filter_list(factory))
 , visible_server_count_(0)
 {
+    accum_updater_ = new QAccumulatingConnection(500,
+        QAccumulatingConnection::Periodically, this);
+    connect(accum_updater_, SIGNAL(signal()), SLOT(update_list()));
+
     QBoxLayout* vert_lay = new QVBoxLayout(this);
     vert_lay->setContentsMargins(0, 0, 0, 0);
     QBoxLayout* horiz_lay = new QHBoxLayout();
@@ -148,8 +149,6 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     hi->setToolTip(2, tr("Server address (ip:port)"));
     hi->setToolTip(1, tr("Server name"));
     hi->setToolTip(0, tr("Server status"));
-
-    update_timer_ = startTimer(500);
 
     tree_->setItemDelegateForColumn( 0, new status_item_delegate(this) );
     
@@ -212,12 +211,22 @@ void server_list_widget::update_toolbar_filter()
 
 void server_list_widget::set_server_list(server_list_p ptr)
 {
+    if (serv_list_)
+        disconnect(serv_list_.get(), SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
     serv_list_ = ptr;
+    if (serv_list_)
+        connect(serv_list_.get(), SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
+    accum_updater_->emitSignal();
 }
 
-void server_list_widget::set_favs ( server_fav_list* favs )
+void server_list_widget::set_bookmarks ( server_bookmark_list* bms )
 {
-    favs_ = favs;
+    if (bms_)
+        disconnect(bms_, SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
+    bms_ = bms;
+    if (bms_)
+        connect(bms_, SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
+    accum_updater_->emitSignal();
 }
 
 void server_list_widget::update_item(QTreeWidgetItem* item)
@@ -230,18 +239,17 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     tree_->model()->setData(index, qVariantFromValue(si), c_info_role );
 
     QString name = si->name;
-    if (favs_)
+    if (bms_)
     {
-        server_fav_list::iterator it = favs_->find(si->id);
-        if (it != favs_->end())
+        const server_bookmark& bm = bms_->get(si->id);
+        if (!bm.is_empty())
         {
-            QString fav_name = it->second.name;
-            if (!fav_name.isEmpty() && name != fav_name)
+            if (!bm.name.isEmpty() && name != bm.name)
             {
                 if (name.isEmpty())
-                    name = fav_name;
+                    name = bm.name;
                 else
-                    name = QString("%1 (%2)").arg(name).arg(fav_name);
+                    name = QString("%1 (%2)").arg(name).arg(bm.name);
             }
         }
     }
@@ -269,7 +277,8 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     item->setText(7, QString("%1/%2/%3").arg(si->players.size())
         .arg(si->max_player_count - private_slots).arg(si->max_player_count));
     item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
-        .arg(si->players.size()).arg(si->max_player_count - private_slots).arg(si->max_player_count));
+        .arg(si->players.size()).arg(si->max_player_count - private_slots)
+        .arg(si->max_player_count));
 
     bool visible = filter_item(item);
     if (visible)
@@ -289,27 +298,14 @@ bool server_list_widget::filter_item(QTreeWidgetItem* item)
     return true;
 }
 
-void server_list_widget::timerEvent(QTimerEvent *te)
-{
-    if (!serv_list_) return;
-
-    if (te->timerId() == update_timer_)
-    {
-        if (serv_list_->state() == old_state_) return;
-        old_state_ = serv_list_->state();
-        update_list();
-    }
-}
-
 void server_list_widget::force_update()
 {
-    old_state_ = serv_list_->state();
-    update_list();
+    accum_updater_->emitNow();
 }
 
 void server_list_widget::update_list()
 {
-    LOG_DEBUG << "update_list()";
+    LOG_DEBUG << "Update list";
     QTreeWidget* tw = tree_;
     QTreeWidgetItem* cur_item = tw->currentItem();
 
@@ -317,10 +313,28 @@ void server_list_widget::update_list()
     tw->setUpdatesEnabled(false);
     tw->setSortingEnabled(false);
 
-    const server_info_list& list = serv_list_->list();
+    const server_info_list& info_list = serv_list_->list();
+    server_info_list bm_list;
+    const server_info_list* list;
+
+    // take id list
+    QList<server_id> ids;
+    if (bms_)
+    {
+        foreach (const server_bookmark& bm, bms_->list())
+        {
+            server_info_list::const_iterator it = info_list.find(bm.id);
+            if (it != info_list.end())
+                bm_list[bm.id] = it->second;
+        }
+        list = &bm_list;
+    } else
+    {
+        list = &info_list;
+    }
 
     // who changed, appeared?
-    for (server_info_list::const_iterator it = list.begin(); it != list.end(); it++)
+    for (server_info_list::const_iterator it = list->begin(); it != list->end(); it++)
     {
         const server_id& id = it->first;
         server_items::iterator it2 = items_.find(id);
@@ -336,21 +350,28 @@ void server_list_widget::update_list()
             update_item(item);
         }
     }
+
     // who removed ?
-    std::vector<server_id> to_remove;
+    QList<server_id> to_remove;
     for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
     {
         const server_id& id = it->first;
-        if (list.find(id) == list.end())
+        if (list->find(id) == list->end())
             to_remove.push_back(id);
     }
-    for (std::vector<server_id>::iterator it = to_remove.begin(); it != to_remove.end(); it++)
+
+    // remove old items
+    foreach (const server_id& id, to_remove)
     {
-        QTreeWidgetItem* item = items_[*it];
+        server_items::iterator it = items_.find(id);
+        if (it == items_.end())
+            continue;
+
+        QTreeWidgetItem* item = it->second;
         if (item == cur_item)
-            cur_item == 0;
+            cur_item = 0;
         delete item;
-        items_.erase(*it);
+        items_.erase(it);
     }
 
     tw->setSortingEnabled(true);

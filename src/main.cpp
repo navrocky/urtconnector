@@ -43,6 +43,42 @@ void show_help(const po::options_description& desc)
     cout << desc << "\n";
 }
 
+void init_application(QApplication* a)
+{
+    a->setOrganizationName("urtcommunity");
+    a->setApplicationName("urtconnector");
+
+    // loading translations
+    QTranslator qt_trans;
+    QString trans_name = "qt_" + QLocale::system().name();
+    bool loaded = qt_trans.load(trans_name,
+                                QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    if (loaded)
+        LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
+    else
+        LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
+
+    a->installTranslator(&qt_trans);
+
+    QTranslator urt_tr;
+
+    trans_name = "urtconnector_" + QLocale::system().name();
+#if defined(Q_OS_UNIX)
+    loaded = urt_tr.load(trans_name, "/usr/share/urtconnector/translations");
+#elif defined(Q_OS_WIN)
+    loaded = urt_tr.load(trans_name);
+#elif defined(Q_OS_MAC)
+    // FIXME i don't know how do this on mac
+    loaded = urt_tr.load(trans_name);
+#endif
+    if (loaded)
+        LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
+    else
+        LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
+
+    a->installTranslator(&urt_tr);
+}
+
 int main(int argc, char *argv[])
 {
     bool gui_enabled = false;
@@ -110,12 +146,17 @@ int main(int argc, char *argv[])
         {
             LOG_DEBUG << "Quick launch";
             QApplication a(argc, argv, false);
-            a.setOrganizationName("urtcommunity");
-            a.setApplicationName("urtconnector");
+            init_application(&a);
+
+            QString name = QObject::tr("Unnamed");
+            if (vm.count("player"))
+                name = to_qstr(vm["player"].as<string>());
+
+            anticheat::anticheat* ac = vm.count("anticheat") ? anticheat::create_anticheat(name, &a) : NULL;
 
             app_options_p opts(new app_options);
             load_app_options(get_app_options_settings("options"), opts);
-//            anticheat::manager anticheat;
+
             launcher l(opts);
             l.set_detach(false);
             if (vm.count("addr"))
@@ -128,6 +169,13 @@ int main(int argc, char *argv[])
                 l.set_rcon(to_qstr(vm["rcon"].as<string>()));
             if (vm.count("referee"))
                 l.set_referee(to_qstr(vm["referee"].as<string>()));
+
+            if (ac)
+            {
+                QObject::connect(&l, SIGNAL(started()), ac, SLOT(start()));
+                QObject::connect(&l, SIGNAL(stopped()), ac, SLOT(stop()));
+            }
+
             l.launch();
             QObject::connect(&l, SIGNAL(stopped()), &a, SLOT(quit()));
             a.exec();
@@ -147,39 +195,7 @@ int main(int argc, char *argv[])
         }
 #endif
         application::setQuitOnLastWindowClosed(false);
-
-        a.setOrganizationName("urtcommunity");
-        a.setApplicationName("urtconnector");
-
-        // loading translations
-        QTranslator qt_trans;
-        QString trans_name = "qt_" + QLocale::system().name();
-        bool loaded = qt_trans.load(trans_name,
-                                    QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-        if (loaded)
-            LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
-        else
-            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
-
-        a.installTranslator(&qt_trans);
-
-        QTranslator urt_tr;
-
-        trans_name = "urtconnector_" + QLocale::system().name();
-#if defined(Q_OS_UNIX)
-        loaded = urt_tr.load(trans_name, "/usr/share/urtconnector/translations");
-#elif defined(Q_OS_WIN)
-        loaded = urt_tr.load(trans_name);
-#elif defined(Q_OS_MAC)
-        // FIXME i don't know how do this on mac
-        loaded = urt_tr.load(trans_name);
-#endif
-        if (loaded)
-            LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
-        else
-            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
-        
-        a.installTranslator(&urt_tr);
+        init_application(&a);
 
         main_window w;
 

@@ -12,7 +12,7 @@
 class QStandardItem;
 
 class server_id;
-class server_options;
+class server_bookmark;
 
 struct Item;
 
@@ -20,7 +20,7 @@ class rcon : public QWidget{
     Q_OBJECT
 public:
 
-    rcon(QWidget* parent, const server_id& id, const server_options& options);
+    rcon(QWidget* parent, const server_id& id, const server_bookmark& options);
     ~rcon();
 
 public Q_SLOTS:

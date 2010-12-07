@@ -11,10 +11,17 @@ set(HEADERS
     qt_syslog.h
     string_escape.h
     exception.h
+    server_info.h
+    server_list.h
+    player_info.h
+    implicit_sharing.h
+    qaccumulatingconnection.h
 )
 
 set(MOC_HEADERS
     settings_base_widget.h
+    server_list.h
+    qaccumulatingconnection.h
 )
 
 set(SOURCES
@@ -24,6 +31,9 @@ set(SOURCES
     qt_syslog.cpp
     string_escape.cpp
     exception.cpp
+    server_info.cpp
+    server_list.cpp
+    qaccumulatingconnection.cpp
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)
@@ -47,7 +57,7 @@ set(RESOURCES
 qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
 qt4_wrap_ui(SOURCES ${IFACES})
 
-add_library(${TARGET} STATIC ${SOURCES})
+add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
 target_link_libraries( ${TARGET} ${QT_LIBRARIES} )
 

@@ -172,7 +172,7 @@ typedef std::list<Item> Items;
 
 
 struct rcon::Pimpl{
-    Pimpl( const server_id& id, const server_options& options )
+    Pimpl( const server_id& id, const server_bookmark& options )
         : id(id), options(options)
         , connected(false), waiting(false)
     {}
@@ -233,7 +233,7 @@ struct rcon::Pimpl{
     
     Ui_rcon ui;
     server_id id;
-    server_options options;
+    server_bookmark options;
     QUdpSocket socket;
     bool connected;
     bool waiting;
@@ -328,7 +328,7 @@ void create_items( QStandardItem* parent, Iterator begin, Iterator end, Items& i
 }
 
 
-rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
+rcon::rcon(QWidget* parent, const server_id& id, const server_bookmark& options)
     : QWidget(parent)
     , p_( new Pimpl(id, options) )
 {

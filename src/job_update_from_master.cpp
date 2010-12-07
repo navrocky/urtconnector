@@ -1,5 +1,5 @@
 
-#include "server_list.h"
+#include <common/server_list.h>
 #include "qstat_updater.h"
 #include "qstat_options.h"
 

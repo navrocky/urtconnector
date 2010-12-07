@@ -1,8 +1,7 @@
 #include <common/qt_syslog.h>
 #include <common/exception.h>
 #include <common/server_id.h>
-
-#include "server_list.h"
+#include <common/server_list.h>
 
 #include "qstat_updater.h"
 
@@ -81,20 +80,18 @@ void qstat_updater::refresh_selected(const server_id_list& list)
 
     count_ = list.size();
 
-    server_info_list& info_list = serv_list_->list();
-
-    for (server_id_list::const_iterator it = list.begin(); it != list.end(); it++)
+    foreach (const server_id& id, list)
     {
-        server_id id = it->address();
-        server_info_p info = info_list[id];
+        server_info_p info = serv_list_->get(id);
         if ( !info )
         {
             info = server_info_p( new server_info() );
-            info_list[id] = info;
+            info->id = id;
+            serv_list_->add(info);
         }
         info->updating = true;
     }
-    serv_list_->change_state();
+    serv_list_->state_changed();
 
     QStringList sl;
 
@@ -117,12 +114,12 @@ void qstat_updater::do_refresh_stopped()
     LOG_DEBUG << "Refresh stopped";
     
     // clear updating state
-    server_info_list& il = serv_list_->list();
-    for (server_info_list::iterator it = il.begin(); it != il.end(); it++)
+    const server_info_list& il = serv_list_->list();
+    for (server_info_list::const_iterator it = il.begin(); it != il.end(); it++)
     {
         it->second->updating = false;
     }
-    serv_list_->change_state();
+    serv_list_->state_changed();
     
     emit refresh_stopped();
 }
@@ -276,11 +273,11 @@ void qstat_updater::process_xml()
         else if (cur_state_ == s_rule)
             cur_rule_.second = rd_.text().toString();
         else if (cur_state_ == s_player_name)
-            cur_player_info_.nick_name = rd_.text().toString().trimmed();
+            cur_player_info_.set_nick_name(rd_.text().toString().trimmed());
         else if (cur_state_ == s_player_score)
-            cur_player_info_.score = rd_.text().toString().toInt();
+            cur_player_info_.set_score(rd_.text().toString().toInt());
         else if (cur_state_ == s_player_ping)
-            cur_player_info_.ping = rd_.text().toString().toInt();
+            cur_player_info_.set_ping(rd_.text().toString().toInt());
     } else
 
     if (rd_.isEndElement())
@@ -294,12 +291,12 @@ void qstat_updater::process_xml()
                     !cur_server_info_->id.is_empty() && cur_server_info_->game_type == c_ut_game_type)
                 {
                     prepare_info();
-                    server_info_list& list = serv_list_->list();
-                    server_info_p si = list[cur_server_info_->id];
+                    server_info_p si = serv_list_->get(cur_server_info_->id);
                     if ( !si )
                     {
                         si = server_info_p( new server_info() );
-                        list[cur_server_info_->id] = si;
+                        si->id = cur_server_info_->id;
+                        serv_list_->add(si);
                     }
                     si->update_from(*cur_server_info_);
                     si->updating = false;
@@ -310,7 +307,7 @@ void qstat_updater::process_xml()
                 cur_server_info_.reset( new server_info() );
                 progress_++;
 
-                serv_list_->change_state();
+                serv_list_->state_changed();
             }
             cur_state_ = s_qstat;
         }
