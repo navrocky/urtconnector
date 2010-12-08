@@ -126,6 +126,7 @@ void anticheat::screen_shot()
     }
 
     QString fn = QString("%1_%2").arg(nick_name_).arg(QDateTime::currentDateTime().toString(Qt::ISODate));
+    fn.replace(":", "-");
 
     QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5);
     QString md5_s = QString("%1  %2.jpg\n").arg(QString(md5.toHex())).arg(fn);

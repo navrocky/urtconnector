@@ -42,12 +42,12 @@ void sshot_file_output::send_file(const QString& name, const QByteArray& data)
     QFile f(fn);
     if (!f.open(QIODevice::WriteOnly))
     {
-        LOG_ERR << "Can't open file to write \"%1\"", name.toLocal8Bit().data();
+        LOG_ERR << "Can't open file to write \"%1\"", fn.toLocal8Bit().data();
         return;
     }
     if (f.write(data) < 0)
     {
-        LOG_ERR << "Error while writing file \"%1\"", name.toLocal8Bit().data();
+        LOG_ERR << "Error while writing file \"%1\"", fn.toLocal8Bit().data();
         return;
     }
 }
