@@ -1,28 +1,25 @@
 #ifndef _SIMPLE_DATABASE_H
 #define _SIMPLE_DATABASE_H
 
-#include <vector>
-#include <string>
+#include <QList>
 #include <QString>
 
-class simple_database
+class database
 {
-    public:
-        typedef std::vector< std::vector< std::string > > result_set;
-        typedef std::vector< std::string > result_row;
+public:
+    typedef QList<QString> result_row;
+    typedef QList< result_row > result_set;
 
-        virtual ~simple_database() {};
-        virtual result_set query(std::string sql, size_t limit = 0) = 0;
-        virtual void populate() = 0;
+    database();
+    virtual ~database();
+    virtual result_set query(const QString& sql, size_t limit = 0) = 0;
 
-        std::string ssencode_string(const std::string& str);
-        std::string ssdecode_string(const std::string& str);
-        QString qqencode_string(const QString& str);
-        QString qqdecode_string(const QString& str);
-        QString sqencode_string(const std::string& str);
-        QString sqdecode_string(const std::string& str);
+    static database* instance() {return instance_;}
 
-        static simple_database *db;
+    static QString qqencode_string(const QString& str);
+    static QString qqdecode_string(const QString& str);
+private:
+    static database* instance_;
 };
 
 #endif

@@ -32,14 +32,13 @@
 #include "config.h"
 #include "pointers.h"
 #include "app_options_saver.h"
+#include "server_list_saver.h"
 
 using namespace cl::syslog;
 using namespace std;
 namespace po = boost::program_options;
 
 SYSLOG_MODULE(main)
-
-extern simple_database* simple_database::db;
 
 void show_help(const po::options_description& desc)
 {
@@ -49,7 +48,9 @@ void show_help(const po::options_description& desc)
 
 int main(int argc, char *argv[])
 {
-    simple_database *db = new sqlite_database("urtconnector.sqlite");
+    // initialize database
+    sqlite_database db("urtconnector.sqlite");
+    init_database();
 
     // parsing program options
     namespace po = boost::program_options;

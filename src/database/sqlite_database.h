@@ -1,25 +1,23 @@
 #ifndef _SQLITE_DATABASE_H
 #define _SQLITE_DATABASE_H
 
-#include "database/simple_database.h"
-#include <common/exception.h>
-#include <string>
-#include <sqlite3.h>
+#include <QString>
 
-#define FOREVER for(;;)
+#include "simple_database.h"
 
-class sqlite_database : public simple_database
+struct sqlite3;
+
+class sqlite_database : public database
 {
     public:
-        sqlite_database(std::string filename);
+        sqlite_database(const QString& filename);
         ~sqlite_database();
 
-        virtual result_set query(std::string sql, size_t limit = 0);
-        virtual void populate();
+        virtual result_set query(const QString& sql, size_t limit = 0);
 
     private:
-        std::string m_filename;
-        sqlite3 *m_handle;
+        QString filename_;
+        sqlite3 *handle_;
 };
 
 #endif

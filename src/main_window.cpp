@@ -397,7 +397,7 @@ void main_window::load_all_at_start()
     {
         static void load_list(server_list_p list, const QString& name)
         {
-            load_server_list(get_app_options_settings(name), name, list);
+            load_server_list(name, list);
         }
     };
     
@@ -437,9 +437,7 @@ void main_window::save_state_at_exit()
     {
         static void save_list(server_list_p list, const QString& name)
         {
-            qsettings_p s = get_app_options_settings(name);
-            QFile::remove(s->fileName());
-            save_server_list(s, name, list);
+            save_server_list(name, list);
         }
     };
 

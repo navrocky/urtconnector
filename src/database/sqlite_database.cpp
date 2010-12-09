@@ -1,27 +1,39 @@
-#include "database/sqlite_database.h"
-#include <fstream>
+#include <sqlite3.h>
+#include <QObject>
 
-sqlite_database::sqlite_database(std::string filename)
+#include <common/exception.h>
+#include "../str_convert.h"
+
+#include "sqlite_database.h"
+
+#define FOREVER for(;;)
+
+template <typename T>
+QString utf16_to_qstr(T src)
 {
-    m_filename = filename;
-    if (sqlite3_open_v2(m_filename.c_str(), &m_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0)!=SQLITE_OK)
-    {
-        throw qexception((std::string("Cannot open SQLite database file: ")+sqlite3_errmsg(m_handle)).c_str());
-    }
-    simple_database::db = this;
+    return QString::fromUtf16((const ushort*)src);
+}
+
+sqlite_database::sqlite_database(const QString& filename)
+: filename_(filename)
+, handle_(0)
+{
+    if (sqlite3_open_v2(filename_.toUtf8().data(), &handle_, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0) != SQLITE_OK)
+        throw qexception(QObject::tr("Cannot open SQLite database file: %1")
+                         .arg(utf16_to_qstr(sqlite3_errmsg16(handle_))));
     query("PRAGMA auto_vacuum = 1");
-    populate();
 }
 sqlite_database::~sqlite_database()
 {
-    sqlite3_close(m_handle);
+    if (handle_)
+        sqlite3_close(handle_);
 }
 
-sqlite_database::result_set sqlite_database::query(std::string sql, size_t limit)
+database::result_set sqlite_database::query(const QString& sql, size_t limit)
 {
     sqlite3_stmt *statement;
     result_set answer;
-    if (sqlite3_prepare_v2(m_handle, sql.c_str(), -1, &statement, 0) == SQLITE_OK)
+    if (sqlite3_prepare16_v2(handle_, sql.utf16(), -1, &statement, 0) == SQLITE_OK)
     {
         size_t cols = sqlite3_column_count(statement);
         int result_code = 0;
@@ -46,7 +58,7 @@ sqlite_database::result_set sqlite_database::query(std::string sql, size_t limit
                 result_row row;
                 for (size_t i = 0; i<cols; ++i)
                 {
-                    row.push_back((const char*)sqlite3_column_text(statement,i));
+                    row.push_back(utf16_to_qstr(sqlite3_column_text16(statement,i)));
                 }
                 answer.push_back(row);
             }
@@ -59,54 +71,13 @@ sqlite_database::result_set sqlite_database::query(std::string sql, size_t limit
     }
     else
     {
-        throw qexception((std::string("Cannot execute query: ")+sqlite3_errmsg(m_handle)).c_str());
+        throw qexception(QObject::tr("Cannot execute query: %1")
+                         .arg(utf16_to_qstr(sqlite3_errmsg16(handle_))));
     }
     if (sqlite3_finalize(statement)!=SQLITE_OK)
     {
-        throw qexception((std::string("Unable to finalize query: ")+sqlite3_errmsg(m_handle)).c_str());
+        throw qexception(QObject::tr("Unable to finalize query: %1")
+                         .arg(utf16_to_qstr(sqlite3_errmsg16(handle_))));
     }
     return answer;
-}
-
-void sqlite_database::populate()
-{
-    query
-    (
-        "CREATE TABLE IF NOT EXISTS all_state"
-        "("
-        "    id INTEGER,"
-        "    address VARCHAR(255),"
-        "    name VARCHAR(255),"
-        "    gametype INTEGER,"
-        "    map VARCHAR(255),"
-        "    mapurl VARCHAR(255),"
-        "    maxplayercount VARCHAR(255),"
-        "    mode INTEGER,"
-        "    ping INTEGER,"
-        "    country VARCHAR(255),"
-        "    countrycode VARCHAR(255),"
-        "    info TEXT,"
-        "    PRIMARY KEY(id)"
-        ");"
-    );
-    query
-    (
-        "CREATE TABLE IF NOT EXISTS favs_state"
-        "("
-        "    id INTEGER,"
-        "    address VARCHAR(255),"
-        "    name VARCHAR(255),"
-        "    gametype INTEGER,"
-        "    map VARCHAR(255),"
-        "    mapurl VARCHAR(255),"
-        "    maxplayercount VARCHAR(255),"
-        "    mode INTEGER,"
-        "    ping INTEGER,"
-        "    country VARCHAR(255),"
-        "    countrycode VARCHAR(255),"
-        "    info TEXT,"
-        "    PRIMARY KEY(id)"
-        ");"
-    );
-
 }
