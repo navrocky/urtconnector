@@ -16,6 +16,7 @@
 #include <common/qt_syslog.h>
 #include <common/state_settings.h>
 #include <common/exception.h>
+#include <common/str_convert.h>
 #include <launcher/launcher.h>
 #include <anticheat/settings.h>
 #include <anticheat/tools.h>
@@ -25,7 +26,6 @@
 #include "main_window.h"
 #include "application.h"
 #include "debug_help.h"
-#include "str_convert.h"
 #include "tools.h"
 #include "config.h"
 #include "pointers.h"
@@ -100,11 +100,15 @@ int main(int argc, char *argv[])
                 ("debug,D", "Produce debug messages")
                 ("anticheat,A", "Activate anticheat")
                 ("launch,L", "Launch a game")
+#if defined(Q_OS_UNIX)
+                ("separate-x", "Launch game in separate X")
+#endif
                 ("player", po::value<string>(), "Player name")
                 ("addr", po::value<string>(), "Server address")
                 ("pass", po::value<string>(), "Password")
                 ("rcon", po::value<string>(), "RCON password")
                 ("referee", po::value<string>(), "Referee password")
+                ("pipe-log", po::value<string>(), "Redirect all logging to stderr with a special marks")
                 ;
 
         po::variables_map vm;
@@ -145,7 +149,7 @@ int main(int argc, char *argv[])
         if (vm.count("launch"))
         {
             LOG_DEBUG << "Quick launch";
-            QApplication a(argc, argv, false);
+            QApplication a(argc, argv, true);
             init_application(&a);
 
             QString name = QObject::tr("Unnamed");
@@ -156,6 +160,8 @@ int main(int argc, char *argv[])
 
             app_options_p opts(new app_options);
             load_app_options(get_app_options_settings("options"), opts);
+
+            LOG_DEBUG << "Binary path: %1", opts->binary_path;
 
             launcher l(opts);
             l.set_detach(false);
@@ -176,7 +182,7 @@ int main(int argc, char *argv[])
                 QObject::connect(&l, SIGNAL(stopped()), ac, SLOT(stop()));
             }
 
-            l.launch();
+            l.launch(l.launch_string(vm.count("separate-x")));
             QObject::connect(&l, SIGNAL(stopped()), &a, SLOT(quit()));
             a.exec();
             return 0;

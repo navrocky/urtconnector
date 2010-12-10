@@ -57,6 +57,9 @@ public:
 
     /*! Number of connections that are kept in history */
     unsigned int number_in_history;
+
+    /*! Update server info before connect to */
+    bool update_before_connect;
 };
 
 #endif

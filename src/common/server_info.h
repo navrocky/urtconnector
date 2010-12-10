@@ -70,6 +70,12 @@ public:
     /*! String contains all useful information about server. Primarily used for search. */
     const QString& meta_info_string() const;
 
+    bool is_password_needed() const;
+    bool is_pure() const;
+
+    int private_slots() const;
+    int public_slots() const;
+
 private:
     mutable QString meta_info_string_;
 

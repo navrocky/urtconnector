@@ -16,7 +16,7 @@ namespace
 {
 
 // it's code from qprocess.cpp
-static QStringList parse_combined_arg_string(const QString &program)
+static QStringList __parse_combined_arg_string(const QString &program)
 {
     QStringList args;
     QString tmp;
@@ -76,6 +76,13 @@ launcher::launcher(app_options_p opts, QObject* parent)
 {
 }
 
+void launcher::parse_combined_arg_string(const QString& launch_str, QString& program, QStringList& args)
+{
+    args = __parse_combined_arg_string(launch_str);
+    program = args.first();
+    args.removeFirst();
+}
+
 QString launcher::get_work_dir()
 {
     return QFileInfo(opts_->binary_path).absoluteDir().absolutePath();
@@ -113,11 +120,15 @@ void launcher::set_referee(const QString& value)
 
 void launcher::launch()
 {
+    launch(launch_string());
+}
+
+void launcher::launch(const QString& ls)
+{
     // prepare launch parameters
-    QString ls = launch_string();
-    QStringList args = parse_combined_arg_string(ls);
-    QString prog = args.first();
-    args.removeFirst();
+    QStringList args;
+    QString prog;
+    parse_combined_arg_string(ls, prog, args);
 
     if (detach_)
     {
@@ -153,7 +164,7 @@ void launcher::proc_error(QProcess::ProcessError error)
     throw qexception(tr("Game launch error \"%1\".").arg(error));
 }
 
-QString launcher::launch_string()
+QString launcher::launch_string(bool separate_x)
 {
     QString res;
     if (opts_->use_adv_cmd_line)
@@ -184,11 +195,23 @@ QString launcher::launch_string()
     }
 
 #if defined(Q_OS_UNIX)
-    if ( opts_->separate_x )
-        res = QString("xinit %1 -- :%2").arg(res).arg( find_free_display() );
+    if ( separate_x )
+        res = get_separate_x_launch_str(res);
 #endif
     
     return res;
+}
+
+#if defined(Q_OS_UNIX)
+QString launcher::get_separate_x_launch_str(const QString& ls)
+{
+    return QString("xinit %1 -- :%2").arg(ls).arg( find_free_display() );
+}
+#endif
+
+QString launcher::launch_string()
+{
+    return launch_string(opts_->separate_x);
 }
 
 void launcher::stop()

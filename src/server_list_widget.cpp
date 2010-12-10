@@ -257,14 +257,12 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     QStringList sl;
     sl << si->status_name();
 
-    if ( si->get_info("g_needpass").toInt() )
+    if ( si->is_password_needed() )
         sl << tr("Private");
     if ( si->get_info("pure", "-1").toInt() == 0 )
         sl << tr("Not pure");
 
     QString status = sl.join(", ");
-
-    int private_slots = si->get_info("sv_privateClients").toInt();
 
     item->setToolTip(0, status);
     item->setText(1, name);
@@ -275,9 +273,9 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     item->setText(5, si->mode_name());
     item->setText(6, si->map);
     item->setText(7, QString("%1/%2/%3").arg(si->players.size())
-        .arg(si->max_player_count - private_slots).arg(si->max_player_count));
+        .arg(si->public_slots()).arg(si->max_player_count));
     item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
-        .arg(si->players.size()).arg(si->max_player_count - private_slots)
+        .arg(si->players.size()).arg(si->public_slots())
         .arg(si->max_player_count));
 
     bool visible = filter_item(item);
@@ -503,7 +501,7 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
 
     next_icon( icon_rect);
 
-    if ( si->get_info("g_needpass").toInt() ) painter->drawPixmap( icon_rect, icon_passwd );
+    if ( si->is_password_needed() ) painter->drawPixmap( icon_rect, icon_passwd );
 
     next_icon( icon_rect);
 

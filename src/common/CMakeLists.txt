@@ -16,6 +16,7 @@ set(HEADERS
     player_info.h
     implicit_sharing.h
     qaccumulatingconnection.h
+    str_convert.h
 )
 
 set(MOC_HEADERS

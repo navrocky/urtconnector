@@ -37,10 +37,16 @@ public:
     void set_detach(bool val);
 
     /*! Launch string calculated from options above */
+    QString launch_string(bool separate_x);
     QString launch_string();
 
     /*! Game is started */
     bool is_started() const {return proc_;}
+
+#if defined(Q_OS_UNIX)
+    static QString get_separate_x_launch_str(const QString& ls);
+#endif
+    static void parse_combined_arg_string(const QString& launch_str, QString& program, QStringList& args);
 
 signals:
     void started();
@@ -48,6 +54,7 @@ signals:
 
 public slots:
     void launch();
+    void launch(const QString& launch_str);
     void stop();
     
 private slots:

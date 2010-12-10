@@ -32,7 +32,5 @@ bool hide_full_filter::filter_server(const server_info& si)
 {
     if (!enabled())
         return true;
-
-    int private_slots = si.get_info("sv_privateClients").toInt();
-    return si.players.size() < si.max_player_count - private_slots;
+    return si.players.size() < si.public_slots();
 }

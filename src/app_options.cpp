@@ -10,5 +10,6 @@ app_options::app_options()
 , center_current_row(true)
 , keep_history(true)
 , number_in_history(30)
+, update_before_connect(true)
 {
 }

@@ -17,15 +17,19 @@
 #include <QByteArray>
 #include <QFile>
 #include <QHeaderView>
+#include <QProcess>
 
 #include <common/exception.h>
 #include <common/qt_syslog.h>
+#include <cl/syslog/manager.h>
 #include <common/state_settings.h>
 #include <common/server_list.h>
 #include <common/qaccumulatingconnection.h>
+#include <common/str_convert.h>
 #include <settings/settings.h>
 #include <anticheat/tools.h>
 #include <launcher/launcher.h>
+#include <launcher/tools.h>
 
 #include "config.h"
 #include "ui_main_window.h"
@@ -37,7 +41,6 @@
 #include "server_list_saver.h"
 #include "server_info_html.h"
 #include "item_view_dblclick_action_link.h"
-#include "str_convert.h"
 #include "tools.h"
 #include <history/history.h>
 
@@ -465,67 +468,122 @@ server_info_p main_window::selected_info() const
 
 void main_window::connect_to_server(const server_id& id, const QString& player_name, const QString& password)
 {
+    if (launcher_->is_started() || ac_proc_)
+        throw qexception(tr("Game is launched already"));
+
     check_anticheat_prereq();
+    const server_bookmark& bm = bookmarks_->get(id);
 
     // update server info
-    server_id_list idl;
-    idl.push_back(id);
+    if (opts_->update_before_connect)
+    {
+        server_id_list idl;
+        idl.push_back(id);
+        job_p job(new job_update_selected(idl, all_sl_, gi_, &opts_->qstat_opts,
+                                          tr("Update server info and launch a game")));
+        que_->add_job(job);
+        job->wait_for_finish();
+        if (job->is_canceled())
+            return;
+    }
 
-    job_p job(new job_update_selected(idl, all_sl_, gi_, &opts_->qstat_opts,
-                                      tr("Update server info and launch a game")));
-    que_->add_job(job);
-    job->wait_for_finish();
-    if (job->is_canceled())
-        return;
-
-    // info MUST be correct or connect-action is disabled!
     server_info_p info = all_sl_->get(id);
 
-    const server_bookmark& opts = bookmarks_->get(info->id);
+    // show warnings about connect
+    // TODO also need to check info age by timestamp later
+    if ( info && info->status == server_info::s_up )
+    {
+        QString msg;
 
-    launcher* l = launcher_;
-    l->set_server_id(id);
-    l->set_user_name(ui_->qlPlayerEdit->text());
-    l->set_password(opts.password);
+        int max_slots = info->max_player_count;
 
-    if ( opts.password.isEmpty() && info && info->get_info("g_needpass").toInt() )
+        // with a rcon and referee you can connect to a private slots
+        if (bm.rcon_password.isEmpty() && bm.ref_password.isEmpty())
+            max_slots = info->public_slots();
+
+        if (info->players.size() >= max_slots)
+            msg = tr("Server is full.");
+
+        if (info->players.size() == 0)
+            msg = tr("Server is empty.");
+
+        if (!msg.isEmpty())
+        {
+            if (QMessageBox::warning(this
+                , tr("Connecting to the server")
+                , tr("%1\n\nDo you want to continue connecting?").arg(msg)
+                , QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes
+                ) != QMessageBox::Yes)
+                return;
+        }
+    }
+
+    // take the password
+    QString pass = password;
+    if (pass.isEmpty() && !bm.password.isEmpty())
+        pass = bm.password;
+
+    if ( pass.isEmpty() && info && info->is_password_needed() )
     {
         bool ok;
-        QString password = QInputDialog::getText(0, tr("Server require password"), tr("Enter password"), QLineEdit::Normal, "", &ok );
-        if ( !ok ) return;
-        l->set_password(password);
-    }
-
-    if ( info && info->players.size() == info->max_player_count )
-    {
-        if (QMessageBox::warning( this
-            , tr( "Server is full" )
-            , tr( "Do you want to continue connecting?" )
-            , QMessageBox::Yes | QMessageBox::No, QMessageBox::No
-            ) != QMessageBox::Yes)
+        pass = QInputDialog::getText(this, tr("This server require the password"),
+            tr("Enter the password"), QLineEdit::Normal, "", &ok );
+        if (!ok)
             return;
     }
-
-    if ( info && info->players.size() == 0 )
-    {
-        if (QMessageBox::warning( this
-            , tr( "Server is empty" )
-            , tr( "Do you want to continue connecting?" )
-            , QMessageBox::Yes | QMessageBox::No, QMessageBox::No
-            ) != QMessageBox::Yes)
-            return;
-    }
-
-    l->set_referee(opts.ref_password);
-    l->set_rcon(opts.rcon_password);
 
     // add to history if history is enabled
     if (opts_->keep_history)
     {
-        history_sl_->add(l->id(), info->name, l->user_name(), l->password());
+        QString server_name = info ? info->name : QString();
+        history_sl_->add(id, server_name, player_name, pass);
         history_list_->update_history();
     }
 
+#if defined(Q_OS_UNIX)
+    if (anticheat_enabled_action_->isChecked() && opts_->separate_x)
+    {
+        QStringList args;
+        args << qApp->applicationFilePath();
+
+        // debug logging enabled?
+        if (cl::syslog::logman().level_check(cl::syslog::debug))
+            args << "--debug";
+
+        // common options
+        args << "--anticheat" << "--launch" << "--pipe-log"
+                << "--player" << player_name
+                << "--addr"<< id.address();
+
+        if (!pass.isEmpty())
+            args << "--pass" << pass;
+        if (!bm.rcon_password.isEmpty())
+            args << "--rcon" << bm.rcon_password;
+        if (!bm.ref_password.isEmpty())
+            args << "--referee" << bm.ref_password;
+
+        args << "--" << QString(":%1").arg(find_free_display());
+
+        // TODO log redirection of subprocess
+
+        ac_proc_ = new QProcess(this);
+
+        // self destruct on finish
+        connect(ac_proc_, SIGNAL(error(QProcess::ProcessError)), ac_proc_, SLOT(deleteLater()));
+        connect(ac_proc_, SIGNAL(finished(int,QProcess::ExitStatus)), ac_proc_, SLOT(deleteLater()));
+
+        ac_proc_->start("xinit", args);
+
+        return;
+    }
+#endif
+
+    launcher* l = launcher_;
+    l->set_server_id(id);
+    l->set_user_name(player_name);
+    l->set_password(pass);
+    l->set_referee(bm.ref_password);
+    l->set_rcon(bm.rcon_password);
     l->launch();
 }
 
@@ -662,15 +720,6 @@ void main_window::show_action()
     setVisible(!isVisible());
 }
 
-// void save_list2(server_list_p list, const QString& name)
-// {
-//     QByteArray ba = save_server_list2(*(list.get()));
-//     QString fn = get_server_list_settings(name)->fileName();
-//     QFile f(fn);
-//     f.open(QIODevice::WriteOnly);
-//     f.write(ba);
-// }
-
 void main_window::commit_data_request(QSessionManager&)
 {
     LOG_DEBUG << "Commit data request";
@@ -687,11 +736,12 @@ void main_window::quit_action()
     }
 
     LOG_DEBUG << "Quit action";
+    launcher_->stop();
     hide();
     tray_->hide();
     save_state_at_exit();
     qApp->quit();
-    launcher_->stop();
+    
 }
 
 void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
@@ -735,7 +785,6 @@ void main_window::clear_all()
 void main_window::clear_selected()
 {
     LOG_HARD << "Deleting selected entries";
-
     all_sl_->remove_selected(all_list_->selection());
 }
 
@@ -815,6 +864,6 @@ void main_window::check_anticheat_prereq() const
         return;
     QString player_name = ui_->qlPlayerEdit->text();
     if (player_name.isEmpty())
-        throw qexception(tr("A player's name must be defined in the quick launch window for anti-cheat!"));
+        throw qexception(tr("The player's name must be defined in the quick launch window for the anti-cheat!"));
 }
 

@@ -60,7 +60,6 @@ set(HEADERS
     server_options.h
     server_list_widget.h
     server_options_dialog.h
-    str_convert.h
     app_options_saver.h
     server_info_html.h
     config.h

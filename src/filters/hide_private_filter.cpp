@@ -33,5 +33,5 @@ bool hide_private_filter::filter_server(const server_info& si)
     if (!enabled())
         return true;
 
-    return si.get_info("g_needpass").toInt() == 0;
+    return !si.is_password_needed();
 }

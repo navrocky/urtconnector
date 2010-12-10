@@ -5,6 +5,7 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
+#include <QPointer>
 
 #include "pointers.h"
 
@@ -24,6 +25,7 @@ class QTimer;
 class Ui_MainWindowClass;
 class QSessionManager;
 class QAction;
+class QProcess;
 
 class main_window : public QMainWindow
 {
@@ -117,6 +119,7 @@ private:
     QAction* anticheat_enabled_action_;
     QAction* anticheat_open_action_;
     QAction* anticheat_configure_action_;
+    QPointer<QProcess> ac_proc_;
 };
 
 #endif

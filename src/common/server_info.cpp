@@ -110,5 +110,25 @@ const QString& server_info::meta_info_string() const
     return meta_info_string_;
 }
 
+bool server_info::is_password_needed() const
+{
+    return get_info("g_needpass").toInt();
+}
+
+
+bool server_info::is_pure() const
+{
+    return get_info("pure", "-1").toInt() == 0;
+}
+
+int server_info::private_slots() const
+{
+    return get_info("sv_privateClients").toInt();
+}
+
+int server_info::public_slots() const
+{
+    return max_player_count - private_slots();
+}
 
 
