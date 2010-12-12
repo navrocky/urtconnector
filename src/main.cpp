@@ -82,14 +82,6 @@ void init_application(QApplication* a)
 int main(int argc, char *argv[])
 {
     bool gui_enabled = false;
-    output_p cerr_out(new output_stream(std::cerr));
-    logman().output_add(cerr_out);
-
-//#ifdef Q_OS_WIN32
-    output_p log_out(new output_file(to_str(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)) + "/urtconnector.log"));
-    logman().output_add(log_out);
-//#endif
-
     QString error_str;
     try
     {
@@ -98,17 +90,17 @@ int main(int argc, char *argv[])
         desc.add_options()
                 ("help", "Produce help message")
                 ("debug,D", "Produce debug messages")
+                ("pipe-log", "Redirect all logging to stderr with a special marks")
                 ("anticheat,A", "Activate anticheat")
                 ("launch,L", "Launch a game")
 #if defined(Q_OS_UNIX)
-                ("separate-x", "Launch game in separate X")
+                ("separate-x,X", "Launch game in separate X")
 #endif
                 ("player", po::value<string>(), "Player name")
                 ("addr", po::value<string>(), "Server address")
                 ("pass", po::value<string>(), "Password")
                 ("rcon", po::value<string>(), "RCON password")
                 ("referee", po::value<string>(), "Referee password")
-                ("pipe-log", po::value<string>(), "Redirect all logging to stderr with a special marks")
                 ;
 
         po::variables_map vm;
@@ -135,6 +127,21 @@ int main(int argc, char *argv[])
             logman().level_set(debug);
         else
             logman().level_set(info);
+
+        output_p cerr_out, file_out;
+        if (vm.count("pipe-log"))
+        {
+            // TODO Special log output to forward all messages to main programm
+            cerr_out.reset(new output_stream(std::cerr));
+            logman().output_add(cerr_out);
+        } else
+        {
+            cerr_out.reset(new output_stream(std::cerr));
+            file_out.reset(new output_file(to_str(QDesktopServices::storageLocation(
+                    QDesktopServices::HomeLocation)) + "/urtconnector.log"));
+            logman().output_add(cerr_out);
+            logman().output_add(file_out);
+        }
 
         LOG_DEBUG << "Syslog started";
 

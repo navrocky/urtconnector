@@ -38,6 +38,9 @@ const int c_filter_info_column = 100;
 
 //Role to access server_info stored in QTreeModel
 const int c_info_role = Qt::UserRole;
+const int c_id_role = Qt::UserRole + 1;
+
+Q_DECLARE_METATYPE(server_id)
 
 ////////////////////////////////////////////////////////////////////////////////
 // server_tree
@@ -231,17 +234,24 @@ void server_list_widget::set_bookmarks ( server_bookmark_list* bms )
 
 void server_list_widget::update_item(QTreeWidgetItem* item)
 {
-    server_info_p si = item->data(0, c_info_role).value<server_info_p>();
-    if (!si)
+    server_id id = item->data(0, c_id_role).value<server_id>();
+    if (id.is_empty())
         return;
 
+    static const server_info_p empty(new server_info);
+
+    server_info_p si = serv_list_->get(id);
+//    server_info_p si = item->data(0, c_info_role).value<server_info_p>();
+    if (!si)
+        si = empty;
+
     QModelIndex index = tree_->indexFromItem(item);
-    tree_->model()->setData(index, qVariantFromValue(si), c_info_role );
+    tree_->model()->setData(index, QVariant::fromValue(si), c_info_role );
 
     QString name = si->name;
     if (bms_)
     {
-        const server_bookmark& bm = bms_->get(si->id);
+        const server_bookmark& bm = bms_->get(id);
         if (!bm.is_empty())
         {
             if (!bm.name.isEmpty() && name != bm.name)
@@ -266,7 +276,7 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
 
     item->setToolTip(0, status);
     item->setText(1, name);
-    item->setText(2, si->id.address());
+    item->setText(2, id.address());
     item->setIcon(3, geoip::get_flag_by_country(si->country_code) );
     item->setToolTip(3, si->country);
     item->setText(4, QString("%1").arg(si->ping, 5));
@@ -324,6 +334,8 @@ void server_list_widget::update_list()
             server_info_list::const_iterator it = info_list.find(bm.id);
             if (it != info_list.end())
                 bm_list[bm.id] = it->second;
+            else
+                bm_list[bm.id] = server_info_p();
         }
         list = &bm_list;
     } else
@@ -343,6 +355,7 @@ void server_list_widget::update_list()
         } else
         {
             QTreeWidgetItem* item = new QTreeWidgetItem(tw);
+            item->setData(0, c_id_role, QVariant::fromValue(id));
             item->setData(0, c_info_role, QVariant::fromValue(it->second));
             items_[id] = item;
             update_item(item);
@@ -384,9 +397,7 @@ server_id_list server_list_widget::selection()
     server_id_list res;
     foreach (QTreeWidgetItem* item, tree_->selectedItems())
     {
-        server_info_p si = item->data(0, c_info_role).value<server_info_p>();
-        if (si)
-            res.push_back(si->id);
+        res.push_back(item->data(0, c_id_role).value<server_id>());
     }
     return res;
 }
