@@ -19,7 +19,7 @@
 #include "filters/pointers.h"
 #include "history/history_widget.h"
 #include <anticheat/anticheat.h>
-#include "server_options.h"
+#include "server_bookmark.h"
 
 class QTimer;
 class Ui_MainWindowClass;

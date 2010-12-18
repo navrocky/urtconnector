@@ -28,8 +28,8 @@ Q_DECLARE_METATYPE(filter_class_p)
 ////////////////////////////////////////////////////////////////////////////////
 // select_filter_class_dialog
 
-select_filter_class_dialog::select_filter_class_dialog(filter_factory_p factory)
-: QDialog()
+select_filter_class_dialog::select_filter_class_dialog(filter_factory_p factory, QWidget* parent)
+: QDialog(parent)
 , factory_(factory)
 {
     setWindowTitle(tr("Select filter type"));
@@ -175,9 +175,11 @@ void filter_item_widget::update_contents()
 // filter_edit_widget
 
 filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
-: QMainWindow(parent, Qt::Tool)
+: QMainWindow(parent)
 , filters_(filters)
 {
+    setWindowFlags(windowFlags() & (~Qt::Window));
+
     setWindowTitle(tr("Filter options"));
     setWindowIcon(QIcon(":/icons/icons/view-filter.png"));
 
@@ -192,12 +194,12 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     connect(select_toolbar_filter_action_, SIGNAL(triggered()), SLOT(select_toolbar_filter()));
     connect(delete_filter_action_, SIGNAL(triggered()), SLOT(delete_filter()));
 
-    QToolBar* tb = new QToolBar;
+    QToolBar* tb = new QToolBar(this);
     tb->addAction(add_new_filter_action_);
     tb->addAction(select_toolbar_filter_action_);
     tb->addSeparator();
     tb->addAction(delete_filter_action_);
-    addToolBar(Qt::RightToolBarArea, tb);
+    addToolBar(Qt::BottomToolBarArea, tb);
 
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
@@ -291,7 +293,7 @@ void filter_edit_widget::update_actions()
 
 void filter_edit_widget::add_new_filter()
 {
-    select_filter_class_dialog d(filters_->factory());
+    select_filter_class_dialog d(filters_->factory(), qApp->activeWindow());
     if (d.exec() != QDialog::Accepted)
         return;
     filter_class_p fc = d.selected();

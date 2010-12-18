@@ -3,6 +3,7 @@
 
 #include <map>
 
+#include <QMainWindow>
 #include <QWidget>
 #include <QPointer>
 #include <QRegExp>
@@ -15,10 +16,11 @@
 #include <settings/settings.h>
 
 #include "pointers.h"
-#include "server_options.h"
+#include "server_bookmark.h"
 
 class QLineEdit;
 class QToolButton;
+class QDockWidget;
 class filter_edit_widget;
 
 class server_tree: public QTreeWidget
@@ -42,7 +44,7 @@ private:
     QString name_;
 };
 
-class server_list_widget : public QWidget
+class server_list_widget : public QMainWindow
 {
 Q_OBJECT
 public:
@@ -82,17 +84,19 @@ private:
     bool filter_item(QTreeWidgetItem*);
 
     server_tree* tree_;
-    QToolButton* show_filter_button_;
+//    QToolButton* show_filter_button_;
     server_list_p serv_list_;
     server_items items_;
     QRegExp filter_rx_;
     QPointer<server_bookmark_list> bms_;
     app_options_p opts_;
     filter_list_p filters_;
-    QPointer<filter_edit_widget> edit_widget_;
+    QDockWidget* filter_widget_;
+//    filter_edit_widget* edit_widget_;
     int visible_server_count_;
     QWidget* filter_holder_;
     QAccumulatingConnection* accum_updater_;
+    QAction* show_filter_action_;
 };
 
 class status_item_delegate : public QStyledItemDelegate

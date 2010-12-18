@@ -11,7 +11,7 @@ server_info::server_info()
 , retries(0)
 , red_score(0)
 , blue_score(0)
-, update_stamp(0)
+, update_stamp_(1)
 {
 }
 
@@ -90,7 +90,7 @@ void server_info::update_from(const server_info& src)
     id = src.id;
     if (src.max_player_count != 0)
         max_player_count = src.max_player_count;
-    update_stamp++;
+    changed();
     meta_info_string_ = QString();
 }
 
@@ -129,6 +129,11 @@ int server_info::private_slots() const
 int server_info::public_slots() const
 {
     return max_player_count - private_slots();
+}
+
+void server_info::changed()
+{
+    update_stamp_++;
 }
 
 

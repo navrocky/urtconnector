@@ -276,11 +276,12 @@ void main_window::quick_connect()
 
 void main_window::quick_add_favorite()
 {
-    server_bookmark opts;
-    opts.id = server_id(ui_->qlServerEdit->text());
-    opts.password = ui_->qlPasswordEdit->text();
+    server_bookmark bm;
+    bm.set_id(server_id(ui_->qlServerEdit->text()));
+    bm.set_password(ui_->qlPasswordEdit->text());
 
-    server_options_dialog d(this, opts);
+    server_options_dialog d(this, bm);
+    d.set_server_list(all_sl_);
     d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
     d.update_name();
     if (d.exec() == QDialog::Rejected)
@@ -291,6 +292,7 @@ void main_window::quick_add_favorite()
 void main_window::fav_add()
 {
     server_options_dialog d(this);
+    d.set_server_list(all_sl_);
     d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
     if (d.exec() == QDialog::Rejected)
         return;
@@ -304,6 +306,7 @@ void main_window::fav_edit()
         return;
     const server_bookmark& bm = bookmarks_->get(id);
     server_options_dialog d(this, bm);
+    d.set_server_list(all_sl_);
     d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
     if (d.exec() == QDialog::Rejected)
         return;
@@ -420,7 +423,7 @@ void main_window::refresh_all_bookmarks()
     assert( list == fav_list_ );
     server_id_list ids;
     foreach (const server_bookmark& bm, bookmarks_->list())
-        ids.append(bm.id);
+        ids.append(bm.id());
     refresh_servers( list, ids );
 }
 
@@ -498,7 +501,7 @@ void main_window::connect_to_server(const server_id& id, const QString& player_n
         int max_slots = info->max_player_count;
 
         // with a rcon and referee you can connect to a private slots
-        if (bm.rcon_password.isEmpty() && bm.ref_password.isEmpty())
+        if (bm.rcon_password().isEmpty() && bm.ref_password().isEmpty())
             max_slots = info->public_slots();
 
         if (info->players.size() >= max_slots)
@@ -520,8 +523,8 @@ void main_window::connect_to_server(const server_id& id, const QString& player_n
 
     // take the password
     QString pass = password;
-    if (pass.isEmpty() && !bm.password.isEmpty())
-        pass = bm.password;
+    if (pass.isEmpty() && !bm.password().isEmpty())
+        pass = bm.password();
 
     if ( pass.isEmpty() && info && info->is_password_needed() )
     {
@@ -557,10 +560,10 @@ void main_window::connect_to_server(const server_id& id, const QString& player_n
 
         if (!pass.isEmpty())
             args << "--pass" << pass;
-        if (!bm.rcon_password.isEmpty())
-            args << "--rcon" << bm.rcon_password;
-        if (!bm.ref_password.isEmpty())
-            args << "--referee" << bm.ref_password;
+        if (!bm.rcon_password().isEmpty())
+            args << "--rcon" << bm.rcon_password();
+        if (!bm.ref_password().isEmpty())
+            args << "--referee" << bm.ref_password();
 
         args << "--" << QString(":%1").arg(find_free_display());
 
@@ -582,8 +585,8 @@ void main_window::connect_to_server(const server_id& id, const QString& player_n
     l->set_server_id(id);
     l->set_user_name(player_name);
     l->set_password(pass);
-    l->set_referee(bm.ref_password);
-    l->set_rcon(bm.rcon_password);
+    l->set_referee(bm.ref_password());
+    l->set_rcon(bm.rcon_password());
     l->launch();
 }
 
@@ -675,10 +678,10 @@ void main_window::update_server_info()
     server_info_p si = selected_info();
     if (si)
     {
-        if (old_id_ == si->id && old_state_ == si->update_stamp)
+        if (old_id_ == si->id && old_state_ == si->update_stamp())
             return;
 
-        old_state_ = si->update_stamp;
+        old_state_ = si->update_stamp();
         old_id_ = si->id;
 
         QString s = get_server_info_html(*si);
@@ -704,11 +707,12 @@ void main_window::add_selected_to_fav()
     server_info_p si = selected_info();
     if (!si) return;
 
-    server_bookmark opts;
-    opts.id = si->id;
-    opts.name = si->name;
+    server_bookmark bm;
+    bm.set_id(si->id);
+    bm.set_name(si->name);
 
-    server_options_dialog d(this, opts);
+    server_options_dialog d(this, bm);
+    d.set_server_list(all_sl_);
     d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
     if (d.exec() == QDialog::Rejected) return;
 

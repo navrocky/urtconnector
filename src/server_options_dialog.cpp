@@ -46,27 +46,27 @@ void server_options_dialog::accept()
     if (id.is_empty())
         throw qexception(tr("Server address must be non empty"));
 
-    opts_.id = id;
-    opts_.name = ui_->nameEdit->text().trimmed();
-    opts_.password = ui_->passwordEdit->text().trimmed();
-    opts_.rcon_password = ui_->rconEdit->text().trimmed();
-    opts_.ref_password = ui_->refEdit->text().trimmed();
-    opts_.comment = ui_->commentEdit->toPlainText().trimmed();
+    opts_.set_id(id);
+    opts_.set_name(ui_->nameEdit->text().trimmed());
+    opts_.set_password(ui_->passwordEdit->text().trimmed());
+    opts_.set_rcon_password(ui_->rconEdit->text().trimmed());
+    opts_.set_ref_password(ui_->refEdit->text().trimmed());
+    opts_.set_comment(ui_->commentEdit->toPlainText().trimmed());
     QDialog::accept();
 }
 
 void server_options_dialog::update_dialog()
 {
-    if (!(opts_.id.is_empty()))
-        ui_->addressEdit->setText(opts_.id.address());
+    if (!(opts_.id().is_empty()))
+        ui_->addressEdit->setText(opts_.id().address());
     else
         ui_->addressEdit->setText(QString());
 
-    ui_->nameEdit->setText(opts_.name);
-    ui_->passwordEdit->setText(opts_.password);
-    ui_->rconEdit->setText(opts_.rcon_password);
-    ui_->refEdit->setText(opts_.ref_password);
-    ui_->commentEdit->setPlainText(opts_.comment);
+    ui_->nameEdit->setText(opts_.name());
+    ui_->passwordEdit->setText(opts_.password());
+    ui_->rconEdit->setText(opts_.rcon_password());
+    ui_->refEdit->setText(opts_.ref_password());
+    ui_->commentEdit->setPlainText(opts_.comment());
 }
 
 void server_options_dialog::set_update_params ( geoip* gi, qstat_options* opts, job_queue* que)
@@ -96,11 +96,17 @@ void server_options_dialog::update_name()
     server_id id(ui_->addressEdit->text().trimmed());
     ids_.clear();
     ids_.push_back(id);
-    list_.reset( new server_list );
+    if (!list_)
+        list_.reset( new server_list );
     job_p job(new job_update_selected(ids_, list_, *gi_, qstat_opts_));
     que_->add_job(job);
     connect(job.get(), SIGNAL(state_changed(job_t::state_t)), SLOT(job_state_changed(job_t::state_t)));
     ui_->update_name_button->setEnabled(false);
+}
+
+void server_options_dialog::set_server_list(server_list_p val)
+{
+    list_ = val;
 }
 
 

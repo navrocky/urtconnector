@@ -16,6 +16,9 @@
 #include <QTimerEvent>
 #include <QDialog>
 #include <QSettings>
+#include <QDockWidget>
+#include <QToolBar>
+#include <QAction>
 
 #include <cl/syslog/syslog.h>
 
@@ -31,6 +34,7 @@
 #include <filters/regexp_filter.h>
 
 #include "server_list_widget.h"
+#include "tools.h"
 
 SYSLOG_MODULE(server_list_widget)
 
@@ -39,6 +43,7 @@ const int c_filter_info_column = 100;
 //Role to access server_info stored in QTreeModel
 const int c_info_role = Qt::UserRole;
 const int c_id_role = Qt::UserRole + 1;
+const int c_stamp_role = Qt::UserRole + 2;
 
 Q_DECLARE_METATYPE(server_id)
 
@@ -97,37 +102,34 @@ void server_list_widget_settings::save_toolbar_filter(const QString& name)
 
 server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p factory,
     QWidget *parent)
-: QWidget(parent)
+: QMainWindow(parent)
 , opts_(opts)
 , filters_(new filter_list(factory))
 , visible_server_count_(0)
+, filter_widget_(0)
 {
+    setWindowFlags(windowFlags() & (~Qt::Window));
+
     accum_updater_ = new QAccumulatingConnection(500,
         QAccumulatingConnection::Periodically, this);
     connect(accum_updater_, SIGNAL(signal()), SLOT(update_list()));
 
-    QBoxLayout* vert_lay = new QVBoxLayout(this);
-    vert_lay->setContentsMargins(0, 0, 0, 0);
-    QBoxLayout* horiz_lay = new QHBoxLayout();
-    horiz_lay->setContentsMargins(0, 0, 0, 0);
+    QToolBar* tb = new QToolBar(tr("Filter toolbar"), this);
+    addToolBar(Qt::TopToolBarArea, tb);
 
-    show_filter_button_ = new QToolButton(this);
-    show_filter_button_->setIcon(QIcon(":/icons/icons/view-filter.png"));
-    show_filter_button_->setAutoRaise(true);
-    show_filter_button_->setToolTip(tr("View and edit filter"));
-
-    connect(show_filter_button_, SIGNAL(clicked()), SLOT(edit_filter()));
-
-    horiz_lay->addWidget(show_filter_button_);
+    show_filter_action_ = new QAction(QIcon(":/icons/icons/view-filter.png"), tr("View and edit filter"), this);
+    show_filter_action_->setCheckable(true);
+    connect(show_filter_action_, SIGNAL(triggered()), SLOT(edit_filter()));
+    tb->addAction(show_filter_action_);
 
     filter_holder_ = new QWidget(this);
     QHBoxLayout* lay = new QHBoxLayout(filter_holder_);
     lay->setContentsMargins(0, 0, 0, 0);
-    horiz_lay->addWidget(filter_holder_);
-
-    vert_lay->addLayout(horiz_lay);
+    tb->addWidget(filter_holder_);
 
     tree_ = new server_tree(this);
+    setCentralWidget(tree_);
+    
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->setEditTriggers(QAbstractItemView::EditKeyPressed);
     tree_->setAlternatingRowColors(true);
@@ -137,8 +139,6 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     tree_->setSortingEnabled(true);
     tree_->setAllColumnsShowFocus(true);
     tree_->setWordWrap(true);
-
-    vert_lay->addWidget(tree_);
 
     QTreeWidgetItem *hi = tree_->headerItem();
     hi->setText(7, tr("Players"));
@@ -188,7 +188,6 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
 
 server_list_widget::~server_list_widget()
 {
-    delete edit_widget_;
 }
 
 void server_list_widget::update_toolbar_filter()
@@ -241,9 +240,12 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     static const server_info_p empty(new server_info);
 
     server_info_p si = serv_list_->get(id);
-//    server_info_p si = item->data(0, c_info_role).value<server_info_p>();
     if (!si)
         si = empty;
+
+    int stamp = item->data(0, c_stamp_role).value<int>();
+    if (si->update_stamp() == stamp && stamp != 0)
+        return;
 
     QModelIndex index = tree_->indexFromItem(item);
     tree_->model()->setData(index, QVariant::fromValue(si), c_info_role );
@@ -254,12 +256,12 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
         const server_bookmark& bm = bms_->get(id);
         if (!bm.is_empty())
         {
-            if (!bm.name.isEmpty() && name != bm.name)
+            if (!bm.name().isEmpty() && name != bm.name())
             {
                 if (name.isEmpty())
-                    name = bm.name;
+                    name = bm.name();
                 else
-                    name = QString("%1 (%2)").arg(name).arg(bm.name);
+                    name = QString("%1 (%2)").arg(name).arg(bm.name());
             }
         }
     }
@@ -282,8 +284,13 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     item->setText(4, QString("%1").arg(si->ping, 5));
     item->setText(5, si->mode_name());
     item->setText(6, si->map);
-    item->setText(7, QString("%1/%2/%3").arg(si->players.size())
-        .arg(si->public_slots()).arg(si->max_player_count));
+
+    QString player_count;
+    if ( si->max_player_count > 0 )
+        player_count = QString("%1/%2/%3").arg(si->players.size())
+        .arg(si->public_slots()).arg(si->max_player_count);
+
+    item->setText(7, player_count);
     item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
         .arg(si->players.size()).arg(si->public_slots())
         .arg(si->max_player_count));
@@ -292,6 +299,7 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     if (visible)
         visible_server_count_++;
     item->setHidden(!visible);
+    item->setData(0, c_stamp_role, QVariant::fromValue(si->update_stamp()));
 }
 
 bool server_list_widget::filter_item(QTreeWidgetItem* item)
@@ -331,11 +339,11 @@ void server_list_widget::update_list()
     {
         foreach (const server_bookmark& bm, bms_->list())
         {
-            server_info_list::const_iterator it = info_list.find(bm.id);
+            server_info_list::const_iterator it = info_list.find(bm.id());
             if (it != info_list.end())
-                bm_list[bm.id] = it->second;
+                bm_list[bm.id()] = it->second;
             else
-                bm_list[bm.id] = server_info_p();
+                bm_list[bm.id()] = server_info_p();
         }
         list = &bm_list;
     } else
@@ -409,12 +417,14 @@ QTreeWidget* server_list_widget::tree() const
 
 void server_list_widget::edit_filter()
 {
-    if (!edit_widget_)
+    if (!filter_widget_)
     {
-        edit_widget_ = new filter_edit_widget(filters_);
+        filter_widget_ = new QDockWidget(tr("Filter"), this);
+        filter_edit_widget* filter = new filter_edit_widget(filters_, filter_widget_);
+        filter_widget_->setWidget(filter);
+        addDockWidget(Qt::LeftDockWidgetArea, filter_widget_);
     }
-    edit_widget_->move(show_filter_button_->mapToGlobal(QPoint(0, show_filter_button_->height())));
-    edit_widget_->show();
+    filter_widget_->setVisible(show_filter_action_->isChecked());
 }
 
 void correct_names(filter_list_p fl, filter_p par)

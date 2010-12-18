@@ -3,7 +3,7 @@
 
 #include <QString>
 
-#include "server_options.h"
+#include "server_bookmark.h"
 #include "qstat_options.h"
 
 class app_options

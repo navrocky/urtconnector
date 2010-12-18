@@ -61,8 +61,11 @@ public:
     typedef std::map<QString, QString> info_t;
     info_t info;
 
-    /*! Info update stamp. Changed after each update. */
-    int update_stamp;
+    /*! Info update stamp. Changed after each update | change. Initially it have value 1. */
+    int update_stamp() const {return update_stamp_;}
+
+    /*! Changes update stamp */
+    void changed();
 
     /*! Correctly update from anoter server_info */
     void update_from(const server_info& src);
@@ -79,6 +82,7 @@ public:
 private:
     mutable QString meta_info_string_;
 
+    int update_stamp_;
 };
 
 Q_DECLARE_METATYPE(server_info_p)

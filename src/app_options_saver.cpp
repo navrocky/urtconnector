@@ -73,12 +73,12 @@ void save_server_bookmarks(qsettings_p s, server_bookmark_list* bml)
     foreach (const server_bookmark& bm, bml->list())
     {
         s->setArrayIndex(i);
-        s->setValue("name", bm.name);
-        s->setValue("address", bm.id.address());
-        s->setValue("comment", bm.comment);
-        s->setValue("password", bm.password);
-        s->setValue("rcon_password", bm.rcon_password);
-        s->setValue("ref_password", bm.ref_password);
+        s->setValue("name", bm.name());
+        s->setValue("address", bm.id().address());
+        s->setValue("comment", bm.comment());
+        s->setValue("password", bm.password());
+        s->setValue("rcon_password", bm.rcon_password());
+        s->setValue("ref_password", bm.ref_password());
         i++;
     }
     s->endArray();
@@ -91,13 +91,12 @@ void load_server_bookmarks(qsettings_p s, server_bookmark_list* bml)
     for (int i = 0; i < size; i++)
     {
         s->setArrayIndex(i);
-        server_bookmark bm;
-        bm.name = s->value("name", bm.name).toString();
-        bm.id = server_id( s->value("address", bm.id.address()).toString() );
-        bm.comment = s->value("comment", bm.comment).toString();
-        bm.password = s->value("password", bm.password).toString();
-        bm.rcon_password = s->value("rcon_password", bm.rcon_password).toString();
-        bm.ref_password = s->value("ref_password", bm.ref_password).toString();
+        server_bookmark bm(server_id(s->value("address").toString()),
+                           s->value("name").toString(),
+                           s->value("comment").toString(),
+                           s->value("password").toString(),
+                           s->value("rcon_password").toString(),
+                           s->value("ref_password").toString() );
         bml->add(bm);
     }
     s->endArray();

@@ -19,13 +19,13 @@
 
 #include <cl/syslog/syslog.h>
 
-#include "common/server_id.h"
-#include "server_options.h"
+#include <common/server_id.h>
+#include "../server_bookmark.h"
 #include "tools.h"
 
 #include "ui_rcon.h"
 #include "rcon.h"
-#include "rcon/rcon_completer.h"
+#include "rcon_completer.h"
 
 SYSLOG_MODULE(rcon)
 
@@ -546,7 +546,7 @@ void rcon::process_queue()
    
     QString cmd = QString( "%1 %2 %3" )
         .arg( rcon_header_c.data() )
-        .arg( p_->options.rcon_password )
+        .arg( p_->options.rcon_password() )
         .arg( p_->current.first.data() );
 
     p_->waiting = true;

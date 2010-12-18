@@ -3,7 +3,7 @@
 
 #include "pointers.h"
 #include "app_options.h"
-#include "server_options.h"
+#include "server_bookmark.h"
 
 /*! Returns tuned QSettings object.
 

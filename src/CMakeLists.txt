@@ -57,7 +57,7 @@ set(HEADERS
     options_dialog.h
     push_button_action_link.h
     server_list_saver.h
-    server_options.h
+    server_bookmark.h
     server_list_widget.h
     server_options_dialog.h
     app_options_saver.h
@@ -83,7 +83,7 @@ set(MOC_HEADERS
     options_dialog.h
     push_button_action_link.h
     server_list_widget.h
-    server_options.h
+    server_bookmark.h
     server_options_dialog.h
     item_view_dblclick_action_link.h
     qstat_updater.h
@@ -108,7 +108,7 @@ set(SOURCES
     options_dialog.cpp
     push_button_action_link.cpp
     server_list_saver.cpp
-    server_options.cpp
+    server_bookmark.cpp
     server_list_widget.cpp
     server_options_dialog.cpp
     app_options_saver.cpp

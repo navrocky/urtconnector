@@ -1,9 +1,9 @@
 #ifndef FILTER_EDIT_WIDGET_H
 #define	FILTER_EDIT_WIDGET_H
 
+#include <QMainWindow>
 #include <QWidget>
 #include <QDialog>
-#include <QMainWindow>
 
 #include "pointers.h"
 
@@ -25,7 +25,7 @@ class select_filter_class_dialog : public QDialog
 {
     Q_OBJECT
 public:
-    select_filter_class_dialog(filter_factory_p factory);
+    select_filter_class_dialog(filter_factory_p factory, QWidget* parent);
 
     filter_class_p selected() const {return selected_;}
 private slots:
