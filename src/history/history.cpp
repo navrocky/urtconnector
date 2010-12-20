@@ -4,10 +4,9 @@
 #include "app_options_saver.h"
 #include <QSettings>
 
-history::history(app_options_p opts) :
-        opts_(opts),
-        max_(opts->number_in_history) ,
-        history_file_(get_app_options_settings("history"))
+history::history()
+    : max_( app_settings().number_in_history() )
+    , history_file_(get_app_options_settings("history"))
 {
     load();
 }
@@ -71,7 +70,7 @@ void history::load()
 
 void history::change_max()
 {
-    max_ = opts_->number_in_history;
+//     max_ = opts_->number_in_history;
     int oldLength = length();
     shorten();
     if (oldLength != length())

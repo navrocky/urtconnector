@@ -11,8 +11,8 @@
 */
 qsettings_p get_app_options_settings(const QString& file_name);
 
-void save_app_options(qsettings_p s, app_options_p opts);
-void load_app_options(qsettings_p s, app_options_p opts);
+/*void save_app_options(qsettings_p s, app_options_p opts);
+void load_app_options(qsettings_p s, app_options_p opts);*/
 
 void save_server_bookmarks(qsettings_p s, server_bookmark_list* bml);
 void load_server_bookmarks(qsettings_p s, server_bookmark_list* bml);

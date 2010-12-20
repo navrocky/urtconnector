@@ -11,7 +11,6 @@
 
 class Ui_ServOptsDialogClass;
 class geoip;
-class qstat_options;
 class job_queue;
 
 class server_options_dialog : public QDialog
@@ -25,7 +24,7 @@ public:
 
     const server_bookmark& options() const {return opts_;}
 
-    void set_update_params(geoip* gi, qstat_options* opts, job_queue* que);
+    void set_update_params(geoip* gi, job_queue* que);
 
     void set_server_list(server_list_p val);
 
@@ -47,7 +46,6 @@ private:
     server_id_list ids_;
     server_list_p list_;
     geoip* gi_;
-    qstat_options* qstat_opts_;
     job_queue* que_;
 };
 

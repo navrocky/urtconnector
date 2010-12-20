@@ -17,7 +17,7 @@ class launcher: public QObject
 {
     Q_OBJECT
 public:
-    launcher(app_options_p launch, QObject* parent = NULL);
+    launcher( QObject* parent = NULL);
 
     server_id id() const {return id_;}
     void set_server_id(const server_id& id);
@@ -64,7 +64,6 @@ private slots:
 private:
     QString get_work_dir();
 
-    app_options_p opts_;
     QString user_name_;
     QString password_;
     server_id id_;

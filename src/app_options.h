@@ -3,63 +3,84 @@
 
 #include <QString>
 
+#include "settings/settings.h"
+
 #include "server_bookmark.h"
 #include "qstat_options.h"
 
-class app_options
+class app_settings: public settings_uid_provider<app_settings>
 {
 public:
-    app_options();
-
     /*! start with hidden main window */
-    bool start_hidden;
+    bool start_hidden() const;
+    void set_start_hidden(bool b);
 
     /*! Use advanced command line advCmdLine() to launch UrT binary instead of binaryPath(). */
-    bool use_adv_cmd_line;
+    bool use_adv_cmd_line() const;
+    void set_use_adv_cmd_line(bool b);
 
     /*! Advanced command line to launch UrT binary. Use followed substitutions:
         %host% %port% %user% %password% %rcon% and so on.*/
-    QString adv_cmd_line;
+    QString adv_cmd_line() const;
+    void set_adv_cmd_line( const QString& line );
 
-    bool separate_x;
+    bool separate_x() const;
+    void set_separate_x(bool b);
     
     /*! Path to UrT binary, used when not advanced command line. */
-    QString binary_path;
+    QString binary_path() const;
+    void set_binary_path(const QString& path);
 
 //    /*! Servers options list. */
 //    server_fav_list servers;
     
-    qstat_options qstat_opts;
+    qstat_settings qstat_opts;
 
     /*! A path to GeoIP database file */
-    QString geoip_database;
-
-    /*! Look for system clipboard (LFC) */
-    bool looking_for_clip;
-
-    /*! LFC regexp */
-    QString lfc_regexp;
-    
-    /*! LFC regexp match number for host */
-    int lfc_host;
-    
-    /*! LFC regexp match number for port */
-    int lfc_port;
-    
-    /*! LFC regexp match number for password */
-    int lfc_password;
+    QString geoip_database() const;
+    void set_geoip_database( const QString& file );
 
     /*! centering current server row while updating */
-    bool center_current_row;
+    bool center_current_row() const;
+    void set_center_current_row(bool b);
 
     /*! Keep history of connections */
-    bool keep_history;
+    bool keep_history() const;
+    bool set_keep_history(bool b);
 
     /*! Number of connections that are kept in history */
-    unsigned int number_in_history;
+    unsigned int number_in_history() const;
+    void set_number_in_history( unsigned int lines );
 
     /*! Update server info before connect to */
-    bool update_before_connect;
+    bool update_before_connect() const;
+    void set_update_before_connect(bool b);
 };
+
+class clip_settings: public settings_uid_provider<clip_settings>
+{
+public:
+    /*! Look for system clipboard (LFC) */
+    bool watching() const;
+    void set_watching(bool b);
+
+    /*! LFC regexp */
+    QString regexp() const;
+    void set_regexp(const QString& rx);
+    void reset_regexp();
+
+    /*! LFC regexp match number for host */
+    int host() const;
+    void set_host(int host);
+
+    /*! LFC regexp match number for port */
+    int port() const;
+    void set_port(int port);
+
+    /*! LFC regexp match number for password */
+    int password() const;
+    void set_password(int pass);
+};
+
 
 #endif

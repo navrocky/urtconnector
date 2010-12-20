@@ -5,9 +5,9 @@
 
 #include "job_update_from_master.h"
 
-job_update_from_master::job_update_from_master( server_list_p list, const geoip& gi, qstat_options* opts)
+job_update_from_master::job_update_from_master( server_list_p list, const geoip& gi)
 : caption_(tr("Update from master server"))
-, updater_(new qstat_updater(list, gi, opts))
+, updater_(new qstat_updater(list, gi))
 {
     connect(updater_.get(), SIGNAL(refresh_stopped()), SLOT(stopped()));
 }

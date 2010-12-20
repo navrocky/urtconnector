@@ -6,7 +6,6 @@ include(${QT_USE_FILE})
 set(HEADERS
     scoped_tools.h
     server_id.h
-    settings_base_widget.h
     state_settings.h
     qt_syslog.h
     string_escape.h
@@ -20,14 +19,12 @@ set(HEADERS
 )
 
 set(MOC_HEADERS
-    settings_base_widget.h
     server_list.h
     qaccumulatingconnection.h
 )
 
 set(SOURCES
     server_id.cpp
-    settings_base_widget.cpp
     state_settings.cpp
     qt_syslog.cpp
     string_escape.cpp

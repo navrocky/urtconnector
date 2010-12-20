@@ -5,7 +5,7 @@
 
 #include <QList>
 
-history_widget::history_widget(app_options_p opts, QWidget *parent, history_p list) :
+history_widget::history_widget( QWidget *parent, history_p list) :
     QWidget(parent),
     ui_(new Ui::history_widget),
     history_(list)

@@ -8,6 +8,7 @@
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QTemporaryFile>
+#include <QTextCodec>
 #include <QDesktopWidget>
 #include <QDesktopServices>
 
@@ -59,7 +60,7 @@ void init_application(QApplication* a)
         LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
 
     a->installTranslator(&qt_trans);
-
+    
     QTranslator urt_tr;
 
     trans_name = "urtconnector_" + QLocale::system().name();
@@ -77,6 +78,23 @@ void init_application(QApplication* a)
         LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
 
     a->installTranslator(&urt_tr);
+
+    QTextCodec::setCodecForTr( QTextCodec::codecForName("utf8") );
+
+    //Initializing main settings
+    base_settings set;
+
+    set.register_group( app_settings::uid(),   "app_opts",   "options.ini" );
+    set.register_group( clip_settings::uid(),  "clipboard",  "options.ini" );
+    set.register_group( qstat_settings::uid(), "qstat_opts", "options.ini" );
+    
+    //Registering state_settings in separate file
+    set.register_file( state_settings::uid(), "state.ini" );
+    set.register_file( server_list_widget_settings::uid(), "options.ini" );
+    set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
+    set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
+
+    
 }
 
 int main(int argc, char *argv[])
@@ -145,14 +163,6 @@ int main(int argc, char *argv[])
 
         LOG_DEBUG << "Syslog started";
 
-        //Initializing main settings
-        base_settings set;
-        //Registering state_settings in separate file
-        set.register_file( state_settings::uid(), "state.ini" );
-        set.register_file( server_list_widget_settings::uid(), "options.ini" );
-        set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
-        set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
-
         if (vm.count("launch"))
         {
             LOG_DEBUG << "Quick launch";
@@ -165,12 +175,7 @@ int main(int argc, char *argv[])
 
             anticheat::anticheat* ac = vm.count("anticheat") ? anticheat::create_anticheat(name, &a) : NULL;
 
-            app_options_p opts(new app_options);
-            load_app_options(get_app_options_settings("options"), opts);
-
-            LOG_DEBUG << "Binary path: %1", opts->binary_path;
-
-            launcher l(opts);
+            launcher l;
             l.set_detach(false);
             if (vm.count("addr"))
                 l.set_server_id(server_id(to_qstr(vm["addr"].as<string>())));

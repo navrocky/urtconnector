@@ -210,7 +210,7 @@ struct rcon::Pimpl{
 
     void update_colors(){
         rcon_settings s;
-        if( s.adaptive_pallete() )
+        if( !s.custom_colors() )
         {
             QPalette p = ui.output->palette();
             boost::assign::insert(colors)
@@ -423,7 +423,7 @@ void rcon::update_settings()
     QPalette p = p_->ui.output->palette();
     p.setColor( QPalette::Base, p_->colors[rcon_settings::Background] );
     p_->ui.output->setPalette( p );
-    p_->ui.output->setAutoFillBackground( !rcon_settings().adaptive_pallete() );
+    p_->ui.output->setAutoFillBackground( rcon_settings().custom_colors() );
 }
 
 

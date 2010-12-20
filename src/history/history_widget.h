@@ -12,7 +12,7 @@ namespace Ui {
 class history_widget : public QWidget {
     Q_OBJECT
 public:
-    history_widget(app_options_p opts, QWidget *parent, history_p list);
+    history_widget( QWidget *parent, history_p list);
     ~history_widget();
     QTreeWidget* tree() const;
     void update_history();

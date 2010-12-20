@@ -1,5 +1,8 @@
 
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
+#include <boost/assign/list_inserter.hpp>
+
 #include <QColorDialog>
 
 #include "ui_rcon_settings_form.h"
@@ -8,114 +11,135 @@
 #include "rcon_settings_form.h"
 
 
-typedef std::map<QWidget*, QWidget*> ExamplesMap;
-typedef std::map<QWidget*, rcon_settings::Color> ColorsMap;
+typedef std::map<QWidget*, QWidget*>                Examples;
+typedef std::map<QWidget*, rcon_settings::Color>    ColorTypes;
 
 struct rcon_settings_form::Pimpl{
-    Ui_rcon_settings_form ui;
 
-    ExamplesMap e_map;
-    ColorsMap c_map;
+    Pimpl()
+    {
+        settings.switch_to_tmp();
+    }
+
+    rcon_settings settings;
+    Ui_rcon_settings_form ui;
+    
+    Examples   examples;
+    ColorTypes types;
 };
 
 rcon_settings_form::rcon_settings_form(QWidget* parent, Qt::WindowFlags f)
-    : QWidget(parent, f)
+    : preferences_widget(parent, "Rcon")
     , p_( new Pimpl )
 {
     p_->ui.setupUi(this);
 
-    p_->e_map[p_->ui.info_but] = p_->ui.info_ex;
-    p_->e_map[p_->ui.inc_but]  = p_->ui.inc_ex;
-    p_->e_map[p_->ui.out_but]  = p_->ui.out_ex;
-    p_->e_map[p_->ui.error_but]= p_->ui.err_ex;
-    p_->e_map[p_->ui.back_but] = p_->ui.background;
+    set_icon( QIcon(":/icons/icons/utilities-terminal.png") );
+    set_header( tr("Remote console configuration") );
 
-    p_->c_map[p_->ui.info_but] = rcon_settings::Info;
-    p_->c_map[p_->ui.inc_but]  = rcon_settings::Text;
-    p_->c_map[p_->ui.out_but]  = rcon_settings::Command;
-    p_->c_map[p_->ui.error_but]= rcon_settings::Error;
-    p_->c_map[p_->ui.back_but] = rcon_settings::Background;
+    boost::assign::insert( p_->examples )
+        ( p_->ui.info_but,  p_->ui.info_ex    )
+        ( p_->ui.inc_but,   p_->ui.inc_ex     )
+        ( p_->ui.out_but,   p_->ui.out_ex     )
+        ( p_->ui.error_but, p_->ui.err_ex     )
+        ( p_->ui.back_but,  p_->ui.background );
 
-    init();
-    
+    boost::assign::insert( p_->types )
+        ( p_->ui.info_but,  rcon_settings::Info       )
+        ( p_->ui.inc_but,   rcon_settings::Text       )
+        ( p_->ui.out_but,   rcon_settings::Command    )
+        ( p_->ui.error_but, rcon_settings::Error      )
+        ( p_->ui.back_but,  rcon_settings::Background );
+
     connect( p_->ui.custom_colors, SIGNAL( clicked(bool) ), SLOT( custom_checked(bool) ) );
-    
-    connect( p_->ui.info_but, SIGNAL( clicked(bool) ), SLOT( color_clicked() ) );
-    connect( p_->ui.inc_but,  SIGNAL( clicked(bool) ), SLOT( color_clicked() ) );
-    connect( p_->ui.out_but,  SIGNAL( clicked(bool) ), SLOT( color_clicked() ) );
-    connect( p_->ui.error_but,SIGNAL( clicked(bool) ), SLOT( color_clicked() ) );
-    connect( p_->ui.back_but, SIGNAL( clicked(bool) ), SLOT( color_clicked() ) );
 
-    connect( p_->ui.defaults, SIGNAL( clicked(bool) ), SLOT( reset_to_defaults() ) );
+    BOOST_FOREACH( const Examples::value_type& p, p_->examples )
+        connect( p.first, SIGNAL( clicked(bool) ), SLOT( color_clicked() ) );
 }
 
 rcon_settings_form::~rcon_settings_form()
 {}
 
-void rcon_settings_form::init()
+void rcon_settings_form::update_preferences()
 {
-    rcon_settings settings;
-
-    p_->ui.custom_colors->setChecked( !settings.adaptive_pallete() );
+    p_->ui.custom_colors->setChecked( p_->settings.custom_colors() );
 
     if( p_->ui.custom_colors->isChecked() )
     {
         QPalette p = p_->ui.background->palette();
-        p.setColor( QPalette::Window, settings.color( rcon_settings::Background ) );
+        p.setColor( QPalette::Window, p_->settings.color( rcon_settings::Background ) );
         p_->ui.background->setPalette(p);
 
-        p.setColor( QPalette::WindowText, settings.color( rcon_settings::Info ) );
+        p.setColor( QPalette::WindowText, p_->settings.color( rcon_settings::Info ) );
         p_->ui.info_ex->setPalette(p);
 
-        p.setColor( QPalette::WindowText, settings.color( rcon_settings::Text ) );
+        p.setColor( QPalette::WindowText, p_->settings.color( rcon_settings::Text ) );
         p_->ui.inc_ex->setPalette(p);
 
-        p.setColor( QPalette::WindowText, settings.color( rcon_settings::Command ) );
+        p.setColor( QPalette::WindowText, p_->settings.color( rcon_settings::Command ) );
         p_->ui.out_ex->setPalette(p);
 
-        p.setColor( QPalette::WindowText, settings.color( rcon_settings::Error ) );
+        p.setColor( QPalette::WindowText, p_->settings.color( rcon_settings::Error ) );
         p_->ui.err_ex->setPalette(p);
     }
     else
     {
-        std::for_each( p_->e_map.begin(), p_->e_map.end(), boost::bind<void>( &QWidget::setPalette, boost::bind( &ExamplesMap::value_type::second, _1 ), palette() ) );
+        std::for_each( p_->examples.begin(), p_->examples.end(), boost::bind<void>( &QWidget::setPalette, boost::bind( &Examples::value_type::second, _1 ), palette() ) );
     }
+}
+
+void rcon_settings_form::accept()
+{
+    p_->settings.commit();
+    update_preferences();
+}
+
+void rcon_settings_form::reject()
+{
+    p_->settings.restore();
+    update_preferences();
+}
+
+void rcon_settings_form::reset_defaults()
+{
+    p_->settings.set_custom_colors(false);
+    p_->settings.color( rcon_settings::Background, true );
+    p_->settings.color( rcon_settings::Text, true );
+    p_->settings.color( rcon_settings::Info, true );
+    p_->settings.color( rcon_settings::Command, true );
+    p_->settings.color( rcon_settings::Error, true );
+
+    p_->settings.commit();
+    
+    update_preferences();
 }
 
 
 void rcon_settings_form::custom_checked(bool b)
 {
-    rcon_settings settings;
-    settings.set_adaptive_pallete( !b );
-    init();
+    p_->settings.set_custom_colors( b );
+    update_preferences();
+
+    emit changed();
 }
 
 
 void rcon_settings_form::color_clicked()
 {
-    rcon_settings settings;
-    QWidget* s = qobject_cast< QWidget* >( sender() );
+    QWidget* button = qobject_cast< QWidget* >( sender() );
     
-    QColor col = settings.color( p_->c_map[s] );
+    QColor col = p_->settings.color( p_->types[button] );
     col = QColorDialog::getColor(col);
     if (!col.isValid())
         return;
-    settings.set_color( p_->c_map[s], col );
-    QPalette p = p_->e_map[s]->palette();
+    p_->settings.set_color( p_->types[button], col );
+    QPalette p = p_->examples[button]->palette();
     p.setColor( QPalette::WindowText, col );
     p.setColor( QPalette::Window, col );
-    p_->e_map[s]->setPalette(p);
+    p_->examples[button]->setPalette(p);
+
+    emit changed();
 }
 
-void rcon_settings_form::reset_to_defaults()
-{
-    rcon_settings settings;
-    settings.color( rcon_settings::Background, true );
-    settings.color( rcon_settings::Text, true );
-    settings.color( rcon_settings::Info, true );
-    settings.color( rcon_settings::Command, true );
-    settings.color( rcon_settings::Error, true );
-    init();
-}
 
 

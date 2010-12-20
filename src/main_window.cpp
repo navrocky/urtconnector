@@ -73,14 +73,13 @@ using namespace std;
 main_window::main_window(QWidget *parent)
 : QMainWindow(parent)
 , ui_(new Ui::MainWindowClass)
-, opts_(new app_options())
 , all_sl_(new server_list)
 , bookmarks_(new server_bookmark_list(this))
-, history_sl_(new history(opts_))
+, history_sl_(new history())
 , old_state_(0)
-, clipper_( new clipper(this, opts_) )
+, clipper_( new clipper(this) )
 , anticheat_(NULL)
-, launcher_(new launcher(opts_, this))
+, launcher_(new launcher(this))
 {
 //    setAttribute(Qt::WA_TranslucentBackground, true);
     ui_->setupUi(this);
@@ -129,13 +128,13 @@ main_window::main_window(QWidget *parent)
     connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
     serv_info_update_timer_->start();
 
-    all_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabAll);
+    all_list_ = new server_list_widget( filter_factory_, ui_->tabAll);
     all_list_->setObjectName("all_list");
     QBoxLayout* l = dynamic_cast<QBoxLayout*>(ui_->tabAll->layout());
     l->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    fav_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabFav);
+    fav_list_ = new server_list_widget( filter_factory_, ui_->tabFav);
     fav_list_->setObjectName("fav_list");
     dynamic_cast<QBoxLayout*>(ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
@@ -211,7 +210,8 @@ main_window::main_window(QWidget *parent)
 
 //    sync_fav_list();
     update_server_info();
-    setVisible(!(opts_->start_hidden));
+    setVisible( !(app_settings().start_hidden()) );
+
     current_tab_changed( ui_->tabWidget->currentIndex() );
 
     all_list_->force_update();
@@ -243,24 +243,38 @@ void main_window::raise_window()
     activateWindow();
 }
 
+#include <preferences/src/preferences_dialog.h>
+
+#include <rcon/rcon_settings_form.h>
+#include <setting_forms/launch_settings_form.h>
+#include <setting_forms/application_settings_form.h>
+#include <anticheat/settings_widget.h>
+
 void main_window::show_options()
 {
-    bool wasHistoryEnabled = opts_->keep_history;
-    unsigned int oldNumberInHistory = opts_->number_in_history;
+    app_settings as;
+    bool wasHistoryEnabled = as.keep_history();
+    unsigned int oldNumberInHistory = as.number_in_history();
 
-    options_dialog d;
-    d.set_opts(opts_);
+    preferences_dialog d( preferences_dialog::Auto, true );
+    d.add_item( new launch_settings_form() );
+    d.add_item( new application_settings_form() );
+    d.add_item( new rcon_settings_form() );
+    d.add_item( new anticheat::settings_widget() );
+
     if (d.exec() == QDialog::Rejected) return;
-    save_options();
 
-    if (wasHistoryEnabled != opts_->keep_history)
+    if ( wasHistoryEnabled != as.keep_history() )
+
     {
         load_history_tab();
     }
-    if (oldNumberInHistory != opts_->number_in_history)
+    if ( oldNumberInHistory != as.number_in_history() )
+
     {
         history_sl_->change_max();
-        if (opts_->keep_history)
+        if ( as.keep_history() )
+
         {
             history_list_->update_history();
         }
@@ -282,7 +296,8 @@ void main_window::quick_add_favorite()
 
     server_options_dialog d(this, bm);
     d.set_server_list(all_sl_);
-    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
+    d.set_update_params( &gi_, que_ );
+
     d.update_name();
     if (d.exec() == QDialog::Rejected)
         return;
@@ -293,7 +308,7 @@ void main_window::fav_add()
 {
     server_options_dialog d(this);
     d.set_server_list(all_sl_);
-    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
+    d.set_update_params(&gi_, que_);
     if (d.exec() == QDialog::Rejected)
         return;
     bookmarks_->add(d.options());
@@ -307,7 +322,7 @@ void main_window::fav_edit()
     const server_bookmark& bm = bookmarks_->get(id);
     server_options_dialog d(this, bm);
     d.set_server_list(all_sl_);
-    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
+    d.set_update_params(&gi_, que_);
     if (d.exec() == QDialog::Rejected)
         return;
     bookmarks_->change(id, d.options());
@@ -327,11 +342,6 @@ void main_window::fav_delete()
     }
 }
 
-void main_window::save_options()
-{
-    save_app_options(get_app_options_settings("options"), opts_);
-}
-
 void main_window::load_all_at_start()
 {
     struct local
@@ -342,31 +352,9 @@ void main_window::load_all_at_start()
         }
     };
     
-#if defined(Q_OS_UNIX)
-    QString default_qstat = "/usr/bin/qstat";
-#elif defined(Q_OS_WIN)
-    QString default_qstat = "qstat.exe";
-#elif defined(Q_OS_MAC)
-    QString default_qstat = "/usr/bin/qstat";
-#endif
-    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
-
-    opts_->qstat_opts.master_server = "master.urbanterror.net";
-    opts_->qstat_opts.qstat_path = default_qstat;
-    opts_->geoip_database = default_database;
-    
-    opts_->looking_for_clip = true;
-    opts_->lfc_regexp = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})"
-        "(:(\\d{1,5}))?(.+pass[^\\s]*\\s+([^\\s]+))?";
-    opts_->lfc_host = 1;
-    opts_->lfc_port = 3;
-    opts_->lfc_password = 5;
-
-    load_app_options(get_app_options_settings("options"), opts_);
     load_server_bookmarks(get_app_options_settings("favorites"), bookmarks_);
 
     local::load_list(all_sl_, "all_state");
-//    local::load_list(fav_sl_, "favs_state");
     
     all_list_->load_options();
     fav_list_->load_options();
@@ -403,7 +391,7 @@ void main_window::refresh_servers(server_list_widget* current, const server_id_l
 {
     try
     {
-        gi_.set_database( opts_->geoip_database );
+        gi_.set_database( app_settings().geoip_database() );
     }
     catch (std::exception& e)
     {
@@ -411,9 +399,9 @@ void main_window::refresh_servers(server_list_widget* current, const server_id_l
     }
 
     if ( master )
-        que_->add_job( job_p( new job_update_from_master( current->server_list(), gi_, &(opts_->qstat_opts)) ) );
+        que_->add_job( job_p( new job_update_from_master( current->server_list(), gi_) ) );
     else
-        que_->add_job( job_p( new job_update_selected( to_update, current->server_list(), gi_, &(opts_->qstat_opts)) ) );
+        que_->add_job( job_p( new job_update_selected( to_update, current->server_list(), gi_) ) );
 }
 
 
@@ -477,13 +465,13 @@ void main_window::connect_to_server(const server_id& id, const QString& player_n
     check_anticheat_prereq();
     const server_bookmark& bm = bookmarks_->get(id);
 
+    app_settings as;
     // update server info
-    if (opts_->update_before_connect)
+    if ( as.update_before_connect() )
     {
         server_id_list idl;
         idl.push_back(id);
-        job_p job(new job_update_selected(idl, all_sl_, gi_, &opts_->qstat_opts,
-                                          tr("Update server info and launch a game")));
+        job_p job(new job_update_selected(idl, all_sl_, gi_, tr("Update server info and launch a game")));
         que_->add_job(job);
         job->wait_for_finish();
         if (job->is_canceled())
@@ -536,7 +524,7 @@ void main_window::connect_to_server(const server_id& id, const QString& player_n
     }
 
     // add to history if history is enabled
-    if (opts_->keep_history)
+    if ( as.keep_history() )
     {
         QString server_name = info ? info->name : QString();
         history_sl_->add(id, server_name, player_name, pass);
@@ -544,7 +532,7 @@ void main_window::connect_to_server(const server_id& id, const QString& player_n
     }
 
 #if defined(Q_OS_UNIX)
-    if (anticheat_enabled_action_->isChecked() && opts_->separate_x)
+    if ( anticheat_enabled_action_->isChecked() && as.separate_x() )
     {
         QStringList args;
         args << qApp->applicationFilePath();
@@ -713,7 +701,7 @@ void main_window::add_selected_to_fav()
 
     server_options_dialog d(this, bm);
     d.set_server_list(all_sl_);
-    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
+    d.set_update_params(&gi_, que_);
     if (d.exec() == QDialog::Rejected) return;
 
     bookmarks_->add(d.options());
@@ -812,13 +800,13 @@ void main_window::open_remote_console()
 
 void main_window::load_history_tab()
 {
-    if (opts_->keep_history)
+    if ( app_settings().keep_history())
     {
         if (!ui_->tabWidget->isTabEnabled(2))
         {
             ui_->tabWidget->setTabEnabled(2, true);
         }
-        history_list_ = new history_widget(opts_, ui_->tabHistory, history_sl_);
+        history_list_ = new history_widget( ui_->tabHistory, history_sl_ );
         dynamic_cast<QBoxLayout*> (ui_->tabHistory->layout())->insertWidget(0, history_list_);
         connect(history_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 

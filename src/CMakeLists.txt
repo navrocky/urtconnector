@@ -43,6 +43,7 @@ add_subdirectory(qtsingleapplication)
 add_subdirectory(cl)
 add_subdirectory(filters)
 add_subdirectory(settings)
+add_subdirectory(preferences)
 add_subdirectory(common)
 add_subdirectory(history)
 add_subdirectory(anticheat)
@@ -74,6 +75,8 @@ set(HEADERS
     clipper.h
     tools.h
     launcher/tools.h
+    setting_forms/launch_settings_form.h
+    setting_forms/application_settings_form.h
 )
 
 set(MOC_HEADERS
@@ -96,6 +99,8 @@ set(MOC_HEADERS
     rcon/rcon.h
     rcon/rcon_settings_form.h
     rcon/rcon_completer.h
+    setting_forms/launch_settings_form.h
+    setting_forms/application_settings_form.h
 )
 
 set(SOURCES
@@ -126,6 +131,8 @@ set(SOURCES
     rcon/rcon.cpp
     rcon/rcon_settings_form.cpp
     rcon/rcon_completer.cpp
+    setting_forms/launch_settings_form.cpp
+    setting_forms/application_settings_form.cpp
 )
 
 set(IFACES
@@ -137,6 +144,8 @@ set(IFACES
     jobs/job_item.ui
     rcon/rcon.ui
     rcon/rcon_settings_form.ui
+    setting_forms/launch_settings_form.ui
+    setting_forms/application_settings_form.ui
 )
 
 set(RESOURCES
@@ -157,6 +166,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     clsyslog
     filters
     settings
+    preferences
     common
     history
     anticheat
@@ -169,6 +179,3 @@ install(FILES icons/urtconnector.png DESTINATION share/pixmaps)
 install(FILES icons/urtconnector-48.png DESTINATION share/icons/hicolor/48x48/apps RENAME urtconnector.png)
 install(FILES urtconnector.desktop DESTINATION share/applications)
 install(FILES GeoIP.dat DESTINATION share/urtconnector)
-
-
-

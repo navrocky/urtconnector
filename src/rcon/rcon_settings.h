@@ -19,12 +19,16 @@ public:
         Error
     };
     
-    bool adaptive_pallete(){
-        return part()->value( "adaptive_pallete", true ).toBool();
+    bool custom_colors(){
+        return part()->value(
+            "custom_colors",
+            //export from old config
+            !( part()->value("adaptive_pallete", true).toBool() )
+        ).toBool();
     }
 
-    void set_adaptive_pallete( bool b ){
-        return part()->setValue( "adaptive_pallete", b );
+    void set_custom_colors( bool b ){
+        return part()->setValue( "custom_colors", b );
     }
 
     QColor color( Color c, bool reset = false ){

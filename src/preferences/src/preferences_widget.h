@@ -48,6 +48,10 @@ Q_SIGNALS:
 
     void enabled( bool b);
 public Q_SLOTS:
+
+    ///Этот слот вызывается перед показом виджета и загрузка всех настроек должна поисходить здесь
+    virtual void update_preferences();
+    
     ///Этот слот вызывается когда изменения приняты
     virtual void accept();
 

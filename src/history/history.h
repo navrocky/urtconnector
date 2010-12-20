@@ -9,7 +9,7 @@
 class history
 {
 public:
-    history(app_options_p opts);
+    history();
 
     void add(server_id id, QString server_name, QString player_name, QString password);
 
@@ -40,7 +40,6 @@ private:
     QList<history_item_p> list_;
     unsigned int max_;
     qsettings_p history_file_;
-    app_options_p opts_;
 };
 
 #endif // HISTORY_H

@@ -48,7 +48,7 @@ class server_list_widget : public QMainWindow
 {
 Q_OBJECT
 public:
-    server_list_widget(app_options_p opts, filter_factory_p factory, QWidget *parent);
+    server_list_widget( filter_factory_p factory, QWidget *parent);
     ~server_list_widget();
 
     void set_server_list(server_list_p ptr);
@@ -89,7 +89,6 @@ private:
     server_items items_;
     QRegExp filter_rx_;
     QPointer<server_bookmark_list> bms_;
-    app_options_p opts_;
     filter_list_p filters_;
     QDockWidget* filter_widget_;
 //    filter_edit_widget* edit_widget_;

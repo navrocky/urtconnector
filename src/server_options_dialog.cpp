@@ -9,7 +9,6 @@
 server_options_dialog::server_options_dialog(QWidget *parent)
 : QDialog(parent)
 , gi_(NULL)
-, qstat_opts_(NULL)
 , que_(NULL)
 {
     init();
@@ -20,7 +19,6 @@ server_options_dialog::server_options_dialog(QWidget * parent, const server_book
 : QDialog(parent)
 , opts_(src)
 , gi_(NULL)
-, qstat_opts_(NULL)
 , que_(NULL)
 {
     init();
@@ -69,10 +67,9 @@ void server_options_dialog::update_dialog()
     ui_->commentEdit->setPlainText(opts_.comment());
 }
 
-void server_options_dialog::set_update_params ( geoip* gi, qstat_options* opts, job_queue* que)
+void server_options_dialog::set_update_params ( geoip* gi, job_queue* que)
 {
     gi_ = gi;
-    qstat_opts_ = opts;
     que_ = que;
 }
 
@@ -98,7 +95,7 @@ void server_options_dialog::update_name()
     ids_.push_back(id);
     if (!list_)
         list_.reset( new server_list );
-    job_p job(new job_update_selected(ids_, list_, *gi_, qstat_opts_));
+    job_p job(new job_update_selected(ids_, list_, *gi_));
     que_->add_job(job);
     connect(job.get(), SIGNAL(state_changed(job_t::state_t)), SLOT(job_state_changed(job_t::state_t)));
     ui_->update_name_button->setEnabled(false);

@@ -322,8 +322,12 @@ preferences_item preferences_dialog::add_item(preferences_widget * cw, const pre
     if ( p_->initial_type == Plain && p_->items.size() )
         throw std::runtime_error("plain type occured!");
     std::cerr<<"ai1"<<std::endl;
-    preferences_item item( cw, parent);
+    preferences_item item( cw, parent );
     p_->items.push_back(item);
+
+    if ( p_->items.size() == 1)
+        p_->current_item = item;
+    
     std::cerr<<"ai2"<<std::endl;
     connect( cw, SIGNAL( changed() ), SLOT( changed() ) );
     if ( !p_->native )
@@ -350,6 +354,7 @@ preferences_item preferences_dialog::add_item(preferences_widget * cw, const pre
                 if( p_->current_item )
                 {
                     p_->set_current_item( p_->current_item );
+                    p_->current_item.widget()->update_preferences();
                     p_->set_current_widget( p_->current_item );
                 }
                 return item;
@@ -369,6 +374,7 @@ preferences_item preferences_dialog::add_item(preferences_widget * cw, const pre
         std::cerr<<"ai7"<<std::endl;
         p_->set_current_item( p_->current_item );
         std::cerr<<"ai8"<<std::endl;
+        p_->current_item.widget()->update_preferences();
         p_->set_current_widget( p_->current_item );
         std::cerr<<"ai9"<<std::endl;
     }
@@ -476,6 +482,7 @@ void preferences_dialog::item_changed(const preferences_item& new_item)
         }
         else if( ret == QMessageBox::Cancel )
         {
+            p_->current_item.widget()->update_preferences();
             p_->set_current_widget( p_->current_item );
             return;
         }
@@ -483,6 +490,7 @@ void preferences_dialog::item_changed(const preferences_item& new_item)
     std::cerr<<"ic3"<<std::endl;
     p_->current_item = new_item;
     std::cerr<<"ic4"<<std::endl;
+    p_->current_item.widget()->update_preferences();
     p_->set_current_widget( p_->current_item );
     std::cerr<<"ic5"<<std::endl;
     p_->set_current_item( p_->current_item );

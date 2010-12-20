@@ -34,11 +34,7 @@ public:
     main_window ( QWidget *parent = 0 );
     ~main_window();
 
-public slots:
-    void save_options();
     
-protected:
-
 private slots:
     void show_options();
     void show_about();
@@ -95,7 +91,6 @@ private:
     server_info_p selected_info() const;
 
     boost::shared_ptr<Ui_MainWindowClass> ui_;
-    app_options_p opts_;
     server_list_widget* all_list_;
     server_list_widget* fav_list_;
     history_widget* history_list_;

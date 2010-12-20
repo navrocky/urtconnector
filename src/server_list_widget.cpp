@@ -100,10 +100,8 @@ void server_list_widget_settings::save_toolbar_filter(const QString& name)
 ////////////////////////////////////////////////////////////////////////////////
 // server_list_widget
 
-server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p factory,
-    QWidget *parent)
+server_list_widget::server_list_widget( filter_factory_p factory, QWidget *parent)
 : QMainWindow(parent)
-, opts_(opts)
 , filters_(new filter_list(factory))
 , visible_server_count_(0)
 , filter_widget_(0)
@@ -396,7 +394,7 @@ void server_list_widget::update_list()
     tw->setSortingEnabled(true);
     tw->setUpdatesEnabled(true);
 
-    if (tw->topLevelItemCount() > 0 && cur_item && opts_->center_current_row)
+    if (tw->topLevelItemCount() > 0 && cur_item && app_settings().center_current_row())
         tw->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
 }
 
