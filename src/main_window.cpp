@@ -63,9 +63,24 @@
 
 #include "main_window.h"
 
+//FIXME move this headers away
+#include <preferences/src/preferences_dialog.h>
+
+#include <rcon/rcon_settings_form.h>
+#include <setting_forms/launch_settings_form.h>
+#include <setting_forms/application_settings_form.h>
+#include <anticheat/settings_widget.h>
+
 SYSLOG_MODULE(main_window)
 
 using namespace std;
+using boost::bind;
+
+void create_anticheat_config(){
+    preferences_dialog d( preferences_dialog::Plain, true );
+    d.add_item( new anticheat::settings_widget() );
+    d.exec();
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 // main_window
@@ -89,6 +104,10 @@ main_window::main_window(QWidget *parent)
 
 //    anticheat_open_action_ = new QAction(QIcon(":/images/icons/zoom.png"), tr("Enable anticheat"), this);
     anticheat_configure_action_ = new QAction(QIcon(":/icons/icons/configure.png"), tr("Configure anticheat"), this);
+
+    connect( anticheat_configure_action_, SIGNAL(triggered(bool))
+        , new qt_signal_wrapper( anticheat_configure_action_, bind( create_anticheat_config) ), SLOT(activate()) );
+    
     QMenu* m = new QMenu(this);
 //    m->addAction(anticheat_open_action_);
     m->addAction(anticheat_configure_action_);
@@ -242,13 +261,6 @@ void main_window::raise_window()
     raise();
     activateWindow();
 }
-
-#include <preferences/src/preferences_dialog.h>
-
-#include <rcon/rcon_settings_form.h>
-#include <setting_forms/launch_settings_form.h>
-#include <setting_forms/application_settings_form.h>
-#include <anticheat/settings_widget.h>
 
 void main_window::show_options()
 {

@@ -96,6 +96,7 @@ set(MOC_HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
+    tools.h
     rcon/rcon.h
     rcon/rcon_settings_form.h
     rcon/rcon_completer.h

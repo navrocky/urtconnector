@@ -321,14 +321,13 @@ preferences_item preferences_dialog::add_item(preferences_widget * cw, const pre
 {
     if ( p_->initial_type == Plain && p_->items.size() )
         throw std::runtime_error("plain type occured!");
-    std::cerr<<"ai1"<<std::endl;
+
     preferences_item item( cw, parent );
     p_->items.push_back(item);
 
     if ( p_->items.size() == 1)
         p_->current_item = item;
     
-    std::cerr<<"ai2"<<std::endl;
     connect( cw, SIGNAL( changed() ), SLOT( changed() ) );
     if ( !p_->native )
     {
@@ -361,22 +360,16 @@ preferences_item preferences_dialog::add_item(preferences_widget * cw, const pre
             }
         }
     }
-    std::cerr<<"ai3"<<std::endl;
+
     p_->add_item( item, parent );
-    std::cerr<<"ai4"<<std::endl;
     p_->add_widget( item );
-    std::cerr<<"ai5"<<std::endl;
 
     if ( p_->items.size() == 1 )
     {
-        std::cerr<<"ai6"<<std::endl;
         p_->current_item = item;
-        std::cerr<<"ai7"<<std::endl;
         p_->set_current_item( p_->current_item );
-        std::cerr<<"ai8"<<std::endl;
         p_->current_item.widget()->update_preferences();
         p_->set_current_widget( p_->current_item );
-        std::cerr<<"ai9"<<std::endl;
     }
 
     return item;
@@ -462,9 +455,10 @@ void preferences_dialog::button_clicked(int button)
 
 void preferences_dialog::item_changed(const preferences_item& new_item)
 {
-    std::cerr<<"ic1:"<<new_item<<std::endl;
     if( new_item == p_->current_item ) return;
-    std::cerr<<"ic2"<<std::endl;
+
+    new_item.widget()->update_preferences();
+    
     if( button(QDialogButtonBox::Apply)->isEnabled() )
     {
         QMessageBox::StandardButton ret = QMessageBox::question ( this,
@@ -482,19 +476,14 @@ void preferences_dialog::item_changed(const preferences_item& new_item)
         }
         else if( ret == QMessageBox::Cancel )
         {
-            p_->current_item.widget()->update_preferences();
             p_->set_current_widget( p_->current_item );
             return;
         }
     }
-    std::cerr<<"ic3"<<std::endl;
+
     p_->current_item = new_item;
-    std::cerr<<"ic4"<<std::endl;
-    p_->current_item.widget()->update_preferences();
     p_->set_current_widget( p_->current_item );
-    std::cerr<<"ic5"<<std::endl;
     p_->set_current_item( p_->current_item );
-    std::cerr<<"ic6"<<std::endl;
     return;
 }
 

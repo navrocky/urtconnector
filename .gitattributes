@@ -1,4 +1,5 @@
 * text=auto !eol
+.kdev4/trunk.kdev4 -text
 /CMakeLists.txt -text
 artwork/install-header.bmp -text
 artwork/logo.png -text
@@ -530,5 +531,6 @@ src/tools.h -text
 src/urtconnector.desktop -text
 translations/CMakeLists.txt -text
 translations/urtconnector_ru.ts -text
+/trunk.kdev4 -text
 /update_translations -text
 /version -text

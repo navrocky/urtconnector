@@ -27,8 +27,8 @@ struct preferences_widget::Pimpl{
     QIcon icon;
 };
 
-preferences_widget::preferences_widget( QWidget * parent, const QString& name )
-    : QWidget(parent)
+preferences_widget::preferences_widget( QWidget * parent, const QString& name, Qt::WindowFlags f )
+    : QWidget(parent, f)
     , p_( new Pimpl )
 {
     setObjectName( object_name );

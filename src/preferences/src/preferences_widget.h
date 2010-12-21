@@ -27,7 +27,7 @@ public:
 
     static const QString object_name;
 
-    preferences_widget( QWidget* parent, const QString& name );
+    preferences_widget( QWidget* parent, const QString& name, Qt::WindowFlags f = 0);
     ~preferences_widget();
 
     ///Установить заголовок конфигурационного диалога
