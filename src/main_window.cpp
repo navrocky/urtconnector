@@ -99,6 +99,11 @@ main_window::main_window(QWidget *parent)
 //    setAttribute(Qt::WA_TranslucentBackground, true);
     ui_->setupUi(this);
 
+    server_info_updater_ = new QAccumulatingConnection(300, QAccumulatingConnection::Periodically, this);
+    connect(server_info_updater_, SIGNAL(signal()), SLOT(update_server_info()));
+    connect(all_sl_.get(), SIGNAL(changed()), server_info_updater_, SLOT(emitSignal()));
+    connect(ui_->tabWidget, SIGNAL(currentChanged(int)), server_info_updater_, SLOT(emitSignal()));
+
     anticheat_enabled_action_ = new QAction(QIcon(":/icons/icons/anticheat.png"), tr("Enable anticheat"), this);
     anticheat_enabled_action_->setCheckable(true);
 
@@ -142,10 +147,10 @@ main_window::main_window(QWidget *parent)
             SLOT(tray_activated(QSystemTrayIcon::ActivationReason)));
     connect(tray_, SIGNAL(messageClicked()), SLOT(raise_window()));        
 
-    serv_info_update_timer_ = new QTimer(this);
-    serv_info_update_timer_->setInterval(1000);
-    connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
-    serv_info_update_timer_->start();
+//    serv_info_update_timer_ = new QTimer(this);
+//    serv_info_update_timer_->setInterval(1000);
+//    connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
+//    serv_info_update_timer_->start();
 
     all_list_ = new server_list_widget( filter_factory_, ui_->tabAll);
     all_list_->setObjectName("all_list");
@@ -699,7 +704,8 @@ void main_window::update_server_info()
 void main_window::selection_changed()
 {
     update_actions();
-    update_server_info();
+//    update_server_info();
+    server_info_updater_->emitSignal();
 }
 
 void main_window::add_selected_to_fav()

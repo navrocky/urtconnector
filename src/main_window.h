@@ -95,10 +95,8 @@ private:
     server_list_widget* fav_list_;
     history_widget* history_list_;
     server_list_p all_sl_;
-//    server_list_p fav_sl_;
     server_bookmark_list* bookmarks_;
     history_p history_sl_;
-    QTimer* serv_info_update_timer_;
     server_id old_id_;
     int old_state_;
     QSystemTrayIcon* tray_;
@@ -115,6 +113,7 @@ private:
     QAction* anticheat_open_action_;
     QAction* anticheat_configure_action_;
     QPointer<QProcess> ac_proc_;
+    QAccumulatingConnection* server_info_updater_;
 };
 
 #endif

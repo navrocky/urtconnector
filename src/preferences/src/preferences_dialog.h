@@ -27,7 +27,7 @@
 
 #include <QDialog>
 
-#include <preferences_item.h>
+#include "preferences_item.h"
 
 class QPushButton;
 
