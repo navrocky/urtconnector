@@ -26,6 +26,9 @@ struct item_inserter {
             list_item->setData( preferences_item::qobject_property_role, qVariantFromValue( item ) );
             item.set_list_item( list_item );
             form.items->addItem( list_item );
+
+            form.items->setMinimumSize( form.items->sizeHint() );
+            form.items->resize( form.items->sizeHint() );
         }
     }
 };
@@ -36,6 +39,7 @@ void make_tab( QTabWidget* tw, preferences_item item )
     QVBoxLayout* vlay = new QVBoxLayout(tab);
     vlay->setContentsMargins(2,2,2,2);
     vlay->setSpacing(5);
+    vlay->setSizeConstraint( QLayout::SetMinimumSize );
 
     preferences_widget* cw = item.widget();
 
@@ -46,11 +50,15 @@ void make_tab( QTabWidget* tw, preferences_item item )
     }
 
     vlay->addWidget( cw );
-    cw->show();
     vlay->addStretch();
 
+    cw->show();
+    
     int index = tw->addTab( tab, cw->icon(), cw->name() );
     item.set_index( index );
+
+    tw->setMinimumSize( tw->sizeHint().expandedTo( tab->sizeHint() ) );
+    tw->resize( tw->sizeHint() );
 }
 
 ///Add \b item-widget to Tab-represented config UI;

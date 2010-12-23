@@ -22,8 +22,12 @@ struct widget_inserter{
 
     void operator()( preferences_item item )
     {
-        if ( !form.layout() ) (new QVBoxLayout(&form))->setContentsMargins(0,0,0,0);
+        if ( !form.layout() ) new QVBoxLayout(&form);
+        form.layout()->setContentsMargins(0,0,0,0);
         form.layout()->addWidget( item.widget() );
+
+        form.setMinimumSize( form.sizeHint() );
+        form.resize( form.sizeHint() );
     }
 };
 

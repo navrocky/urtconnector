@@ -32,6 +32,9 @@ struct item_inserter {
         {
             form.items->addTopLevelItem(list_item);
         }
+
+        form.items->setMinimumSize( form.items->sizeHint() );
+        form.items->resize( form.items->sizeHint() );
     }
 };
 
@@ -47,6 +50,9 @@ struct widget_inserter{
         form.header->setText( cw->header() );
         form.icon->setIcon( cw->icon() );
         item.set_index( form.pages->addWidget(cw) );
+
+        form.pages->setMinimumSize( form.pages->sizeHint().expandedTo( cw->sizeHint() ) );
+        form.pages->resize( form.pages->sizeHint() );
     }
 };
 

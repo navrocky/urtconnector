@@ -77,7 +77,7 @@ using namespace std;
 using boost::bind;
 
 void create_anticheat_config(){
-    preferences_dialog d( preferences_dialog::Plain, true );
+    preferences_dialog d( preferences_dialog::Auto, true );
     d.add_item( new anticheat::settings_widget() );
     d.exec();
 };

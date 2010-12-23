@@ -229,6 +229,8 @@ void preferences_dialog::setup_ui()
     p_->ui.setupUi(this);
     p_->connector = new detail::connector( this, p_->items, p_->ui.buttons);
 
+    resize(QSize(10,10));
+    
     switch (p_->initial_type)
     {
         case Tree: setup_tree(); break;
@@ -327,7 +329,9 @@ preferences_item preferences_dialog::add_item(preferences_widget * cw, const pre
 
     if ( p_->items.size() == 1)
         p_->current_item = item;
-    
+
+    cw->setMinimumSize( cw->sizeHint() );
+
     connect( cw, SIGNAL( changed() ), SLOT( changed() ) );
     if ( !p_->native )
     {

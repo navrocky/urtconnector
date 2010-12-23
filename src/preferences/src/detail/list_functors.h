@@ -22,6 +22,8 @@ struct item_inserter {
         it->setData( preferences_item::qobject_property_role, qVariantFromValue( item ) );
         item.set_list_item( it );
         form.items->addItem( it );
+        form.items->setMinimumSize( form.items->sizeHint() );
+        form.items->resize( form.items->sizeHint() );
     }
 };
 
@@ -37,6 +39,8 @@ struct widget_inserter{
         form.header->setText( cw->header() );
         form.icon->setIcon( cw->icon() );
         item.set_index( form.pages->addWidget(cw) );
+        form.pages->setMinimumSize( form.pages->sizeHint().expandedTo( cw->sizeHint() ) );
+        form.pages->resize( form.pages->sizeHint() );
     }
 };
 
