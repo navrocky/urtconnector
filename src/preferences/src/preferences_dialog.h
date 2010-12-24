@@ -92,11 +92,6 @@ private:
     void setup_native_ui();
 
     void setup_clear();
-    void setup_plain();
-    void setup_tree();
-    void setup_tabs();
-    void setup_list();
-
 
     void reset();
     QPushButton* button(int button) const;

@@ -77,7 +77,7 @@ using namespace std;
 using boost::bind;
 
 void create_anticheat_config(){
-    preferences_dialog d( preferences_dialog::Auto, true );
+    preferences_dialog d( preferences_dialog::Auto, false );
     d.add_item( new anticheat::settings_widget() );
     d.exec();
 };
@@ -273,7 +273,7 @@ void main_window::show_options()
     bool wasHistoryEnabled = as.keep_history();
     unsigned int oldNumberInHistory = as.number_in_history();
 
-    preferences_dialog d( preferences_dialog::Auto, true );
+    preferences_dialog d( preferences_dialog::Auto, false );
     d.add_item( new launch_settings_form() );
     d.add_item( new application_settings_form() );
     d.add_item( new rcon_settings_form() );

@@ -38,6 +38,10 @@ class preferences_item;
 
 namespace detail{
 
+
+//This object connects different actions from different views to two generic signals:
+// item_changed   - hold refference to currently selected item
+// button_clicked - hold QDialogButtonBox::StandartButton code
 class connector: public QObject{
     Q_OBJECT
 
@@ -61,7 +65,8 @@ public Q_SLOTS:
 #endif
 
 Q_SIGNALS:
-    
+
+    ///currently selected item
     void item_changed( const preferences_item& );
 
     /// \p button equal QDialogButtonBox::StandartButton codes

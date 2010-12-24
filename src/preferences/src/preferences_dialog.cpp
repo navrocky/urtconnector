@@ -28,11 +28,8 @@
 #include <QMessageBox>
 
 #include "ui_preferences_dialog.h"
-#include "ui_tree_form.h"
-#include "ui_tab_form.h"
-#include "ui_list_form.h"
 
-#include "detail/functors.h"
+#include "detail/views.h"
 #include "detail/connector.h"
 
 #include "preferences_widget.h"
@@ -59,29 +56,29 @@ struct preferences_dialog_traits{};
 template <>
 struct preferences_dialog_traits<plain_tag>
 {
-    typedef QWidget form;
     static const preferences_dialog::Type type = preferences_dialog::Plain;
+    typedef detail::plain_view view;
 };
 
 template <>
 struct preferences_dialog_traits<tree_tag>
 {
-    typedef Ui_tree_form form;
     static const preferences_dialog::Type type = preferences_dialog::Tree;
+    typedef detail::tree_view view;
 };
 
 template <>
 struct preferences_dialog_traits<tab_tag>
 {
-    typedef Ui_tab_form form;
     static const preferences_dialog::Type type = preferences_dialog::Tab;
+    typedef detail::tab_view view;
 };
 
 template <>
 struct preferences_dialog_traits<list_tag>
 {
-    typedef Ui_list_form form;
-    static const preferences_dialog::Type type = preferences_dialog::List;
+   static const preferences_dialog::Type type = preferences_dialog::List;
+    typedef detail::list_view view;
 };
 
 #ifdef USE_KDE_DIALOG
@@ -89,8 +86,8 @@ struct preferences_dialog_traits<list_tag>
 template <>
 struct preferences_dialog_traits<kde_native_tag>
 {
-    typedef KPageDialog form;
-    static const int type = -1;
+    static const preferences_dialog::Type type = preferences_dialog::Auto;
+    typedef detail::kpage_view view;
 };
 
 KPageDialog::FaceType kpage_type( preferences_dialog::Type type )
@@ -123,59 +120,36 @@ KDialog::ButtonCode kbutton( QDialogButtonBox::StandardButton button )
 /// struct that creates and holds concrete helpers as generic functors
 struct preferences_dialog::Pimpl { 
 
-    typedef boost::variant<
-        preferences_dialog_traits<tree_tag>::form,
-        preferences_dialog_traits<tab_tag>::form,
-        preferences_dialog_traits<list_tag>::form>  PreferencesForm;
-
     Pimpl():template_widget(0){}
 
     template <typename Tag>
-    typename preferences_dialog_traits<Tag>::form& init_ui( QWidget* template_widget  )
+    void init_ui()
     {
-        typedef typename preferences_dialog_traits<Tag>::form Form;
-
-        Form& form_ui = boost::get<Form>( preferences_ui = Form() );
-
-        form_ui.setupUi(template_widget);
-        init_functors(form_ui);
+        bv.reset( new typename preferences_dialog_traits<Tag>::view( template_widget.get(), connector) );
         type = preferences_dialog_traits<Tag>::type;
-        return form_ui;
     }
-#ifdef USE_KDE_DIALOG
-    template <typename Tag>
-    typename preferences_dialog_traits<Tag>::form& init_ui( KPageDialog* page )
-    {
-        init_functors(*page);
-        return *page;
-    }
-#endif
 
-    template <typename Form>
-    void init_functors( Form& form_ui )
-    {
-        add_item    = make_item_inserter( form_ui );
-        add_widget  = make_widget_inserter( form_ui );
-        set_current_widget = make_widget_setter(form_ui);
-        current_widget  = make_widget_extractor( form_ui );
-        set_current_item = make_item_setter( form_ui );
-    }
+    void add_item( preferences_item item, preferences_item parent )
+    { bv->insert_item(item, parent); }
+
+    void add_widget( preferences_item item )
+    { bv->insert_widget(item); }
+
+    void set_current_widget( preferences_item item )
+    { bv->set_current_widget(item); }
+
+    preferences_widget* current_widget() const
+    { return bv->current_widget(); }
+
+    void set_current_item(preferences_item item)
+    { bv->set_current_item(item); }
+
+
+
+    std::auto_ptr<detail::base_view> bv;
 
     //main dialog ui object
     Ui_preferences_dialog_form ui;
-    //current Type-specific ui object
-    PreferencesForm     preferences_ui;
-
-    //generic add_widget-function
-    WidgetInserter   add_widget;
-    //generic add_item-function
-    ItemInserter     add_item;
-    //generic current_widget-function
-    CurrentWidgetExtractor  current_widget;
-    //generic set_current_widget-function
-    CurrentWidgetSetter set_current_widget;
-    //generic set_current_item-function
-    CurrentItemSetter set_current_item;
 
     std::list<preferences_item> items;
 
@@ -187,7 +161,7 @@ struct preferences_dialog::Pimpl {
     std::auto_ptr<QWidget> template_widget;
 
 #ifdef USE_KDE_DIALOG
-    std::auto_ptr<KPageDialog> page_dialog;
+    KPageDialog* page_dialog;
 #endif
 
     detail::connector* connector;
@@ -230,14 +204,15 @@ void preferences_dialog::setup_ui()
     p_->connector = new detail::connector( this, p_->items, p_->ui.buttons);
 
     resize(QSize(10,10));
-    
+
+    setup_clear();
     switch (p_->initial_type)
     {
-        case Tree: setup_tree(); break;
-        case Tab:  setup_tabs(); break;
-        case List: setup_list(); break;
-        case Auto: setup_plain(); break;
-        case Plain: setup_plain(); break;
+        case Tree:  p_->init_ui<tree_tag>();  break;
+        case Tab:   p_->init_ui<tab_tag>();   break;
+        case List:  p_->init_ui<list_tag>();  break;
+        case Auto:  p_->init_ui<plain_tag>(); break;
+        case Plain: p_->init_ui<plain_tag>(); break;
     }
 
     connect(p_->ui.buttons, SIGNAL( clicked( QAbstractButton* ) ),
@@ -248,16 +223,17 @@ void preferences_dialog::setup_native_ui()
 {
 #ifdef USE_KDE_DIALOG
     p_->connector = new detail::connector( this, p_->items, 0);
+    p_->template_widget.reset( new QWidget );
 
     ( new QVBoxLayout(this) )->setContentsMargins(0,0,0,0);
+    layout()->setSizeConstraint( QLayout::SetMinimumSize );
+    layout()->addWidget( p_->template_widget.get() );
 
-    setup_clear();
+    p_->init_ui<kde_native_tag>();
 
-    connect(p_->page_dialog.get(), SIGNAL(currentPageChanged ( KPageWidgetItem *, KPageWidgetItem * )),
-        p_->connector, SLOT(currentPageChanged ( KPageWidgetItem *, KPageWidgetItem * )));
+    p_->page_dialog = static_cast<detail::kpage_view*>( p_->bv.get() )->get_kpage();
+    p_->page_dialog->setFaceType( kpage_type( p_->initial_type ) );
 
-    connect(p_->page_dialog.get(), SIGNAL( buttonClicked( KDialog::ButtonCode ) ),
-        p_->connector, SLOT( buttonClicked( KDialog::ButtonCode ) ) );
 #endif
 }
 
@@ -265,58 +241,8 @@ void preferences_dialog::setup_clear()
 {
     for_each( p_->items.begin(), p_->items.end(), bind(&preferences_item::summon, _1) );
 
-#ifdef USE_KDE_DIALOG
-    if ( kde_native && p_->native )
-    {
-        p_->page_dialog.reset( new KPageDialog );
-        layout()->addWidget( p_->page_dialog.get() );
-        p_->page_dialog->setFaceType( kpage_type( p_->initial_type ) );
-        p_->page_dialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply | KDialog::Default );
-        p_->page_dialog->setDefaultButton (KDialog::Ok );
-        p_->init_ui<kde_native_tag>( p_->page_dialog.get() );
-    }
-    else
-#endif
-    {
-        p_->template_widget.reset( new QWidget );
-        p_->ui.main_widget->layout()->addWidget( p_->template_widget.get() );
-    }
-}
-
-
-void preferences_dialog::setup_plain()
-{
-    setup_clear();
-    p_->init_functors( *p_->template_widget.get() );
-}
-
-void preferences_dialog::setup_tree()
-{
-    setup_clear();
-    preferences_dialog_traits<tree_tag>::form& form_ui = p_->init_ui<tree_tag>( p_->template_widget.get() );
-
-    connect(form_ui.items, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
-        p_->connector, SLOT(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
-}
-
-void preferences_dialog::setup_tabs()
-{
-    setup_clear();
-    preferences_dialog_traits<tab_tag>::form& form_ui = p_->init_ui<tab_tag>( p_->template_widget.get() );
-
-    connect(form_ui.items,  SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
-        p_->connector, SLOT(currentItemChanged(QListWidgetItem *, QListWidgetItem *)));
-    connect(form_ui.pages,  SIGNAL(currentChanged ( int )),
-        p_->connector, SLOT(currentTabChanged ( int )) );
-}
-
-void preferences_dialog::setup_list()
-{
-    setup_clear();
-    preferences_dialog_traits<list_tag>::form& form_ui = p_->init_ui<list_tag>( p_->template_widget.get() );
-
-    connect(form_ui.items, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
-        p_->connector, SLOT(currentItemChanged(QListWidgetItem *, QListWidgetItem *)));
+    p_->template_widget.reset( new QWidget );
+    p_->ui.main_widget->layout()->addWidget( p_->template_widget.get() );
 }
 
 preferences_item preferences_dialog::add_item(preferences_widget * cw, const preferences_item& parent )
@@ -330,7 +256,8 @@ preferences_item preferences_dialog::add_item(preferences_widget * cw, const pre
     if ( p_->items.size() == 1)
         p_->current_item = item;
 
-    cw->setMinimumSize( cw->sizeHint() );
+//     cw->setFixedSize( cw->sizeHint()+=QSize(10,800) );
+//     cw->setFixedSize( QSize(500,500) );
 
     connect( cw, SIGNAL( changed() ), SLOT( changed() ) );
     if ( !p_->native )
@@ -341,11 +268,13 @@ preferences_item preferences_dialog::add_item(preferences_widget * cw, const pre
             if ( t != p_->type )
             {
                 p_->type = t;
+                setup_clear();
                 switch (p_->type)
                 {
-                    case Tree: setup_tree(); break;
-                    case Tab:  setup_tabs(); break;
-                    case List: setup_list(); break;
+                    case Plain: p_->init_ui<plain_tag>(); break;
+                    case Tree:  p_->init_ui<tree_tag>();  break;
+                    case Tab:   p_->init_ui<tab_tag>();   break;
+                    case List:  p_->init_ui<list_tag>();  break;
                     default:;
                 }
                 std::list<preferences_item>::iterator it = p_->items.begin();
@@ -375,7 +304,6 @@ preferences_item preferences_dialog::add_item(preferences_widget * cw, const pre
         p_->current_item.widget()->update_preferences();
         p_->set_current_widget( p_->current_item );
     }
-
     return item;
 }
 

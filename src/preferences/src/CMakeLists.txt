@@ -31,13 +31,14 @@ set(PUBLIC_HEADERS
 set(HEADERS
     ${PUBLIC_HEADERS}
     detail/connector.h
-    detail/functors.h
+    detail/views.h
 )
 
 set(MOC_HEADERS
     preferences_widget.h
     preferences_dialog.h
     detail/connector.h
+    detail/delegate.h
 )
 
 set(SOURCES
@@ -48,9 +49,6 @@ set(SOURCES
 )
 
 set(IFACES
-    ui/list_form.ui
-    ui/tree_form.ui
-    ui/tab_form.ui
     ui/preferences_dialog.ui
 )
 

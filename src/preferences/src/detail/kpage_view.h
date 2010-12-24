@@ -19,21 +19,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef CL_CONFIG_KDE_F_H
-#define CL_CONFIG_KDE_F_H
+#ifndef PREF_KPAGE_VIEW_H
+#define PREF_KPAGE_VIEW_H
 
 #include <kpagedialog.h>
 
-namespace detail {  namespace kde {
+#include "base_view.h"
 
+namespace detail {
 
-///Insert items to KPageDialog
-struct item_inserter {
-    KPageDialog& form;
-    item_inserter( KPageDialog& form ) : form( form ) {}
+struct kpage_view : base_view {
+    QWidget* tw;
 
-    void operator()( preferences_item item, preferences_item parent )
+    kpage_view( QWidget* t, detail::connector* c )
+        : tw(t)
     {
+        init_ui();
+        
+        QObject::connect(
+            kpage,  SIGNAL( currentPageChanged ( KPageWidgetItem *, KPageWidgetItem * ) ),
+            c,      SLOT  ( currentPageChanged ( KPageWidgetItem *, KPageWidgetItem * ) )
+        );
+
+        QObject::connect(
+            kpage,  SIGNAL( buttonClicked( KDialog::ButtonCode ) ),
+            c,      SLOT  ( buttonClicked( KDialog::ButtonCode ) )
+        );
+    }
+
+    virtual void insert_item(  preferences_item item, preferences_item parent  ) {
         preferences_widget* cw = item.widget();
 
         KPageWidgetItem* page_item = new KPageWidgetItem( cw );
@@ -50,72 +64,48 @@ struct item_inserter {
         if ( parent )
         {
             KPageWidgetItem* parent_item = boost::get<KPageWidgetItem*>( parent.list_item() );
-            form.addSubPage( parent_item, page_item );
+            kpage->addSubPage( parent_item, page_item );
         }
         else
         {
-            form.addPage( page_item );
+            kpage->addPage( page_item );
         }
+
+//         kpage->setMinimumSize( kpage->sizeHint() += QSize(0,50) );
     }
-};
 
-
-///Add \b item-widget to KDE-native(KPageDialog) config UI;
-struct widget_inserter {
-    KPageDialog& form;
-    widget_inserter( KPageDialog& form ) :form(form) {}
-
-    void operator()(  preferences_item item )
-    {}
-};
-
-
-///Extract current widget from KDE-native(KPageDialog) config UI;
-struct widget_extractor{
-    KPageDialog& form;
-    widget_extractor( KPageDialog& form ) : form(form) {}
-
-    preferences_widget* operator()()
+    virtual preferences_widget* current_widget() const
     {
-        return static_cast<preferences_widget*>( form.currentPage()->widget() );
+        return static_cast<preferences_widget*>( kpage->currentPage()->widget() );
     }
-};
 
-
-///Set current \b item-widget into KDE-native(KPageDialog) config UI;
-struct widget_set{
-    KPageDialog& form;
-    widget_set( KPageDialog& form ) : form(form) {}
-
-    void operator()( preferences_item item )
+    virtual void set_current_widget( preferences_item item )
     {
-        form.setCurrentPage( boost::get<KPageWidgetItem*>( item.list_item() ) );
+        kpage->setCurrentPage( boost::get<KPageWidgetItem*>( item.list_item() ) );
     }
-};
 
-
-///Set current item into KDE-native(KPageDialog) config UI;
-struct set_current_item{
-    KPageDialog& form;
-    set_current_item( KPageDialog& form ) :form(form) {}
-
-    void operator()( preferences_item item )
+    virtual void set_current_item( preferences_item item )
     {
-        form.setCurrentPage( boost::get<KPageWidgetItem*>( item.list_item() ) );
+        kpage->setCurrentPage( boost::get<KPageWidgetItem*>( item.list_item() ) );
     }
-};
 
-} // namespace kde
+    KPageDialog* get_kpage(){ return kpage; }
 
+protected:
+    virtual void init_ui() {
+        QBoxLayout* main_box = new QBoxLayout( QBoxLayout::LeftToRight, tw );
+        main_box->setContentsMargins( margins() );
+        main_box->setSizeConstraint( QLayout::SetMinimumSize );
+        
+        kpage = new KPageDialog;
+        kpage->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply | KDialog::Default );
+        kpage->setDefaultButton (KDialog::Ok );
 
-template<>
-struct prefferences_form_traits<KPageDialog>
-{
-    typedef kde::item_inserter item_inserter;
-    typedef kde::widget_inserter widget_inserter;
-    typedef kde::widget_set widget_setter;
-    typedef kde::widget_extractor widget_extractor;
-    typedef kde::set_current_item item_setter;
+        main_box->addWidget( kpage );
+    }
+
+private:
+    KPageDialog*    kpage;
 };
 
 } //namespace detail
