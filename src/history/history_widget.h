@@ -3,7 +3,6 @@
 
 #include <memory>
 
-#include <QMainWindow>
 #include <QTreeWidget>
 
 #include "common/server_id.h"
@@ -16,7 +15,7 @@
 
 class QTreeWidgetItem;
 
-class history_widget : public QMainWindow, public main_tab {
+class history_widget : public main_tab {
     Q_OBJECT
 public:
     history_widget( QWidget *parent, history_p list);

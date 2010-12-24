@@ -42,10 +42,9 @@ struct history_widget::Pimpl{
 };
 
 history_widget::history_widget( QWidget *parent, history_p list)
-    : QMainWindow(parent)
+    : main_tab("history_tab", parent)
     , p_( new Pimpl )
 {
-    init_main_tab(this);
     p_->history = list;
 
     init_filter_toolbar();

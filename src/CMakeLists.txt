@@ -103,6 +103,7 @@ set(MOC_HEADERS
     rcon/rcon_completer.h
     setting_forms/launch_settings_form.h
     setting_forms/application_settings_form.h
+    main_tab.h
 )
 
 set(SOURCES

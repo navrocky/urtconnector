@@ -82,6 +82,14 @@ struct base_settings::pimpl
         return s;
     }
 
+    ///Create QSettings object from main object and enter to the \p uid group
+    settings_ptr create_group( const QString& uid, const QString group, settings_ptr settings )
+    {
+        settings_ptr s(new QSettings(settings->fileName(), format_c));
+        s->beginGroup((group.isEmpty()) ? uid : group);
+        return s;
+    }
+
     ///Create QSettings object from \p filename file. If \p relative is \b false then \p filename counts as absolute path.
 
     settings_ptr create_file(const QString& filename, bool relative)
@@ -114,6 +122,12 @@ void base_settings::register_group(const QString& uid, const QString& group, con
     p_->registered_[uid] = p_->create_file(filename, relative);
     p_->registered_[uid]->beginGroup(group);
 }
+
+void base_settings::register_sub_group(const QString& uid, const QString& group, const QString& parent_uid)
+{
+    p_->registered_[uid] = p_->create_group(uid, group, get_settings(parent_uid) );
+}
+
 
 void base_settings::unregister(const QString& uid)
 {

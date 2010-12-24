@@ -49,6 +49,10 @@ public:
     ///Register QSettings from \p group to be accessible by \p uid in \b file 
     void register_group(const QString& uid, const QString& group, const QString& filename, bool relative = true);
 
+    ///Register QSettings from \p group to be accessible by \p uid in settings \b parent_uid
+    void register_sub_group(const QString& uid, const QString& group, const QString& parent_uid);
+
+    
     void unregister(const QString& uid);
 
     ///Get main QSettings object
