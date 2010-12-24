@@ -1,11 +1,11 @@
 #include <QObject>
-#include <QLineEdit>
-#include <QToolButton>
 #include <QHBoxLayout>
 #include <QTimerEvent>
+#include <QAction>
 
 #include <cl/except/error.h>
 #include <common/scoped_tools.h>
+#include <common/qbuttonlineedit.h>
 
 #include "filter_edit_widget.h"
 #include "tools.h"
@@ -101,17 +101,14 @@ regexp_filter_quick_opt_widget::regexp_filter_quick_opt_widget(filter_p f)
     QHBoxLayout* lay = new QHBoxLayout(this);
     lay->setContentsMargins(0, 0, 0, 0);
 
-    edit_ = new QLineEdit(this);
+    edit_ = new QButtonLineEdit(this);
     edit_->setToolTip(tr("Filter expression. You can use here a regular expressions."));
     lay->addWidget(edit_);
 
-    clear_btn_ = new QToolButton(this);
-    lay->addWidget(clear_btn_);
-    clear_btn_->setIcon(QIcon(":/icons/icons/edit-clear-locationbar-rtl.png"));
-    clear_btn_->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    clear_btn_->setAutoRaise(true);
-    clear_btn_->setToolTip(tr("Clear expression"));
-    connect(clear_btn_, SIGNAL(clicked()), edit_, SLOT(clear()));
+    QAction* a = new QAction(QIcon(":/icons/icons/edit-clear-locationbar-rtl.png"),
+                             tr("Clear expression"), this);
+    connect(a, SIGNAL(triggered()), edit_, SLOT(clear()));
+    edit_->addActionButton(a);
     
     connect(f.get(), SIGNAL(changed_signal()), SLOT(filter_changed()));
     filter_changed();

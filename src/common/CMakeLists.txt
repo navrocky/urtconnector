@@ -16,11 +16,13 @@ set(HEADERS
     implicit_sharing.h
     qaccumulatingconnection.h
     str_convert.h
+    qbuttonlineedit.h
 )
 
 set(MOC_HEADERS
     server_list.h
     qaccumulatingconnection.h
+    qbuttonlineedit.h
 )
 
 set(SOURCES
@@ -32,6 +34,7 @@ set(SOURCES
     server_info.cpp
     server_list.cpp
     qaccumulatingconnection.cpp
+    qbuttonlineedit.cpp
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)

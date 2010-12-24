@@ -9,8 +9,7 @@
 #include "filter.h"
 #include <common/server_info.h>
 
-class QLineEdit;
-class QToolButton;
+class QButtonLineEdit;
 
 class regexp_filter_quick_opt_widget : public QWidget
 {
@@ -26,8 +25,7 @@ private slots:
     void text_changed();
     
 private:
-    QLineEdit* edit_;
-    QToolButton* clear_btn_;
+    QButtonLineEdit* edit_;
     filter_p filter_;
     bool block_filter_change_;
     bool block_text_change_;

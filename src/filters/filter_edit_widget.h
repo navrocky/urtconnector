@@ -72,6 +72,8 @@ class filter_edit_widget : public QMainWindow
 public:
     filter_edit_widget(filter_list_p filters, QWidget* parent = NULL);
 
+    void update_contents();
+
 private slots:
     void add_new_filter();
     void delete_filter();
@@ -82,7 +84,6 @@ private slots:
 private:
     void do_update(filter_p parent, QTreeWidget*, QTreeWidgetItem*);
     void update_item(QTreeWidgetItem*);
-    void update_contents();
     composite_filter* composite_cast(filter_p);
     void update_items();
 

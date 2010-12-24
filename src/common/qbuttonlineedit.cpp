@@ -11,7 +11,6 @@
 #include <QEvent>
 
 #include "qbuttonlineedit.h"
-#include "control_tools.h"
 
 QButtonLineEdit::QButtonLineEdit(QWidget* parent)
 : QLineEdit(parent)

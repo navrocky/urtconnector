@@ -98,6 +98,36 @@ void server_list_widget_settings::save_toolbar_filter(const QString& name)
     part()->endGroup();
 }
 
+void server_list_widget_settings::save_state(const QByteArray& a)
+{
+    part()->beginGroup(name_);
+    part()->setValue("state", a);
+    part()->endGroup();
+}
+
+QByteArray server_list_widget_settings::load_state()
+{
+    part()->beginGroup(name_);
+    QByteArray res = part()->value("state").toByteArray();
+    part()->endGroup();
+    return res;
+}
+
+bool server_list_widget_settings::is_filter_visible()
+{
+    part()->beginGroup(name_);
+    bool res = part()->value("filter_visible").toBool();
+    part()->endGroup();
+    return res;
+}
+
+void server_list_widget_settings::set_filter_visible(bool val)
+{
+    part()->beginGroup(name_);
+    part()->setValue("filter_visible", val);
+    part()->endGroup();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // server_list_widget
 
@@ -114,6 +144,7 @@ server_list_widget::server_list_widget( filter_factory_p factory, QWidget *paren
     connect(accum_updater_, SIGNAL(signal()), SLOT(update_list()));
 
     QToolBar* tb = new QToolBar(tr("Filter toolbar"), this);
+    tb->setObjectName("filter_toolbar");
     addToolBar(Qt::TopToolBarArea, tb);
 
     show_filter_action_ = new QAction(QIcon(":/icons/icons/view-filter.png"), tr("View and edit filter"), this);
@@ -183,6 +214,12 @@ server_list_widget::server_list_widget( filter_factory_p factory, QWidget *paren
     connect(filters_->root_filter().get(), SIGNAL(changed_signal()), SLOT(update_list()));
     connect(filters_.get(), SIGNAL(toolbar_filter_changed()), SLOT(update_toolbar_filter()));
     update_toolbar_filter();
+    
+    filter_widget_ = new QDockWidget(tr("Filter"), this);
+    filter_widget_->setObjectName("filter");
+    filter_edit_widget_ = new filter_edit_widget(filters_, filter_widget_);
+    filter_widget_->setWidget(filter_edit_widget_);
+    addDockWidget(Qt::LeftDockWidgetArea, filter_widget_);
 }
 
 server_list_widget::~server_list_widget()
@@ -243,62 +280,63 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
         si = empty;
 
     int stamp = item->data(0, c_stamp_role).value<int>();
-    if (si->update_stamp() == stamp && stamp != 0)
-        return;
-
-    QModelIndex index = tree_->indexFromItem(item);
-    tree_->model()->setData(index, QVariant::fromValue(si), c_info_role );
-
-    QString name = si->name;
-    if (bms_)
+    if (si->update_stamp() != stamp || stamp == 0)
     {
-        const server_bookmark& bm = bms_->get(id);
-        if (!bm.is_empty())
+        QModelIndex index = tree_->indexFromItem(item);
+        tree_->model()->setData(index, QVariant::fromValue(si), c_info_role);
+
+        QString name = si->name;
+        if (bms_)
         {
-            if (!bm.name().isEmpty() && name != bm.name())
+            const server_bookmark& bm = bms_->get(id);
+            if (!bm.is_empty())
             {
-                if (name.isEmpty())
-                    name = bm.name();
-                else
-                    name = QString("%1 (%2)").arg(name).arg(bm.name());
+                if (!bm.name().isEmpty() && name != bm.name())
+                {
+                    if (name.isEmpty())
+                        name = bm.name();
+                    else
+                        name = QString("%1 (%2)").arg(name).arg(bm.name());
+                }
             }
         }
-    }
 
-    QStringList sl;
-    sl << si->status_name();
+        QStringList sl;
+        sl << si->status_name();
 
-    if ( si->is_password_needed() )
-        sl << tr("Private");
-    if ( si->get_info("pure", "-1").toInt() == 0 )
-        sl << tr("Not pure");
+        if (si->is_password_needed())
+            sl << tr("Private");
+        if (si->get_info("pure", "-1").toInt() == 0)
+            sl << tr("Not pure");
 
-    QString status = sl.join(", ");
+        QString status = sl.join(", ");
 
-    item->setToolTip(0, status);
-    item->setText(1, name);
-    item->setText(2, id.address());
-    item->setIcon(3, geoip::get_flag_by_country(si->country_code) );
-    item->setToolTip(3, si->country);
-    item->setText(4, QString("%1").arg(si->ping, 5));
-    item->setText(5, si->mode_name());
-    item->setText(6, si->map);
+        item->setToolTip(0, status);
+        item->setText(1, name);
+        item->setText(2, id.address());
+        item->setIcon(3, geoip::get_flag_by_country(si->country_code));
+        item->setToolTip(3, si->country);
+        item->setText(4, QString("%1").arg(si->ping, 5));
+        item->setText(5, si->mode_name());
+        item->setText(6, si->map);
 
-    QString player_count;
-    if ( si->max_player_count > 0 )
-        player_count = QString("%1/%2/%3").arg(si->players.size())
-        .arg(si->public_slots()).arg(si->max_player_count);
+        QString player_count;
+        if (si->max_player_count > 0)
+            player_count = QString("%1/%2/%3").arg(si->players.size())
+            .arg(si->public_slots()).arg(si->max_player_count);
 
-    item->setText(7, player_count);
-    item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
-        .arg(si->players.size()).arg(si->public_slots())
-        .arg(si->max_player_count));
+        item->setText(7, player_count);
+        item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
+                         .arg(si->players.size()).arg(si->public_slots())
+                         .arg(si->max_player_count));
+        item->setData(0, c_stamp_role, QVariant::fromValue(si->update_stamp()));
+        }
 
     bool visible = filter_item(item);
     if (visible)
         visible_server_count_++;
-    item->setHidden(!visible);
-    item->setData(0, c_stamp_role, QVariant::fromValue(si->update_stamp()));
+    if (item->isHidden() == visible)
+        item->setHidden(!visible);
 }
 
 bool server_list_widget::filter_item(QTreeWidgetItem* item)
@@ -416,13 +454,6 @@ QTreeWidget* server_list_widget::tree() const
 
 void server_list_widget::edit_filter()
 {
-    if (!filter_widget_)
-    {
-        filter_widget_ = new QDockWidget(tr("Filter"), this);
-        filter_edit_widget* filter = new filter_edit_widget(filters_, filter_widget_);
-        filter_widget_->setWidget(filter);
-        addDockWidget(Qt::LeftDockWidgetArea, filter_widget_);
-    }
     filter_widget_->setVisible(show_filter_action_->isChecked());
 }
 
@@ -452,6 +483,11 @@ void server_list_widget::load_options()
         QString name = st.load_toolbar_filter();
         f = filters_->find_by_name(name);
         filters_->set_toolbar_filter(f);
+
+        restoreState(st.load_state(), 1);
+        show_filter_action_->setChecked(st.is_filter_visible());
+
+        filter_edit_widget_->update_contents();
     }
     catch(const std::exception& e)
     {
@@ -469,6 +505,9 @@ void server_list_widget::save_options()
         st.save_toolbar_filter(tbf->name());
     else
         st.save_toolbar_filter("");
+
+    st.save_state(saveState(1));
+    st.set_filter_visible(show_filter_action_->isChecked());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

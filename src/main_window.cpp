@@ -679,6 +679,8 @@ void main_window::load_geometry()
 
     qApp->processEvents();
     restoreState(s->value("window_state").toByteArray());
+
+    // TODO accurate move this to server_list_widget_settings
     fav_list_->tree()->header()->restoreState(s->value("fav_list_state").toByteArray());
     all_list_->tree()->header()->restoreState(s->value("all_list_state").toByteArray());
 }

@@ -40,6 +40,12 @@ public:
 
     QString load_toolbar_filter();
     void save_toolbar_filter(const QString&);
+
+    void save_state(const QByteArray& a);
+    QByteArray load_state();
+
+    bool is_filter_visible();
+    void set_filter_visible(bool val);
 private:
     QString name_;
 };
@@ -84,16 +90,14 @@ private:
     bool filter_item(QTreeWidgetItem*);
 
     server_tree* tree_;
-//    QToolButton* show_filter_button_;
     server_list_p serv_list_;
     server_items items_;
-    QRegExp filter_rx_;
     QPointer<server_bookmark_list> bms_;
     filter_list_p filters_;
     QDockWidget* filter_widget_;
-//    filter_edit_widget* edit_widget_;
     int visible_server_count_;
     QWidget* filter_holder_;
+    filter_edit_widget* filter_edit_widget_;
     QAccumulatingConnection* accum_updater_;
     QAction* show_filter_action_;
 };

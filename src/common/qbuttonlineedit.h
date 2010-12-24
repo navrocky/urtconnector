@@ -31,7 +31,7 @@ public:
     QToolButton* addButton(Position pos = Right);
     QToolButton* addActionButton(QAction* a, Position pos = Right);
 
-    virtual bool event(QEvent* e) OVERRIDE;
+    virtual bool event(QEvent* e);
 
 protected:
     virtual QSize minimumSizeHint() const;
