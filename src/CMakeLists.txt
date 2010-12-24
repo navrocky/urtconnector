@@ -77,6 +77,7 @@ set(HEADERS
     launcher/tools.h
     setting_forms/launch_settings_form.h
     setting_forms/application_settings_form.h
+    main_tab.h
 )
 
 set(MOC_HEADERS
@@ -134,6 +135,7 @@ set(SOURCES
     rcon/rcon_completer.cpp
     setting_forms/launch_settings_form.cpp
     setting_forms/application_settings_form.cpp
+    main_tab.cpp
 )
 
 set(IFACES

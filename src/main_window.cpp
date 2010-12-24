@@ -467,7 +467,7 @@ server_id main_window::selected() const
         if( curw != ui_->tabHistory )
             return server_id();
 
-        return history_list_->current_server();
+        return history_list_->selected_server();
     }
     
     server_id_list sel = list->selection();

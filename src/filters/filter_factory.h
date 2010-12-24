@@ -14,7 +14,9 @@ public:
 
     void add_class(filter_class_p fc);
 
-    filter_p create_filter_by_id(const QString& id);
+    bool has_filter( const QString& id ) const;
+    
+    filter_p create_filter_by_id(const QString& id) const;
 
     filter_classes_t filter_classes();
 

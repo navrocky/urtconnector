@@ -15,7 +15,7 @@ filter_list::filter_list(filter_factory_p factory)
 {
 }
 
-filter_p filter_list::create_by_class_id(const QString& id)
+filter_p filter_list::create_by_class_id(const QString& id) const
 {
     return factory_->create_filter_by_id(id);
 }

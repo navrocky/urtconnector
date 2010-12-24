@@ -449,6 +449,8 @@ src/launcher/launcher.h -text
 src/launcher/tools.cpp -text
 src/launcher/tools.h -text
 src/main.cpp -text
+src/main_tab.cpp -text
+src/main_tab.h -text
 src/main_window.cpp -text
 src/main_window.h -text
 src/main_window.ui -text

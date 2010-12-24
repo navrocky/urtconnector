@@ -9,9 +9,15 @@ void filter_factory::add_class(filter_class_p fc)
     classes_[fc->id()] = fc;
 }
 
-filter_p filter_factory::create_filter_by_id(const QString& id)
+bool filter_factory::has_filter(const QString& id) const
 {
-    filter_classes_map_t::iterator it = classes_.find(id);
+    return classes_.find(id) != classes_.end() ;
+}
+
+
+filter_p filter_factory::create_filter_by_id(const QString& id) const
+{
+    filter_classes_map_t::const_iterator it = classes_.find(id);
     assert(it != classes_.end());
     return it->second->create_filter();
 }

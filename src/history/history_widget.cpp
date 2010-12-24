@@ -45,26 +45,18 @@ history_widget::history_widget( QWidget *parent, history_p list)
     : QMainWindow(parent)
     , p_( new Pimpl )
 {
+    init_main_tab(this);
     p_->history = list;
-    setWindowFlags(windowFlags() & (~Qt::Window));
 
+    init_filter_toolbar();
 
     setCentralWidget( p_->central );
     
 
     
-    QToolBar* tb = new QToolBar(tr("Filter toolbar"), this);
-    addToolBar(Qt::TopToolBarArea, tb);
 
-    QAction* show_filter = new QAction(QIcon(":/icons/icons/view-filter.png"), tr("View and edit filter"), this);
-    show_filter->setCheckable(true);
-    connect(show_filter, SIGNAL(triggered()), SLOT(edit_filter()));
-    tb->addAction(show_filter);
 
-    QWidget* filter_holder = new QWidget(this);
-    QHBoxLayout* lay = new QHBoxLayout(filter_holder);
-    lay->setContentsMargins(0, 0, 0, 0);
-    tb->addWidget(filter_holder);
+
     
     connect(p_->ui.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
 }
@@ -144,7 +136,7 @@ QTreeWidgetItem* history_widget::add_tem(QTreeWidgetItem* item)
 }
 
 
-server_id history_widget::current_server() const
+server_id history_widget::selected_server() const
 {
     QTreeWidgetItem* item = p_->ui.treeWidget->currentItem();
     if( !item )
@@ -152,6 +144,12 @@ server_id history_widget::current_server() const
 
     return item->data(0, c_id_role).value<server_id>();
 }
+
+void history_widget::servers_updated()
+{
+    p_->ui.treeWidget->setItemDelegateForColumn( 1, new status_item_delegate( server_list(), p_->ui.treeWidget) );
+}
+
 
 QTreeWidgetItem* history_widget::find_item(const server_id& id) const
 {
@@ -162,18 +160,6 @@ QTreeWidgetItem* history_widget::find_item(const server_id& id) const
     }
 
     return 0;
-}
-
-void history_widget::set_server_list(server_list_p ptr)
-{
-    p_->serv_list = ptr;
-    p_->ui.treeWidget->setItemDelegateForColumn( 1, new status_item_delegate( ptr, p_->ui.treeWidget) );
-}
-
-
-server_list_p history_widget::server_list() const
-{
-    return p_->serv_list;
 }
 
 void history_widget::resort( QTreeWidgetItem* item )

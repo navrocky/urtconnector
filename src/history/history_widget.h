@@ -6,13 +6,17 @@
 #include <QMainWindow>
 #include <QTreeWidget>
 
-#include <common/server_id.h>
+#include "common/server_id.h"
+
+#include "main_tab.h"
 
 #include "pointers.h"
 
+#include <iostream>
+
 class QTreeWidgetItem;
 
-class history_widget : public QMainWindow {
+class history_widget : public QMainWindow, public main_tab {
     Q_OBJECT
 public:
     history_widget( QWidget *parent, history_p list);
@@ -21,13 +25,13 @@ public:
     void update_history();
     int num_rows() const;
 
-    server_id current_server() const;
-
-    void set_server_list(server_list_p ptr);
-    server_list_p server_list() const;
+    virtual server_id selected_server() const;
     
 protected:
     void changeEvent(QEvent *e);
+
+protected Q_SLOTS:
+    virtual void servers_updated();
 
 private slots:
     void filter_clear();
