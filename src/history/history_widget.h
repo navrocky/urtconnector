@@ -34,7 +34,12 @@ private slots:
 
 private:
     void addItem(history_item_p item);
+    ///returns 0 if NO resort needed
+    QTreeWidgetItem* add_tem(QTreeWidgetItem* item);
+    
     QTreeWidgetItem* find_item( const server_id& id ) const;
+
+    void resort( QTreeWidgetItem* item );
     
 private:
     struct Pimpl;

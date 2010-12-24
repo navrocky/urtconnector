@@ -1,3 +1,5 @@
+
+#include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 
 #include <QList>
@@ -109,10 +111,9 @@ void history_widget::update_history()
 
 void history_widget::addItem(history_item_p item)
 {
-    //boost::shared_ptr<QTreeWidgetItem> item_ptr(new QTreeWidgetItem(ui_->treeWidget));
     QTreeWidgetItem* item_ptr = new QTreeWidgetItem();
-    item_ptr->setText(0, item->server_name());
     
+    item_ptr->setText(0, item->server_name());
     item_ptr->setText(2, item->date_time().toString());
     item_ptr->setText(3, item->address());
     item_ptr->setText(4, item->password());
@@ -120,16 +121,28 @@ void history_widget::addItem(history_item_p item)
     item_ptr->setData( 0, c_id_role, QVariant::fromValue( item->id() ) );
     item_ptr->setData( 1, c_id_role, QVariant::fromValue( item->id() ) );
 
-    QTreeWidgetItem* parent = find_item( item->id() );
+    if( QTreeWidgetItem* parent = add_tem( item_ptr ) )
+        resort(parent);
+}
+
+QTreeWidgetItem* history_widget::add_tem(QTreeWidgetItem* item)
+{
+    QTreeWidgetItem* parent = find_item( item->data( 0, c_id_role ).value<server_id>() );
 
     if( parent )
     {
-        parent->insertChild( 0, item_ptr );
-        item_ptr->setData( 1, c_suppress_role, true );
+        item->setData( 1, c_suppress_role, true );
+        parent->insertChild( 0, item );
+        return parent;
     }
     else
-        p_->ui.treeWidget->insertTopLevelItem(0, item_ptr);
+    {
+        item->setData( 1, c_suppress_role, false );
+        p_->ui.treeWidget->insertTopLevelItem(0, item);
+        return 0;
+    }
 }
+
 
 server_id history_widget::current_server() const
 {
@@ -161,4 +174,23 @@ void history_widget::set_server_list(server_list_p ptr)
 server_list_p history_widget::server_list() const
 {
     return p_->serv_list;
+}
+
+void history_widget::resort( QTreeWidgetItem* item )
+{
+    int index = p_->ui.treeWidget->indexOfTopLevelItem ( item );
+    
+    if (index == -1) return;
+    
+    item = p_->ui.treeWidget->takeTopLevelItem ( index );
+
+    QList<QTreeWidgetItem*> chlds = item->takeChildren();
+
+    //item itself is under resorting too!
+    chlds << item;
+    
+    std::sort( chlds.begin(), chlds.end(),
+        boost::bind( &QTreeWidgetItem::text, _1, 0 ) < boost::bind( &QTreeWidgetItem::text, _2, 0 ) );
+
+    std::for_each( chlds.begin(), chlds.end(), boost::bind( &history_widget::add_tem, this, _1) );
 }
