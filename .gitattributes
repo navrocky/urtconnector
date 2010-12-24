@@ -97,6 +97,8 @@ src/common/player_info.cpp -text
 src/common/player_info.h -text
 src/common/qaccumulatingconnection.cpp -text
 src/common/qaccumulatingconnection.h -text
+src/common/qbuttonlineedit.cpp -text
+src/common/qbuttonlineedit.h -text
 src/common/qt_syslog.cpp -text
 src/common/qt_syslog.h -text
 src/common/scoped_tools.h -text
