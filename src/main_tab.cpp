@@ -122,6 +122,7 @@ main_tab::~main_tab()
 void main_tab::init_filter_toolbar()
 {
     QToolBar* tb = new QToolBar( QObject::tr("Filter toolbar"), this);
+    tb->setFloatable(false);
     tb->setObjectName("filter_toolbar");
     addToolBar( Qt::TopToolBarArea, tb );
 
@@ -139,17 +140,27 @@ void main_tab::init_filter_toolbar()
     lay->setContentsMargins(0, 0, 0, 0);
     tb->addWidget(p_->filter_holder);
 
+    connect( tb, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this,  SLOT( save_filter() ) );
+    connect( tb, SIGNAL( visibilityChanged ( bool ) ), this,                 SLOT( save_filter() ) );
+    connect( tb, SIGNAL( topLevelChanged ( bool ) ),   this,                 SLOT( save_filter() ) );
+    connect( tb, SIGNAL( movableChanged ( bool ) ),    this,                 SLOT( save_filter() ) );
+    
     update_toolbar_filter();
 
     p_->filter_widget = new QDockWidget( QObject::tr("Filter"), this );
+    p_->filter_widget->setFeatures( p_->filter_widget->features() ^ QDockWidget::DockWidgetFloatable );
     p_->filter_widget->setObjectName("filter_widget");
     filter_edit_widget* filter = new filter_edit_widget( p_->filters, p_->filter_widget );
     p_->filter_widget->setWidget( filter );
     p_->filter_widget->setVisible( p_->st.is_filter_visible() );
     addDockWidget( Qt::LeftDockWidgetArea, p_->filter_widget );
 
-    connect( p_->filter_widget, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this, SLOT( save_filter() ) );
-
+    connect( p_->filter_widget, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this,  SLOT( save_filter() ) );
+    connect( p_->filter_widget, SIGNAL( visibilityChanged ( bool ) ), show_filter_a,        SLOT( setChecked(bool)) );
+    connect( p_->filter_widget, SIGNAL( visibilityChanged ( bool ) ), this,                 SLOT( save_filter() ) );
+    connect( p_->filter_widget, SIGNAL( topLevelChanged ( bool ) ),   this,                 SLOT( save_filter() ) );
+    
+    
     restoreState( p_->st.load_state(), 1);
 }
 

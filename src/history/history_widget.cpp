@@ -57,7 +57,7 @@ history_widget::history_widget( QWidget *parent, history_p list)
 
 
     
-    connect(p_->ui.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
+//     connect(p_->ui.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
 }
 
 int history_widget::num_rows() const
@@ -82,7 +82,7 @@ void history_widget::changeEvent(QEvent *e)
 
 void history_widget::filter_clear()
 {
-    p_->ui.filterEdit->clear();
+//     p_->ui.filterEdit->clear();
 }
 
 QTreeWidget* history_widget::tree() const
