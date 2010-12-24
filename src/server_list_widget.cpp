@@ -45,7 +45,8 @@ const int c_info_role = Qt::UserRole;
 const int c_id_role = Qt::UserRole + 1;
 const int c_stamp_role = Qt::UserRole + 2;
 
-Q_DECLARE_METATYPE(server_id)
+//FIXME move to shared place USED in history_tab
+const int c_suppress_role = Qt::UserRole + 11;
 
 ////////////////////////////////////////////////////////////////////////////////
 // server_tree
@@ -477,16 +478,31 @@ status_item_delegate::status_item_delegate(QObject* parent)
     : QStyledItemDelegate(parent)
 {}
 
+status_item_delegate::status_item_delegate(server_list_p sl, QObject* parent)
+    : QStyledItemDelegate(parent)
+    , sl_(sl)
+{}
+
+
 void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     //Draw base styled-item(gradient backgroud and other)
     QStyledItemDelegate::paint(painter, option, index);
 
+    if( index.data( c_suppress_role ).toBool() )
+        return;
+    
     //Rect for drawing icons
     const QRect& optr = option.rect;
     QRect icon_rect( optr.x() + 2, optr.y() + 2, optr.height() - 4, optr.height() - 4 );
     
-    server_info_p si = index.data(c_info_role).value<server_info_p>();
+    server_info_p si;
+    
+    if( sl_ )
+        si = sl_->get( index.data(c_id_role).value<server_id>() );
+    else
+        si = index.data(c_info_role).value<server_info_p>();
+    
     if ( !si ) si = server_info_p( new server_info() );
 
     static QPixmap icon_none(":/icons/icons/status-none.png");

@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QString>
+#include <QVariant>
 
 #include "implicit_sharing.h"
 
@@ -52,5 +53,8 @@ bool operator<(const server_id& a, const server_id& b);
 bool operator>(const server_id& a, const server_id& b);
 
 typedef QList<server_id> server_id_list;
+
+
+Q_DECLARE_METATYPE(server_id);
 
 #endif

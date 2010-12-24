@@ -459,7 +459,17 @@ void main_window::about_qt()
 server_id main_window::selected() const
 {
     server_list_widget* list = current_list_widget();
-    if (!list) return server_id();
+    if (!list)
+    {
+        //get servier_id from history
+        QWidget* curw = ui_->tabWidget->currentWidget();
+
+        if( curw != ui_->tabHistory )
+            return server_id();
+
+        return history_list_->current_server();
+    }
+    
     server_id_list sel = list->selection();
     if (sel.size() == 0) return server_id();
     return sel.front();
@@ -830,6 +840,7 @@ void main_window::load_history_tab()
 
         history_list_->update_history();
 
+        history_list_->set_server_list(all_sl_);
         history_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
         history_list_->tree()->addAction(ui_->actionConnect);
         add_separator_action(history_list_->tree());

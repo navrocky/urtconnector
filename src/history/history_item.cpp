@@ -5,6 +5,12 @@ history_item::history_item(server_id& id, QString& server_name, QString& passwor
 {
 }
 
+server_id history_item::id() const
+{
+    return id_;
+}
+
+
 QString history_item::address() const
 {
     return id_.address();

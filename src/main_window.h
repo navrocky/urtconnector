@@ -91,9 +91,11 @@ private:
     server_info_p selected_info() const;
 
     boost::shared_ptr<Ui_MainWindowClass> ui_;
+    
     server_list_widget* all_list_;
     server_list_widget* fav_list_;
     history_widget* history_list_;
+    
     server_list_p all_sl_;
     server_bookmark_list* bookmarks_;
     history_p history_sl_;

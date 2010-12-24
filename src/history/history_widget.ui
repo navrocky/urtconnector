@@ -59,17 +59,19 @@
      <attribute name="headerDefaultSectionSize">
       <number>100</number>
      </attribute>
-     <attribute name="headerDefaultSectionSize">
-      <number>100</number>
-     </attribute>
      <column>
       <property name="text">
-       <string>Date and time</string>
+       <string>Server name</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Server name</string>
+       <string>Status</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Date and time</string>
       </property>
      </column>
      <column>

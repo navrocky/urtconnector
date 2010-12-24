@@ -102,10 +102,12 @@ class status_item_delegate : public QStyledItemDelegate
 {
 public:
     status_item_delegate(QObject* parent = 0);
+    status_item_delegate(server_list_p sl, QObject* parent = 0);
     virtual void paint(QPainter* painter, const QStyleOptionViewItem& option,
         const QModelIndex& index) const;
 private:
     void next_icon(QRect& icon) const;
+    server_list_p sl_;    
 };
 
 #endif
