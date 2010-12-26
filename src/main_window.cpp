@@ -95,6 +95,7 @@ main_window::main_window(QWidget *parent)
 , clipper_( new clipper(this) )
 , anticheat_(NULL)
 , launcher_(new launcher(this))
+, christmas_mode_(false)
 {
 //    setAttribute(Qt::WA_TranslucentBackground, true);
     ui_->setupUi(this);
@@ -448,6 +449,7 @@ void main_window::refresh_master()
 void main_window::show_about()
 {
     about_dialog d;
+    d.set_christmas_mode(christmas_mode_);
     d.exec();
 }
 
@@ -888,5 +890,23 @@ void main_window::check_anticheat_prereq() const
     QString player_name = ui_->qlPlayerEdit->text();
     if (player_name.isEmpty())
         throw qexception(tr("The player's name must be defined in the quick launch window for the anti-cheat!"));
+}
+
+void main_window::set_christmas_mode(bool val)
+{
+    if (christmas_mode_ == val)
+        return;
+    christmas_mode_ = val;
+    update_christmas_mode();
+}
+
+void main_window::update_christmas_mode()
+{
+    if (christmas_mode_)
+    {
+        QIcon ico(":/images/icons/logo_christmas.png");
+        setWindowIcon(ico);
+        tray_->setIcon(ico);
+    }
 }
 

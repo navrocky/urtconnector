@@ -19,6 +19,7 @@
 #include <QDockWidget>
 #include <QToolBar>
 #include <QAction>
+#include <QEvent>
 
 #include <cl/syslog/syslog.h>
 
@@ -219,7 +220,9 @@ server_list_widget::server_list_widget( filter_factory_p factory, QWidget *paren
     filter_widget_->setObjectName("filter");
     filter_edit_widget_ = new filter_edit_widget(filters_, filter_widget_);
     filter_widget_->setWidget(filter_edit_widget_);
+    filter_widget_->hide();
     addDockWidget(Qt::LeftDockWidgetArea, filter_widget_);
+    filter_widget_->installEventFilter(this);
 }
 
 server_list_widget::~server_list_widget()
@@ -510,6 +513,17 @@ void server_list_widget::save_options()
     st.set_filter_visible(show_filter_action_->isChecked());
 }
 
+bool server_list_widget::eventFilter(QObject* watched, QEvent* event)
+{
+    if (watched == filter_widget_)
+    {
+        if (event->type() == QEvent::Show)
+            show_filter_action_->setChecked(true);
+        if (event->type() == QEvent::Hide)
+            show_filter_action_->setChecked(false);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // status_item_delegate
 
@@ -587,5 +601,3 @@ void status_item_delegate::next_icon(QRect& icon) const
 { 
     icon.adjust( icon.width(), 0, icon.width(), 0 );
 }
-
-

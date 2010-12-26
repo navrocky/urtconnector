@@ -78,6 +78,8 @@ public:
     /*! Visible server count passed through filters */
     int visible_server_count() const {return visible_server_count_;}
 
+    bool eventFilter(QObject* watched, QEvent* event);
+
 private slots:
     void edit_filter();
     void update_list();

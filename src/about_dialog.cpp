@@ -18,6 +18,7 @@ QString prepare_html(const QString& s)
 about_dialog::about_dialog(QWidget *parent)
 : QDialog(parent)
 , ui_(new Ui::AboutDialogClass)
+, christmas_mode_(false)
 {
     ui_->setupUi(this);
     ui_->label_version->setText(tr("version %1 \"%2\"").arg(URT_VERSION).arg(URT_CODENAME));
@@ -65,8 +66,26 @@ about_dialog::about_dialog(QWidget *parent)
         "<p>If you want help with translation UrTConnector to your language - "
         "<a href=\"http://code.google.com/p/urtconnector\">join</a> us!</p>"
     )));
+    update_christmas_mode();
 }
 
 about_dialog::~about_dialog()
 {
 }
+
+void about_dialog::set_christmas_mode(bool val)
+{
+    if (christmas_mode_ == val)
+        return;
+    christmas_mode_ = val;
+    update_christmas_mode();
+}
+
+void about_dialog::update_christmas_mode()
+{
+    if (christmas_mode_)
+    {
+        ui_->logo_label->setPixmap(QPixmap(":/images/icons/logo_christmas.png"));
+    }
+}
+

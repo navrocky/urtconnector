@@ -34,7 +34,10 @@ public:
     main_window ( QWidget *parent = 0 );
     ~main_window();
 
-    
+    bool christmas_mode() const {return christmas_mode_;}
+    void set_christmas_mode(bool val);
+
+
 private slots:
     void show_options();
     void show_about();
@@ -89,6 +92,7 @@ private:
     server_id selected() const;
     server_list_widget* current_list_widget() const;
     server_info_p selected_info() const;
+    void update_christmas_mode();
 
     boost::shared_ptr<Ui_MainWindowClass> ui_;
     
@@ -116,6 +120,7 @@ private:
     QAction* anticheat_configure_action_;
     QPointer<QProcess> ac_proc_;
     QAccumulatingConnection* server_info_updater_;
+    bool christmas_mode_;
 };
 
 #endif

@@ -90,7 +90,6 @@ private:
     filter_list_p filters_;
     QTreeWidget* tree_;
     QAction* add_new_filter_action_;
-//    QAction* add_exist_filter_action_;
     QAction* delete_filter_action_;
     QAction* select_toolbar_filter_action_;
 };

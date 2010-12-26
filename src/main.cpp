@@ -217,6 +217,10 @@ int main(int argc, char *argv[])
 
         main_window w;
 
+        // detect christmas and activate this mode if any
+        int month = QDate::currentDate().month();
+        w.set_christmas_mode(month == 1 || month == 12);
+
 #ifdef USE_SINGLE_APP
         //set a widget that should raise when new instance trying to start
         a.setActivationWindow(&w);

@@ -199,7 +199,9 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     tb->addAction(select_toolbar_filter_action_);
     tb->addSeparator();
     tb->addAction(delete_filter_action_);
-    addToolBar(Qt::BottomToolBarArea, tb);
+    tb->setMovable(false);
+    tb->setFloatable(false);
+    addToolBar(Qt::TopToolBarArea, tb);
 
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
@@ -219,6 +221,7 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
 
     resize(400, 250);
     update_contents();
+    update_actions();
 }
 
 void filter_edit_widget::item_changed()
@@ -283,12 +286,11 @@ void filter_edit_widget::update_actions()
 {
     QTreeWidgetItem* item = tree_->currentItem();
     QTreeWidgetItem* parent_item = item ? item->parent() : NULL;
-    filter_p f = item->data(0, Qt::UserRole).value<filter_p>();
+    filter_p f = item ? item->data(0, Qt::UserRole).value<filter_p>() : filter_p();
 
     add_new_filter_action_->setEnabled(composite_cast(f));
     delete_filter_action_->setEnabled(parent_item);
-
-    select_toolbar_filter_action_->setEnabled(f != filters_->toolbar_filter().lock());
+    select_toolbar_filter_action_->setEnabled(f && f != filters_->toolbar_filter().lock());
 }
 
 void filter_edit_widget::add_new_filter()

@@ -39,6 +39,7 @@
     </qresource>
     <qresource prefix="/images">
         <file>icons/logo.png</file>
+        <file>icons/logo_christmas.png</file>
     </qresource>
     <qresource prefix="/flags">
         <file>flags/ad.png</file>
