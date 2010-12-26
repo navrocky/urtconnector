@@ -79,6 +79,16 @@ void settings::set_ftp_folder(const QString& val)
     part()->setValue("ftp_folder", val);
 }
 
+bool settings::send_only_md5() const
+{
+    return part()->value("send_only_md5", true).toBool();
+}
+
+void settings::set_send_only_md5(bool val)
+{
+    part()->setValue("send_only_md5", val);
+}
+
 bool settings::use_local_folder() const
 {
     return part()->value("use_local_folder", false).toBool();

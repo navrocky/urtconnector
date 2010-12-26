@@ -20,7 +20,8 @@ bool sshot_file_output::can_send_now()
     return true;
 }
 
-void sshot_file_output::send_file(const QString& name, const QByteArray& data)
+void sshot_file_output::send_file(const QString& name, const QByteArray& data,
+                                  bool)
 {
     if (!is_enabled())
         return;

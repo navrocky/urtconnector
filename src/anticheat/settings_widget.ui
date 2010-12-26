@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>313</width>
-    <height>386</height>
+    <width>489</width>
+    <height>404</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -20,9 +20,6 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
    <property name="sizeConstraint">
     <enum>QLayout::SetMinimumSize</enum>
    </property>
@@ -206,6 +203,16 @@
         <item row="3" column="1">
          <widget class="QLineEdit" name="ftp_folder_edit"/>
         </item>
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="only_md5_check">
+          <property name="toolTip">
+           <string>If unchecked then sends to ftp server both screenshots and their md5 sums</string>
+          </property>
+          <property name="text">
+           <string>Send only screenshots MD5</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
@@ -274,7 +281,6 @@
  </widget>
  <resources>
   <include location="../images.qrc"/>
-  <include location="../../../../../jerry/.designer/images.qrc"/>
  </resources>
  <connections/>
 </ui>

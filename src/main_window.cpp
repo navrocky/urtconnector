@@ -76,12 +76,6 @@ SYSLOG_MODULE(main_window)
 using namespace std;
 using boost::bind;
 
-void create_anticheat_config(){
-    preferences_dialog d( preferences_dialog::Auto, false );
-    d.add_item( new anticheat::settings_widget() );
-    d.exec();
-};
-
 ////////////////////////////////////////////////////////////////////////////////
 // main_window
 
@@ -110,9 +104,7 @@ main_window::main_window(QWidget *parent)
 
 //    anticheat_open_action_ = new QAction(QIcon(":/images/icons/zoom.png"), tr("Enable anticheat"), this);
     anticheat_configure_action_ = new QAction(QIcon(":/icons/icons/configure.png"), tr("Configure anticheat"), this);
-
-    connect( anticheat_configure_action_, SIGNAL(triggered(bool))
-        , new qt_signal_wrapper( anticheat_configure_action_, bind( create_anticheat_config) ), SLOT(activate()) );
+    connect( anticheat_configure_action_, SIGNAL(triggered(bool)), SLOT(show_anticheat_options()) );
     
     QMenu* m = new QMenu(this);
 //    m->addAction(anticheat_open_action_);
@@ -274,7 +266,7 @@ void main_window::show_options()
     bool wasHistoryEnabled = as.keep_history();
     unsigned int oldNumberInHistory = as.number_in_history();
 
-    preferences_dialog d( preferences_dialog::Auto, false );
+    preferences_dialog d( preferences_dialog::Auto, false, this );
     d.add_item( new launch_settings_form() );
     d.add_item( new application_settings_form() );
     d.add_item( new rcon_settings_form() );
@@ -448,7 +440,7 @@ void main_window::refresh_master()
 
 void main_window::show_about()
 {
-    about_dialog d;
+    about_dialog d(this);
     d.set_christmas_mode(christmas_mode_);
     d.exec();
 }
@@ -909,4 +901,12 @@ void main_window::update_christmas_mode()
         tray_->setIcon(ico);
     }
 }
+
+void main_window::show_anticheat_options()
+{
+    preferences_dialog d( preferences_dialog::Auto, false, this );
+    d.add_item( new anticheat::settings_widget(&d) );
+    d.exec();
+}
+
 

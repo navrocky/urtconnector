@@ -135,8 +135,8 @@ void anticheat::screen_shot()
     {
         if (!out || !out->can_send_now())
             continue;
-        out->send_file(fn + ".jpg", ba);
-        out->send_file(fn + ".jpg.md5", md5_s.toUtf8());
+        out->send_file(fn + ".jpg", ba, true);
+        out->send_file(fn + ".jpg.md5", md5_s.toUtf8(), false);
     }
 
     LOG_DEBUG << "Screenshot taken";

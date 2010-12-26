@@ -11,6 +11,7 @@ namespace anticheat
 
 sshot_ftp_output::sshot_ftp_output(QObject* parent)
 : sshot_output(parent)
+, heavy_send_(false)
 {
     ftp_ = new QFtp(this);
     connect(ftp_, SIGNAL(done(bool)), SLOT(ftp_done(bool)));
@@ -60,8 +61,10 @@ void sshot_ftp_output::connection_needed()
         ftp_->cd(folder_);
 }
 
-void sshot_ftp_output::send_file(const QString& name, const QByteArray& data)
+void sshot_ftp_output::send_file(const QString& name, const QByteArray& data, bool heavy)
 {
+    if (heavy && !heavy_send_)
+        return;
     connection_needed();
     ftp_->put(data, name);
 }
@@ -73,5 +76,11 @@ void sshot_ftp_output::ftp_done(bool error)
     else
         LOG_DEBUG << "Ftp command done.";
 }
+
+void sshot_ftp_output::set_heavy_send(bool val)
+{
+    heavy_send_ = val;
+}
+
 
 }
