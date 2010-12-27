@@ -18,37 +18,6 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../images.qrc">:/icons/icons/edit-find.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="filterEdit"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="clearFilterButton">
-       <property name="text">
-        <string>clear</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../images.qrc">
-         <normaloff>:/icons/icons/edit-clear-locationbar-rtl.png</normaloff>:/icons/icons/edit-clear-locationbar-rtl.png</iconset>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
     <widget class="QTreeWidget" name="treeWidget">
      <property name="minimumSize">
       <size>
@@ -59,17 +28,19 @@
      <attribute name="headerDefaultSectionSize">
       <number>100</number>
      </attribute>
-     <attribute name="headerDefaultSectionSize">
-      <number>100</number>
-     </attribute>
      <column>
       <property name="text">
-       <string>Date and time</string>
+       <string>Server name</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Server name</string>
+       <string>Status</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Date and time</string>
       </property>
      </column>
      <column>

@@ -17,51 +17,64 @@
 #include <QByteArray>
 #include <QFile>
 #include <QHeaderView>
+#include <QProcess>
 
 #include <common/exception.h>
 #include <common/qt_syslog.h>
+#include <cl/syslog/manager.h>
 #include <common/state_settings.h>
+#include <common/server_list.h>
+#include <common/qaccumulatingconnection.h>
+#include <common/str_convert.h>
 #include <settings/settings.h>
 #include <anticheat/tools.h>
 #include <launcher/launcher.h>
+#include <launcher/tools.h>
 
 #include "config.h"
 #include "ui_main_window.h"
 #include "options_dialog.h"
 #include "server_options_dialog.h"
 #include "push_button_action_link.h"
-#include "server_list.h"
 #include "about_dialog.h"
 #include "app_options_saver.h"
 #include "server_list_saver.h"
 #include "server_info_html.h"
 #include "item_view_dblclick_action_link.h"
-#include "str_convert.h"
 #include "tools.h"
-#include "history/history.h"
+#include <history/history.h>
 
-#include "jobs/job_monitor.h"
+#include <jobs/job_monitor.h>
 #include "job_update_selected.h"
 #include "job_update_from_master.h"
 
-#include "rcon/rcon.h"
+#include <rcon/rcon.h>
 
-#include "filters/filter_factory.h"
-#include "filters/reg_filters.h"
+#include <filters/filter_factory.h>
+#include <filters/reg_filters.h>
+#include <filters/filter_edit_widget.h>
 
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
 #include <common/iconned_dock_style.h>
 #endif
 
-#include <filters/filter_edit_widget.h>
 #include <anticheat/anticheat.h>
 #include <anticheat/settings.h>
 
 #include "main_window.h"
 
+//FIXME move this headers away
+#include <preferences/src/preferences_dialog.h>
+
+#include <rcon/rcon_settings_form.h>
+#include <setting_forms/launch_settings_form.h>
+#include <setting_forms/application_settings_form.h>
+#include <anticheat/settings_widget.h>
+
 SYSLOG_MODULE(main_window)
 
 using namespace std;
+using boost::bind;
 
 ////////////////////////////////////////////////////////////////////////////////
 // main_window
@@ -69,23 +82,31 @@ using namespace std;
 main_window::main_window(QWidget *parent)
 : QMainWindow(parent)
 , ui_(new Ui::MainWindowClass)
-, opts_(new app_options())
 , all_sl_(new server_list)
-, fav_sl_(new server_list)
-, history_sl_(new history(opts_))
+, bookmarks_(new server_bookmark_list(this))
+, history_sl_(new history())
 , old_state_(0)
-, clipper_( new clipper(this, opts_) )
+, clipper_( new clipper(this) )
 , anticheat_(NULL)
-, launcher_(new launcher(opts_, this))
+, launcher_(new launcher(this))
 {
 //    setAttribute(Qt::WA_TranslucentBackground, true);
     ui_->setupUi(this);
 
-    anticheat_enabled_action_ = new QAction(QIcon(":/icons/icons/anticheat.png"), tr("Enable anticheat"), this);
+    setWindowIcon(QIcon("images:logo.png"));
+    
+    server_info_updater_ = new QAccumulatingConnection(300, QAccumulatingConnection::Periodically, this);
+    connect(server_info_updater_, SIGNAL(signal()), SLOT(update_server_info()));
+    connect(all_sl_.get(), SIGNAL(changed()), server_info_updater_, SLOT(emitSignal()));
+    connect(ui_->tabWidget, SIGNAL(currentChanged(int)), server_info_updater_, SLOT(emitSignal()));
+
+    anticheat_enabled_action_ = new QAction(QIcon("icons:anticheat.png"), tr("Enable anticheat"), this);
     anticheat_enabled_action_->setCheckable(true);
 
 //    anticheat_open_action_ = new QAction(QIcon(":/images/icons/zoom.png"), tr("Enable anticheat"), this);
-    anticheat_configure_action_ = new QAction(QIcon(":/icons/icons/configure.png"), tr("Configure anticheat"), this);
+    anticheat_configure_action_ = new QAction(QIcon("icons:configure.png"), tr("Configure anticheat"), this);
+    connect( anticheat_configure_action_, SIGNAL(triggered(bool)), SLOT(show_anticheat_options()) );
+    
     QMenu* m = new QMenu(this);
 //    m->addAction(anticheat_open_action_);
     m->addAction(anticheat_configure_action_);
@@ -112,7 +133,7 @@ main_window::main_window(QWidget *parent)
     tray_menu_->addAction(ui_->actionQuit);
     
     tray_ = new QSystemTrayIcon(this);
-    tray_->setIcon(QIcon(":/images/icons/logo.png"));
+    tray_->setIcon(QIcon("images:logo.png"));
     tray_->show();
     tray_->setContextMenu(tray_menu_);
     tray_->setToolTip(tr("Click to show/hide UrTConnector or middle click to quick launch"));
@@ -120,18 +141,18 @@ main_window::main_window(QWidget *parent)
             SLOT(tray_activated(QSystemTrayIcon::ActivationReason)));
     connect(tray_, SIGNAL(messageClicked()), SLOT(raise_window()));        
 
-    serv_info_update_timer_ = new QTimer(this);
-    serv_info_update_timer_->setInterval(1000);
-    connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
-    serv_info_update_timer_->start();
+//    serv_info_update_timer_ = new QTimer(this);
+//    serv_info_update_timer_->setInterval(1000);
+//    connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
+//    serv_info_update_timer_->start();
 
-    all_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabAll);
+    all_list_ = new server_list_widget( filter_factory_, ui_->tabAll);
     all_list_->setObjectName("all_list");
     QBoxLayout* l = dynamic_cast<QBoxLayout*>(ui_->tabAll->layout());
     l->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    fav_list_ = new server_list_widget(opts_, filter_factory_, ui_->tabFav);
+    fav_list_ = new server_list_widget( filter_factory_, ui_->tabFav);
     fav_list_->setObjectName("fav_list");
     dynamic_cast<QBoxLayout*>(ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
@@ -144,7 +165,7 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionFavDelete, SIGNAL(triggered()), SLOT(fav_delete()));
     
     connect(ui_->actionRefreshSelected, SIGNAL(triggered()), SLOT(refresh_selected()));
-    connect(ui_->actionRefreshAll, SIGNAL(triggered()), SLOT(refresh_all()));
+    connect(ui_->actionRefreshAll, SIGNAL(triggered()), SLOT(refresh_all_bookmarks()));
     connect(ui_->actionRefreshMaster, SIGNAL(triggered()), SLOT(refresh_master()));
     
     connect(ui_->actionAbout, SIGNAL(triggered()), SLOT(show_about()));
@@ -153,7 +174,6 @@ main_window::main_window(QWidget *parent)
     connect(ui_->actionQuit, SIGNAL(triggered()), SLOT(quit_action()));
     connect(ui_->actionShow, SIGNAL(triggered()), SLOT(show_action()));
     connect(ui_->actionClearAll, SIGNAL(triggered()), SLOT(clear_all()));
-    connect(ui_->actionClearOffline, SIGNAL(triggered()), SLOT(clear_offline()));
     connect(ui_->actionClearSelected, SIGNAL(triggered()), SLOT(clear_selected()));
     
     connect(ui_->actionOpenRemoteConsole, SIGNAL(triggered()), SLOT(open_remote_console()));
@@ -165,6 +185,7 @@ main_window::main_window(QWidget *parent)
     connect(launcher_, SIGNAL(started()), SLOT(launcher_started()));
     connect(launcher_, SIGNAL(stopped()), SLOT(launcher_stopped()));
 
+    new QAccumulatingConnection(bookmarks_, SIGNAL(changed()), this, SLOT(save_bookmarks()), 10, QAccumulatingConnection::Finally, this);
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
 
     all_list_->set_server_list(all_sl_);
@@ -178,7 +199,7 @@ main_window::main_window(QWidget *parent)
     
     new item_view_dblclick_action_link(this, all_list_->tree(), ui_->actionConnect);
 
-    fav_list_->set_server_list(fav_sl_);
+    fav_list_->set_server_list(all_sl_);
     fav_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     fav_list_->tree()->addAction(ui_->actionConnect);
     add_separator_action(fav_list_->tree());
@@ -191,8 +212,8 @@ main_window::main_window(QWidget *parent)
 
     new item_view_dblclick_action_link(this, fav_list_->tree(), ui_->actionConnect);
 
-    fav_list_->set_favs(&(opts_->servers));
-    all_list_->set_favs(&(opts_->servers));
+    fav_list_->set_bookmarks(bookmarks_);
+    //all_list_->set_favs(&(opts_->servers));
     // history_list_->set_favs(&(opts_->servers));
 
     // loading all options
@@ -205,9 +226,10 @@ main_window::main_window(QWidget *parent)
 
     update_actions();
 
-    sync_fav_list();
+//    sync_fav_list();
     update_server_info();
-    setVisible(!(opts_->start_hidden));
+    setVisible( !(app_settings().start_hidden()) );
+
     current_tab_changed( ui_->tabWidget->currentIndex() );
 
     all_list_->force_update();
@@ -241,154 +263,94 @@ void main_window::raise_window()
 
 void main_window::show_options()
 {
-    bool wasHistoryEnabled = opts_->keep_history;
-    unsigned int oldNumberInHistory = opts_->number_in_history;
+    app_settings as;
+    bool wasHistoryEnabled = as.keep_history();
+    unsigned int oldNumberInHistory = as.number_in_history();
 
-    options_dialog d;
-    d.set_opts(opts_);
+    preferences_dialog d( preferences_dialog::Auto, false, this );
+    d.add_item( new launch_settings_form() );
+    d.add_item( new application_settings_form() );
+    d.add_item( new rcon_settings_form() );
+    d.add_item( new anticheat::settings_widget() );
+
     if (d.exec() == QDialog::Rejected) return;
-    save_options();
 
-    if (wasHistoryEnabled != opts_->keep_history)
+    if ( wasHistoryEnabled != as.keep_history() )
+
     {
         load_history_tab();
     }
-    if (oldNumberInHistory != opts_->number_in_history)
+    if ( oldNumberInHistory != as.number_in_history() )
+
     {
         history_sl_->change_max();
-        if (opts_->keep_history)
+        if ( as.keep_history() )
+
         {
             history_list_->update_history();
         }
     }
 }
 
-void main_window::quick_connect() const
+void main_window::quick_connect()
 {
-    check_anticheat_prereq();
-    launcher* l = launcher_;
-    l->set_server_id(server_id(ui_->qlServerEdit->text()));
-    l->set_user_name(ui_->qlPlayerEdit->text());
-    l->set_password(ui_->qlPasswordEdit->text());
-
-    // add to history if history is enabled
-    if (opts_->keep_history)
-    {
-        history_sl_->add(l->id(), "", l->user_name(), l->password());
-        history_list_->update_history();
-    }
-
-    l->launch();
+    connect_to_server(server_id(ui_->qlServerEdit->text()),
+                      ui_->qlPlayerEdit->text(),
+                      ui_->qlPasswordEdit->text());
 }
 
 void main_window::quick_add_favorite()
 {
-    server_options opts;
-    opts.id = server_id(ui_->qlServerEdit->text());
-    opts.password = ui_->qlPasswordEdit->text();
+    server_bookmark bm;
+    bm.set_id(server_id(ui_->qlServerEdit->text()));
+    bm.set_password(ui_->qlPasswordEdit->text());
 
-    server_options_dialog d(0, opts);
-    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
+    server_options_dialog d(this, bm);
+    d.set_server_list(all_sl_);
+    d.set_update_params( &gi_, que_ );
+
     d.update_name();
-
-    if (d.exec() == QDialog::Rejected) return;
-    server_fav_list& list = opts_->servers;
-    list[d.options().id] = d.options();
-    save_options();
-    sync_fav_list();
-    fav_list_->force_update();
-    update_actions();
-    save_favorites();
+    if (d.exec() == QDialog::Rejected)
+        return;
+    bookmarks_->add(d.options());
 }
 
 void main_window::fav_add()
 {
-    server_options_dialog d;
-    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
-    if (d.exec() == QDialog::Rejected) return;
-    server_fav_list& list = opts_->servers;
-    list[d.options().id] = d.options();
-    sync_fav_list();
-    fav_list_->force_update();
-    update_actions();
-    save_favorites();
+    server_options_dialog d(this);
+    d.set_server_list(all_sl_);
+    d.set_update_params(&gi_, que_);
+    if (d.exec() == QDialog::Rejected)
+        return;
+    bookmarks_->add(d.options());
 }
 
 void main_window::fav_edit()
 {
     server_id id = selected();
-    if (id.is_empty()) return;
-    server_options opts = opts_->servers[id];
-
-    server_options_dialog d(this, opts);
-    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
-    if (d.exec() == QDialog::Rejected) return;
-
-    if (d.options().id != id)
-    {
-        opts_->servers.erase(id);
-        id = d.options().id;
-    }
-
-    opts_->servers[id] = d.options();
-    save_favorites();
-    sync_fav_list();
-    fav_list_->force_update();
-
-    update_actions();
+    if (id.is_empty())
+        return;
+    const server_bookmark& bm = bookmarks_->get(id);
+    server_options_dialog d(this, bm);
+    d.set_server_list(all_sl_);
+    d.set_update_params(&gi_, que_);
+    if (d.exec() == QDialog::Rejected)
+        return;
+    bookmarks_->change(id, d.options());
 }
 
 void main_window::fav_delete()
 {
-    LOG_HARD << "Deleting favorite server(s)";
-    clear_selected();
-}
+    if (fav_list_->selection().size() == 0)
+        return;
+    if (QMessageBox::question(this, tr("Delete a favorite"), tr("Delete selected favorites?"),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes)
+        return;
 
-void main_window::sync_fav_list()
-{
-    server_fav_list& srclist = opts_->servers;
-    server_info_list& dstlist = fav_sl_->list();
-
-    // remember all server id's for remove unused later
-    typedef std::set<server_id> id_set;
-    id_set ids;
-    for (server_info_list::iterator it = dstlist.begin(); it != dstlist.end(); it++)
-        ids.insert(it->first);
-
-    // adding new items and remember that server id in use
-    bool changed = false;
-    for (server_fav_list::iterator it = srclist.begin(); it != srclist.end(); it++)
+    foreach (const server_id& id, fav_list_->selection())
     {
-        const server_id& id = it->first;
-        ids.erase(id);
-        server_info_list::iterator it2 = dstlist.find(id);
-        if (it2 == dstlist.end())
-        {
-            server_options& opts = it->second;
-
-            server_info_p si( new server_info );
-            si->id = id;
-
-            dstlist[id] = si;
-            changed = true;
-        }
+        bookmarks_->remove(id);
     }
-
-    // remove unused
-    if (!ids.empty())
-    {
-        changed = true;
-        for (id_set::iterator it = ids.begin(); it != ids.end(); it++)
-            dstlist.erase(*it);
-    }
-
-    if (changed)
-        fav_sl_->change_state();
-}
-
-void main_window::save_options()
-{
-    save_app_options(get_app_options_settings("options"), opts_);
 }
 
 void main_window::load_all_at_start()
@@ -401,31 +363,9 @@ void main_window::load_all_at_start()
         }
     };
     
-#if defined(Q_OS_UNIX)
-    QString default_qstat = "/usr/bin/qstat";
-#elif defined(Q_OS_WIN)
-    QString default_qstat = "qstat.exe";
-#elif defined(Q_OS_MAC)
-    QString default_qstat = "/usr/bin/qstat";
-#endif
-    QString default_database = QString(URT_DATADIR) + "GeoIP.dat";
-
-    opts_->qstat_opts.master_server = "master.urbanterror.net";
-    opts_->qstat_opts.qstat_path = default_qstat;
-    opts_->geoip_database = default_database;
-    
-    opts_->looking_for_clip = true;
-    opts_->lfc_regexp = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})"
-        "(:(\\d{1,5}))?(.+pass[^\\s]*\\s+([^\\s]+))?";
-    opts_->lfc_host = 1;
-    opts_->lfc_port = 3;
-    opts_->lfc_password = 5;
-
-    load_app_options(get_app_options_settings("options"), opts_);
-    load_server_favs(get_app_options_settings("favorites"), opts_);
+    load_server_bookmarks(get_app_options_settings("favorites"), bookmarks_);
 
     local::load_list(all_sl_, "all_state");
-    local::load_list(fav_sl_, "favs_state");
     
     all_list_->load_options();
     fav_list_->load_options();
@@ -445,65 +385,72 @@ void main_window::save_state_at_exit()
 
     save_geometry();
     local::save_list(all_sl_, "all_state");
-    local::save_list(fav_sl_, "favs_state");
+//    local::save_list(fav_sl_, "favs_state");
 
     all_list_->save_options();
     fav_list_->save_options();
 }
 
-void main_window::save_favorites()
+void main_window::save_bookmarks()
 {
-    save_server_favs(get_app_options_settings("favorites"), opts_);
+    save_server_bookmarks(get_app_options_settings("favorites"), bookmarks_);
 }
 
 void main_window::refresh_servers(server_list_widget* current, const server_id_list& to_update, bool master = false)
 {
     try
     {
-        gi_.set_database( opts_->geoip_database );
+        gi_.set_database( app_settings().geoip_database() );
     }
     catch (std::exception& e)
     {
         statusBar()->showMessage(to_qstr(e.what()), 2000);
     }
 
+    //FIXME hack with history tab
+    if( !current )
+    {
+        que_->add_job( job_p( new job_update_selected( to_update, all_sl_, gi_) ) );
+        return;
+    }
+
     if ( master )
-        que_->add_job( job_p( new job_update_from_master( current->server_list(), gi_, &(opts_->qstat_opts)) ) );
+        que_->add_job( job_p( new job_update_from_master( current->server_list(), gi_) ) );
     else
-        que_->add_job( job_p( new job_update_selected( to_update, current->server_list(), gi_, &(opts_->qstat_opts)) ) );
+        que_->add_job( job_p( new job_update_selected( to_update, current->server_list(), gi_) ) );
 }
 
 
-void main_window::refresh_all()
+void main_window::refresh_all_bookmarks()
 {
-    server_list_widget* list = selected_list_widget();
+    server_list_widget* list = current_list_widget();
     assert( list == fav_list_ );
     server_id_list ids;
-
-    server_list_p s_lst = list->server_list();
-    transform( s_lst->list().begin(), s_lst->list().end(), back_inserter(ids),
-        boost::bind(&server_info_list::value_type::first, _1) );
-
+    foreach (const server_bookmark& bm, bookmarks_->list())
+        ids.append(bm.id());
     refresh_servers( list, ids );
 }
 
 void main_window::refresh_selected()
 {
-    server_list_widget* list = selected_list_widget();
-    refresh_servers( list, list->selection() );
+    server_list_widget* list = current_list_widget();
+    if( list )
+        refresh_servers( list, list->selection() );
+    else
+        refresh_servers( list, server_id_list() << selected() );
 }
 
 void main_window::refresh_master()
 {
-    server_list_widget* list = selected_list_widget();
+    server_list_widget* list = current_list_widget();
     assert( list == all_list_ );
     refresh_servers( list, server_id_list(), true );
 }
 
-
 void main_window::show_about()
 {
-    about_dialog d;
+    about_dialog d(this);
+//     d.set_christmas_mode(christmas_mode_);
     d.exec();
 }
 
@@ -514,8 +461,18 @@ void main_window::about_qt()
 
 server_id main_window::selected() const
 {
-    server_list_widget* list = selected_list_widget();
-    if (!list) return server_id();
+    server_list_widget* list = current_list_widget();
+    if (!list)
+    {
+        //get servier_id from history
+        QWidget* curw = ui_->tabWidget->currentWidget();
+
+        if( curw != ui_->tabHistory )
+            return server_id();
+
+        return history_list_->selected_server();
+    }
+    
     server_id_list sel = list->selection();
     if (sel.size() == 0) return server_id();
     return sel.front();
@@ -523,83 +480,157 @@ server_id main_window::selected() const
 
 server_info_p main_window::selected_info() const
 {
-    server_list_widget* list = selected_list_widget();
-    if (!list)
-        return server_info_p();
-    server_id id = selected();
+    const server_id& id = selected();
     if (id.is_empty())
         return server_info_p();
-    const server_info_list& sil = list->server_list()->list();
-
-    server_info_list::const_iterator it = sil.find(id);
-    if (it == sil.end())
-        return server_info_p();
-
-    return it->second;
+    else
+        return all_sl_->get(id);
 }
 
-void main_window::connect_selected() const
+void main_window::connect_to_server(const server_id& id, const QString& player_name, const QString& password)
 {
+    if (launcher_->is_started() || ac_proc_)
+        throw qexception(tr("Game is launched already"));
+
     check_anticheat_prereq();
+    const server_bookmark& bm = bookmarks_->get(id);
 
-    // info MUST be correct or connect-action is disabled!
-    server_info_p info = selected_info();
+    app_settings as;
+    // update server info
+    if ( as.update_before_connect() )
+    {
+        server_id_list idl;
+        idl.push_back(id);
+        job_p job(new job_update_selected(idl, all_sl_, gi_, tr("Update server info and launch a game")));
+        que_->add_job(job);
+        job->wait_for_finish();
+        if (job->is_canceled())
+            return;
+    }
 
-    server_fav_list::const_iterator it = opts_->servers.find(info->id);
-    server_options opts;
-    if ( it != opts_->servers.end() )
-        opts = it->second;
+    server_info_p info = all_sl_->get(id);
 
-    launcher* l = launcher_;
-    l->set_server_id( info->id );
-    l->set_user_name(ui_->qlPlayerEdit->text());
-    l->set_password(opts.password);
+    // show warnings about connect
+    // TODO also need to check info age by timestamp later
+    if ( info && info->status == server_info::s_up )
+    {
+        QString msg;
 
-    if ( opts.password.isEmpty() && info && info->get_info("g_needpass").toInt() )
+        int max_slots = info->max_player_count;
+
+        // with a rcon and referee you can connect to a private slots
+        if (bm.rcon_password().isEmpty() && bm.ref_password().isEmpty())
+            max_slots = info->public_slots();
+
+        if (info->players.size() >= max_slots)
+            msg = tr("Server is full.");
+
+        if (info->players.size() == 0)
+            msg = tr("Server is empty.");
+
+        if (!msg.isEmpty())
+        {
+            if (QMessageBox::warning(this
+                , tr("Connecting to the server")
+                , tr("%1\n\nDo you want to continue connecting?").arg(msg)
+                , QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes
+                ) != QMessageBox::Yes)
+                return;
+        }
+    }
+
+    // take the password
+    QString pass = password;
+    if (pass.isEmpty() && !bm.password().isEmpty())
+        pass = bm.password();
+
+    if ( pass.isEmpty() && info && info->is_password_needed() )
     {
         bool ok;
-        QString password = QInputDialog::getText(0, tr("Server require password"), tr("Enter password"), QLineEdit::Normal, "", &ok );
-        if ( !ok ) return;
-        l->set_password(password);
+        pass = QInputDialog::getText(this, tr("This server require the password"),
+            tr("Enter the password"), QLineEdit::Normal, "", &ok );
+        if (!ok)
+            return;
     }
-
-    if ( info && info->players.size() == info->max_player_count )
-    {
-        QMessageBox::StandardButton selected = QMessageBox::warning( 0
-            , tr( "Server is full" )
-            , tr( "Server is full do you want to continue ?" )
-            , QMessageBox::Yes | QMessageBox::No, QMessageBox::No
-        );
-
-        if( selected == QMessageBox::No ) return;           
-    }
-
-    l->set_referee(opts.ref_password);
-    l->set_rcon(opts.rcon_password);
 
     // add to history if history is enabled
-    if (opts_->keep_history)
+    if ( as.keep_history() )
     {
-        history_sl_->add(l->id(), info->name, l->user_name(), l->password());
+        QString server_name = info ? info->name : QString();
+        history_sl_->add(id, server_name, player_name, pass);
         history_list_->update_history();
     }
 
+#if defined(Q_OS_UNIX)
+    if ( anticheat_enabled_action_->isChecked() && as.separate_x() )
+    {
+        QStringList args;
+        args << qApp->applicationFilePath();
+
+        // debug logging enabled?
+        if (cl::syslog::logman().level_check(cl::syslog::debug))
+            args << "--debug";
+
+        // common options
+        args << "--anticheat" << "--launch" << "--pipe-log"
+                << "--player" << player_name
+                << "--addr"<< id.address();
+
+        if (!pass.isEmpty())
+            args << "--pass" << pass;
+        if (!bm.rcon_password().isEmpty())
+            args << "--rcon" << bm.rcon_password();
+        if (!bm.ref_password().isEmpty())
+            args << "--referee" << bm.ref_password();
+
+        args << "--" << QString(":%1").arg(find_free_display());
+
+        // TODO log redirection of subprocess
+
+        ac_proc_ = new QProcess(this);
+
+        // self destruct on finish
+        connect(ac_proc_, SIGNAL(error(QProcess::ProcessError)), ac_proc_, SLOT(deleteLater()));
+        connect(ac_proc_, SIGNAL(finished(int,QProcess::ExitStatus)), ac_proc_, SLOT(deleteLater()));
+
+        ac_proc_->start("xinit", args);
+
+        return;
+    }
+#endif
+
+    launcher* l = launcher_;
+    l->set_server_id(id);
+    l->set_user_name(player_name);
+    l->set_password(pass);
+    l->set_referee(bm.ref_password());
+    l->set_rcon(bm.rcon_password());
     l->launch();
 }
 
-server_list_widget* main_window::selected_list_widget() const
+void main_window::connect_selected()
+{
+    server_id id = selected();
+    if (id.is_empty())
+        return;
+    const QString& player_name = ui_->qlPlayerEdit->text();
+    connect_to_server(id, player_name, QString());
+}
+
+server_list_widget* main_window::current_list_widget() const
 {
     QWidget* curw = ui_->tabWidget->currentWidget();
     if (curw == ui_->tabFav)
         return fav_list_;
     else if (curw == ui_->tabAll)
         return all_list_;
-    else return 0;
+    else
+        return NULL;
 }
 
 void main_window::update_actions()
 {
-    server_list_widget* current = selected_list_widget();
+    server_list_widget* current = current_list_widget();
     bool sel = !(selected().is_empty());
 
     ui_->actionAddToFav->setEnabled(current == all_list_ && sel);
@@ -622,8 +653,8 @@ void main_window::update_actions()
         ui_->actionClearAll->setEnabled(has_any_server);
     }
 
-    ui_->actionRefreshAll->setVisible(current == fav_list_);
-    ui_->actionRefreshMaster->setVisible(current != fav_list_);
+    ui_->actionRefreshAll->setVisible( current && current == fav_list_);
+    ui_->actionRefreshMaster->setVisible(current && current != fav_list_);
 }
 
 void main_window::current_tab_changed(int)
@@ -651,6 +682,8 @@ void main_window::load_geometry()
 
     qApp->processEvents();
     restoreState(s->value("window_state").toByteArray());
+
+    // TODO accurate move this to server_list_widget_settings
     fav_list_->tree()->header()->restoreState(s->value("fav_list_state").toByteArray());
     all_list_->tree()->header()->restoreState(s->value("all_list_state").toByteArray());
 }
@@ -665,10 +698,10 @@ void main_window::update_server_info()
     server_info_p si = selected_info();
     if (si)
     {
-        if (old_id_ == si->id && old_state_ == si->update_stamp)
+        if (old_id_ == si->id && old_state_ == si->update_stamp())
             return;
 
-        old_state_ = si->update_stamp;
+        old_state_ = si->update_stamp();
         old_id_ = si->id;
 
         QString s = get_server_info_html(*si);
@@ -686,7 +719,8 @@ void main_window::update_server_info()
 void main_window::selection_changed()
 {
     update_actions();
-    update_server_info();
+//    update_server_info();
+    server_info_updater_->emitSignal();
 }
 
 void main_window::add_selected_to_fav()
@@ -694,36 +728,22 @@ void main_window::add_selected_to_fav()
     server_info_p si = selected_info();
     if (!si) return;
 
-    server_options opts;
-    opts.id = si->id;
-    opts.name = si->name;
+    server_bookmark bm;
+    bm.set_id(si->id);
+    bm.set_name(si->name);
 
-    server_options_dialog d(0, opts);
-    d.set_update_params(&gi_, &(opts_->qstat_opts), que_);
-
+    server_options_dialog d(this, bm);
+    d.set_server_list(all_sl_);
+    d.set_update_params(&gi_, que_);
     if (d.exec() == QDialog::Rejected) return;
-    server_fav_list& list = opts_->servers;
-    list[d.options().id] = d.options();
-    save_options();
-    sync_fav_list();
-    fav_list_->force_update();
-    update_actions();
-    save_favorites();
+
+    bookmarks_->add(d.options());
 }
 
 void main_window::show_action()
 {
     setVisible(!isVisible());
 }
-
-// void save_list2(server_list_p list, const QString& name)
-// {
-//     QByteArray ba = save_server_list2(*(list.get()));
-//     QString fn = get_server_list_settings(name)->fileName();
-//     QFile f(fn);
-//     f.open(QIODevice::WriteOnly);
-//     f.write(ba);
-// }
 
 void main_window::commit_data_request(QSessionManager&)
 {
@@ -741,11 +761,12 @@ void main_window::quit_action()
     }
 
     LOG_DEBUG << "Quit action";
+    launcher_->stop();
     hide();
     tray_->hide();
     save_state_at_exit();
     qApp->quit();
-    launcher_->stop();
+    
 }
 
 void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
@@ -764,7 +785,7 @@ void main_window::update_tabs()
 {
     QString s;
     int cnt1 = fav_list_->visible_server_count();
-    int cnt2 = fav_sl_->list().size();
+    int cnt2 = bookmarks_->list().size();
     if (cnt1 == cnt2)
         s = QString("%1").arg(cnt1);
     else
@@ -780,116 +801,51 @@ void main_window::update_tabs()
     ui_->tabWidget->setTabText(1, tr("All (%1)").arg(s));
 }
 
-void main_window::clear_servers(server_list_widget* current, const server_id_list& to_delete)
-{
-    if ( current == all_list_ )
-    {
-        LOG_DEBUG << "Deleting entries from All-list";
-        server_info_list& info_lst = current->server_list()->list();
-        BOOST_FOREACH( const server_id_list::value_type& id, to_delete ){
-            info_lst.erase(id);
-        }
-    }
-    else if ( current == fav_list_)
-    {
-        if (QMessageBox::question(this, tr("Deleting a favorite")
-            , tr("Continue to delete a favorite?")
-            , QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes
-        )
-            return;
-
-        LOG_DEBUG << "Deleting entries from Fav-list";
-        server_fav_list& fav_lst = opts_->servers;
-        BOOST_FOREACH( const server_id_list::value_type& id, to_delete ){
-            fav_lst.erase(id);
-        }
-
-        sync_fav_list();
-        save_favorites();
-    }
-    update_actions();
-    current->force_update();
-    LOG_DEBUG << "%1 entries deleted", to_delete.size();
-}
-
-
 void main_window::clear_all()
 {
-    LOG_HARD << "Deleting all entries";
-    server_list_widget* current = selected_list_widget();
-
-    server_id_list id_list;
-    BOOST_FOREACH(const server_info_list::value_type& info, current->server_list()->list()){
-        id_list.push_back(info.first);
-    }
-    
-    //if current item will removed during clearing, scrollToItem crashes
-    current->tree()->setCurrentItem(0);    
-    clear_servers(current, id_list);
-}
-
-bool is_offline( const server_info_list::value_type& info )
-{ return ( info.second->status == server_info::s_down ) || ( info.second->status == server_info::s_error ); }
-
-void main_window::clear_offline()
-{
-    LOG_HARD << "Deleting offline entries";
-    server_list_widget* current = selected_list_widget();
-
-    server_id_list id_list;
-    BOOST_FOREACH(const server_info_list::value_type& info, current->server_list()->list()){
-        if ( is_offline(info) )
-            id_list.push_back(info.first);
-    }
-
-    //if current item will removed during clearing, scrollToItem crashes
-    current->tree()->setCurrentItem(0);
-    clear_servers(current, id_list);
+    LOG_HARD << "Deleting all entries in server list";
+    all_sl_->remove_all();
 }
 
 void main_window::clear_selected()
 {
     LOG_HARD << "Deleting selected entries";
-    server_list_widget* current = selected_list_widget();
-
-    //if current item will removed during clearing, scrollToItem crashes
-    server_id_list id_list( current->selection() );
-    current->tree()->setCurrentItem(0);
-    clear_servers(current, id_list);
+    all_sl_->remove_selected(all_list_->selection());
 }
 
 void main_window::open_remote_console()
 {
-    server_id_list id_list( selected_list_widget()->selection() );
+    server_id_list id_list( current_list_widget()->selection() );
 
     if( !id_list.size() ) return;
 
-    server_fav_list& list = opts_->servers;
+    const server_id& id = selected();
 
-    QDockWidget* dw = new QDockWidget( id_list.front().address(), this );
+    QDockWidget* dw = new QDockWidget( tr("RCon : %1").arg(id.address()), this );
     dw->setAttribute( Qt::WA_DeleteOnClose  );
-    dw->setWidget( new rcon(0, id_list.front(), list[id_list.front()]) );
+    dw->setWidget( new rcon(this, id, bookmarks_->get(id)));
 
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
-    dw->setStyle( new iconned_dock_style( QIcon(":/icons/icons/utilities-terminal.png"), dw->style() ) );
+    dw->setStyle( new iconned_dock_style( QIcon("icons:utilities-terminal.png"), dw->style() ) );
 #endif
     addDockWidget(Qt::BottomDockWidgetArea,  dw );
 }
 
 void main_window::load_history_tab()
 {
-    if (opts_->keep_history)
+    if ( app_settings().keep_history())
     {
         if (!ui_->tabWidget->isTabEnabled(2))
         {
             ui_->tabWidget->setTabEnabled(2, true);
         }
-        history_list_ = new history_widget(opts_, ui_->tabHistory, history_sl_);
+        history_list_ = new history_widget( ui_->tabHistory, history_sl_ );
         dynamic_cast<QBoxLayout*> (ui_->tabHistory->layout())->insertWidget(0, history_list_);
         connect(history_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
         history_list_->update_history();
 
+        history_list_->set_server_list(all_sl_);
         history_list_->tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
         history_list_->tree()->addAction(ui_->actionConnect);
         add_separator_action(history_list_->tree());
@@ -934,6 +890,32 @@ void main_window::check_anticheat_prereq() const
         return;
     QString player_name = ui_->qlPlayerEdit->text();
     if (player_name.isEmpty())
-        throw qexception(tr("A player's name must be defined in the quick launch window for anti-cheat!"));
+        throw qexception(tr("The player's name must be defined in the quick launch window for the anti-cheat!"));
 }
+
+void main_window::set_christmas_mode(bool val)
+{
+//     if (christmas_mode_ == val)
+//         return;
+//     christmas_mode_ = val;
+//     update_christmas_mode();
+}
+
+void main_window::update_christmas_mode()
+{
+//     if (christmas_mode_)
+//     {
+//         QIcon ico("images:logo.png");
+//         setWindowIcon(ico);
+//         tray_->setIcon(ico);
+//     }
+}
+
+void main_window::show_anticheat_options()
+{
+    preferences_dialog d( preferences_dialog::Auto, false, this );
+    d.add_item( new anticheat::settings_widget(&d) );
+    d.exec();
+}
+
 

@@ -19,13 +19,13 @@
 
 #include <cl/syslog/syslog.h>
 
-#include "common/server_id.h"
-#include "server_options.h"
+#include <common/server_id.h>
+#include "../server_bookmark.h"
 #include "tools.h"
 
 #include "ui_rcon.h"
 #include "rcon.h"
-#include "rcon/rcon_completer.h"
+#include "rcon_completer.h"
 
 SYSLOG_MODULE(rcon)
 
@@ -172,7 +172,7 @@ typedef std::list<Item> Items;
 
 
 struct rcon::Pimpl{
-    Pimpl( const server_id& id, const server_options& options )
+    Pimpl( const server_id& id, const server_bookmark& options )
         : id(id), options(options)
         , connected(false), waiting(false)
     {}
@@ -210,7 +210,7 @@ struct rcon::Pimpl{
 
     void update_colors(){
         rcon_settings s;
-        if( s.adaptive_pallete() )
+        if( !s.custom_colors() )
         {
             QPalette p = ui.output->palette();
             boost::assign::insert(colors)
@@ -233,7 +233,7 @@ struct rcon::Pimpl{
     
     Ui_rcon ui;
     server_id id;
-    server_options options;
+    server_bookmark options;
     QUdpSocket socket;
     bool connected;
     bool waiting;
@@ -328,7 +328,7 @@ void create_items( QStandardItem* parent, Iterator begin, Iterator end, Items& i
 }
 
 
-rcon::rcon(QWidget* parent, const server_id& id, const server_options& options)
+rcon::rcon(QWidget* parent, const server_id& id, const server_bookmark& options)
     : QWidget(parent)
     , p_( new Pimpl(id, options) )
 {
@@ -423,7 +423,7 @@ void rcon::update_settings()
     QPalette p = p_->ui.output->palette();
     p.setColor( QPalette::Base, p_->colors[rcon_settings::Background] );
     p_->ui.output->setPalette( p );
-    p_->ui.output->setAutoFillBackground( !rcon_settings().adaptive_pallete() );
+    p_->ui.output->setAutoFillBackground( rcon_settings().custom_colors() );
 }
 
 
@@ -457,13 +457,13 @@ void rcon::set_state( bool connected)
     if ( !connected )
     {
         LOG_HARD << p_->id.address().toStdString() << " - connection failed";
-        p_->status->setPixmap( QPixmap(":/icons/icons/status-offline.png") );
+        p_->status->setPixmap( QPixmap("icons:status-offline.png") );
         print( Info, tr("connection failed") );
     }
     else if( !p_->connected && connected )
     {
         LOG_HARD << p_->id.address().toStdString() << " - connected";
-        p_->status->setPixmap( QPixmap(":/icons/icons/status-online.png") );
+        p_->status->setPixmap( QPixmap("icons:status-online.png") );
         print( Info, tr("connected") );
     }
     
@@ -546,7 +546,7 @@ void rcon::process_queue()
    
     QString cmd = QString( "%1 %2 %3" )
         .arg( rcon_header_c.data() )
-        .arg( p_->options.rcon_password )
+        .arg( p_->options.rcon_password() )
         .arg( p_->current.first.data() );
 
     p_->waiting = true;

@@ -8,7 +8,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 
 set(Boost_USE_STATIC_LIBS ON)
-find_package( Boost COMPONENTS program_options thread date_time filesystem)
+find_package( Boost COMPONENTS
+    program_options
+    thread
+    date_time
+    filesystem
+    system
+)
+
 include_directories(${Boost_INCLUDE_DIRS})
 
 find_package(Qt4)
@@ -36,6 +43,7 @@ add_subdirectory(qtsingleapplication)
 add_subdirectory(cl)
 add_subdirectory(filters)
 add_subdirectory(settings)
+add_subdirectory(preferences)
 add_subdirectory(common)
 add_subdirectory(history)
 add_subdirectory(anticheat)
@@ -49,15 +57,11 @@ set(HEADERS
     debug_help.h
     main_window.h
     options_dialog.h
-    player_info.h
     push_button_action_link.h
-    server_info.h
-    server_list.h
     server_list_saver.h
-    server_options.h
+    server_bookmark.h
     server_list_widget.h
     server_options_dialog.h
-    str_convert.h
     app_options_saver.h
     server_info_html.h
     config.h
@@ -72,6 +76,9 @@ set(HEADERS
     clipper.h
     tools.h
     launcher/tools.h
+    setting_forms/launch_settings_form.h
+    setting_forms/application_settings_form.h
+    main_tab.h
 )
 
 set(MOC_HEADERS
@@ -81,6 +88,7 @@ set(MOC_HEADERS
     options_dialog.h
     push_button_action_link.h
     server_list_widget.h
+    server_bookmark.h
     server_options_dialog.h
     item_view_dblclick_action_link.h
     qstat_updater.h
@@ -90,9 +98,13 @@ set(MOC_HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
+    tools.h
     rcon/rcon.h
     rcon/rcon_settings_form.h
     rcon/rcon_completer.h
+    setting_forms/launch_settings_form.h
+    setting_forms/application_settings_form.h
+    main_tab.h
 )
 
 set(SOURCES
@@ -103,12 +115,9 @@ set(SOURCES
     debug_help.cpp
     main_window.cpp
     options_dialog.cpp
-    player_info.cpp
     push_button_action_link.cpp
-    server_info.cpp
-    server_list.cpp
     server_list_saver.cpp
-    server_options.cpp
+    server_bookmark.cpp
     server_list_widget.cpp
     server_options_dialog.cpp
     app_options_saver.cpp
@@ -126,6 +135,9 @@ set(SOURCES
     rcon/rcon.cpp
     rcon/rcon_settings_form.cpp
     rcon/rcon_completer.cpp
+    setting_forms/launch_settings_form.cpp
+    setting_forms/application_settings_form.cpp
+    main_tab.cpp
 )
 
 set(IFACES
@@ -137,6 +149,8 @@ set(IFACES
     jobs/job_item.ui
     rcon/rcon.ui
     rcon/rcon_settings_form.ui
+    setting_forms/launch_settings_form.ui
+    setting_forms/application_settings_form.ui
 )
 
 set(RESOURCES
@@ -157,6 +171,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     clsyslog
     filters
     settings
+    preferences
     common
     history
     anticheat
@@ -170,6 +185,3 @@ install(FILES icons/urtconnector.png DESTINATION share/pixmaps)
 install(FILES icons/urtconnector-48.png DESTINATION share/icons/hicolor/48x48/apps RENAME urtconnector.png)
 install(FILES urtconnector.desktop DESTINATION share/applications)
 install(FILES GeoIP.dat DESTINATION share/urtconnector)
-
-
-

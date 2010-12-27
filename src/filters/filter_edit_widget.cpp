@@ -28,12 +28,12 @@ Q_DECLARE_METATYPE(filter_class_p)
 ////////////////////////////////////////////////////////////////////////////////
 // select_filter_class_dialog
 
-select_filter_class_dialog::select_filter_class_dialog(filter_factory_p factory)
-: QDialog()
+select_filter_class_dialog::select_filter_class_dialog(filter_factory_p factory, QWidget* parent)
+: QDialog(parent)
 , factory_(factory)
 {
     setWindowTitle(tr("Select filter type"));
-    setWindowIcon(QIcon(":/icons/icons/zoom.png"));
+    setWindowIcon(QIcon("icons:zoom.png"));
 
     QBoxLayout* lay = new QVBoxLayout(this);
     tree_ = new QListWidget(this);
@@ -97,7 +97,7 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
 
     int is = QApplication::style()->pixelMetric(QStyle::PM_SmallIconSize);
     pin_label_ = new QLabel(this);
-    pin_label_->setPixmap(QIcon(":/icons/icons/pin.png").pixmap(is));
+    pin_label_->setPixmap(QIcon("icons:pin.png").pixmap(is));
     pin_label_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     pin_label_->setVisible(false);
 
@@ -112,7 +112,7 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
     lay->addLayout(options_lay_);
 
     options_button_ = new QToolButton(this);
-    options_button_->setIcon(QIcon(":/icons/icons/configure.png"));
+    options_button_->setIcon(QIcon("icons:configure.png"));
     options_button_->setToolTip(tr("Configure filter"));
     lay->addWidget(options_button_);
 
@@ -175,29 +175,33 @@ void filter_item_widget::update_contents()
 // filter_edit_widget
 
 filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
-: QMainWindow(parent, Qt::Tool)
+: QMainWindow(parent)
 , filters_(filters)
 {
-    setWindowTitle(tr("Filter options"));
-    setWindowIcon(QIcon(":/icons/icons/view-filter.png"));
+    setWindowFlags(windowFlags() & (~Qt::Window));
 
-    add_new_filter_action_ = new QAction(QIcon(":/icons/icons/add.png"),
+    setWindowTitle(tr("Filter options"));
+    setWindowIcon(QIcon("icons:view-filter.png"));
+
+    add_new_filter_action_ = new QAction(QIcon("icons:add.png"),
                                          tr("Add new child filter"), this);
-    delete_filter_action_ = new QAction(QIcon(":/icons/icons/remove.png"),
+    delete_filter_action_ = new QAction(QIcon("icons:remove.png"),
                                          tr("Delete filter"), this);
-    select_toolbar_filter_action_ = new QAction(QIcon(":/icons/icons/pin.png"),
+    select_toolbar_filter_action_ = new QAction(QIcon("icons:pin.png"),
                                          tr("Select filter for toolbar"), this);
 
     connect(add_new_filter_action_, SIGNAL(triggered()), SLOT(add_new_filter()));
     connect(select_toolbar_filter_action_, SIGNAL(triggered()), SLOT(select_toolbar_filter()));
     connect(delete_filter_action_, SIGNAL(triggered()), SLOT(delete_filter()));
 
-    QToolBar* tb = new QToolBar;
+    QToolBar* tb = new QToolBar(this);
     tb->addAction(add_new_filter_action_);
     tb->addAction(select_toolbar_filter_action_);
     tb->addSeparator();
     tb->addAction(delete_filter_action_);
-    addToolBar(Qt::RightToolBarArea, tb);
+    tb->setMovable(false);
+    tb->setFloatable(false);
+    addToolBar(Qt::TopToolBarArea, tb);
 
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
@@ -217,6 +221,7 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
 
     resize(400, 250);
     update_contents();
+    update_actions();
 }
 
 void filter_edit_widget::item_changed()
@@ -281,17 +286,16 @@ void filter_edit_widget::update_actions()
 {
     QTreeWidgetItem* item = tree_->currentItem();
     QTreeWidgetItem* parent_item = item ? item->parent() : NULL;
-    filter_p f = item->data(0, Qt::UserRole).value<filter_p>();
+    filter_p f = item ? item->data(0, Qt::UserRole).value<filter_p>() : filter_p();
 
     add_new_filter_action_->setEnabled(composite_cast(f));
     delete_filter_action_->setEnabled(parent_item);
-
-    select_toolbar_filter_action_->setEnabled(f != filters_->toolbar_filter().lock());
+    select_toolbar_filter_action_->setEnabled(f && f != filters_->toolbar_filter().lock());
 }
 
 void filter_edit_widget::add_new_filter()
 {
-    select_filter_class_dialog d(filters_->factory());
+    select_filter_class_dialog d(filters_->factory(), qApp->activeWindow());
     if (d.exec() != QDialog::Accepted)
         return;
     filter_class_p fc = d.selected();

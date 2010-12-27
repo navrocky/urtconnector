@@ -45,7 +45,7 @@ filter_class::filter_class(const QString& id, const QString& caption,
 , icon_(icon)
 {
     if (icon_.isNull())
-        icon_ = QIcon(":/icons/icons/view-filter.png");
+        icon_ = QIcon("icons:view-filter.png");
 }
 
 bool filter_class::has_additional_options()

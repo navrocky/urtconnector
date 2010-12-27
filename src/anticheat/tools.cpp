@@ -21,6 +21,7 @@ anticheat* create_anticheat(const QString& player_name, QObject* parent)
         sshot_ftp_output* ftp = new sshot_ftp_output(res);
         ftp->set_connection_info(s.ftp_address(), s.ftp_login(), s.ftp_password());
         ftp->set_folder(s.ftp_folder());
+        ftp->set_heavy_send(!s.send_only_md5());
         res->add_output(ftp);
     }
 

@@ -15,6 +15,7 @@ protected:
 public:
     history_item(server_id& id, QString& server_name, QString& password, QString& player_name, QDateTime& date_time);
 
+    server_id id() const;
     QString address() const;
     QString server_name() const;
     QString password() const;

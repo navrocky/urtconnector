@@ -6,16 +6,28 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>587</width>
-    <height>402</height>
+    <width>489</width>
+    <height>404</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>386</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinimumSize</enum>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
      <item>
       <widget class="QLabel" name="label_4">
        <property name="sizePolicy">
@@ -46,10 +58,16 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Screenshots</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <layout class="QFormLayout" name="formLayout">
         <item row="0" column="0">
@@ -114,8 +132,17 @@
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
        <layout class="QFormLayout" name="formLayout_2">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::ExpandingFieldsGrow</enum>
+        </property>
         <item row="0" column="0">
          <widget class="QLabel" name="label_5">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Server address</string>
           </property>
@@ -130,6 +157,12 @@
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="label_6">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Login name</string>
           </property>
@@ -140,6 +173,12 @@
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label_7">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Password</string>
           </property>
@@ -148,13 +187,29 @@
         <item row="2" column="1">
          <widget class="QLineEdit" name="password_edit"/>
         </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_8">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Folder</string>
+          </property>
+         </widget>
+        </item>
         <item row="3" column="1">
          <widget class="QLineEdit" name="ftp_folder_edit"/>
         </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_8">
+        <item row="4" column="1">
+         <widget class="QCheckBox" name="only_md5_check">
+          <property name="toolTip">
+           <string>If unchecked then sends to ftp server both screenshots and their md5 sums</string>
+          </property>
           <property name="text">
-           <string>Folder</string>
+           <string>Send only screenshots MD5</string>
           </property>
          </widget>
         </item>
@@ -171,27 +226,37 @@
      <property name="checkable">
       <bool>true</bool>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
       <item>
-       <widget class="QLineEdit" name="local_folder_edit">
-        <property name="toolTip">
-         <string>Local folder to save screenshots</string>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="choose_local_folder_btn">
-        <property name="toolTip">
-         <string>Choose local folder</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../images.qrc">
-          <normaloff>:/icons/icons/choose-file.png</normaloff>:/icons/icons/choose-file.png</iconset>
-        </property>
-       </widget>
+        <item>
+         <widget class="QLineEdit" name="local_folder_edit">
+          <property name="toolTip">
+           <string>Local folder to save screenshots</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="choose_local_folder_btn">
+          <property name="toolTip">
+           <string>Choose local folder</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../images.qrc">
+            <normaloff>:/icons/icons/choose-file.png</normaloff>:/icons/icons/choose-file.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -201,10 +266,13 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>20</width>
-       <height>40</height>
+       <width>0</width>
+       <height>0</height>
       </size>
      </property>
     </spacer>

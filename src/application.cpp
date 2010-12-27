@@ -1,8 +1,8 @@
 #include <QMessageBox>
 
 #include <common/exception.h>
+#include <common/str_convert.h>
 #include "application.h"
-#include "str_convert.h"
 
 application::application(int &argc, char * argv[])
 #ifdef USE_SINGLE_APP

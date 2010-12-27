@@ -1,18 +1,17 @@
 #include <QApplication>
 #include <QRegExp>
 
-#include <cl/syslog/syslog.h>
+#include <common/qt_syslog.h>
+#include <common/str_convert.h>
+#include <common/server_id.h>
 
-#include "str_convert.h"
 #include "app_options.h"
-#include "common/server_id.h"
 #include "clipper.h"
 
 SYSLOG_MODULE(clipper)
 
-clipper::clipper( QObject* parent, app_options_p opts )
+clipper::clipper( QObject* parent )
         : QObject(parent)
-        , opts_( opts )
 {
     connect ( QApplication::clipboard(), SIGNAL( changed(QClipboard::Mode) ), SLOT( changed(QClipboard::Mode) ) );
     connect ( QApplication::clipboard(), SIGNAL( dataChanged() ), SLOT( data_changed() ) );
@@ -27,15 +26,16 @@ void clipper::data_changed()
 
 void clipper::changed(QClipboard::Mode mode)
 {
-    if ( !opts_->looking_for_clip ) return;
+    clip_settings cs;
+    if ( !cs.watching() ) return;
 
     LOG_HARD << "Clipboard has new value";
 
-    QRegExp rx(opts_->lfc_regexp);
+    QRegExp rx(cs.regexp());
     rx.setCaseSensitivity(Qt::CaseInsensitive);
     if (!rx.isValid())
     {
-        LOG_ERR << "Error in regexp: %1", to_str(rx.errorString());
+        LOG_ERR << "Error in regexp: %1", rx.errorString();
         return;
     }
 
@@ -43,11 +43,11 @@ void clipper::changed(QClipboard::Mode mode)
 
     if (rx.indexIn(clip_text) >= 0)
     {
-        QString host = rx.cap(opts_->lfc_host);
-        QString port = rx.cap(opts_->lfc_port);
-        QString password = rx.cap(opts_->lfc_password);
+        QString host = rx.cap(cs.host());
+        QString port = rx.cap(cs.port());
+        QString password = rx.cap(cs.password());
 
-        LOG_HARD << "Match success: host=\"%1\", port=\"%2\", password=\"%3\"", to_str(host), to_str(port), to_str(password);
+        LOG_HARD << "Match success: host=\"%1\", port=\"%2\", password=\"%3\"", host, port, password;
 
         QString addr;
         if (port.isEmpty())
@@ -64,8 +64,7 @@ void clipper::changed(QClipboard::Mode mode)
             {
                 address_ = addr;
                 password_ = password;
-                LOG_DEBUG << "Clipboard info obtained: %1 pass %2",
-                    to_str(address_), to_str(password_);
+                LOG_DEBUG << "Clipboard info obtained: %1 pass %2", address_, password_;
                 emit info_obtained();
             }
         }

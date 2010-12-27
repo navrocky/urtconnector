@@ -16,7 +16,7 @@ namespace
 {
 
 // it's code from qprocess.cpp
-static QStringList parse_combined_arg_string(const QString &program)
+static QStringList __parse_combined_arg_string(const QString &program)
 {
     QStringList args;
     QString tmp;
@@ -69,16 +69,22 @@ static QStringList parse_combined_arg_string(const QString &program)
 ////////////////////////////////////////////////////////////////////////////////
 // launcher
 
-launcher::launcher(app_options_p opts, QObject* parent)
+launcher::launcher(QObject* parent)
 : QObject(parent)
-, opts_(opts)
 , detach_(false)
 {
 }
 
+void launcher::parse_combined_arg_string(const QString& launch_str, QString& program, QStringList& args)
+{
+    args = __parse_combined_arg_string(launch_str);
+    program = args.first();
+    args.removeFirst();
+}
+
 QString launcher::get_work_dir()
 {
-    return QFileInfo(opts_->binary_path).absoluteDir().absolutePath();
+    return QFileInfo(app_settings().binary_path()).absoluteDir().absolutePath();
 }
 
 void launcher::set_server_id(const server_id & id)
@@ -113,11 +119,15 @@ void launcher::set_referee(const QString& value)
 
 void launcher::launch()
 {
+    launch(launch_string());
+}
+
+void launcher::launch(const QString& ls)
+{
     // prepare launch parameters
-    QString ls = launch_string();
-    QStringList args = parse_combined_arg_string(ls);
-    QString prog = args.first();
-    args.removeFirst();
+    QStringList args;
+    QString prog;
+    parse_combined_arg_string(ls, prog, args);
 
     if (detach_)
     {
@@ -153,13 +163,14 @@ void launcher::proc_error(QProcess::ProcessError error)
     throw qexception(tr("Game launch error \"%1\".").arg(error));
 }
 
-QString launcher::launch_string()
+QString launcher::launch_string(bool separate_x)
 {
+    app_settings as;
     QString res;
-    if (opts_->use_adv_cmd_line)
+    if ( as.use_adv_cmd_line() )
     {
-        res = opts_->adv_cmd_line;
-        res.replace("%bin%", opts_->binary_path, Qt::CaseInsensitive)
+        res = as.adv_cmd_line();
+        res.replace("%bin%", as.binary_path(), Qt::CaseInsensitive)
                 .replace("%name%", user_name_, Qt::CaseInsensitive)
                 .replace("%pwd%", password_, Qt::CaseInsensitive)
                 .replace("%addr%", id_.address(), Qt::CaseInsensitive)
@@ -168,7 +179,7 @@ QString launcher::launch_string()
     }
     else
     {
-        res = QString("\"%1\"").arg(opts_->binary_path);
+        res = QString("\"%1\"").arg( as.binary_path() );
         if (!user_name_.isEmpty())
             res += QString(" +name \"%1\"").arg(user_name_);
 
@@ -184,11 +195,23 @@ QString launcher::launch_string()
     }
 
 #if defined(Q_OS_UNIX)
-    if ( opts_->separate_x )
-        res = QString("xinit %1 -- :%2").arg(res).arg( find_free_display() );
+    if ( separate_x )
+        res = get_separate_x_launch_str(res);
 #endif
     
     return res;
+}
+
+#if defined(Q_OS_UNIX)
+QString launcher::get_separate_x_launch_str(const QString& ls)
+{
+    return QString("xinit %1 -- :%2").arg(ls).arg( find_free_display() );
+}
+#endif
+
+QString launcher::launch_string()
+{
+    return launch_string( app_settings().separate_x() );
 }
 
 void launcher::stop()

@@ -1,4 +1,7 @@
-#include <boost/pool/detail/singleton.hpp>
+
+#include <stdexcept>
+
+#include <boost/foreach.hpp>
 
 #include <QCoreApplication>
 #include <QDir>
@@ -9,17 +12,51 @@
 
 const QSettings::Format format_c = QSettings::IniFormat;
 
+typedef std::map<QString, base_settings::settings_ptr > settings_map;
+
+class settings_holder: public QObject{
+private:
+    settings_holder(QObject* parent): QObject(parent){}
+    static settings_holder* instance_;
+    settings_map registered_;
+    
+public:
+
+    static void delete_holder(){
+        delete instance_;
+        instance_ = reinterpret_cast<settings_holder*>(-1);
+    }
+    
+    static settings_map& registered(){
+        if( instance_ == reinterpret_cast<settings_holder*>(0) ){
+            instance_ = new settings_holder(qApp);
+            connect( qApp, SIGNAL(aboutToQuit()), new qsettings_deleter(), SLOT(aboutToQuit()) );
+        }
+        else if ( instance_ == reinterpret_cast<settings_holder*>(-1) ){
+            throw std::logic_error("Using settings after QCoreApplication quits!");
+        }
+        
+        return instance_->registered_;
+    }
+};
+
+settings_holder* settings_holder::instance_ = 0;
+
+void qsettings_deleter::aboutToQuit()
+{
+    settings_holder::delete_holder();
+}
+
+
+
 struct base_settings::pimpl
 {
-    typedef std::map<QString, settings_ptr > settings_map;
-
     pimpl(bool org)
     : settings_(new QSettings(format_c, QSettings::UserScope
                               , (org) ? QCoreApplication::organizationName() : QCoreApplication::applicationName()
                               , QCoreApplication::applicationName()))
-    , registered_(boost::details::pool::singleton_default<settings_map>::instance())
-    {
-    }
+    , registered_(settings_holder::registered())
+    {}
 
     ///Get dir to the main QSettings object
     QString dir_path() const
@@ -41,6 +78,14 @@ struct base_settings::pimpl
     settings_ptr create_group(const QString& uid, const QString group = QString())
     {
         settings_ptr s(new QSettings(settings_->fileName(), format_c));
+        s->beginGroup((group.isEmpty()) ? uid : group);
+        return s;
+    }
+
+    ///Create QSettings object from main object and enter to the \p uid group
+    settings_ptr create_group( const QString& uid, const QString group, settings_ptr settings )
+    {
+        settings_ptr s(new QSettings(settings->fileName(), format_c));
         s->beginGroup((group.isEmpty()) ? uid : group);
         return s;
     }
@@ -78,6 +123,12 @@ void base_settings::register_group(const QString& uid, const QString& group, con
     p_->registered_[uid]->beginGroup(group);
 }
 
+void base_settings::register_sub_group(const QString& uid, const QString& group, const QString& parent_uid)
+{
+    p_->registered_[uid] = p_->create_group(uid, group, get_settings(parent_uid) );
+}
+
+
 void base_settings::unregister(const QString& uid)
 {
     p_->registered_.erase(uid);
@@ -93,3 +144,31 @@ base_settings::settings_ptr base_settings::get_settings(const QString& uid)
     base_settings s;
     return s.p_->get_settings(uid);
 }
+
+
+
+base_settings::settings_ptr clone_settings(base_settings::settings_ptr s, const QString& filename)
+{
+    base_settings::settings_ptr dup( new QSettings( filename, s->format() ) );
+    
+    BOOST_FOREACH( const QString& key, s->allKeys() )
+        dup->setValue( key, s->value(key) );
+
+    dup->sync();
+    return dup;
+}
+
+
+void copy_settings(base_settings::settings_ptr src, base_settings::settings_ptr dst)
+{
+    //previously removing items from destination
+    BOOST_FOREACH( const QString& key, dst->allKeys() )
+        if( !src->contains(key) ) dst->remove(key);
+
+    //copying valuest from source to destination
+    BOOST_FOREACH( const QString& key, src->allKeys() )
+        dst->setValue( key, src->value(key) );
+
+    dst->sync();
+}
+

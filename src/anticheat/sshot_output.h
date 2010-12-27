@@ -23,7 +23,7 @@ public:
     virtual void stop();
 
     virtual bool can_send_now() = 0;
-    virtual void send_file(const QString& name, const QByteArray& data) = 0;
+    virtual void send_file(const QString& name, const QByteArray& data, bool heavy = false) = 0;
 
 private:
     bool enabled_;

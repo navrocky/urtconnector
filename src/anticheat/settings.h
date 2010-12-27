@@ -39,6 +39,10 @@ public:
     QString ftp_folder() const;
     void set_ftp_folder(const QString& val);
 
+    /// send only md5
+    bool send_only_md5() const;
+    void set_send_only_md5(bool val);
+
     /// Use local folder for screen shots store
     bool use_local_folder() const;
     void set_use_local_folder(bool val);

@@ -8,6 +8,7 @@ set(HEADERS
 )
 
 set(MOC_HEADERS
+    settings.h
 )
 
 set(SOURCES
@@ -19,6 +20,8 @@ set(IFACES
 
 set(RESOURCES
 )
+
+qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 

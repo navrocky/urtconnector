@@ -7,15 +7,15 @@
 
 #include "qstat_options.h"
 #include "pointers.h"
-#include "server_info.h"
-#include "player_info.h"
-#include "geoip/geoip.h"
+#include <common/server_info.h>
+#include <common/player_info.h>
+#include <geoip/geoip.h>
 
 class qstat_updater : public QObject
 {
     Q_OBJECT
 public:
-    qstat_updater(server_list_p list, const geoip& gi, qstat_options* opts);
+    qstat_updater( server_list_p list, const geoip& gi );
 
     void refresh_all();
     void refresh_selected(const server_id_list& list);
@@ -55,7 +55,6 @@ private:
     state_t cur_state_;
     server_info_p cur_server_info_;
     player_info cur_player_info_;
-    qstat_options* qstat_opts_;
     typedef std::pair<QString, QString> rule_info_t;
     rule_info_t cur_rule_;
     server_list_p serv_list_;

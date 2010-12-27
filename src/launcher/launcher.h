@@ -17,7 +17,7 @@ class launcher: public QObject
 {
     Q_OBJECT
 public:
-    launcher(app_options_p launch, QObject* parent = NULL);
+    launcher( QObject* parent = NULL);
 
     server_id id() const {return id_;}
     void set_server_id(const server_id& id);
@@ -37,10 +37,16 @@ public:
     void set_detach(bool val);
 
     /*! Launch string calculated from options above */
+    QString launch_string(bool separate_x);
     QString launch_string();
 
     /*! Game is started */
     bool is_started() const {return proc_;}
+
+#if defined(Q_OS_UNIX)
+    static QString get_separate_x_launch_str(const QString& ls);
+#endif
+    static void parse_combined_arg_string(const QString& launch_str, QString& program, QStringList& args);
 
 signals:
     void started();
@@ -48,6 +54,7 @@ signals:
 
 public slots:
     void launch();
+    void launch(const QString& launch_str);
     void stop();
     
 private slots:
@@ -57,7 +64,6 @@ private slots:
 private:
     QString get_work_dir();
 
-    app_options_p opts_;
     QString user_name_;
     QString password_;
     server_id id_;

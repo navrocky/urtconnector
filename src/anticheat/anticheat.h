@@ -32,21 +32,21 @@ public:
     const QString& nick_name() const {return nick_name_;}
     void set_nick_name(const QString& val);
 
-    void start();
-    void stop();
-
     bool is_started();
 
     virtual bool event(QEvent* e);
 
     void add_output(sshot_output* output);
 
+public slots:
+    void start();
+    void stop();
+
 private:
     void update_timer();
     void screen_shot();
     
     QList<QPointer<sshot_output> > outputs_;
-
     int interval_;
     int quality_;
     int timer_;

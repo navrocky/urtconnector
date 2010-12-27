@@ -3,6 +3,8 @@
 
 #include <map>
 
+#include <boost/function.hpp>
+
 #include <QObject>
 #include <QPainter>
 
@@ -52,5 +54,39 @@ QAction*  add_separator_action(QWidget* w, const QString& text = "");
 QColor choose_for_background( Qt::GlobalColor standard, const QColor& background );
 QString common_substring_from_begin(const QString& s1, const QString& s2);
 QString common_substring_from_end(const QString& s1, const QString& s2);
+
+
+class qt_signal_wrapper: public QObject
+{
+    Q_OBJECT
+public:
+    typedef boost::function < void () > function;
+    qt_signal_wrapper( QObject* parent, function function = 0 )
+            : QObject( parent )
+    {
+        if ( function != 0 )
+            functions_.push_back( function );
+    };
+
+    ~qt_signal_wrapper(){};
+
+    void add_function( function function )
+    { functions_.push_back( function ); }
+
+public slots:
+    void activate()
+    {
+        try {
+        for ( uint i = 0; i < functions_.size();++i )
+            functions_[i]();
+        }
+        catch(...){}
+    }
+
+private:
+    std::vector<function> functions_;
+};
+
+
 
 #endif

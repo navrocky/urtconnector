@@ -2,7 +2,7 @@
 #include <QObject>
 
 #include <common/exception.h>
-#include "../str_convert.h"
+#include <common/str_convert.h>
 
 #include "sqlite_database.h"
 

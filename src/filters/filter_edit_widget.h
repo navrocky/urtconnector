@@ -1,9 +1,9 @@
 #ifndef FILTER_EDIT_WIDGET_H
 #define	FILTER_EDIT_WIDGET_H
 
+#include <QMainWindow>
 #include <QWidget>
 #include <QDialog>
-#include <QMainWindow>
 
 #include "pointers.h"
 
@@ -25,7 +25,7 @@ class select_filter_class_dialog : public QDialog
 {
     Q_OBJECT
 public:
-    select_filter_class_dialog(filter_factory_p factory);
+    select_filter_class_dialog(filter_factory_p factory, QWidget* parent);
 
     filter_class_p selected() const {return selected_;}
 private slots:
@@ -72,6 +72,8 @@ class filter_edit_widget : public QMainWindow
 public:
     filter_edit_widget(filter_list_p filters, QWidget* parent = NULL);
 
+    void update_contents();
+
 private slots:
     void add_new_filter();
     void delete_filter();
@@ -82,14 +84,12 @@ private slots:
 private:
     void do_update(filter_p parent, QTreeWidget*, QTreeWidgetItem*);
     void update_item(QTreeWidgetItem*);
-    void update_contents();
     composite_filter* composite_cast(filter_p);
     void update_items();
 
     filter_list_p filters_;
     QTreeWidget* tree_;
     QAction* add_new_filter_action_;
-//    QAction* add_exist_filter_action_;
     QAction* delete_filter_action_;
     QAction* select_toolbar_filter_action_;
 };

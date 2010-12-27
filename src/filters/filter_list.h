@@ -22,7 +22,7 @@ public:
     filter_p root_filter() const {return root_filter_;}
     void set_root_filter(filter_p f);
 
-    filter_p create_by_class_id(const QString& id);
+    filter_p create_by_class_id(const QString& id) const;
 
     /*! Filter selected for list toolbar. */
     filter_weak_p toolbar_filter() const {return toolbar_filter_;}

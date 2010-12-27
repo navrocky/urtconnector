@@ -3,7 +3,7 @@
 
 #include "pointers.h"
 #include "filter.h"
-#include "../server_info.h"
+#include <common/server_info.h>
 
 class hide_full_filter_class : public filter_class
 {

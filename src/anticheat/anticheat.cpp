@@ -126,6 +126,7 @@ void anticheat::screen_shot()
     }
 
     QString fn = QString("%1_%2").arg(nick_name_).arg(QDateTime::currentDateTime().toString(Qt::ISODate));
+    fn.replace(":", "-");
 
     QByteArray md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5);
     QString md5_s = QString("%1  %2.jpg\n").arg(QString(md5.toHex())).arg(fn);
@@ -134,8 +135,8 @@ void anticheat::screen_shot()
     {
         if (!out || !out->can_send_now())
             continue;
-        out->send_file(fn + ".jpg", ba);
-        out->send_file(fn + ".jpg.md5", md5_s.toUtf8());
+        out->send_file(fn + ".jpg", ba, true);
+        out->send_file(fn + ".jpg.md5", md5_s.toUtf8(), false);
     }
 
     LOG_DEBUG << "Screenshot taken";

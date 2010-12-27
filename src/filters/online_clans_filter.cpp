@@ -60,12 +60,12 @@ bool online_clans_filter::filter_server(const server_info& si)
     {
         foreach (const player_info& p2, si.players)
         {
-            if (p1.nick_name == p2.nick_name)
+            if (p1.nick_name() == p2.nick_name())
                 continue;
-            QString s = common_substring_from_begin(p1.nick_name, p2.nick_name);
+            QString s = common_substring_from_begin(p1.nick_name(), p2.nick_name());
             if (s.length() >= minimal_tag_length_)
                 begin_m.insert(s);
-            s = common_substring_from_end(p1.nick_name, p2.nick_name);
+            s = common_substring_from_end(p1.nick_name(), p2.nick_name());
             if (s.length() >= minimal_tag_length_)
                 end_m.insert(s);
         }
@@ -75,7 +75,7 @@ bool online_clans_filter::filter_server(const server_info& si)
     {
         int cnt = 0;
         foreach(const player_info& p, si.players)
-            if (p.nick_name.startsWith(s))
+            if (p.nick_name().startsWith(s))
                 cnt++;
         if (cnt >= minimal_players_)
             return true;
@@ -85,7 +85,7 @@ bool online_clans_filter::filter_server(const server_info& si)
     {
         int cnt = 0;
         foreach(const player_info& p, si.players)
-            if (p.nick_name.endsWith(s))
+            if (p.nick_name().endsWith(s))
                 cnt++;
         if (cnt >= minimal_players_)
             return true;

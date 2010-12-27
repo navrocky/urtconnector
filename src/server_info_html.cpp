@@ -52,10 +52,10 @@ QString get_server_info_html(const server_info& si)
         players = qApp->translate("server_info_html", "<hr>%1 players:<table width=100%>"
                                   "<tr class=\"header\"><td>Nick</td><td>Ping</td><td>Score</td></tr>").arg(pil.size());
         int i = 0;
-        for (player_info_list::const_iterator it = pil.begin(); it != pil.end(); it++)
+        foreach (const player_info& pi, pil)
         {
             players += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td><td>%4</td></tr>")
-                       .arg(i % 2 + 1).arg(Qt::escape(it->nick_name)).arg(it->ping).arg(it->score);
+                       .arg(i % 2 + 1).arg(Qt::escape(pi.nick_name())).arg(pi.ping()).arg(pi.score());
             i++;
         }
         players += "</table>";
@@ -83,28 +83,28 @@ QString get_server_info_html(const server_info& si)
     QString serv_info;
     QString status_str;
 
-    int private_slots = si.get_info("sv_privateClients").toInt();
+    int private_slots = si.private_slots();
 
     if (si.updating)
         status_str = qApp->translate("server_info_html",
-                                     "<img class=\"img1\" src=\":/icons/icons/status-update.png\"> Updating");
+                                     "<img class=\"img1\" src=\"icons:status-update.png\"> Updating");
     else
         switch (si.status)
         {
         case server_info::s_none:
             status_str = qApp->translate("server_info_html",
-                                        "<img class=\"img1\" src=\":/icons/icons/status-none.png\"> Unknown");
+                                        "<img class=\"img1\" src=\"icons:status-none.png\"> Unknown");
             break;
         case server_info::s_up:
-            if ( si.get_info("g_needpass").toInt()  )
+            if ( si.is_password_needed()  )
             {
                 status_str = qApp->translate("server_info_html",
-                                            "<img class=\"img1\" src=\":/icons/icons/status-passwd.png\"> Online");
+                                            "<img class=\"img1\" src=\"icons:status-passwd.png\"> Online");
             }
             else
             {
                 status_str = qApp->translate("server_info_html",
-                                            "<img class=\"img1\" src=\":/icons/icons/status-online.png\"> Online");
+                                            "<img class=\"img1\" src=\"icons:status-online.png\"> Online");
             }
             if (si.max_player_count > 0 &&
                 si.players.size() >= si.max_player_count - private_slots)
@@ -112,7 +112,7 @@ QString get_server_info_html(const server_info& si)
             break;
         case server_info::s_down:
             status_str = qApp->translate("server_info_html",
-                                        "<img class=\"img1\" src=\":/icons/icons/status-offline.png\"> Offline");
+                                        "<img class=\"img1\" src=\"icons:status-offline.png\"> Offline");
             break;
         }
 

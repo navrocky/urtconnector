@@ -65,7 +65,8 @@ bool try_x_start()
     file.open();
 
     QString command = QString("xinit /bin/sh -c 'echo -n ok >> %1' -- :%2").arg(file.fileName()).arg(find_free_display());
-    system(command.toStdString().c_str());
+    if ( system(command.toStdString().c_str()) == -1)
+        return false;
 
     QString readed(file.readLine());
     if (readed == "ok")

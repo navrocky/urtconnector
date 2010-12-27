@@ -6,12 +6,11 @@
 #include <QDialog>
 
 #include "pointers.h"
-#include "server_options.h"
-#include "jobs/job.h"
+#include "server_bookmark.h"
+#include <jobs/job.h>
 
 class Ui_ServOptsDialogClass;
 class geoip;
-class qstat_options;
 class job_queue;
 
 class server_options_dialog : public QDialog
@@ -19,13 +18,15 @@ class server_options_dialog : public QDialog
     Q_OBJECT
 public:
     server_options_dialog(QWidget *parent = 0);
-    server_options_dialog(QWidget *parent, const server_options& src);
+    server_options_dialog(QWidget *parent, const server_bookmark& src);
 
     ~server_options_dialog();
 
-    const server_options& options() const {return opts_;}
+    const server_bookmark& options() const {return opts_;}
 
-    void set_update_params(geoip* gi, qstat_options* opts, job_queue* que);
+    void set_update_params(geoip* gi, job_queue* que);
+
+    void set_server_list(server_list_p val);
 
 public slots:
     void update_name();
@@ -41,11 +42,10 @@ private:
     void init();
 
     boost::shared_ptr<Ui_ServOptsDialogClass> ui_;
-    server_options opts_;
+    server_bookmark opts_;
     server_id_list ids_;
     server_list_p list_;
     geoip* gi_;
-    qstat_options* qstat_opts_;
     job_queue* que_;
 };
 

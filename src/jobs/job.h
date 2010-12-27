@@ -6,6 +6,9 @@
 
 #include <QObject>
 #include <QString>
+#include <QPointer>
+
+class QEventLoop;
 
 class job_t : public QObject
 {
@@ -39,7 +42,14 @@ public:
     // job is stopped
     bool is_stopped();
 
+    bool is_canceled();
+
     static bool state_is_stopped(state_t state);
+
+    /*! Starts local event loop and waits to job finish */
+    void wait_for_finish();
+
+    void start_and_wait_for_finish();
 
 signals:
     void state_changed(job_t::state_t state);
@@ -49,7 +59,7 @@ protected:
 
 private:
     state_t state_;
-
+    QPointer<QEventLoop> event_loop_;
 };
 
 typedef boost::shared_ptr<job_t> job_p;

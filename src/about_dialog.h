@@ -16,7 +16,12 @@ class about_dialog : public QDialog
 public:
     about_dialog(QWidget *parent = 0);
     ~about_dialog();
+
+    void set_christmas_mode(bool val);
+
 private:
+    void update_christmas_mode();
+
     std::auto_ptr<Ui::AboutDialogClass> ui_;
 };
 

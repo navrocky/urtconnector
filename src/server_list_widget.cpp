@@ -16,21 +16,26 @@
 #include <QTimerEvent>
 #include <QDialog>
 #include <QSettings>
+#include <QDockWidget>
+#include <QToolBar>
+#include <QAction>
+#include <QEvent>
 
 #include <cl/syslog/syslog.h>
 
-#include "server_info.h"
-#include "server_list.h"
-#include "geoip/geoip.h"
+#include <common/server_info.h>
+#include <common/server_list.h>
+#include <geoip/geoip.h>
 #include "app_options.h"
-#include "filters/filter.h"
-#include "filters/filter_edit_widget.h"
-#include "filters/filter_list.h"
-#include "filters/composite_filter.h"
-#include "filters/tools.h"
-#include "filters/regexp_filter.h"
+#include <filters/filter.h>
+#include <filters/filter_edit_widget.h>
+#include <filters/filter_list.h>
+#include <filters/composite_filter.h>
+#include <filters/tools.h>
+#include <filters/regexp_filter.h>
 
 #include "server_list_widget.h"
+#include "tools.h"
 
 SYSLOG_MODULE(server_list_widget)
 
@@ -38,6 +43,11 @@ const int c_filter_info_column = 100;
 
 //Role to access server_info stored in QTreeModel
 const int c_info_role = Qt::UserRole;
+const int c_id_role = Qt::UserRole + 1;
+const int c_stamp_role = Qt::UserRole + 2;
+
+//FIXME move to shared place USED in history_tab
+const int c_suppress_role = Qt::UserRole + 11;
 
 ////////////////////////////////////////////////////////////////////////////////
 // server_tree
@@ -89,41 +99,68 @@ void server_list_widget_settings::save_toolbar_filter(const QString& name)
     part()->endGroup();
 }
 
+void server_list_widget_settings::save_state(const QByteArray& a)
+{
+    part()->beginGroup(name_);
+    part()->setValue("state", a);
+    part()->endGroup();
+}
+
+QByteArray server_list_widget_settings::load_state()
+{
+    part()->beginGroup(name_);
+    QByteArray res = part()->value("state").toByteArray();
+    part()->endGroup();
+    return res;
+}
+
+bool server_list_widget_settings::is_filter_visible()
+{
+    part()->beginGroup(name_);
+    bool res = part()->value("filter_visible").toBool();
+    part()->endGroup();
+    return res;
+}
+
+void server_list_widget_settings::set_filter_visible(bool val)
+{
+    part()->beginGroup(name_);
+    part()->setValue("filter_visible", val);
+    part()->endGroup();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // server_list_widget
 
-server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p factory,
-    QWidget *parent)
-: QWidget(parent)
-, old_state_(0)
-, update_timer_(0)
-, favs_(0)
-, opts_(opts)
+server_list_widget::server_list_widget( filter_factory_p factory, QWidget *parent)
+: QMainWindow(parent)
 , filters_(new filter_list(factory))
 , visible_server_count_(0)
+, filter_widget_(0)
 {
-    QBoxLayout* vert_lay = new QVBoxLayout(this);
-    vert_lay->setContentsMargins(0, 0, 0, 0);
-    QBoxLayout* horiz_lay = new QHBoxLayout();
-    horiz_lay->setContentsMargins(0, 0, 0, 0);
+    setWindowFlags(windowFlags() & (~Qt::Window));
 
-    show_filter_button_ = new QToolButton(this);
-    show_filter_button_->setIcon(QIcon(":/icons/icons/view-filter.png"));
-    show_filter_button_->setAutoRaise(true);
-    show_filter_button_->setToolTip(tr("View and edit filter"));
+    accum_updater_ = new QAccumulatingConnection(500,
+        QAccumulatingConnection::Periodically, this);
+    connect(accum_updater_, SIGNAL(signal()), SLOT(update_list()));
 
-    connect(show_filter_button_, SIGNAL(clicked()), SLOT(edit_filter()));
+    QToolBar* tb = new QToolBar(tr("Filter toolbar"), this);
+    tb->setObjectName("filter_toolbar");
+    addToolBar(Qt::TopToolBarArea, tb);
 
-    horiz_lay->addWidget(show_filter_button_);
+    show_filter_action_ = new QAction(QIcon("icons:view-filter.png"), tr("View and edit filter"), this);
+    show_filter_action_->setCheckable(true);
+    connect(show_filter_action_, SIGNAL(triggered()), SLOT(edit_filter()));
+    tb->addAction(show_filter_action_);
 
     filter_holder_ = new QWidget(this);
     QHBoxLayout* lay = new QHBoxLayout(filter_holder_);
     lay->setContentsMargins(0, 0, 0, 0);
-    horiz_lay->addWidget(filter_holder_);
-
-    vert_lay->addLayout(horiz_lay);
+    tb->addWidget(filter_holder_);
 
     tree_ = new server_tree(this);
+    setCentralWidget(tree_);
+    
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->setEditTriggers(QAbstractItemView::EditKeyPressed);
     tree_->setAlternatingRowColors(true);
@@ -133,8 +170,6 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     tree_->setSortingEnabled(true);
     tree_->setAllColumnsShowFocus(true);
     tree_->setWordWrap(true);
-
-    vert_lay->addWidget(tree_);
 
     QTreeWidgetItem *hi = tree_->headerItem();
     hi->setText(7, tr("Players"));
@@ -148,8 +183,6 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     hi->setToolTip(2, tr("Server address (ip:port)"));
     hi->setToolTip(1, tr("Server name"));
     hi->setToolTip(0, tr("Server status"));
-
-    update_timer_ = startTimer(500);
 
     tree_->setItemDelegateForColumn( 0, new status_item_delegate(this) );
     
@@ -182,11 +215,18 @@ server_list_widget::server_list_widget(app_options_p opts,  filter_factory_p fac
     connect(filters_->root_filter().get(), SIGNAL(changed_signal()), SLOT(update_list()));
     connect(filters_.get(), SIGNAL(toolbar_filter_changed()), SLOT(update_toolbar_filter()));
     update_toolbar_filter();
+    
+    filter_widget_ = new QDockWidget(tr("Filter"), this);
+    filter_widget_->setObjectName("filter");
+    filter_edit_widget_ = new filter_edit_widget(filters_, filter_widget_);
+    filter_widget_->setWidget(filter_edit_widget_);
+    filter_widget_->hide();
+    addDockWidget(Qt::LeftDockWidgetArea, filter_widget_);
+    filter_widget_->installEventFilter(this);
 }
 
 server_list_widget::~server_list_widget()
 {
-    delete edit_widget_;
 }
 
 void server_list_widget::update_toolbar_filter()
@@ -212,69 +252,94 @@ void server_list_widget::update_toolbar_filter()
 
 void server_list_widget::set_server_list(server_list_p ptr)
 {
+    if (serv_list_)
+        disconnect(serv_list_.get(), SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
     serv_list_ = ptr;
+    if (serv_list_)
+        connect(serv_list_.get(), SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
+    accum_updater_->emitSignal();
 }
 
-void server_list_widget::set_favs ( server_fav_list* favs )
+void server_list_widget::set_bookmarks ( server_bookmark_list* bms )
 {
-    favs_ = favs;
+    if (bms_)
+        disconnect(bms_, SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
+    bms_ = bms;
+    if (bms_)
+        connect(bms_, SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
+    accum_updater_->emitSignal();
 }
 
 void server_list_widget::update_item(QTreeWidgetItem* item)
 {
-    server_info_p si = item->data(0, c_info_role).value<server_info_p>();
-    if (!si)
+    server_id id = item->data(0, c_id_role).value<server_id>();
+    if (id.is_empty())
         return;
 
-    QModelIndex index = tree_->indexFromItem(item);
-    tree_->model()->setData(index, qVariantFromValue(si), c_info_role );
+    static const server_info_p empty(new server_info);
 
-    QString name = si->name;
-    if (favs_)
+    server_info_p si = serv_list_->get(id);
+    if (!si)
+        si = empty;
+
+    int stamp = item->data(0, c_stamp_role).value<int>();
+    if (si->update_stamp() != stamp || stamp == 0)
     {
-        server_fav_list::iterator it = favs_->find(si->id);
-        if (it != favs_->end())
+        QModelIndex index = tree_->indexFromItem(item);
+        tree_->model()->setData(index, QVariant::fromValue(si), c_info_role);
+
+        QString name = si->name;
+        if (bms_)
         {
-            QString fav_name = it->second.name;
-            if (!fav_name.isEmpty() && name != fav_name)
+            const server_bookmark& bm = bms_->get(id);
+            if (!bm.is_empty())
             {
-                if (name.isEmpty())
-                    name = fav_name;
-                else
-                    name = QString("%1 (%2)").arg(name).arg(fav_name);
+                if (!bm.name().isEmpty() && name != bm.name())
+                {
+                    if (name.isEmpty())
+                        name = bm.name();
+                    else
+                        name = QString("%1 (%2)").arg(name).arg(bm.name());
+                }
             }
         }
-    }
 
-    QStringList sl;
-    sl << si->status_name();
+        QStringList sl;
+        sl << si->status_name();
 
-    if ( si->get_info("g_needpass").toInt() )
-        sl << tr("Private");
-    if ( si->get_info("pure", "-1").toInt() == 0 )
-        sl << tr("Not pure");
+        if (si->is_password_needed())
+            sl << tr("Private");
+        if (si->get_info("pure", "-1").toInt() == 0)
+            sl << tr("Not pure");
 
-    QString status = sl.join(", ");
+        QString status = sl.join(", ");
 
-    int private_slots = si->get_info("sv_privateClients").toInt();
+        item->setToolTip(0, status);
+        item->setText(1, name);
+        item->setText(2, id.address());
+        item->setIcon(3, geoip::get_flag_by_country(si->country_code));
+        item->setToolTip(3, si->country);
+        item->setText(4, QString("%1").arg(si->ping, 5));
+        item->setText(5, si->mode_name());
+        item->setText(6, si->map);
 
-    item->setToolTip(0, status);
-    item->setText(1, name);
-    item->setText(2, si->id.address());
-    item->setIcon(3, geoip::get_flag_by_country(si->country_code) );
-    item->setToolTip(3, si->country);
-    item->setText(4, QString("%1").arg(si->ping, 5));
-    item->setText(5, si->mode_name());
-    item->setText(6, si->map);
-    item->setText(7, QString("%1/%2/%3").arg(si->players.size())
-        .arg(si->max_player_count - private_slots).arg(si->max_player_count));
-    item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
-        .arg(si->players.size()).arg(si->max_player_count - private_slots).arg(si->max_player_count));
+        QString player_count;
+        if (si->max_player_count > 0)
+            player_count = QString("%1/%2/%3").arg(si->players.size())
+            .arg(si->public_slots()).arg(si->max_player_count);
+
+        item->setText(7, player_count);
+        item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
+                         .arg(si->players.size()).arg(si->public_slots())
+                         .arg(si->max_player_count));
+        item->setData(0, c_stamp_role, QVariant::fromValue(si->update_stamp()));
+        }
 
     bool visible = filter_item(item);
     if (visible)
         visible_server_count_++;
-    item->setHidden(!visible);
+    if (item->isHidden() == visible)
+        item->setHidden(!visible);
 }
 
 bool server_list_widget::filter_item(QTreeWidgetItem* item)
@@ -289,27 +354,14 @@ bool server_list_widget::filter_item(QTreeWidgetItem* item)
     return true;
 }
 
-void server_list_widget::timerEvent(QTimerEvent *te)
-{
-    if (!serv_list_) return;
-
-    if (te->timerId() == update_timer_)
-    {
-        if (serv_list_->state() == old_state_) return;
-        old_state_ = serv_list_->state();
-        update_list();
-    }
-}
-
 void server_list_widget::force_update()
 {
-    old_state_ = serv_list_->state();
-    update_list();
+    accum_updater_->emitNow();
 }
 
 void server_list_widget::update_list()
 {
-    LOG_DEBUG << "update_list()";
+    LOG_DEBUG << "Update list";
     QTreeWidget* tw = tree_;
     QTreeWidgetItem* cur_item = tw->currentItem();
 
@@ -317,10 +369,30 @@ void server_list_widget::update_list()
     tw->setUpdatesEnabled(false);
     tw->setSortingEnabled(false);
 
-    const server_info_list& list = serv_list_->list();
+    const server_info_list& info_list = serv_list_->list();
+    server_info_list bm_list;
+    const server_info_list* list;
+
+    // take id list
+    QList<server_id> ids;
+    if (bms_)
+    {
+        foreach (const server_bookmark& bm, bms_->list())
+        {
+            server_info_list::const_iterator it = info_list.find(bm.id());
+            if (it != info_list.end())
+                bm_list[bm.id()] = it->second;
+            else
+                bm_list[bm.id()] = server_info_p();
+        }
+        list = &bm_list;
+    } else
+    {
+        list = &info_list;
+    }
 
     // who changed, appeared?
-    for (server_info_list::const_iterator it = list.begin(); it != list.end(); it++)
+    for (server_info_list::const_iterator it = list->begin(); it != list->end(); it++)
     {
         const server_id& id = it->first;
         server_items::iterator it2 = items_.find(id);
@@ -331,32 +403,40 @@ void server_list_widget::update_list()
         } else
         {
             QTreeWidgetItem* item = new QTreeWidgetItem(tw);
+            item->setData(0, c_id_role, QVariant::fromValue(id));
             item->setData(0, c_info_role, QVariant::fromValue(it->second));
             items_[id] = item;
             update_item(item);
         }
     }
+
     // who removed ?
-    std::vector<server_id> to_remove;
+    QList<server_id> to_remove;
     for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
     {
         const server_id& id = it->first;
-        if (list.find(id) == list.end())
+        if (list->find(id) == list->end())
             to_remove.push_back(id);
     }
-    for (std::vector<server_id>::iterator it = to_remove.begin(); it != to_remove.end(); it++)
+
+    // remove old items
+    foreach (const server_id& id, to_remove)
     {
-        QTreeWidgetItem* item = items_[*it];
+        server_items::iterator it = items_.find(id);
+        if (it == items_.end())
+            continue;
+
+        QTreeWidgetItem* item = it->second;
         if (item == cur_item)
-            cur_item == 0;
+            cur_item = 0;
         delete item;
-        items_.erase(*it);
+        items_.erase(it);
     }
 
     tw->setSortingEnabled(true);
     tw->setUpdatesEnabled(true);
 
-    if (tw->topLevelItemCount() > 0 && cur_item && opts_->center_current_row)
+    if (tw->topLevelItemCount() > 0 && cur_item && app_settings().center_current_row())
         tw->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
 }
 
@@ -365,9 +445,7 @@ server_id_list server_list_widget::selection()
     server_id_list res;
     foreach (QTreeWidgetItem* item, tree_->selectedItems())
     {
-        server_info_p si = item->data(0, c_info_role).value<server_info_p>();
-        if (si)
-            res.push_back(si->id);
+        res.push_back(item->data(0, c_id_role).value<server_id>());
     }
     return res;
 }
@@ -379,12 +457,7 @@ QTreeWidget* server_list_widget::tree() const
 
 void server_list_widget::edit_filter()
 {
-    if (!edit_widget_)
-    {
-        edit_widget_ = new filter_edit_widget(filters_);
-    }
-    edit_widget_->move(show_filter_button_->mapToGlobal(QPoint(0, show_filter_button_->height())));
-    edit_widget_->show();
+    filter_widget_->setVisible(show_filter_action_->isChecked());
 }
 
 void correct_names(filter_list_p fl, filter_p par)
@@ -413,6 +486,11 @@ void server_list_widget::load_options()
         QString name = st.load_toolbar_filter();
         f = filters_->find_by_name(name);
         filters_->set_toolbar_filter(f);
+
+        restoreState(st.load_state(), 1);
+        show_filter_action_->setChecked(st.is_filter_visible());
+
+        filter_edit_widget_->update_contents();
     }
     catch(const std::exception& e)
     {
@@ -430,6 +508,20 @@ void server_list_widget::save_options()
         st.save_toolbar_filter(tbf->name());
     else
         st.save_toolbar_filter("");
+
+    st.save_state(saveState(1));
+    st.set_filter_visible(show_filter_action_->isChecked());
+}
+
+bool server_list_widget::eventFilter(QObject* watched, QEvent* event)
+{
+    if (watched == filter_widget_)
+    {
+        if (event->type() == QEvent::Show)
+            show_filter_action_->setChecked(true);
+        if (event->type() == QEvent::Hide)
+            show_filter_action_->setChecked(false);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -439,23 +531,38 @@ status_item_delegate::status_item_delegate(QObject* parent)
     : QStyledItemDelegate(parent)
 {}
 
+status_item_delegate::status_item_delegate(server_list_p sl, QObject* parent)
+    : QStyledItemDelegate(parent)
+    , sl_(sl)
+{}
+
+#include <QDir>
 void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     //Draw base styled-item(gradient backgroud and other)
     QStyledItemDelegate::paint(painter, option, index);
 
+    if( index.data( c_suppress_role ).toBool() )
+        return;
+    
     //Rect for drawing icons
     const QRect& optr = option.rect;
     QRect icon_rect( optr.x() + 2, optr.y() + 2, optr.height() - 4, optr.height() - 4 );
     
-    server_info_p si = index.data(c_info_role).value<server_info_p>();
+    server_info_p si;
+    
+    if( sl_ )
+        si = sl_->get( index.data(c_id_role).value<server_id>() );
+    else
+        si = index.data(c_info_role).value<server_info_p>();
+    
     if ( !si ) si = server_info_p( new server_info() );
 
-    static QPixmap icon_none(":/icons/icons/status-none.png");
-    static QPixmap icon_online(":/icons/icons/status-online.png");
-    static QPixmap icon_offline(":/icons/icons/status-offline.png");
-    static QPixmap icon_updating(":/icons/icons/status-update.png");
-    static QPixmap icon_passwd( ":/icons/icons/status-passwd.png" );
+    static QPixmap icon_none("icons:status-none.png");
+    static QPixmap icon_online("icons:status-online.png");
+    static QPixmap icon_offline("icons:status-offline.png");
+    static QPixmap icon_updating("icons:status-update.png");
+    static QPixmap icon_passwd( "icons:status-passwd.png" );
     static QPixmap icon_empty;
     
     QPixmap& icon_status = icon_empty;
@@ -482,17 +589,15 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
 
     next_icon( icon_rect);
 
-    if ( si->get_info("g_needpass").toInt() ) painter->drawPixmap( icon_rect, icon_passwd );
+    if ( si->is_password_needed() ) painter->drawPixmap( icon_rect, icon_passwd );
 
     next_icon( icon_rect);
 
-    if ( si->get_info("pure", "-1").toInt() == 0 )
-        painter->drawPixmap( icon_rect, QPixmap( ":/icons/icons/user-identity.png" ) );
+    if ( si->get_info("pure", "-1").toInt() == 0 ) 
+        painter->drawPixmap( icon_rect, QPixmap( "icons:user-identity.png" ) );
 }
 
 void status_item_delegate::next_icon(QRect& icon) const
 { 
     icon.adjust( icon.width(), 0, icon.width(), 0 );
 }
-
-

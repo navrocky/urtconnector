@@ -10,7 +10,7 @@ class clipper: public QObject
 {
     Q_OBJECT
 public:
-    clipper ( QObject* parent, app_options_p opts );
+    clipper ( QObject* parent );
     ~clipper();
     
     QString address() const {return address_;}
@@ -24,7 +24,6 @@ public slots:
     void data_changed();
 
 private:
-    app_options_p opts_;
     QString address_;
     QString password_;
 };

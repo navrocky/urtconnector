@@ -12,7 +12,7 @@ public:
     sshot_file_output(QObject* parent = NULL);
 
     virtual bool can_send_now();
-    virtual void send_file(const QString& name, const QByteArray& data);
+    virtual void send_file(const QString& name, const QByteArray& data, bool heavy = false);
 
     void set_folder(const QString& val);
 

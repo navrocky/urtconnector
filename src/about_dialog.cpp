@@ -21,6 +21,7 @@ about_dialog::about_dialog(QWidget *parent)
 {
     ui_->setupUi(this);
     ui_->label_version->setText(tr("version %1 \"%2\"").arg(URT_VERSION).arg(URT_CODENAME));
+    ui_->logo_label->setPixmap(QPixmap("images:logo.png"));
 
     QPalette transp_palette;
     transp_palette.setColor(QPalette::Base, Qt::transparent);
@@ -65,8 +66,26 @@ about_dialog::about_dialog(QWidget *parent)
         "<p>If you want help with translation UrTConnector to your language - "
         "<a href=\"http://code.google.com/p/urtconnector\">join</a> us!</p>"
     )));
+    update_christmas_mode();
 }
 
 about_dialog::~about_dialog()
 {
 }
+
+void about_dialog::set_christmas_mode(bool val)
+{
+//     if (christmas_mode_ == val)
+//         return;
+//     christmas_mode_ = val;
+//     update_christmas_mode();
+}
+
+void about_dialog::update_christmas_mode()
+{
+//     if (christmas_mode_)
+//     {
+//         ui_->logo_label->setPixmap(QPixmap("images:logo.png"));
+//     }
+}
+

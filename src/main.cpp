@@ -2,12 +2,14 @@
 #include <string>
 #include <boost/program_options.hpp>
 
+#include <QDir>
 #include <QString>
 #include <QMessageBox>
 #include <QStringList>
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QTemporaryFile>
+#include <QTextCodec>
 #include <QDesktopWidget>
 #include <QDesktopServices>
 
@@ -16,6 +18,7 @@
 #include <common/qt_syslog.h>
 #include <common/state_settings.h>
 #include <common/exception.h>
+#include <common/str_convert.h>
 #include <launcher/launcher.h>
 #include <anticheat/settings.h>
 #include <anticheat/tools.h>
@@ -27,7 +30,6 @@
 #include "main_window.h"
 #include "application.h"
 #include "debug_help.h"
-#include "str_convert.h"
 #include "tools.h"
 #include "config.h"
 #include "pointers.h"
@@ -46,23 +48,77 @@ void show_help(const po::options_description& desc)
     cout << desc << "\n";
 }
 
+void init_application(QApplication* a)
+{
+    a->setOrganizationName("urtcommunity");
+    a->setApplicationName("urtconnector");
+
+    // loading translations
+    QTranslator qt_trans;
+    QString trans_name = "qt_" + QLocale::system().name();
+    bool loaded = qt_trans.load(trans_name,
+                                QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    if (loaded)
+        LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
+    else
+        LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
+
+    a->installTranslator(&qt_trans);
+    
+    QTranslator urt_tr;
+
+    trans_name = "urtconnector_" + QLocale::system().name();
+#if defined(Q_OS_UNIX)
+    loaded = urt_tr.load(trans_name, "/usr/share/urtconnector/translations");
+#elif defined(Q_OS_WIN)
+    loaded = urt_tr.load(trans_name);
+#elif defined(Q_OS_MAC)
+    // FIXME i don't know how do this on mac
+    loaded = urt_tr.load(trans_name);
+#endif
+    if (loaded)
+        LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
+    else
+        LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
+
+    a->installTranslator(&urt_tr);
+
+    QTextCodec::setCodecForTr( QTextCodec::codecForName("utf8") );
+
+    //Initializing main settings
+    base_settings set;
+
+    set.register_group( app_settings::uid(),   "app_opts",   "options.ini" );
+    set.register_group( clip_settings::uid(),  "clipboard",  "options.ini" );
+    set.register_group( qstat_settings::uid(), "qstat_opts", "options.ini" );
+    
+    //Registering state_settings in separate file
+    set.register_file( state_settings::uid(), "state.ini" );
+    set.register_file( server_list_widget_settings::uid(), "options.ini" );
+    set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
+    set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
+
+    //Initializing resource resolution
+    // to use icons from resources you must use "icons:<name>" syntax
+    // other resource syntax unchaged
+    
+    // detect christmas and using icons from another iconset
+    int month = QDate::currentDate().month();
+    if( month == 1 || month == 12 )
+    {
+        QDir::addSearchPath("icons", QString(":icons/icons/christmas"));
+        QDir::addSearchPath("images", QString(":images/icons/christmas"));
+    }
+    
+    QDir::addSearchPath("icons", QString(":icons/icons/"));
+    QDir::addSearchPath("images", QString(":images/icons/"));
+}
+
 int main(int argc, char *argv[])
 {
-    // initialize database
-    sqlite_database db("urtconnector.sqlite");
-    init_database();
-
     // parsing program options
     namespace po = boost::program_options;
     bool gui_enabled = false;
-    output_p cerr_out(new output_stream(std::cerr));
-    logman().output_add(cerr_out);
-
-//#ifdef Q_OS_WIN32
-    output_p log_out(new output_file(to_str(QDesktopServices::storageLocation(QDesktopServices::HomeLocation)) + "/urtconnector.log"));
-    logman().output_add(log_out);
-//#endif
-
     QString error_str;
     try
     {
@@ -71,8 +127,12 @@ int main(int argc, char *argv[])
         desc.add_options()
                 ("help", "Produce help message")
                 ("debug,D", "Produce debug messages")
+                ("pipe-log", "Redirect all logging to stderr with a special marks")
                 ("anticheat,A", "Activate anticheat")
                 ("launch,L", "Launch a game")
+#if defined(Q_OS_UNIX)
+                ("separate-x,X", "Launch game in separate X")
+#endif
                 ("player", po::value<string>(), "Player name")
                 ("addr", po::value<string>(), "Server address")
                 ("pass", po::value<string>(), "Password")
@@ -105,27 +165,36 @@ int main(int argc, char *argv[])
         else
             logman().level_set(info);
 
-        LOG_DEBUG << "Syslog started";
+        output_p cerr_out, file_out;
+        if (vm.count("pipe-log"))
+        {
+            // TODO Special log output to forward all messages to main programm
+            cerr_out.reset(new output_stream(std::cerr));
+            logman().output_add(cerr_out);
+        } else
+        {
+            cerr_out.reset(new output_stream(std::cerr));
+            file_out.reset(new output_file(to_str(QDesktopServices::storageLocation(
+                    QDesktopServices::HomeLocation)) + "/urtconnector.log"));
+            logman().output_add(cerr_out);
+            logman().output_add(file_out);
+        }
 
-        //Initializing main settings
-        base_settings set;
-        //Registering state_settings in separate file
-        set.register_file( state_settings::uid(), "state.ini" );
-        set.register_file( server_list_widget_settings::uid(), "options.ini" );
-        set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
-        set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
+        LOG_DEBUG << "Syslog started";
 
         if (vm.count("launch"))
         {
             LOG_DEBUG << "Quick launch";
-            QApplication a(argc, argv, false);
-            a.setOrganizationName("urtcommunity");
-            a.setApplicationName("urtconnector");
+            QApplication a(argc, argv, true);
+            init_application(&a);
 
-            app_options_p opts(new app_options);
-            load_app_options(get_app_options_settings("options"), opts);
-//            anticheat::manager anticheat;
-            launcher l(opts);
+            QString name = QObject::tr("Unnamed");
+            if (vm.count("player"))
+                name = to_qstr(vm["player"].as<string>());
+
+            anticheat::anticheat* ac = vm.count("anticheat") ? anticheat::create_anticheat(name, &a) : NULL;
+
+            launcher l;
             l.set_detach(false);
             if (vm.count("addr"))
                 l.set_server_id(server_id(to_qstr(vm["addr"].as<string>())));
@@ -137,7 +206,14 @@ int main(int argc, char *argv[])
                 l.set_rcon(to_qstr(vm["rcon"].as<string>()));
             if (vm.count("referee"))
                 l.set_referee(to_qstr(vm["referee"].as<string>()));
-            l.launch();
+
+            if (ac)
+            {
+                QObject::connect(&l, SIGNAL(started()), ac, SLOT(start()));
+                QObject::connect(&l, SIGNAL(stopped()), ac, SLOT(stop()));
+            }
+
+            l.launch(l.launch_string(vm.count("separate-x")));
             QObject::connect(&l, SIGNAL(stopped()), &a, SLOT(quit()));
             a.exec();
             return 0;
@@ -156,41 +232,20 @@ int main(int argc, char *argv[])
         }
 #endif
         application::setQuitOnLastWindowClosed(false);
+        init_application(&a);
 
-        a.setOrganizationName("urtcommunity");
-        a.setApplicationName("urtconnector");
-
-        // loading translations
-        QTranslator qt_trans;
-        QString trans_name = "qt_" + QLocale::system().name();
-        bool loaded = qt_trans.load(trans_name,
-                                    QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-        if (loaded)
-            LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
-        else
-            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
-
-        a.installTranslator(&qt_trans);
-
-        QTranslator urt_tr;
-
-        trans_name = "urtconnector_" + QLocale::system().name();
-#if defined(Q_OS_UNIX)
-        loaded = urt_tr.load(trans_name, "/usr/share/urtconnector/translations");
-#elif defined(Q_OS_WIN)
-        loaded = urt_tr.load(trans_name);
-#elif defined(Q_OS_MAC)
-        // FIXME i don't know how do this on mac
-        loaded = urt_tr.load(trans_name);
-#endif
-        if (loaded)
-            LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
-        else
-            LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
-        
-        a.installTranslator(&urt_tr);
+        // initialize database
+        qsettings_p s = get_app_options_settings("test");
+        QString fn = QFileInfo(s->fileName()).absoluteDir().absolutePath() + "/urtconnector.sqlite";
+        s.reset();
+        sqlite_database db(fn);
+        init_database();
 
         main_window w;
+
+        // detect christmas and activate this mode if any
+        int month = QDate::currentDate().month();
+        w.set_christmas_mode(month == 1 || month == 12);
 
 #ifdef USE_SINGLE_APP
         //set a widget that should raise when new instance trying to start
