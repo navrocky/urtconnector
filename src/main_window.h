@@ -34,7 +34,6 @@ public:
     main_window ( QWidget *parent = 0 );
     ~main_window();
 
-    bool christmas_mode() const {return christmas_mode_;}
     void set_christmas_mode(bool val);
 
 
@@ -120,7 +119,6 @@ private:
     QAction* anticheat_configure_action_;
     QPointer<QProcess> ac_proc_;
     QAccumulatingConnection* server_info_updater_;
-    bool christmas_mode_;
 };
 
 #endif

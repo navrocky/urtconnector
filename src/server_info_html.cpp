@@ -87,24 +87,24 @@ QString get_server_info_html(const server_info& si)
 
     if (si.updating)
         status_str = qApp->translate("server_info_html",
-                                     "<img class=\"img1\" src=\":/icons/icons/status-update.png\"> Updating");
+                                     "<img class=\"img1\" src=\"icons:status-update.png\"> Updating");
     else
         switch (si.status)
         {
         case server_info::s_none:
             status_str = qApp->translate("server_info_html",
-                                        "<img class=\"img1\" src=\":/icons/icons/status-none.png\"> Unknown");
+                                        "<img class=\"img1\" src=\"icons:status-none.png\"> Unknown");
             break;
         case server_info::s_up:
             if ( si.is_password_needed()  )
             {
                 status_str = qApp->translate("server_info_html",
-                                            "<img class=\"img1\" src=\":/icons/icons/status-passwd.png\"> Online");
+                                            "<img class=\"img1\" src=\"icons:status-passwd.png\"> Online");
             }
             else
             {
                 status_str = qApp->translate("server_info_html",
-                                            "<img class=\"img1\" src=\":/icons/icons/status-online.png\"> Online");
+                                            "<img class=\"img1\" src=\"icons:status-online.png\"> Online");
             }
             if (si.max_player_count > 0 &&
                 si.players.size() >= si.max_player_count - private_slots)
@@ -112,7 +112,7 @@ QString get_server_info_html(const server_info& si)
             break;
         case server_info::s_down:
             status_str = qApp->translate("server_info_html",
-                                        "<img class=\"img1\" src=\":/icons/icons/status-offline.png\"> Offline");
+                                        "<img class=\"img1\" src=\"icons:status-offline.png\"> Offline");
             break;
         }
 

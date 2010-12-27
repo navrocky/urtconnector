@@ -18,7 +18,7 @@ application_settings_form::application_settings_form(QWidget* parent, Qt::Window
 {
     p_->ui.setupUi(this);
 
-    set_icon( QIcon(":/icons/icons/configure.png") );
+    set_icon( QIcon("icons:configure.png") );
     set_header( tr("Main application settings") );
     
     connect( p_->ui.qstat_binary_choose_button,     SIGNAL( clicked() ), SLOT( choose_qstat_binary() ));

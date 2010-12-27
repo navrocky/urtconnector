@@ -34,7 +34,7 @@ rcon_settings_form::rcon_settings_form(QWidget* parent, Qt::WindowFlags f)
 {
     p_->ui.setupUi(this);
 
-    set_icon( QIcon(":/icons/icons/utilities-terminal.png") );
+    set_icon( QIcon("icons:utilities-terminal.png") );
     set_header( tr("Remote console configuration") );
 
     boost::assign::insert( p_->examples )

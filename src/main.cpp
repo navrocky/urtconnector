@@ -2,6 +2,7 @@
 #include <string>
 #include <boost/program_options.hpp>
 
+#include <QDir>
 #include <QString>
 #include <QMessageBox>
 #include <QStringList>
@@ -94,7 +95,20 @@ void init_application(QApplication* a)
     set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
     set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
 
+    //Initializing resource resolution
+    // to use icons from resources you must use "icons:<name>" syntax
+    // other resource syntax unchaged
     
+    // detect christmas and using icons from another iconset
+    int month = QDate::currentDate().month();
+    if( month == 1 || month == 12 )
+    {
+        QDir::addSearchPath("icons", QString(":icons/icons/christmas"));
+        QDir::addSearchPath("images", QString(":images/icons/christmas"));
+    }
+    
+    QDir::addSearchPath("icons", QString(":icons/icons/"));
+    QDir::addSearchPath("images", QString(":images/icons/"));
 }
 
 int main(int argc, char *argv[])

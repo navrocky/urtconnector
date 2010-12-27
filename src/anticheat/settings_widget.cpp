@@ -17,7 +17,7 @@ settings_widget::settings_widget(QWidget *parent)
 {
     p_->ui.setupUi(this);
 
-    set_icon( QIcon(":/icons/icons/anticheat.png") );
+    set_icon( QIcon("icons:anticheat.png") );
     set_header( tr("Anticheat settings") );
     
     connect(p_->ui.choose_local_folder_btn, SIGNAL(clicked()), SLOT(choose_local_folder()));  

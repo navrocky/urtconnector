@@ -105,7 +105,7 @@ void history_widget::addItem(history_item_p item)
     QTreeWidgetItem* item_ptr = new QTreeWidgetItem();
     
     item_ptr->setText(0, item->server_name());
-    item_ptr->setText(2, item->date_time().toString());
+    item_ptr->setText(2, item->date_time().toString( Qt::DefaultLocaleShortDate ));
     item_ptr->setText(3, item->address());
     item_ptr->setText(4, item->password());
     item_ptr->setText(5, item->player_name());

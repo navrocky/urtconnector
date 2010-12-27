@@ -394,6 +394,12 @@ src/icons/anticheat.png -text
 src/icons/application-exit.png -text
 src/icons/bookmarks.png -text
 src/icons/choose-file.png -text
+src/icons/christmas/anticheat.png -text
+src/icons/christmas/logo.png -text
+src/icons/christmas/status-none.png -text
+src/icons/christmas/status-offline.png -text
+src/icons/christmas/status-online.png -text
+src/icons/christmas/status-update.png -text
 src/icons/close.png -text
 src/icons/configure.png -text
 src/icons/dialog-ok-apply.png -text
@@ -413,7 +419,6 @@ src/icons/history.png -text
 src/icons/insert-link.png -text
 src/icons/launch.png -text
 src/icons/logo.png -text
-src/icons/logo_christmas.png -text
 src/icons/pin.png -text
 src/icons/remove.png -text
 src/icons/status-none.png -text

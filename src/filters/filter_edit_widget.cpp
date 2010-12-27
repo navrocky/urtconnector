@@ -33,7 +33,7 @@ select_filter_class_dialog::select_filter_class_dialog(filter_factory_p factory,
 , factory_(factory)
 {
     setWindowTitle(tr("Select filter type"));
-    setWindowIcon(QIcon(":/icons/icons/zoom.png"));
+    setWindowIcon(QIcon("icons:zoom.png"));
 
     QBoxLayout* lay = new QVBoxLayout(this);
     tree_ = new QListWidget(this);
@@ -97,7 +97,7 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
 
     int is = QApplication::style()->pixelMetric(QStyle::PM_SmallIconSize);
     pin_label_ = new QLabel(this);
-    pin_label_->setPixmap(QIcon(":/icons/icons/pin.png").pixmap(is));
+    pin_label_->setPixmap(QIcon("icons:pin.png").pixmap(is));
     pin_label_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     pin_label_->setVisible(false);
 
@@ -112,7 +112,7 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
     lay->addLayout(options_lay_);
 
     options_button_ = new QToolButton(this);
-    options_button_->setIcon(QIcon(":/icons/icons/configure.png"));
+    options_button_->setIcon(QIcon("icons:configure.png"));
     options_button_->setToolTip(tr("Configure filter"));
     lay->addWidget(options_button_);
 
@@ -181,13 +181,13 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     setWindowFlags(windowFlags() & (~Qt::Window));
 
     setWindowTitle(tr("Filter options"));
-    setWindowIcon(QIcon(":/icons/icons/view-filter.png"));
+    setWindowIcon(QIcon("icons:view-filter.png"));
 
-    add_new_filter_action_ = new QAction(QIcon(":/icons/icons/add.png"),
+    add_new_filter_action_ = new QAction(QIcon("icons:add.png"),
                                          tr("Add new child filter"), this);
-    delete_filter_action_ = new QAction(QIcon(":/icons/icons/remove.png"),
+    delete_filter_action_ = new QAction(QIcon("icons:remove.png"),
                                          tr("Delete filter"), this);
-    select_toolbar_filter_action_ = new QAction(QIcon(":/icons/icons/pin.png"),
+    select_toolbar_filter_action_ = new QAction(QIcon("icons:pin.png"),
                                          tr("Select filter for toolbar"), this);
 
     connect(add_new_filter_action_, SIGNAL(triggered()), SLOT(add_new_filter()));

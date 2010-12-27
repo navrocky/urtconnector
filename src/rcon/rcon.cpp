@@ -457,13 +457,13 @@ void rcon::set_state( bool connected)
     if ( !connected )
     {
         LOG_HARD << p_->id.address().toStdString() << " - connection failed";
-        p_->status->setPixmap( QPixmap(":/icons/icons/status-offline.png") );
+        p_->status->setPixmap( QPixmap("icons:status-offline.png") );
         print( Info, tr("connection failed") );
     }
     else if( !p_->connected && connected )
     {
         LOG_HARD << p_->id.address().toStdString() << " - connected";
-        p_->status->setPixmap( QPixmap(":/icons/icons/status-online.png") );
+        p_->status->setPixmap( QPixmap("icons:status-online.png") );
         print( Info, tr("connected") );
     }
     

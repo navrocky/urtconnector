@@ -148,7 +148,7 @@ server_list_widget::server_list_widget( filter_factory_p factory, QWidget *paren
     tb->setObjectName("filter_toolbar");
     addToolBar(Qt::TopToolBarArea, tb);
 
-    show_filter_action_ = new QAction(QIcon(":/icons/icons/view-filter.png"), tr("View and edit filter"), this);
+    show_filter_action_ = new QAction(QIcon("icons:view-filter.png"), tr("View and edit filter"), this);
     show_filter_action_->setCheckable(true);
     connect(show_filter_action_, SIGNAL(triggered()), SLOT(edit_filter()));
     tb->addAction(show_filter_action_);
@@ -536,7 +536,7 @@ status_item_delegate::status_item_delegate(server_list_p sl, QObject* parent)
     , sl_(sl)
 {}
 
-
+#include <QDir>
 void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     //Draw base styled-item(gradient backgroud and other)
@@ -558,11 +558,11 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
     
     if ( !si ) si = server_info_p( new server_info() );
 
-    static QPixmap icon_none(":/icons/icons/status-none.png");
-    static QPixmap icon_online(":/icons/icons/status-online.png");
-    static QPixmap icon_offline(":/icons/icons/status-offline.png");
-    static QPixmap icon_updating(":/icons/icons/status-update.png");
-    static QPixmap icon_passwd( ":/icons/icons/status-passwd.png" );
+    static QPixmap icon_none("icons:status-none.png");
+    static QPixmap icon_online("icons:status-online.png");
+    static QPixmap icon_offline("icons:status-offline.png");
+    static QPixmap icon_updating("icons:status-update.png");
+    static QPixmap icon_passwd( "icons:status-passwd.png" );
     static QPixmap icon_empty;
     
     QPixmap& icon_status = icon_empty;
@@ -593,8 +593,8 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
 
     next_icon( icon_rect);
 
-    if ( si->get_info("pure", "-1").toInt() == 0 )
-        painter->drawPixmap( icon_rect, QPixmap( ":/icons/icons/user-identity.png" ) );
+    if ( si->get_info("pure", "-1").toInt() == 0 ) 
+        painter->drawPixmap( icon_rect, QPixmap( "icons:user-identity.png" ) );
 }
 
 void status_item_delegate::next_icon(QRect& icon) const

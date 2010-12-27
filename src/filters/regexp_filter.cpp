@@ -105,7 +105,7 @@ regexp_filter_quick_opt_widget::regexp_filter_quick_opt_widget(filter_p f)
     edit_->setToolTip(tr("Filter expression. You can use here a regular expressions."));
     lay->addWidget(edit_);
 
-    QAction* a = new QAction(QIcon(":/icons/icons/edit-clear-locationbar-rtl.png"),
+    QAction* a = new QAction(QIcon("icons:edit-clear-locationbar-rtl.png"),
                              tr("Clear expression"), this);
     connect(a, SIGNAL(triggered()), edit_, SLOT(clear()));
     edit_->addActionButton(a);

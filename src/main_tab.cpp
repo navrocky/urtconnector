@@ -126,7 +126,7 @@ void main_tab::init_filter_toolbar()
     tb->setObjectName("filter_toolbar");
     addToolBar( Qt::TopToolBarArea, tb );
 
-    QAction* show_filter_a = new QAction(QIcon(":/icons/icons/view-filter.png"), QObject::tr("View and edit filter"), this);
+    QAction* show_filter_a = new QAction(QIcon("icons:view-filter.png"), QObject::tr("View and edit filter"), this);
     show_filter_a->setCheckable(true);
 
     show_filter_a->setChecked( p_->st.is_filter_visible() );

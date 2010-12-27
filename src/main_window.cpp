@@ -89,21 +89,22 @@ main_window::main_window(QWidget *parent)
 , clipper_( new clipper(this) )
 , anticheat_(NULL)
 , launcher_(new launcher(this))
-, christmas_mode_(false)
 {
 //    setAttribute(Qt::WA_TranslucentBackground, true);
     ui_->setupUi(this);
 
+    setWindowIcon(QIcon("images:logo.png"));
+    
     server_info_updater_ = new QAccumulatingConnection(300, QAccumulatingConnection::Periodically, this);
     connect(server_info_updater_, SIGNAL(signal()), SLOT(update_server_info()));
     connect(all_sl_.get(), SIGNAL(changed()), server_info_updater_, SLOT(emitSignal()));
     connect(ui_->tabWidget, SIGNAL(currentChanged(int)), server_info_updater_, SLOT(emitSignal()));
 
-    anticheat_enabled_action_ = new QAction(QIcon(":/icons/icons/anticheat.png"), tr("Enable anticheat"), this);
+    anticheat_enabled_action_ = new QAction(QIcon("icons:anticheat.png"), tr("Enable anticheat"), this);
     anticheat_enabled_action_->setCheckable(true);
 
 //    anticheat_open_action_ = new QAction(QIcon(":/images/icons/zoom.png"), tr("Enable anticheat"), this);
-    anticheat_configure_action_ = new QAction(QIcon(":/icons/icons/configure.png"), tr("Configure anticheat"), this);
+    anticheat_configure_action_ = new QAction(QIcon("icons:configure.png"), tr("Configure anticheat"), this);
     connect( anticheat_configure_action_, SIGNAL(triggered(bool)), SLOT(show_anticheat_options()) );
     
     QMenu* m = new QMenu(this);
@@ -132,7 +133,7 @@ main_window::main_window(QWidget *parent)
     tray_menu_->addAction(ui_->actionQuit);
     
     tray_ = new QSystemTrayIcon(this);
-    tray_->setIcon(QIcon(":/images/icons/logo.png"));
+    tray_->setIcon(QIcon("images:logo.png"));
     tray_->show();
     tray_->setContextMenu(tray_menu_);
     tray_->setToolTip(tr("Click to show/hide UrTConnector or middle click to quick launch"));
@@ -408,6 +409,13 @@ void main_window::refresh_servers(server_list_widget* current, const server_id_l
         statusBar()->showMessage(to_qstr(e.what()), 2000);
     }
 
+    //FIXME hack with history tab
+    if( !current )
+    {
+        que_->add_job( job_p( new job_update_selected( to_update, all_sl_, gi_) ) );
+        return;
+    }
+
     if ( master )
         que_->add_job( job_p( new job_update_from_master( current->server_list(), gi_) ) );
     else
@@ -428,7 +436,10 @@ void main_window::refresh_all_bookmarks()
 void main_window::refresh_selected()
 {
     server_list_widget* list = current_list_widget();
-    refresh_servers( list, list->selection() );
+    if( list )
+        refresh_servers( list, list->selection() );
+    else
+        refresh_servers( list, server_id_list() << selected() );
 }
 
 void main_window::refresh_master()
@@ -441,7 +452,7 @@ void main_window::refresh_master()
 void main_window::show_about()
 {
     about_dialog d(this);
-    d.set_christmas_mode(christmas_mode_);
+//     d.set_christmas_mode(christmas_mode_);
     d.exec();
 }
 
@@ -644,8 +655,8 @@ void main_window::update_actions()
         ui_->actionClearAll->setEnabled(has_any_server);
     }
 
-    ui_->actionRefreshAll->setVisible(current == fav_list_);
-    ui_->actionRefreshMaster->setVisible(current != fav_list_);
+    ui_->actionRefreshAll->setVisible( current && current == fav_list_);
+    ui_->actionRefreshMaster->setVisible(current && current != fav_list_);
 }
 
 void main_window::current_tab_changed(int)
@@ -817,7 +828,7 @@ void main_window::open_remote_console()
     dw->setWidget( new rcon(this, id, bookmarks_->get(id)));
 
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
-    dw->setStyle( new iconned_dock_style( QIcon(":/icons/icons/utilities-terminal.png"), dw->style() ) );
+    dw->setStyle( new iconned_dock_style( QIcon("icons:utilities-terminal.png"), dw->style() ) );
 #endif
     addDockWidget(Qt::BottomDockWidgetArea,  dw );
 }
@@ -886,20 +897,20 @@ void main_window::check_anticheat_prereq() const
 
 void main_window::set_christmas_mode(bool val)
 {
-    if (christmas_mode_ == val)
-        return;
-    christmas_mode_ = val;
-    update_christmas_mode();
+//     if (christmas_mode_ == val)
+//         return;
+//     christmas_mode_ = val;
+//     update_christmas_mode();
 }
 
 void main_window::update_christmas_mode()
 {
-    if (christmas_mode_)
-    {
-        QIcon ico(":/images/icons/logo_christmas.png");
-        setWindowIcon(ico);
-        tray_->setIcon(ico);
-    }
+//     if (christmas_mode_)
+//     {
+//         QIcon ico("images:logo.png");
+//         setWindowIcon(ico);
+//         tray_->setIcon(ico);
+//     }
 }
 
 void main_window::show_anticheat_options()

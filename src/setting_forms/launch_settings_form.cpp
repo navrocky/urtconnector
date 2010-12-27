@@ -26,9 +26,9 @@ launch_settings_form::launch_settings_form(QWidget* parent, Qt::WindowFlags f)
 {
     p_->ui.setupUi(this);
 
-    set_icon( QIcon(":/images/icons/logo.png") );
+    set_icon( QIcon("images:logo.png") );
     set_header( tr("UrbanTerror launch settings") );
-    
+
     connect( p_->ui.select_bin_button,  SIGNAL( clicked() ),                    this, SLOT( choose_binary() ));
     connect( p_->ui.insertFileButton,   SIGNAL( clicked() ),                    this, SLOT( insert_file_path() ));
     connect( p_->ui.advCmdEdit,         SIGNAL( textChanged(const QString&)),   this, SLOT( adv_text_changed(const QString&) ) );
