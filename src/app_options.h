@@ -55,6 +55,12 @@ public:
     /*! Update server info before connect to */
     bool update_before_connect() const;
     void set_update_before_connect(bool b);
+
+    /*! Is christmas mode active? */
+    bool christmas_mode() const;
+
+    bool use_holiday_mode() const;
+    void set_holiday_mode(bool b);
 };
 
 class clip_settings: public settings_uid_provider<clip_settings>

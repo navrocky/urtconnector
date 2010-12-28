@@ -1,5 +1,6 @@
 
 #include <QSettings>
+#include <QDate>
 
 #include "config.h"
 #include "app_options.h"
@@ -113,6 +114,23 @@ void app_settings::set_update_before_connect(bool b)
 {
     part()->setValue("update_before_connect", b);
 }
+
+bool app_settings::christmas_mode() const
+{
+    int month = QDate::currentDate().month();
+    return ( month == 1 || month == 12 ) && use_holiday_mode();
+}
+
+bool app_settings::use_holiday_mode() const
+{
+    return part()->value("holiday", true).toBool();
+}
+
+void app_settings::set_holiday_mode(bool b)
+{
+    part()->setValue("holiday", b);
+}
+
 
 
 

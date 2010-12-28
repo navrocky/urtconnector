@@ -17,12 +17,61 @@ public:
     about_dialog(QWidget *parent = 0);
     ~about_dialog();
 
-    void set_christmas_mode(bool val);
-
 private:
-    void update_christmas_mode();
 
     std::auto_ptr<Ui::AboutDialogClass> ui_;
 };
 
+
+struct snowflake{
+
+    snowflake();
+    
+    snowflake( int x, const QPixmap& pm );
+
+    void tick();
+
+    int x() const;
+    int y() const;
+
+    bool is_ok() const;
+
+    const QPixmap& pixmap() const;
+private:
+    bool init_;
+    
+    float x_;
+    float y_;
+
+    float size;
+    
+    float hspeed_;
+    float vspeed_;
+
+    QPixmap pm_;
+};
+
+
+class blizzard: public QObject{
+    Q_OBJECT
+public:
+    blizzard(QWidget* w);
+
+
+    virtual bool eventFilter(QObject* o, QEvent* e);
+
+
+private:
+    QWidget* w_;
+
+    QPixmap prototype;
+    
+    std::vector<snowflake> flakes_;
+};
+
+
+
+
+
 #endif // ABOUTDIALOG_H
+

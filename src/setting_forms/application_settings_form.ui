@@ -29,6 +29,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="holiday_check">
+     <property name="text">
+      <string>Use holiday features</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>QStat binary path</string>

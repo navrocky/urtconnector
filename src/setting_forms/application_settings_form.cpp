@@ -35,6 +35,8 @@ void application_settings_form::set_connections(bool b)
 
         connect( p_->ui.center_current_row_check, SIGNAL(stateChanged(int)),            this, SIGNAL( changed() ) );
 
+        connect( p_->ui.holiday_check,            SIGNAL(stateChanged(int)),            this, SIGNAL( changed() ) );
+
         connect( p_->ui.qstat_binary_edit,        SIGNAL(textChanged(const QString &)), this, SIGNAL( changed() ) );
 
         connect( p_->ui.qstat_master_edit,        SIGNAL(textChanged(const QString &)), this, SIGNAL( changed() ) );
@@ -55,6 +57,8 @@ void application_settings_form::set_connections(bool b)
         disconnect( p_->ui.hide_mainwindow_check,    SIGNAL(stateChanged(int)),            this, SIGNAL( changed() ) );
 
         disconnect( p_->ui.center_current_row_check, SIGNAL(stateChanged(int)),            this, SIGNAL( changed() ) );
+        
+        disconnect( p_->ui.holiday_check,            SIGNAL(stateChanged(int)),            this, SIGNAL( changed() ) );
 
         disconnect( p_->ui.qstat_binary_edit,        SIGNAL(textChanged(const QString &)), this, SIGNAL( changed() ) );
 
@@ -85,6 +89,7 @@ void application_settings_form::update_preferences()
     
     p_->ui.hide_mainwindow_check->setChecked( as.start_hidden() );
     p_->ui.center_current_row_check->setChecked( as.center_current_row() );
+    p_->ui.holiday_check->setChecked( as.use_holiday_mode() );
 
     p_->ui.qstat_binary_edit->setText( qs.qstat_path() );
     p_->ui.qstat_master_edit->setText( qs.master_server() );
@@ -112,6 +117,7 @@ void application_settings_form::accept()
     
     as.set_start_hidden( p_->ui.hide_mainwindow_check->isChecked() );
     as.set_center_current_row( p_->ui.center_current_row_check->isChecked() );
+    as.set_holiday_mode( p_->ui.holiday_check->isChecked() );
 
     qs.set_qstat_path( p_->ui.qstat_binary_edit->text() );
     qs.set_master_server( p_->ui.qstat_master_edit->text() );

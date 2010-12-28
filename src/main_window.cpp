@@ -452,7 +452,6 @@ void main_window::refresh_master()
 void main_window::show_about()
 {
     about_dialog d(this);
-//     d.set_christmas_mode(christmas_mode_);
     d.exec();
 }
 

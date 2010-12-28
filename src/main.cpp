@@ -100,8 +100,7 @@ void init_application(QApplication* a)
     // other resource syntax unchaged
     
     // detect christmas and using icons from another iconset
-    int month = QDate::currentDate().month();
-    if( month == 1 || month == 12 )
+    if( app_settings().christmas_mode() )
     {
         QDir::addSearchPath("icons", QString(":icons/icons/christmas"));
         QDir::addSearchPath("images", QString(":images/icons/christmas"));
