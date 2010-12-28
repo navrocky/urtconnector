@@ -115,6 +115,11 @@ src/common/str_convert.h -text
 src/common/string_escape.cpp -text
 src/common/string_escape.h -text
 src/config.h.in -text
+src/database/CMakeLists.txt -text
+src/database/simple_database.cpp -text
+src/database/simple_database.h -text
+src/database/sqlite_database.cpp -text
+src/database/sqlite_database.h -text
 src/debug_help.cpp -text
 src/debug_help.h -text
 src/filters/CMakeLists.txt -text
@@ -537,6 +542,7 @@ src/setting_forms/launch_settings_form.ui -text
 src/settings/CMakeLists.txt -text
 src/settings/settings.cpp -text
 src/settings/settings.h -text
+src/sql/populate_sqlite.sql -text
 src/tools.cpp -text
 src/tools.h -text
 src/urtconnector.desktop -text
