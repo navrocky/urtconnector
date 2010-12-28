@@ -27,7 +27,7 @@ struct snowflake{
 
     snowflake();
     
-    snowflake( int x, const QPixmap& pm );
+    snowflake( int x, int y, const QPixmap& pm );
 
     void tick();
 

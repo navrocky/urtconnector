@@ -93,13 +93,13 @@ snowflake::snowflake()
 {}
 
 
-snowflake::snowflake(int x, const QPixmap& pm)
+snowflake::snowflake(int x, int y, const QPixmap& pm)
     : x_(x)
-    , y_(0)
+    , y_(y)
     , init_(true)
 {
-    size = random() % 10 + 4;
-    pm_ = pm.scaled( size, size );
+    size = random() % 10 + 5;
+    pm_ = pm.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
     //this is magic numbers
     int max_v_speed = 15;
@@ -138,7 +138,7 @@ const QPixmap& snowflake::pixmap() const
 blizzard::blizzard(QWidget* w)
     : QObject(w)
     , w_(w)
-    , flakes_(15)
+    , flakes_(30)
 {
     w->installEventFilter( this );
     QTimer* t = new QTimer(this);
@@ -146,22 +146,24 @@ blizzard::blizzard(QWidget* w)
     connect( t, SIGNAL( timeout() ), w, SLOT( update()) );
     t->start(50);
 
-    QImage im( "images:snowflake.png" );
+//     QImage im( "images:snowflake.png" );
+    QPixmap im( "images:snowflake.png" );
 
-    for ( int i = 0; i< im.width(); ++i )
-    {
-        for (int j = 0; j< im.height(); ++j)
-        {
-            int index = im.pixelIndex(i,j);
-            QRgb color = im.color(index);
-            im.setColor( index, qRgba( qRed(color), qGreen(color), qBlue(color), std::min(150, qAlpha(color) ) ));
-        }
-    }
+//     for ( int i = 0; i< im.width(); ++i )
+//     {
+//         for (int j = 0; j< im.height(); ++j)
+//         {
+//             int index = im.pixelIndex(i,j);
+//             QRgb color = im.color(index);
+// //             im.setColor( index, qRgba( qRed(color), qGreen(color), qBlue(color), std::min(10, qAlpha(color) ) ));
+// //             im.setColor( index, qRgba( qRed(color), qGreen(color), qBlue(color), 10 ));
+//         }
+//     }
 
     prototype = QPixmap( im.size() );
     prototype.fill( Qt::transparent );
 
-    QPainter( &prototype ).drawImage(0, 0, im);
+    QPainter( &prototype ).drawPixmap(0, 0, im);
 }
 
 
@@ -177,14 +179,14 @@ bool blizzard::eventFilter(QObject* o, QEvent* e)
     BOOST_FOREACH( snowflake& sf, flakes_ ){
 
         if ( !sf.is_ok() )
-            sf = snowflake( random() % w_->width(), prototype );
+            sf = snowflake( random() % w_->width(), random() % w_->height(), prototype );
 
         sf.tick();
 
         p.drawPixmap( sf.x(), sf.y(), sf.pixmap() );
 
         if( sf.y() >= w_->height() || sf.x() >= w_->width() )
-            sf = snowflake();
+            sf = snowflake( random() % w_->width(), 0, prototype );
     }
 
     return ret;
