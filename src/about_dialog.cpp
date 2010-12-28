@@ -1,4 +1,4 @@
-
+#include <cstdlib>
 #include <ctime>
 
 #include <boost/foreach.hpp>
@@ -27,7 +27,7 @@ about_dialog::about_dialog(QWidget *parent)
 : QDialog(parent)
 , ui_(new Ui::AboutDialogClass)
 {
-    srandom( std::time(NULL) );
+    srand( std::time(NULL) );
 
     if( app_settings().christmas_mode() )
         new blizzard(this);
@@ -98,7 +98,7 @@ snowflake::snowflake(int x, int y, const QPixmap& pm)
     , y_(y)
     , init_(true)
 {
-    size = random() % 10 + 5;
+    size = rand() % 10 + 5;
     pm_ = pm.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
     //this is magic numbers
@@ -107,10 +107,10 @@ snowflake::snowflake(int x, int y, const QPixmap& pm)
 
     int max_h_speed = 5;
 
-    vspeed_ = std::max( ( random() % max_v_speed + min_v_speed ) / 5.0, 1.0);
-    hspeed_ = ( random() % max_h_speed ) /2.5;
+    vspeed_ = std::max( ( rand() % max_v_speed + min_v_speed ) / 5.0, 1.0);
+    hspeed_ = ( rand() % max_h_speed ) /2.5;
 
-    if( random() % 2 < 1) hspeed_ = -hspeed_;
+    if( rand() % 2 < 1) hspeed_ = -hspeed_;
 }
 
 void snowflake::tick()
@@ -179,14 +179,14 @@ bool blizzard::eventFilter(QObject* o, QEvent* e)
     BOOST_FOREACH( snowflake& sf, flakes_ ){
 
         if ( !sf.is_ok() )
-            sf = snowflake( random() % w_->width(), random() % w_->height(), prototype );
+            sf = snowflake( rand() % w_->width(), rand() % w_->height(), prototype );
 
         sf.tick();
 
         p.drawPixmap( sf.x(), sf.y(), sf.pixmap() );
 
         if( sf.y() >= w_->height() || sf.x() >= w_->width() )
-            sf = snowflake( random() % w_->width(), 0, prototype );
+            sf = snowflake( rand() % w_->width(), 0, prototype );
     }
 
     return ret;

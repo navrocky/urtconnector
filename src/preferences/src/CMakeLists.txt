@@ -55,7 +55,7 @@ set(IFACES
 qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
 qt4_wrap_ui(SOURCES ${IFACES})
 
-add_library(${TARGET} SHARED ${SOURCES})
+add_library(${TARGET} STATIC ${SOURCES})
 
 set_target_properties(${TARGET} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set_target_properties(${TARGET} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
