@@ -76,6 +76,8 @@ SYSLOG_MODULE(main_window)
 using namespace std;
 using boost::bind;
 
+#include "filters/filter_list.h"
+
 ////////////////////////////////////////////////////////////////////////////////
 // main_window
 
@@ -122,6 +124,7 @@ main_window::main_window(QWidget *parent)
     filter_factory_ = filter_factory_p(new filter_factory);
     register_filters(filter_factory_);
 
+   
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 5, 0))
     ui_->tabWidget->setDocumentMode(true);
 #endif
@@ -146,14 +149,12 @@ main_window::main_window(QWidget *parent)
 //    connect(serv_info_update_timer_, SIGNAL(timeout()), SLOT(update_server_info()));
 //    serv_info_update_timer_->start();
 
-    all_list_ = new server_list_widget( filter_factory_, ui_->tabAll);
-    all_list_->setObjectName("all_list");
+    all_list_ = new server_list_widget("all_list", filter_factory_, ui_->tabAll);
     QBoxLayout* l = dynamic_cast<QBoxLayout*>(ui_->tabAll->layout());
     l->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    fav_list_ = new server_list_widget( filter_factory_, ui_->tabFav);
-    fav_list_->setObjectName("fav_list");
+    fav_list_ = new server_list_widget("fav_list", filter_factory_, ui_->tabFav);
     dynamic_cast<QBoxLayout*>(ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
@@ -232,8 +233,8 @@ main_window::main_window(QWidget *parent)
 
     current_tab_changed( ui_->tabWidget->currentIndex() );
 
-    all_list_->force_update();
-    fav_list_->force_update();
+    all_list_->force_update_servers();
+    fav_list_->force_update_servers();
     update_tabs();
 }
 
@@ -367,8 +368,8 @@ void main_window::load_all_at_start()
 
     local::load_list(all_sl_, "all_state");
     
-    all_list_->load_options();
-    fav_list_->load_options();
+//     all_list_->load_options();
+//     fav_list_->load_options();
 }
 
 void main_window::save_state_at_exit()
@@ -389,8 +390,8 @@ void main_window::save_state_at_exit()
     local::save_list(all_sl_, "all_state");
 //    local::save_list(fav_sl_, "favs_state");
 
-    all_list_->save_options();
-    fav_list_->save_options();
+//     all_list_->save_options();
+//     fav_list_->save_options();
 }
 
 void main_window::save_bookmarks()

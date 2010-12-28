@@ -42,7 +42,7 @@ SYSLOG_MODULE(server_list_widget)
 const int c_filter_info_column = 100;
 
 //Role to access server_info stored in QTreeModel
-const int c_info_role = Qt::UserRole;
+// const int c_info_role = Qt::UserRole;
 const int c_id_role = Qt::UserRole + 1;
 const int c_stamp_role = Qt::UserRole + 2;
 
@@ -131,7 +131,7 @@ void server_list_widget_settings::set_filter_visible(bool val)
 
 ////////////////////////////////////////////////////////////////////////////////
 // server_list_widget
-
+/*
 server_list_widget::server_list_widget( filter_factory_p factory, QWidget *parent)
 : QMainWindow(parent)
 , filters_(new filter_list(factory))
@@ -184,7 +184,7 @@ server_list_widget::server_list_widget( filter_factory_p factory, QWidget *paren
     hi->setToolTip(1, tr("Server name"));
     hi->setToolTip(0, tr("Server status"));
 
-    tree_->setItemDelegateForColumn( 0, new status_item_delegate(this) );
+    tree_->setItemDelegateForColumn( 0, new status_item_delegate( serv_list_, this) );
     
     QHeaderView* hdr = tree_->header();
     
@@ -256,7 +256,10 @@ void server_list_widget::set_server_list(server_list_p ptr)
         disconnect(serv_list_.get(), SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
     serv_list_ = ptr;
     if (serv_list_)
+    {
         connect(serv_list_.get(), SIGNAL(changed()), accum_updater_, SLOT(emitSignal()));
+        tree_->setItemDelegateForColumn( 0, new status_item_delegate( serv_list_, this) );
+    }
     accum_updater_->emitSignal();
 }
 
@@ -285,8 +288,8 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
     int stamp = item->data(0, c_stamp_role).value<int>();
     if (si->update_stamp() != stamp || stamp == 0)
     {
-        QModelIndex index = tree_->indexFromItem(item);
-        tree_->model()->setData(index, QVariant::fromValue(si), c_info_role);
+//         QModelIndex index = tree_->indexFromItem(item);
+//         tree_->model()->setData(index, QVariant::fromValue(si), c_info_role);
 
         QString name = si->name;
         if (bms_)
@@ -344,7 +347,8 @@ void server_list_widget::update_item(QTreeWidgetItem* item)
 
 bool server_list_widget::filter_item(QTreeWidgetItem* item)
 {
-    server_info_p si = item->data(0, c_info_role).value<server_info_p>();
+    server_id id = item->data(0, c_id_role).value<server_id>();
+    server_info_p si = serv_list_->get( id );
     if (filters_->root_filter())
     {
         if (!filters_->root_filter()->filter_server(*(si.get())))
@@ -404,7 +408,7 @@ void server_list_widget::update_list()
         {
             QTreeWidgetItem* item = new QTreeWidgetItem(tw);
             item->setData(0, c_id_role, QVariant::fromValue(id));
-            item->setData(0, c_info_role, QVariant::fromValue(it->second));
+//             item->setData(0, c_info_role, QVariant::fromValue(it->second));
             items_[id] = item;
             update_item(item);
         }
@@ -522,14 +526,10 @@ bool server_list_widget::eventFilter(QObject* watched, QEvent* event)
         if (event->type() == QEvent::Hide)
             show_filter_action_->setChecked(false);
     }
-}
+}*/
 
 ////////////////////////////////////////////////////////////////////////////////
 // status_item_delegate
-
-status_item_delegate::status_item_delegate(QObject* parent)
-    : QStyledItemDelegate(parent)
-{}
 
 status_item_delegate::status_item_delegate(server_list_p sl, QObject* parent)
     : QStyledItemDelegate(parent)
@@ -537,6 +537,7 @@ status_item_delegate::status_item_delegate(server_list_p sl, QObject* parent)
 {}
 
 #include <QDir>
+#include <iostream>
 void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
     //Draw base styled-item(gradient backgroud and other)
@@ -549,14 +550,10 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
     const QRect& optr = option.rect;
     QRect icon_rect( optr.x() + 2, optr.y() + 2, optr.height() - 4, optr.height() - 4 );
     
-    server_info_p si;
-    
-    if( sl_ )
-        si = sl_->get( index.data(c_id_role).value<server_id>() );
-    else
-        si = index.data(c_info_role).value<server_info_p>();
-    
-    if ( !si ) si = server_info_p( new server_info() );
+    server_info_p si = ( sl_ )
+        ? sl_->get( index.data(c_id_role).value<server_id>() )
+        : server_info_p( new server_info() );
+
 
     static QPixmap icon_none("icons:status-none.png");
     static QPixmap icon_online("icons:status-online.png");
@@ -601,3 +598,260 @@ void status_item_delegate::next_icon(QRect& icon) const
 { 
     icon.adjust( icon.width(), 0, icon.width(), 0 );
 }
+
+
+
+server_list_tab::server_list_tab(const QString& object_name, filter_factory_p factory, QWidget* parent)
+    : main_tab(object_name, parent, factory )
+{
+    tree_ = new QTreeWidget(this);
+    setCentralWidget(tree_);
+
+    tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tree_->setEditTriggers(QAbstractItemView::EditKeyPressed);
+    tree_->setAlternatingRowColors(true);
+    tree_->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    tree_->setRootIsDecorated(false);
+    tree_->setUniformRowHeights(true);
+    tree_->setSortingEnabled(true);
+    tree_->setAllColumnsShowFocus(true);
+    tree_->setWordWrap(true);
+
+    QTreeWidgetItem *hi = tree_->headerItem();
+    hi->setText(7, tr("Players"));
+    hi->setText(6, tr("Map"));
+    hi->setText(5, tr("Game mode"));
+    hi->setText(4, tr("Ping"));
+    hi->setText(3, tr("Country"));
+    hi->setText(2, tr("Address"));
+    hi->setText(1, tr("Name"));
+    hi->setText(0, tr("Status"));
+    hi->setToolTip(2, tr("Server address (ip:port)"));
+    hi->setToolTip(1, tr("Server name"));
+    hi->setToolTip(0, tr("Server status"));
+
+    tree_->setItemDelegateForColumn( 0, new status_item_delegate( server_list(), this) );
+
+    QHeaderView* hdr = tree_->header();
+
+    hdr->moveSection(2, 7);
+    hdr->resizeSection(0, 80);
+    hdr->resizeSection(1, 350);
+    hdr->resizeSection(3, 50);
+    hdr->resizeSection(4, 50);
+    hdr->resizeSection(7, 60);
+    hdr->setSortIndicator(4, Qt::AscendingOrder);
+
+    // initialize filters
+
+    init_filter_toolbar();
+}
+
+server_list_tab::~server_list_tab()
+{}
+
+
+void server_list_tab::set_bookmarks(server_bookmark_list* bms)
+{
+    if (bms_)
+        disconnect( bms_, SIGNAL( changed() ), this, SLOT( update_servers() ) );
+    
+    bms_ = bms;
+    if (bms_)
+        connect( bms_, SIGNAL( changed() ), this, SLOT( update_servers() ) );
+    
+    update_servers();
+}
+
+QTreeWidget* server_list_tab::tree() const
+{ return tree_; }
+
+
+server_id_list server_list_tab::selection() const
+{
+    server_id_list res;
+    foreach ( QTreeWidgetItem* item, tree_->selectedItems() )
+        res.push_back( item->data(0, c_id_role).value<server_id>() );
+
+    return res;
+}
+
+void server_list_tab::servers_updated()
+{
+    
+    static_cast<status_item_delegate*>(tree_->itemDelegateForColumn(0))->set_server_list( server_list() );
+    
+    update_list();    
+}
+
+void server_list_tab::filter_changed()
+{ update_list(); }
+
+void server_list_tab::update_list()
+{
+    LOG_DEBUG << "Update list";
+    QTreeWidgetItem* cur_item = tree_->currentItem();
+
+    visible_server_count_ = 0;
+    tree_->setUpdatesEnabled(false);
+    tree_->setSortingEnabled(false);
+
+    //full server info list
+    const server_info_list& info_list = server_list()->list();
+
+    //bookmark list
+    server_info_list bm_list;
+
+    //"current" list - info_list for AllServersTab and bm_list for FavoriteServersTab
+    const server_info_list* list;
+
+    // take id list
+    QList<server_id> ids;
+    if (bms_)
+    {
+        foreach ( const server_bookmark& bm, bms_->list() )
+        {
+            server_info_list::const_iterator it = info_list.find( bm.id() );
+            if ( it != info_list.end() )
+                bm_list[bm.id()] = it->second;
+            else
+                bm_list[bm.id()] = server_info_p();
+        }
+        list = &bm_list;
+    } else
+    {
+        list = &info_list;
+    }
+
+    // who changed, appeared?
+    for (server_info_list::const_iterator it = list->begin(); it != list->end(); it++)
+    {
+        const server_id& id = it->first; 
+        server_items::iterator it2 = items_.find(id);
+
+        if (it2 != items_.end())
+        {
+            update_item(it2->second);
+        }
+        else
+        {
+            QTreeWidgetItem* item = new QTreeWidgetItem( tree_ );
+            item->setData( 0, c_id_role, QVariant::fromValue(id) );
+            items_[id] = item;
+            update_item(item);
+        }
+    }
+
+    // who removed ?
+    QList<server_id> to_remove;
+    for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
+    {
+        const server_id& id = it->first;
+        if ( list->find(id) == list->end() )
+            to_remove.push_back(id);
+    }
+
+    // remove old items
+    foreach (const server_id& id, to_remove)
+    {
+        server_items::iterator it = items_.find(id);
+        QTreeWidgetItem* item = it->second;
+        if (item == cur_item)
+            cur_item = 0;
+        delete item;
+        items_.erase(it);
+    }
+
+    tree_->setSortingEnabled(true);
+    tree_->setUpdatesEnabled(true);
+
+    if (tree_->topLevelItemCount() > 0 && cur_item && app_settings().center_current_row())
+        tree_->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
+}
+
+void server_list_tab::update_item(QTreeWidgetItem* item)
+{
+    server_id id = item->data(0, c_id_role).value<server_id>();
+    if (id.is_empty())
+        return;
+
+    static const server_info_p empty( new server_info );
+
+    server_info_p si = server_list()->get(id);
+    if (!si)
+        si = empty;
+
+    int stamp = item->data(0, c_stamp_role).value<int>();
+    if ( si->update_stamp() != stamp || stamp == 0 )
+    {
+        QString name = si->name;
+        if (bms_)
+        {
+            const server_bookmark& bm = bms_->get(id);
+            if (!bm.is_empty())
+            {
+                if (!bm.name().isEmpty() && name != bm.name())
+                {
+                    if (name.isEmpty())
+                        name = bm.name();
+                    else
+                        name = QString("%1 (%2)").arg(name).arg(bm.name());
+                }
+            }
+        }
+
+        QStringList sl;
+        sl << si->status_name();
+
+        if (si->is_password_needed())
+            sl << tr("Private");
+        if (si->get_info("pure", "-1").toInt() == 0)
+            sl << tr("Not pure");
+
+        QString status = sl.join(", ");
+
+        item->setToolTip(0, status);
+        item->setText(1, name);
+        item->setText(2, id.address());
+        item->setIcon(3, geoip::get_flag_by_country(si->country_code));
+        item->setToolTip(3, si->country);
+        item->setText(4, QString("%1").arg(si->ping, 5));
+        item->setText(5, si->mode_name());
+        item->setText(6, si->map);
+
+        QString player_count;
+        if (si->max_player_count > 0)
+            player_count = QString("%1/%2/%3").arg(si->players.size())
+            .arg(si->public_slots()).arg(si->max_player_count);
+
+        item->setText(7, player_count);
+        item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
+                         .arg(si->players.size()).arg(si->public_slots())
+                         .arg(si->max_player_count));
+        item->setData(0, c_stamp_role, QVariant::fromValue(si->update_stamp()));
+        }
+
+    bool visible = filter_item(item);
+    if (visible)
+        visible_server_count_++;
+    if (item->isHidden() == visible)
+        item->setHidden(!visible);
+}
+
+bool server_list_tab::filter_item(QTreeWidgetItem* item)
+{
+    server_id id = item->data(0, c_id_role).value<server_id>();
+    server_info_p si = server_list()->get( id );
+    if ( filterlist().root_filter() )
+    {
+        if (!filterlist().root_filter()->filter_server(*(si.get())))
+            return false;
+    }
+
+    return true;
+}
+
+
+
+
+

@@ -22,12 +22,19 @@ public:
     ///returns currently selected server if any
     virtual server_id selected_server() const;
 
+    /*! Current selection in tab */
+    virtual server_id_list selection() const;
+    
     void set_server_list(server_list_p ptr);
     server_list_p server_list() const;
 
-    void force_servers_update();
+    
 
     const filter_list& filterlist() const;
+
+public Q_SLOTS:
+    void update_servers();
+    void force_update_servers();
     
 protected Q_SLOTS:
 

@@ -9,6 +9,7 @@
 #include <QBoxLayout>
 #include <QPointer>
 #include <QSettings>
+#include <QEvent>
 
 #include "common/server_list.h"
 #include "common/qaccumulatingconnection.h"
@@ -59,6 +60,8 @@ struct main_tab::Pimpl{
     QWidget*                filter_holder;
     filter_list_p           filters;
 
+    QAction*                show_filter_action;
+    
     tab_settings            st;
 };
 
@@ -126,14 +129,13 @@ void main_tab::init_filter_toolbar()
     tb->setObjectName("filter_toolbar");
     addToolBar( Qt::TopToolBarArea, tb );
 
-    QAction* show_filter_a = new QAction(QIcon("icons:view-filter.png"), QObject::tr("View and edit filter"), this);
-    show_filter_a->setCheckable(true);
+    p_->show_filter_action = new QAction(QIcon("icons:view-filter.png"), QObject::tr("View and edit filter"), this);
+    p_->show_filter_action->setCheckable(true);
 
-    show_filter_a->setChecked( p_->st.is_filter_visible() );
-    
-    connect( show_filter_a, SIGNAL( toggled(bool) ), this,  SLOT( show_filter(bool) ) );
-    
-    tb->addAction(show_filter_a);
+    p_->show_filter_action->setChecked( p_->st.is_filter_visible() );
+
+
+    tb->addAction(p_->show_filter_action);
 
     p_->filter_holder = new QWidget();
     QBoxLayout* lay = new QBoxLayout( QBoxLayout::LeftToRight, p_->filter_holder );
@@ -144,23 +146,41 @@ void main_tab::init_filter_toolbar()
     connect( tb, SIGNAL( visibilityChanged ( bool ) ), this,                 SLOT( save_filter() ) );
     connect( tb, SIGNAL( topLevelChanged ( bool ) ),   this,                 SLOT( save_filter() ) );
     connect( tb, SIGNAL( movableChanged ( bool ) ),    this,                 SLOT( save_filter() ) );
-    
+
     update_toolbar_filter();
 
     p_->filter_widget = new QDockWidget( QObject::tr("Filter"), this );
     p_->filter_widget->setFeatures( p_->filter_widget->features() ^ QDockWidget::DockWidgetFloatable );
     p_->filter_widget->setObjectName("filter_widget");
-    filter_edit_widget* filter = new filter_edit_widget( p_->filters, p_->filter_widget );
-    p_->filter_widget->setWidget( filter );
+    p_->filter_widget->installEventFilter(this);
+
+
+    //FIXME uncomment when bug fixed
+//     filter_edit_widget* filter = new filter_edit_widget( p_->filters, p_->filter_widget );
+//     p_->filter_widget->setWidget( filter );
+
+    //FIXME this is bug
+    filter_edit_widget* filter = new filter_edit_widget( p_->filters, 0 );
+    //если показать виджет будут тормоза, хотя родителя у этого виджета нет.
+    //тоде самое происходит и с панелью выстрой фильтрации, я немного покопал - видимо тормозит
+    //форма quick-фильтра
+    
+    //если раскоментировать - тормоза
+//     filter->show();
+
+    //сам найти не могу - у меня вся генту собрана с большой оптимизацией - отладчик совсем не работает
+    
     p_->filter_widget->setVisible( p_->st.is_filter_visible() );
     addDockWidget( Qt::LeftDockWidgetArea, p_->filter_widget );
 
+    connect( p_->show_filter_action, SIGNAL( triggered(bool) ), p_->filter_widget,  SLOT( setVisible(bool) ) );
+
     connect( p_->filter_widget, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this,  SLOT( save_filter() ) );
-    connect( p_->filter_widget, SIGNAL( visibilityChanged ( bool ) ), show_filter_a,        SLOT( setChecked(bool)) );
+    connect( p_->filter_widget, SIGNAL( visibilityChanged ( bool ) ), p_->show_filter_action,        SLOT( setChecked(bool)) );
     connect( p_->filter_widget, SIGNAL( visibilityChanged ( bool ) ), this,                 SLOT( save_filter() ) );
     connect( p_->filter_widget, SIGNAL( topLevelChanged ( bool ) ),   this,                 SLOT( save_filter() ) );
-    
-    
+
+
     restoreState( p_->st.load_state(), 1);
 }
 
@@ -176,9 +196,10 @@ void main_tab::update_toolbar_filter()
     filter_p f = p_->filters->toolbar_filter().lock();
     if (f)
     {
-        QWidget* w = f->get_class()->create_quick_opts_widget(f);
-        if (w)
-            p_->filter_holder->layout()->addWidget(w);
+        //FIXME uncomment when bug with filter widget will fixed
+//         QWidget* w = f->get_class()->create_quick_opts_widget(f);
+//         if (w)
+//             p_->filter_holder->layout()->addWidget(w);
 
         p_->filter_holder->setToolTip(f->get_class()->caption());
     }
@@ -208,6 +229,10 @@ void main_tab::save_filter()
 server_id main_tab::selected_server() const
 { return server_id(); };
 
+server_id_list main_tab::selection() const
+{ return server_id_list(); }
+
+
 void main_tab::set_server_list(server_list_p ptr)
 {
     if (p_->servers)
@@ -223,8 +248,12 @@ void main_tab::set_server_list(server_list_p ptr)
 server_list_p main_tab::server_list() const
 { return p_->servers; }
 
-void main_tab::force_servers_update()
+void main_tab::update_servers()
 { p_->updater.emitSignal(); }
+
+void main_tab::force_update_servers()
+{ p_->updater.emitNow(); }
+
 
 const filter_list& main_tab::filterlist() const
 { return *p_->filters; }
