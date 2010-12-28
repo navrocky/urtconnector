@@ -12,7 +12,7 @@ class game_type_filter_quick_opt_widget : public QComboBox
 {
     Q_OBJECT
 public:
-    game_type_filter_quick_opt_widget(filter_p f);
+    game_type_filter_quick_opt_widget(filter_p f, QWidget* parent);
 private slots:
     void filter_changed();
     void combo_changed();
@@ -27,7 +27,7 @@ class game_type_filter_class : public filter_class
 public:
     game_type_filter_class();
 
-    virtual QWidget* create_quick_opts_widget(filter_p f);
+    virtual QWidget* create_quick_opts_widget(filter_p f, QWidget* parent);
     virtual filter_p create_filter();
 
     static const char* get_id();

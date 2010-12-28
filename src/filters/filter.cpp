@@ -53,7 +53,7 @@ bool filter_class::has_additional_options()
     return false;
 }
 
-QWidget* filter_class::create_quick_opts_widget(filter_p f)
+QWidget* filter_class::create_quick_opts_widget(filter_p, QWidget*)
 {
     return NULL;
 }

@@ -26,9 +26,9 @@ filter_p game_type_filter_class::create_filter()
     return filter_p(new game_type_filter(shared_from_this()));
 }
 
-QWidget* game_type_filter_class::create_quick_opts_widget(filter_p f)
+QWidget* game_type_filter_class::create_quick_opts_widget(filter_p f, QWidget* parent)
 {
-    return new game_type_filter_quick_opt_widget(f);
+    return new game_type_filter_quick_opt_widget(f, parent);
 }
 
 
@@ -92,8 +92,9 @@ void add_item(QComboBox* cb, server_info::game_mode mode)
     cb->addItem(server_info::get_mode_name(mode), QVariant::fromValue((int)mode));
 }
 
-game_type_filter_quick_opt_widget::game_type_filter_quick_opt_widget(filter_p f)
-: filter_(f)
+game_type_filter_quick_opt_widget::game_type_filter_quick_opt_widget(filter_p f, QWidget* parent)
+: QComboBox(parent)
+, filter_(f)
 , block_filter_change_(false)
 , block_combo_change_(false)
 {

@@ -15,7 +15,7 @@ class regexp_filter_quick_opt_widget : public QWidget
 {
     Q_OBJECT
 public:
-    regexp_filter_quick_opt_widget(filter_p f);
+    regexp_filter_quick_opt_widget(filter_p f, QWidget* parent);
 
 protected:
     void timerEvent(QTimerEvent* e);
@@ -37,7 +37,7 @@ class regexp_filter_class : public filter_class
 public:
     regexp_filter_class();
 
-    virtual QWidget* create_quick_opts_widget(filter_p f);
+    virtual QWidget* create_quick_opts_widget(filter_p f, QWidget* parent);
     virtual filter_p create_filter();
 
     static const char* get_id();

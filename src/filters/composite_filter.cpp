@@ -27,7 +27,7 @@ filter_p composite_filter_class::create_filter()
     return filter_p(new composite_filter(shared_from_this()));
 }
 
-QWidget* composite_filter_class::create_quick_opts_widget(filter_p f)
+QWidget* composite_filter_class::create_quick_opts_widget(filter_p f, QWidget* parent)
 {
     return new composite_filter_quick_opt_widget(f);
 }

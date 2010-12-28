@@ -24,6 +24,9 @@
 #include <anticheat/tools.h>
 #include <rcon/rcon_settings.h>
 #include <settings/settings.h>
+#include <database/simple_database.h>
+#include <database/sqlite_database.h>
+#include "server_list_saver.h"
 
 #include "main_window.h"
 #include "application.h"
@@ -227,6 +230,13 @@ int main(int argc, char *argv[])
 #endif
         application::setQuitOnLastWindowClosed(false);
         init_application(&a);
+
+        // initialize database
+        qsettings_p s = get_app_options_settings("test");
+        QString fn = QFileInfo(s->fileName()).absoluteDir().absolutePath() + "/urtconnector.sqlite";
+        s.reset();
+        sqlite_database db(fn);
+        init_database();
 
         main_window w;
 

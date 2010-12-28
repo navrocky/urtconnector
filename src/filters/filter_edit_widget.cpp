@@ -162,10 +162,9 @@ void filter_item_widget::update_contents()
 
     if (!quick_opts_widget_)
     {
-        quick_opts_widget_ = fc->create_quick_opts_widget(filter_);
+        quick_opts_widget_ = fc->create_quick_opts_widget(filter_, this);
         if (quick_opts_widget_)
         {
-            quick_opts_widget_->setParent(this);
             options_lay_->addWidget(quick_opts_widget_);
         }
     }

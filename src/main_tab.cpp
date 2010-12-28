@@ -156,17 +156,17 @@ void main_tab::init_filter_toolbar()
 
 
     //FIXME uncomment when bug fixed
-//     filter_edit_widget* filter = new filter_edit_widget( p_->filters, p_->filter_widget );
-//     p_->filter_widget->setWidget( filter );
+     filter_edit_widget* filter = new filter_edit_widget( p_->filters, p_->filter_widget );
+     p_->filter_widget->setWidget( filter );
 
     //FIXME this is bug
-    filter_edit_widget* filter = new filter_edit_widget( p_->filters, 0 );
+//    filter_edit_widget* filter = new filter_edit_widget( p_->filters, 0 );
     //если показать виджет будут тормоза, хотя родителя у этого виджета нет.
     //тоде самое происходит и с панелью выстрой фильтрации, я немного покопал - видимо тормозит
     //форма quick-фильтра
     
     //если раскоментировать - тормоза
-//     filter->show();
+     filter->show();
 
     //сам найти не могу - у меня вся генту собрана с большой оптимизацией - отладчик совсем не работает
     
@@ -197,9 +197,9 @@ void main_tab::update_toolbar_filter()
     if (f)
     {
         //FIXME uncomment when bug with filter widget will fixed
-//         QWidget* w = f->get_class()->create_quick_opts_widget(f);
-//         if (w)
-//             p_->filter_holder->layout()->addWidget(w);
+         QWidget* w = f->get_class()->create_quick_opts_widget(f, p_->filter_holder);
+         if (w)
+             p_->filter_holder->layout()->addWidget(w);
 
         p_->filter_holder->setToolTip(f->get_class()->caption());
     }

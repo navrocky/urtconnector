@@ -58,7 +58,7 @@ public:
 
     virtual filter_p create_filter() = 0;
     
-    virtual QWidget* create_quick_opts_widget(filter_p f);
+    virtual QWidget* create_quick_opts_widget(filter_p f, QWidget* parent);
     virtual bool has_additional_options();
 //    virtual prop_panel create_prop_panel() = 0;
 private:

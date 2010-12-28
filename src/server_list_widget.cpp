@@ -551,10 +551,11 @@ void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& 
     QRect icon_rect( optr.x() + 2, optr.y() + 2, optr.height() - 4, optr.height() - 4 );
     
     server_info_p si = ( sl_ )
-        ? sl_->get( index.data(c_id_role).value<server_id>() )
-        : server_info_p( new server_info() );
+        ? sl_->get( index.data(c_id_role).value<server_id>() ) : server_info_p();
 
-
+    if (!si)
+        si = server_info_p( new server_info() );
+    
     static QPixmap icon_none("icons:status-none.png");
     static QPixmap icon_online("icons:status-online.png");
     static QPixmap icon_offline("icons:status-offline.png");

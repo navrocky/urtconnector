@@ -31,9 +31,9 @@ filter_p online_clans_filter_class::create_filter()
     return filter_p(new online_clans_filter(shared_from_this()));
 }
 
-QWidget* online_clans_filter_class::create_quick_opts_widget(filter_p f)
+QWidget* online_clans_filter_class::create_quick_opts_widget(filter_p f, QWidget* parent)
 {
-    return new online_clans_filter_quick_opt_widget(f);
+    return new online_clans_filter_quick_opt_widget(f, parent);
 }
 
 
@@ -143,8 +143,9 @@ void online_clans_filter::load(const QByteArray& ba, filter_factory_p factory)
 ////////////////////////////////////////////////////////////////////////////////
 // online_clans_filter_quick_opt_widget
 
-online_clans_filter_quick_opt_widget::online_clans_filter_quick_opt_widget(filter_p f)
-: filter_(f)
+online_clans_filter_quick_opt_widget::online_clans_filter_quick_opt_widget(filter_p f, QWidget* parent)
+: QWidget(parent)
+, filter_(f)
 , block_filter_change_(false)
 , block_ctl_change_(false)
 {

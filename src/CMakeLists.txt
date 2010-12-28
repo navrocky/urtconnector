@@ -47,6 +47,7 @@ add_subdirectory(preferences)
 add_subdirectory(common)
 add_subdirectory(history)
 add_subdirectory(anticheat)
+add_subdirectory(database)
 add_subdirectory(launcher)
 
 set(HEADERS
@@ -174,6 +175,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     common
     history
     anticheat
+    database
     launcher
 )
 

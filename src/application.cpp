@@ -3,6 +3,9 @@
 #include <common/exception.h>
 #include <common/str_convert.h>
 #include "application.h"
+#include <common/qt_syslog.h>
+
+SYSLOG_MODULE(application)
 
 application::application(int &argc, char * argv[])
 #ifdef USE_SINGLE_APP
@@ -21,6 +24,7 @@ bool application::notify(QObject * receiver, QEvent * event)
 {
     try
     {
+//        LOG_DEBUG << event->type();
         return QApplication::notify(receiver, event);
     }
     catch(const std::exception& e)

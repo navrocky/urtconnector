@@ -14,7 +14,7 @@ class online_clans_filter_quick_opt_widget : public QWidget
 {
     Q_OBJECT
 public:
-    online_clans_filter_quick_opt_widget(filter_p f);
+    online_clans_filter_quick_opt_widget(filter_p f, QWidget* parent);
 private slots:
     void filter_changed();
     void tag_length_changed();
@@ -32,7 +32,7 @@ class online_clans_filter_class : public filter_class
 public:
     online_clans_filter_class();
 
-    virtual QWidget* create_quick_opts_widget(filter_p f);
+    virtual QWidget* create_quick_opts_widget(filter_p f, QWidget* parent);
     virtual filter_p create_filter();
 
     static const char* get_id();

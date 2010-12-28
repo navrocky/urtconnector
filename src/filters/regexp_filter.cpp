@@ -30,9 +30,9 @@ filter_p regexp_filter_class::create_filter()
     return filter_p(new regexp_filter(shared_from_this()));
 }
 
-QWidget* regexp_filter_class::create_quick_opts_widget(filter_p f)
+QWidget* regexp_filter_class::create_quick_opts_widget(filter_p f, QWidget* parent)
 {
-    return new regexp_filter_quick_opt_widget(f);
+    return new regexp_filter_quick_opt_widget(f, parent);
 }
 
 
@@ -92,8 +92,9 @@ void regexp_filter::load(const QByteArray& ba, filter_factory_p factory)
 ////////////////////////////////////////////////////////////////////////////////
 // regexp_filter_quick_opt_widget
 
-regexp_filter_quick_opt_widget::regexp_filter_quick_opt_widget(filter_p f)
-: filter_(f)
+regexp_filter_quick_opt_widget::regexp_filter_quick_opt_widget(filter_p f, QWidget* parent)
+: QWidget(parent)
+, filter_(f)
 , block_filter_change_(false)
 , block_text_change_(false)
 , timer_(0)

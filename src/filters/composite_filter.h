@@ -26,7 +26,7 @@ class composite_filter_class : public filter_class
 public:
     composite_filter_class();
 
-    virtual QWidget* create_quick_opts_widget(filter_p f);
+    virtual QWidget* create_quick_opts_widget(filter_p f, QWidget* parent);
     virtual filter_p create_filter();
 
     static const char* get_id();
