@@ -22,6 +22,10 @@ const int c_id_role = Qt::UserRole + 1;
 //FIXME used by status_item_delegate !!
 const int c_suppress_role = Qt::UserRole + 11;
 
+Q_DECLARE_METATYPE(history_item_p);
+
+const int c_history_role = Qt::UserRole + 12;
+
 struct history_widget::Pimpl{
 
     Pimpl(){
@@ -96,12 +100,11 @@ QTreeWidget* history_widget::tree() const
 
 void history_widget::update_history()
 {
-   p_->ui.treeWidget->clear();
-   int i;
-   for (i = 0; i < p_->history->length(); i++)
-   {
-       addItem(p_->history->at(i));
-   }
+    p_->ui.treeWidget->clear();
+
+    foreach ( const history_item_p& item, p_->history->list() ){
+        addItem( item );
+    }
 }
 
 void history_widget::addItem(history_item_p item)
@@ -115,6 +118,8 @@ void history_widget::addItem(history_item_p item)
     item_ptr->setText(5, item->player_name());
     item_ptr->setData( 0, c_id_role, QVariant::fromValue( item->id() ) );
     item_ptr->setData( 1, c_id_role, QVariant::fromValue( item->id() ) );
+    
+    item_ptr->setData( 0, c_history_role, QVariant::fromValue( item ) );
 
     if( QTreeWidgetItem* parent = add_tem( item_ptr ) )
         resort(parent);
@@ -195,3 +200,19 @@ void history_widget::resort( QTreeWidgetItem* item )
 
     std::for_each( chlds.begin(), chlds.end(), boost::bind( &history_widget::add_tem, this, _1) );
 }
+
+void history_widget::delete_selected()
+{
+    QList<QTreeWidgetItem*> items = p_->ui.treeWidget->selectedItems();
+
+    int old_size = p_->history->list().size();
+    
+    foreach( QTreeWidgetItem* it, items ){
+        history_item_p item = it->data( 0, c_history_role ).value<history_item_p>();
+        p_->history->remove(item);
+    }
+
+    if( old_size != p_->history->list().size() )
+        update_history();
+}
+

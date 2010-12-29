@@ -35,3 +35,10 @@ QDateTime history_item::date_time() const
 {
     return date_time_;
 }
+
+bool history_item::operator==(const history_item& other) const
+{
+    //player name ?
+    return ( id_ == other.id_ ) && ( date_time_ == other.date_time_ );
+}
+

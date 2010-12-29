@@ -158,12 +158,13 @@ main_window::main_window(QWidget *parent)
     dynamic_cast<QBoxLayout*>(ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    connect(ui_->tabWidget, SIGNAL(currentChanged(int)), SLOT(current_tab_changed(int)));
-    connect(ui_->actionOptions, SIGNAL(triggered()), SLOT(show_options()));
-    connect(ui_->actionQuickConnect, SIGNAL(triggered()), SLOT(quick_connect()));
-    connect(ui_->actionFavAdd, SIGNAL(triggered()), SLOT(fav_add()));
-    connect(ui_->actionFavEdit, SIGNAL(triggered()), SLOT(fav_edit()));
-    connect(ui_->actionFavDelete, SIGNAL(triggered()), SLOT(fav_delete()));
+    connect( ui_->tabWidget,           SIGNAL(currentChanged(int)),  SLOT(current_tab_changed(int)) );
+    connect( ui_->actionOptions,       SIGNAL(triggered()),          SLOT(show_options()) );
+    connect( ui_->actionQuickConnect,  SIGNAL(triggered()),          SLOT(quick_connect()) );
+    connect( ui_->actionFavAdd,        SIGNAL(triggered()),          SLOT(fav_add()) );
+    connect( ui_->actionFavEdit,       SIGNAL(triggered()),          SLOT(fav_edit()) );
+    connect( ui_->actionFavDelete,     SIGNAL(triggered()),          SLOT(fav_delete()) );
+    connect( ui_->actionHistoryDelete, SIGNAL(triggered()),          SLOT(history_delete()) );
     
     connect(ui_->actionRefreshSelected, SIGNAL(triggered()), SLOT(refresh_selected()));
     connect(ui_->actionRefreshAll, SIGNAL(triggered()), SLOT(refresh_all_bookmarks()));
@@ -353,6 +354,12 @@ void main_window::fav_delete()
         bookmarks_->remove(id);
     }
 }
+
+void main_window::history_delete()
+{
+    history_list_->delete_selected();
+}
+
 
 void main_window::load_all_at_start()
 {
@@ -639,6 +646,7 @@ void main_window::update_actions()
     ui_->actionFavDelete->setEnabled(current == fav_list_ && sel);
     ui_->actionFavEdit->setEnabled(current == fav_list_ && sel);
     ui_->actionRefreshSelected->setEnabled(sel);
+    ui_->actionHistoryDelete->setEnabled( sel );
 
     ui_->actionClearSelected->setVisible(current);
     ui_->actionClearOffline->setVisible(current);
@@ -655,6 +663,12 @@ void main_window::update_actions()
 
     ui_->actionRefreshAll->setVisible( current && current == fav_list_);
     ui_->actionRefreshMaster->setVisible(current && current != fav_list_);
+
+    //FIXME this is history tab :(
+    if( !current )
+    {
+        ui_->actionHistoryDelete->setVisible( !history_list_->selected_server().is_empty() );
+    }
 }
 
 void main_window::current_tab_changed(int)

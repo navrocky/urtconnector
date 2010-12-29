@@ -25,6 +25,11 @@ public:
     int num_rows() const;
 
     virtual server_id selected_server() const;
+
+
+public Q_SLOTS:
+    void delete_selected();
+    
     
 protected:
     void changeEvent(QEvent *e);

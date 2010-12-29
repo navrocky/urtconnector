@@ -1,7 +1,7 @@
 #ifndef HISTORY_H
 #define HISTORY_H
 
-#include <QList>
+#include <list>
 #include "history_item.h"
 #include "pointers.h"
 #include "common/server_id.h"
@@ -11,23 +11,19 @@ class history
 public:
     history();
 
+    typedef std::list<history_item_p> HistoryList;
+
     void add(server_id id, QString server_name, QString player_name, QString password);
 
-    void remove(int i)
-    {
-        list_.removeAt(i);
+    void remove( history_item_p item) {
+        list_.remove(item);
+        save();
     }
 
-    history_item_p at(int i)
-    {
-        return list_.at(i);
+    const HistoryList& list() const {
+        return list_;
     }
-
-    int length()
-    {
-        return list_.length();
-    }
-
+    
     void change_max();
 
 private:
@@ -37,7 +33,7 @@ private:
     void load();
     void shorten();
 
-    QList<history_item_p> list_;
+    HistoryList list_;
     unsigned int max_;
     qsettings_p history_file_;
 };

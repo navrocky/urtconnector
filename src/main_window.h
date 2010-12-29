@@ -47,6 +47,7 @@ private slots:
     void fav_add();
     void fav_edit();
     void fav_delete();
+    void history_delete();
 
     void refresh_all_bookmarks();
     void refresh_selected();

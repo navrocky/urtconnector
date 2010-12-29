@@ -20,15 +20,17 @@ void history::add(server_id id, QString server_name, QString player_name, QStrin
 
 void history::shorten()
 {
-    while (list_.length() > max_)
+    if( list_.size() > max_ )
     {
-        list_.removeFirst();
+        HistoryList::iterator end = list_.begin();
+        std::advance( end, list_.size() - max_ );
+        list_.erase( list_.begin(), end );
     }
 }
 
 void history::add_history_item(history_item_p item)
 {
-    list_ << item;
+    list_.push_back(item);
     shorten();
     save();
 }
@@ -36,16 +38,18 @@ void history::add_history_item(history_item_p item)
 void history::save()
 {
     history_file_->beginWriteArray("history");
-    for (int i = 0; i < list_.length(); i++)
-    {
-        const history_item_p& at_i = at(i);
-        history_file_->setArrayIndex(i);
-        history_file_->setValue("date_time", at_i->date_time());
-        history_file_->setValue("server_name", at_i->server_name());
-        history_file_->setValue("address", at_i->address());
-        history_file_->setValue("password", at_i->password());
-        history_file_->setValue("player_name", at_i->player_name());
+
+    HistoryList::const_iterator it = list_.begin();
+
+    for( int index=0; it != list_.end(); ++it, ++index ){
+        history_file_->setArrayIndex( index );
+        history_file_->setValue("date_time", (*it)->date_time());
+        history_file_->setValue("server_name", (*it)->server_name());
+        history_file_->setValue("address", (*it)->address());
+        history_file_->setValue("password", (*it)->password());
+        history_file_->setValue("player_name", (*it)->player_name());
     }
+    
     history_file_->endArray();
 }
 
@@ -71,9 +75,9 @@ void history::load()
 void history::change_max()
 {
 //     max_ = opts_->number_in_history;
-    int oldLength = length();
+    int oldLength = list_.size();
     shorten();
-    if (oldLength != length())
+    if (oldLength != list_.size())
     {
         save();
     }

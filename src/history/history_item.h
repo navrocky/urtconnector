@@ -21,6 +21,8 @@ public:
     QString password() const;
     QString player_name() const;
     QDateTime date_time() const;
+
+    bool operator==(const history_item& other) const;
 };
 
 #endif // HISTORY_ITEM_H
