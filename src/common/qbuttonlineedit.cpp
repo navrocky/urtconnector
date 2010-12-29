@@ -155,8 +155,10 @@ void QButtonLineEdit::arrangeWidgets()
     int rw = calcWidgetsWidth(Right);
     int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
 
-//     setStyleSheet(QString("QLineEdit { padding-left: %1px; padding-right: %2px; } ")
-//         .arg(frameWidth + lw).arg(frameWidth + rw));
+    QString style_sheet = QString("QLineEdit { padding-left: %1px; padding-right: %2px; } ")
+        .arg(frameWidth + lw).arg(frameWidth + rw);
+    if (styleSheet() != style_sheet)
+        setStyleSheet(style_sheet);
 
     const Widgets& l_widgets = m_widgets[Left];
     int h = rect().height() - frameWidth * 2;
