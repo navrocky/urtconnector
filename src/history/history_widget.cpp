@@ -49,8 +49,8 @@ struct history_widget::Pimpl{
     server_list_p serv_list;
 };
 
-history_widget::history_widget( QWidget *parent, history_p list)
-    : main_tab("history_tab", parent)
+history_widget::history_widget( QWidget *parent, history_p list, filter_factory_p factory)
+    : main_tab("history_tab", parent, factory)
     , p_( new Pimpl )
 {
     p_->history = list;
@@ -105,6 +105,7 @@ void history_widget::update_history()
     foreach ( const history_item_p& item, p_->history->list() ){
         addItem( item );
     }
+    filter_changed();
 }
 
 void history_widget::addItem(history_item_p item)
@@ -121,11 +122,11 @@ void history_widget::addItem(history_item_p item)
     
     item_ptr->setData( 0, c_history_role, QVariant::fromValue( item ) );
 
-    if( QTreeWidgetItem* parent = add_tem( item_ptr ) )
+    if( QTreeWidgetItem* parent = add_item( item_ptr ) )
         resort(parent);
 }
 
-QTreeWidgetItem* history_widget::add_tem(QTreeWidgetItem* item)
+QTreeWidgetItem* history_widget::add_item(QTreeWidgetItem* item)
 {
     QTreeWidgetItem* parent = find_item( item->data( 0, c_id_role ).value<server_id>() );
 
@@ -160,16 +161,21 @@ void history_widget::servers_updated()
 
 void history_widget::filter_changed()
 {
-    QList<QTreeWidgetItem *> items = p_->ui.treeWidget->findItems ( "", Qt::MatchStartsWith );
+    QList<QTreeWidgetItem *> items = p_->ui.treeWidget->findItems("", Qt::MatchStartsWith);
+    foreach(QTreeWidgetItem * item, items)
+    {
+        bool is_visible = true;
+        if (server_list())
+        {
+            server_info_p si = server_list()->get(item->data(0, c_id_role).value<server_id > ());
+            if (si)
+                is_visible = filterlist().filtrate(*si);
+        }
 
-    foreach( QTreeWidgetItem * item, items) {
-        
-        server_info_p si = server_list()->get( item->data(0, c_id_role).value<server_id>() );
-        item->setHidden( !filterlist().filtrate( *si ) );
+        if (item->isHidden() != !is_visible)
+            item->setHidden(!is_visible);
     }
 }
-
-
 
 QTreeWidgetItem* history_widget::find_item(const server_id& id) const
 {
@@ -198,7 +204,7 @@ void history_widget::resort( QTreeWidgetItem* item )
     std::sort( chlds.begin(), chlds.end(),
         boost::bind( &QTreeWidgetItem::text, _1, 0 ) < boost::bind( &QTreeWidgetItem::text, _2, 0 ) );
 
-    std::for_each( chlds.begin(), chlds.end(), boost::bind( &history_widget::add_tem, this, _1) );
+    std::for_each( chlds.begin(), chlds.end(), boost::bind( &history_widget::add_item, this, _1) );
 }
 
 void history_widget::delete_selected()

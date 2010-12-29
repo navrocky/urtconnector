@@ -18,7 +18,7 @@ class QTreeWidgetItem;
 class history_widget : public main_tab {
     Q_OBJECT
 public:
-    history_widget( QWidget *parent, history_p list);
+    history_widget( QWidget *parent, history_p list, filter_factory_p factory);
     ~history_widget();
     QTreeWidget* tree() const;
     void update_history();
@@ -44,7 +44,7 @@ private slots:
 private:
     void addItem(history_item_p item);
     ///returns 0 if NO resort needed
-    QTreeWidgetItem* add_tem(QTreeWidgetItem* item);
+    QTreeWidgetItem* add_item(QTreeWidgetItem* item);
     
     QTreeWidgetItem* find_item( const server_id& id ) const;
 

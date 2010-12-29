@@ -27,12 +27,13 @@ struct snowflake{
 
     snowflake();
     
-    snowflake( int x, int y, const QPixmap& pm );
+    snowflake( const QPointF& pos, const QPixmap& pm );
 
     void tick();
 
-    int x() const;
-    int y() const;
+    const QPointF& pos() const {return pos_;}
+    float size() const {return size_;}
+    float rotate() const {return rotate_;}
 
     bool is_ok() const;
 
@@ -40,13 +41,12 @@ struct snowflake{
 private:
     bool init_;
     
-    float x_;
-    float y_;
-
-    float size;
-    
+    QPointF pos_;
+    float rotate_;
+    float size_;
     float hspeed_;
     float vspeed_;
+    float rotate_speed_;
 
     QPixmap pm_;
 };

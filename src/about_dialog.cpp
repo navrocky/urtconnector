@@ -93,37 +93,31 @@ snowflake::snowflake()
 {}
 
 
-snowflake::snowflake(int x, int y, const QPixmap& pm)
-    : x_(x)
-    , y_(y)
-    , init_(true)
+snowflake::snowflake(const QPointF& pos, const QPixmap& pm)
+: pos_(pos)
+, init_(true)
 {
-    size = rand() % 10 + 5;
-    pm_ = pm.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    size_ = rand() % 20 + 5;
+    pm_ = pm.scaled( size_, size_, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
     //this is magic numbers
     int max_v_speed = 15;
     int min_v_speed = 4;
-
     int max_h_speed = 5;
 
     vspeed_ = std::max( ( rand() % max_v_speed + min_v_speed ) / 5.0, 1.0);
     hspeed_ = ( rand() % max_h_speed ) /2.5;
+    rotate_speed_ = (float(rand() % 10000) / 10000.0) * 2.0 - 1.0;
 
     if( rand() % 2 < 1) hspeed_ = -hspeed_;
 }
 
 void snowflake::tick()
 {
-    x_ += std::min( hspeed_, size / (float)2.0 );
-    y_ += std::min( vspeed_, size / (float)2.0 );
+    pos_.setX(pos_.x() + std::min( hspeed_, size_ / (float)2.0 ) );
+    pos_.setY(pos_.y() + std::min( vspeed_, size_ / (float)2.0 ) );
+    rotate_ += rotate_speed_;
 }
-
-int snowflake::x() const
-{ return x_; }
-
-int snowflake::y() const
-{ return y_; }
 
 bool snowflake::is_ok() const
 { return init_; }
@@ -131,9 +125,8 @@ bool snowflake::is_ok() const
 const QPixmap& snowflake::pixmap() const
 { return pm_; }
 
-
-
-
+////////////////////////////////////////////////////////////////////////////////
+// blizzard
 
 blizzard::blizzard(QWidget* w)
     : QObject(w)
@@ -174,19 +167,24 @@ bool blizzard::eventFilter(QObject* o, QEvent* e)
     if ( o != w_ || ( o == w_ && e->type() != QEvent::Paint ) )
         return ret;
 
-    QPainter p(w_);
+    
 
     BOOST_FOREACH( snowflake& sf, flakes_ ){
 
         if ( !sf.is_ok() )
-            sf = snowflake( rand() % w_->width(), rand() % w_->height(), prototype );
+            sf = snowflake( QPointF(rand() % w_->width(), rand() % w_->height()), prototype );
 
         sf.tick();
 
-        p.drawPixmap( sf.x(), sf.y(), sf.pixmap() );
+        QPainter p(w_);
 
-        if( sf.y() >= w_->height() || sf.x() >= w_->width() )
-            sf = snowflake( rand() % w_->width(), 0, prototype );
+        p.translate(sf.pos());
+        p.rotate(sf.rotate());
+
+        p.drawPixmap( -sf.size() / 2, -sf.size() / 2, sf.pixmap() );
+
+        if( sf.pos().y() >= w_->height() || sf.pos().x() >= w_->width() )
+            sf = snowflake( QPointF(rand() % w_->width(), 0), prototype );
     }
 
     return ret;

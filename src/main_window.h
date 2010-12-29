@@ -53,8 +53,8 @@ private slots:
     void refresh_selected();
     void refresh_master();
 
-    void update_actions( );
-    void current_tab_changed ( int );
+    void update_actions();
+    void current_tab_changed();
     void update_server_info();
     void selection_changed();
     void add_selected_to_fav();
@@ -91,6 +91,7 @@ private:
 
     server_id selected() const;
     server_list_widget* current_list_widget() const;
+    main_tab* current_tab_widget() const;
     server_info_p selected_info() const;
     void update_christmas_mode();
 

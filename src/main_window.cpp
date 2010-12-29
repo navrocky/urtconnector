@@ -158,7 +158,7 @@ main_window::main_window(QWidget *parent)
     dynamic_cast<QBoxLayout*>(ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
-    connect( ui_->tabWidget,           SIGNAL(currentChanged(int)),  SLOT(current_tab_changed(int)) );
+    connect( ui_->tabWidget,           SIGNAL(currentChanged(int)),  SLOT(current_tab_changed()) );
     connect( ui_->actionOptions,       SIGNAL(triggered()),          SLOT(show_options()) );
     connect( ui_->actionQuickConnect,  SIGNAL(triggered()),          SLOT(quick_connect()) );
     connect( ui_->actionFavAdd,        SIGNAL(triggered()),          SLOT(fav_add()) );
@@ -232,7 +232,7 @@ main_window::main_window(QWidget *parent)
     update_server_info();
     setVisible( !(app_settings().start_hidden()) );
 
-    current_tab_changed( ui_->tabWidget->currentIndex() );
+    current_tab_changed();
 
     all_list_->force_update_servers();
     fav_list_->force_update_servers();
@@ -624,20 +624,27 @@ void main_window::connect_selected()
     connect_to_server(id, player_name, QString());
 }
 
-server_list_widget* main_window::current_list_widget() const
+main_tab* main_window::current_tab_widget() const
 {
     QWidget* curw = ui_->tabWidget->currentWidget();
-    if (curw == ui_->tabFav)
-        return fav_list_;
-    else if (curw == ui_->tabAll)
-        return all_list_;
-    else
-        return NULL;
+    foreach (QObject* o, curw->children())
+    {
+        main_tab* res = qobject_cast<main_tab*>(o);
+        if (res)
+            return res;
+    }
+    return NULL;
+}
+
+server_list_widget* main_window::current_list_widget() const
+{
+    return qobject_cast<server_list_widget*>(current_tab_widget());
 }
 
 void main_window::update_actions()
 {
-    server_list_widget* current = current_list_widget();
+    main_tab* cw = current_tab_widget();
+    server_list_widget* current = qobject_cast<server_list_widget*>(cw);
     bool sel = !(selected().is_empty());
 
     ui_->actionAddToFav->setEnabled(current == all_list_ && sel);
@@ -646,7 +653,7 @@ void main_window::update_actions()
     ui_->actionFavDelete->setEnabled(current == fav_list_ && sel);
     ui_->actionFavEdit->setEnabled(current == fav_list_ && sel);
     ui_->actionRefreshSelected->setEnabled(sel);
-    ui_->actionHistoryDelete->setEnabled( sel );
+//    ui_->actionHistoryDelete->setEnabled( sel );
 
     ui_->actionClearSelected->setVisible(current);
     ui_->actionClearOffline->setVisible(current);
@@ -664,14 +671,17 @@ void main_window::update_actions()
     ui_->actionRefreshAll->setVisible( current && current == fav_list_);
     ui_->actionRefreshMaster->setVisible(current && current != fav_list_);
 
-    //FIXME this is history tab :(
-    if( !current )
+    if (cw == history_list_)
     {
-        ui_->actionHistoryDelete->setVisible( !history_list_->selected_server().is_empty() );
+        ui_->actionHistoryDelete->setVisible(true);
+        ui_->actionHistoryDelete->setEnabled( !history_list_->selected_server().is_empty() );
+    } else
+    {
+        ui_->actionHistoryDelete->setVisible(false);
     }
 }
 
-void main_window::current_tab_changed(int)
+void main_window::current_tab_changed()
 {
     update_actions();
 }
@@ -853,7 +863,7 @@ void main_window::load_history_tab()
         {
             ui_->tabWidget->setTabEnabled(2, true);
         }
-        history_list_ = new history_widget( ui_->tabHistory, history_sl_ );
+        history_list_ = new history_widget( ui_->tabHistory, history_sl_, filter_factory_);
         dynamic_cast<QBoxLayout*> (ui_->tabHistory->layout())->insertWidget(0, history_list_);
         connect(history_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
 
