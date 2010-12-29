@@ -233,6 +233,7 @@ int main(int argc, char *argv[])
 
         // initialize database
         qsettings_p s = get_app_options_settings("test");
+        QDir().mkpath( QFileInfo(s->fileName()).absoluteDir().absolutePath() );
         QString fn = QFileInfo(s->fileName()).absoluteDir().absolutePath() + "/urtconnector.sqlite";
         s.reset();
         sqlite_database db(fn);
