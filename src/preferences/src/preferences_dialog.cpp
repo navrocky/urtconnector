@@ -334,8 +334,8 @@ void preferences_dialog::reject_current()
 void preferences_dialog::restoreClicked()
 {
     QMessageBox::StandardButton ret = QMessageBox::question ( this,
-        tr("Восстановить настройки по умолчанию"),
-        tr("Действительно восстановить настройки по умолчанию?" ),
+        tr("Restore to defaults"),
+        tr("Continue to restore defaults settings?" ),
         QMessageBox::Ok |  QMessageBox::Cancel );
 
     if ( ret == QMessageBox::Cancel ) return;
@@ -394,8 +394,8 @@ void preferences_dialog::item_changed(const preferences_item& new_item)
     if( button(QDialogButtonBox::Apply)->isEnabled() )
     {
         QMessageBox::StandardButton ret = QMessageBox::question ( this,
-            tr("Применить настройки"),
-            tr("В текущем модуле имеются несохранённые изменения.\n Применить их?" ),
+            tr("Apply settings"),
+            tr("Current page has unsaved changes.\nApply this changes?" ),
             QMessageBox::Ok | QMessageBox::Reset | QMessageBox::Cancel );
 
         if ( ret == QMessageBox::Ok )

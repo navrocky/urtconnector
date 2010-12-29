@@ -65,18 +65,24 @@ about_dialog::about_dialog(QWidget *parent)
         "<p class=\"name\">Samoilenko Yuri (jerry.gkb.ru)<p>"
         "<p class=\"info\"><a href=\"mailto:kinallru@gmail.com\">kinallru@gmail.com</a><br>"
         "Code, ideas, Gentoo packager.</p>"
+        "<p class=\"name\">K.J.Chernov<p>"
+//        "<p class=\"info\"><a href=\"mailto:kinallru@gmail.com\">kinallru@gmail.com</a><br>"
+        "<p class=\"info\">Fast SQLite code.</p>"
     )));
     ui_->thanks_browser->setPalette(transp_palette);
     ui_->thanks_browser->setHtml(prepare_html(tr(
         "<p class=\"name\">Tsyss Dmitry (=XaoC=Dmitro)<p>"
         "<p class=\"info\"><a href=\"mailto:dtsyss@gmail.com\">dtsyss@gmail.com</a><br>"
         "Clan leader, help on project, tester.</p>"
+        "<p class=\"name\">p0z1tr@_@n<p>"
+        "<p class=\"info\"><a href=\"mailto:pozitpoh@gmail.com\">pozitpoh@gmail.com</a><br>"
+        "Contributor, help on project, tester, ideas generator.</p>"
     )));
     ui_->translation_browser->setPalette(transp_palette);
     ui_->translation_browser->setHtml(prepare_html(tr(
         "<p>UrTConnector translated to many languages. "
         "Thanks to people who helped with translation.</p>"
-        "<p>If you want help with translation UrTConnector to your language - "
+        "<p>If you want to help with translation UrTConnector to your language - "
         "<a href=\"http://code.google.com/p/urtconnector\">join</a> us!</p>"
     )));
 }

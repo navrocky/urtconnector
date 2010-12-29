@@ -153,10 +153,12 @@ main_window::main_window(QWidget *parent)
     QBoxLayout* l = dynamic_cast<QBoxLayout*>(ui_->tabAll->layout());
     l->insertWidget(0, all_list_);
     connect(all_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
+    connect(all_list_, SIGNAL(contents_changed()), SLOT(update_tabs()));
 
     fav_list_ = new server_list_widget("fav_list", filter_factory_, ui_->tabFav);
     dynamic_cast<QBoxLayout*>(ui_->tabFav->layout())->insertWidget(0, fav_list_);
     connect(fav_list_->tree(), SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
+    connect(fav_list_, SIGNAL(contents_changed()), SLOT(update_tabs()));
 
     connect( ui_->tabWidget,           SIGNAL(currentChanged(int)),  SLOT(current_tab_changed()) );
     connect( ui_->actionOptions,       SIGNAL(triggered()),          SLOT(show_options()) );
@@ -270,6 +272,8 @@ void main_window::show_options()
     unsigned int oldNumberInHistory = as.number_in_history();
 
     preferences_dialog d( preferences_dialog::Auto, false, this );
+    d.setWindowTitle(tr("Options"));
+    d.setWindowIcon(QIcon("icons:configure.png"));
     d.add_item( new launch_settings_form() );
     d.add_item( new application_settings_form() );
     d.add_item( new rcon_settings_form() );
@@ -938,6 +942,8 @@ void main_window::update_christmas_mode()
 void main_window::show_anticheat_options()
 {
     preferences_dialog d( preferences_dialog::Auto, false, this );
+    d.setWindowTitle(tr("Anticheat options"));
+    d.setWindowIcon(QIcon("icons:anticheat.png"));
     d.add_item( new anticheat::settings_widget(&d) );
     d.exec();
 }

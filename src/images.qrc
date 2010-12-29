@@ -40,7 +40,6 @@
         <file>icons/christmas/status-offline.png</file>
         <file>icons/christmas/status-online.png</file>
         <file>icons/christmas/status-update.png</file>
-        <file>icons/christmas/anticheat.png</file>
     </qresource>
     <qresource prefix="/images">
         <file>icons/logo.png</file>

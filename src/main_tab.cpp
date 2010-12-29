@@ -212,13 +212,15 @@ void main_tab::save_filter()
     p_->st.set_filter_visible( p_->filter_widget->isVisible() );
 }
 
-
 server_id main_tab::selected_server() const
-{ return server_id(); };
+{
+    return server_id();
+};
 
 server_id_list main_tab::selection() const
-{ return server_id_list(); }
-
+{
+    return server_id_list();
+}
 
 void main_tab::set_server_list(server_list_p ptr)
 {
@@ -233,23 +235,37 @@ void main_tab::set_server_list(server_list_p ptr)
 }
 
 server_list_p main_tab::server_list() const
-{ return p_->servers; }
+{
+    return p_->servers;
+}
 
 void main_tab::update_servers()
-{ p_->updater.emitSignal(); }
+{
+    p_->updater.emitSignal();
+}
 
 void main_tab::force_update_servers()
-{ p_->updater.emitNow(); }
-
+{
+    p_->updater.emitNow();
+}
 
 const filter_list& main_tab::filterlist() const
-{ return *p_->filters; }
+{
+    return *p_->filters;
+}
 
+void main_tab::servers_updated()
+{
+    emit contents_changed();
+}
 
-
+void main_tab::filter_changed()
+{
+    emit contents_changed();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-// server_tree
+// tab_settings
 
 tab_settings::tab_settings(const QString& object_name)
 {

@@ -31,6 +31,8 @@ public:
     
 
     const filter_list& filterlist() const;
+signals:
+    void contents_changed();
 
 public Q_SLOTS:
     void update_servers();
@@ -39,8 +41,8 @@ public Q_SLOTS:
 protected Q_SLOTS:
 
     ///this function automatically called when server_list has some changes
-    virtual void servers_updated() {};
-    virtual void filter_changed() {};
+    virtual void servers_updated();
+    virtual void filter_changed();
 
 private Q_SLOTS:
     

@@ -75,6 +75,7 @@ private slots:
     void launcher_stopped();
 
     void save_bookmarks();
+    void update_tabs();
 private:
     void load_history_tab();
 
@@ -85,7 +86,6 @@ private:
 
     void refresh_servers(server_list_widget* current, const server_id_list& to_update, bool master );
     
-    void update_tabs();
     void check_anticheat_prereq() const;
     void connect_to_server(const server_id& id, const QString& player_name, const QString& password);
 

@@ -679,14 +679,16 @@ server_id_list server_list_tab::selection() const
 
 void server_list_tab::servers_updated()
 {
-    
     static_cast<status_item_delegate*>(tree_->itemDelegateForColumn(0))->set_server_list( server_list() );
-    
     update_list();    
+    main_tab::servers_updated();
 }
 
 void server_list_tab::filter_changed()
-{ update_list(); }
+{
+    update_list();
+    main_tab::filter_changed();
+}
 
 void server_list_tab::update_list()
 {
@@ -832,7 +834,10 @@ void server_list_tab::update_item(QTreeWidgetItem* item)
         item->setData(0, c_stamp_role, QVariant::fromValue(si->update_stamp()));
     }
 
-    item->setHidden( !filterlist().filtrate( *si ) );
+    bool is_visible = filterlist().filtrate( *si );
+    if (is_visible)
+        visible_server_count_++;
+    item->setHidden( !is_visible );
 }
 
 
