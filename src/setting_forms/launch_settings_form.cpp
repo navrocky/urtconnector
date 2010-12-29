@@ -107,7 +107,7 @@ void launch_settings_form::reject()
 
 void launch_settings_form::reset_defaults()
 {
-    p_->ui.binary_edit->clear();
+    p_->ui.binary_edit->setText("urbanterror");
     p_->ui.advCmdEdit->clear();
 
     accept();

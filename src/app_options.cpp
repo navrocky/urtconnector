@@ -52,7 +52,7 @@ void app_settings::set_separate_x(bool b)
 
 QString app_settings::binary_path() const
 {
-    return part()->value("binary_path", QString()).toString();
+    return part()->value("binary_path", "urbanterror").toString();
 }
 
 void app_settings::set_binary_path(const QString& path)
