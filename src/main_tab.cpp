@@ -142,10 +142,10 @@ void main_tab::init_filter_toolbar()
     lay->setContentsMargins(0, 0, 0, 0);
     tb->addWidget(p_->filter_holder);
 
-    connect( tb, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this,  SLOT( save_filter() ) );
-    connect( tb, SIGNAL( visibilityChanged ( bool ) ), this,                 SLOT( save_filter() ) );
-    connect( tb, SIGNAL( topLevelChanged ( bool ) ),   this,                 SLOT( save_filter() ) );
-    connect( tb, SIGNAL( movableChanged ( bool ) ),    this,                 SLOT( save_filter() ) );
+    connect( tb, SIGNAL( orientationChanged( Qt::Orientation ) ), this, SLOT( save_filter() ) );
+    connect( tb, SIGNAL( visibilityChanged ( bool ) ), this,            SLOT( save_filter() ) );
+    connect( tb, SIGNAL( topLevelChanged ( bool ) ),   this,            SLOT( save_filter() ) );
+    connect( tb, SIGNAL( movableChanged ( bool ) ),    this,            SLOT( save_filter() ) );
 
     update_toolbar_filter();
 
@@ -155,22 +155,10 @@ void main_tab::init_filter_toolbar()
     p_->filter_widget->installEventFilter(this);
 
 
-    //FIXME uncomment when bug fixed
-     filter_edit_widget* filter = new filter_edit_widget( p_->filters, p_->filter_widget );
-     p_->filter_widget->setWidget( filter );
-
-    //FIXME this is bug
-//    filter_edit_widget* filter = new filter_edit_widget( p_->filters, 0 );
-    //если показать виджет будут тормоза, хотя родителя у этого виджета нет.
-    //тоде самое происходит и с панелью выстрой фильтрации, я немного покопал - видимо тормозит
-    //форма quick-фильтра
-    
-    //если раскоментировать - тормоза
-     filter->show();
-
-    //сам найти не могу - у меня вся генту собрана с большой оптимизацией - отладчик совсем не работает
-    
+    filter_edit_widget* filter = new filter_edit_widget( p_->filters, p_->filter_widget );
+    p_->filter_widget->setWidget( filter );
     p_->filter_widget->setVisible( p_->st.is_filter_visible() );
+    
     addDockWidget( Qt::LeftDockWidgetArea, p_->filter_widget );
 
     connect( p_->show_filter_action, SIGNAL( triggered(bool) ), p_->filter_widget,  SLOT( setVisible(bool) ) );
@@ -196,7 +184,6 @@ void main_tab::update_toolbar_filter()
     filter_p f = p_->filters->toolbar_filter().lock();
     if (f)
     {
-        //FIXME uncomment when bug with filter widget will fixed
          QWidget* w = f->get_class()->create_quick_opts_widget(f, p_->filter_holder);
          if (w)
              p_->filter_holder->layout()->addWidget(w);

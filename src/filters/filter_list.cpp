@@ -72,5 +72,12 @@ QString filter_list::correct_name(const QString& name)
     return res;
 }
 
+bool filter_list::filtrate(const server_info& si) const
+{
+    if ( !root_filter() )
+        return true;
+
+    return root_filter()->filter_server( si );
+}
 
 

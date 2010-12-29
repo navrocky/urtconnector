@@ -5,6 +5,10 @@
 #include <QList>
 #include <QToolBar>
 
+
+#include "common/server_list.h"
+#include "filters/filter_list.h"
+#include "filters/filter.h"
 #include "server_list_widget.h"
 #include "history_widget.h"
 #include "ui_history_widget.h"
@@ -148,6 +152,18 @@ void history_widget::servers_updated()
 {
     p_->ui.treeWidget->setItemDelegateForColumn( 1, new status_item_delegate( server_list(), p_->ui.treeWidget) );
 }
+
+void history_widget::filter_changed()
+{
+    QList<QTreeWidgetItem *> items = p_->ui.treeWidget->findItems ( "", Qt::MatchStartsWith );
+
+    foreach( QTreeWidgetItem * item, items) {
+        
+        server_info_p si = server_list()->get( item->data(0, c_id_role).value<server_id>() );
+        item->setHidden( !filterlist().filtrate( *si ) );
+    }
+}
+
 
 
 QTreeWidgetItem* history_widget::find_item(const server_id& id) const

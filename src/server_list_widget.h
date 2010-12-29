@@ -162,7 +162,6 @@ private:
     void update_list();
     
     void update_item(QTreeWidgetItem*);
-    bool filter_item(QTreeWidgetItem*);
 
 private:
     typedef std::map<server_id, QTreeWidgetItem*> server_items;

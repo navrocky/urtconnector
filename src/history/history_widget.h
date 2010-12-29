@@ -31,6 +31,7 @@ protected:
 
 protected Q_SLOTS:
     virtual void servers_updated();
+    virtual void filter_changed();
 
 private slots:
     void filter_clear();

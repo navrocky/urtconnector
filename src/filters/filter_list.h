@@ -40,6 +40,8 @@ public:
         with other filters. */
     QString correct_name(const QString& name);
 
+    bool filtrate( const server_info& si) const;
+
 
 signals:
     void toolbar_filter_changed();

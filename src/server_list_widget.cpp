@@ -830,26 +830,9 @@ void server_list_tab::update_item(QTreeWidgetItem* item)
                          .arg(si->players.size()).arg(si->public_slots())
                          .arg(si->max_player_count));
         item->setData(0, c_stamp_role, QVariant::fromValue(si->update_stamp()));
-        }
-
-    bool visible = filter_item(item);
-    if (visible)
-        visible_server_count_++;
-    if (item->isHidden() == visible)
-        item->setHidden(!visible);
-}
-
-bool server_list_tab::filter_item(QTreeWidgetItem* item)
-{
-    server_id id = item->data(0, c_id_role).value<server_id>();
-    server_info_p si = server_list()->get( id );
-    if ( filterlist().root_filter() )
-    {
-        if (!filterlist().root_filter()->filter_server(*(si.get())))
-            return false;
     }
 
-    return true;
+    item->setHidden( !filterlist().filtrate( *si ) );
 }
 
 
