@@ -603,8 +603,8 @@ void status_item_delegate::next_icon(QRect& icon) const
 QSize status_item_delegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     QSize sz = QStyledItemDelegate::sizeHint(option, index);
-    if (sz.height() < 32)
-        sz.setHeight(32);
+    if (sz.height() < 16)
+        sz.setHeight(16);
     return sz;
 }
 
