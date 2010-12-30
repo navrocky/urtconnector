@@ -600,12 +600,21 @@ void status_item_delegate::next_icon(QRect& icon) const
     icon.adjust( icon.width(), 0, icon.width(), 0 );
 }
 
+QSize status_item_delegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    QSize sz = QStyledItemDelegate::sizeHint(option, index);
+    if (sz.height() < 32)
+        sz.setHeight(32);
+    return sz;
+}
+
 
 
 server_list_tab::server_list_tab(const QString& object_name, filter_factory_p factory, QWidget* parent)
     : main_tab(object_name, parent, factory )
 {
     tree_ = new QTreeWidget(this);
+//    tree_->setIconSize(QSize(32, 32));
     setCentralWidget(tree_);
 
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -814,6 +823,7 @@ void server_list_tab::update_item(QTreeWidgetItem* item)
         QString status = sl.join(", ");
 
         item->setToolTip(0, status);
+//        item->setIcon(0, QIcon("icons:status-none.png"));
         item->setText(1, name);
         item->setText(2, id.address());
         item->setIcon(3, geoip::get_flag_by_country(si->country_code));

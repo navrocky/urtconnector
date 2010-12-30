@@ -117,6 +117,9 @@ public:
         if( sl != sl_ )
             sl_ = sl;
     }
+
+    virtual QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
 private:
     void next_icon(QRect& icon) const;
     server_list_p sl_;    

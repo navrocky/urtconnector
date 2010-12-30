@@ -1,6 +1,6 @@
 !define APP_SHORT_NAME "urtconnector"
 !define PRODUCT_NAME "UrTConnector"
-!define PRODUCT_VERSION "0.5.2"
+!define PRODUCT_VERSION "0.6.0"
 !define ICON_FILE "urtconnector.ico"
 !define USE_COMPRESS
 
@@ -87,6 +87,7 @@ Section "UrT Connector"
   File "QtNetwork4.dll"
   File "mingwm10.dll"
   File "libgcc_s_dw2-1.dll"
+  File "libsqlite3.dll"
   !ifdef ICON_FILE
     File "${DIR_IMAGES}\${ICON_FILE}"
   !endif

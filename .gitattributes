@@ -12,6 +12,7 @@ artwork/urtconnector.ico -text
 /build_gcc_linux_release -text
 /build_mingw_release.bat -text
 /build_msys_release.bat -text
+cmake/FindSQLite3.cmake -text
 /distclean -text
 distrib/arch/stable/PKGBUILD -text
 distrib/arch/svn/PKGBUILD -text

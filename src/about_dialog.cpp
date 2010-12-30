@@ -65,7 +65,7 @@ about_dialog::about_dialog(QWidget *parent)
         "<p class=\"name\">Samoilenko Yuri (jerry.gkb.ru)<p>"
         "<p class=\"info\"><a href=\"mailto:kinallru@gmail.com\">kinallru@gmail.com</a><br>"
         "Code, ideas, Gentoo packager.</p>"
-        "<p class=\"name\">K.J.Chernov<p>"
+        "<p class=\"name\">Konstantin J. Chernov<p>"
 //        "<p class=\"info\"><a href=\"mailto:kinallru@gmail.com\">kinallru@gmail.com</a><br>"
         "<p class=\"info\">Fast SQLite code.</p>"
     )));
@@ -74,7 +74,7 @@ about_dialog::about_dialog(QWidget *parent)
         "<p class=\"name\">Tsyss Dmitry (=XaoC=Dmitro)<p>"
         "<p class=\"info\"><a href=\"mailto:dtsyss@gmail.com\">dtsyss@gmail.com</a><br>"
         "Clan leader, help on project, tester.</p>"
-        "<p class=\"name\">p0z1tr@_@n<p>"
+        "<p class=\"name\">Stanislav Nikitin (LA|p0z1tr0n)<p>"
         "<p class=\"info\"><a href=\"mailto:pozitpoh@gmail.com\">pozitpoh@gmail.com</a><br>"
         "Contributor, help on project, tester, ideas generator.</p>"
     )));
