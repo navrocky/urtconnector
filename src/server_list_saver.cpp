@@ -61,15 +61,13 @@ void init_database()
 
 void save_server_info(const QString &name, const server_info_p& info)
 {
-    QString db_field_info;
-    const server_info::info_t& inf = info->info;
-    for (server_info::info_t::const_iterator it = inf.begin(); it!=inf.end(); ++it)
+    QStringList sl;
+    foreach (server_info::info_t::const_reference r, info->info)
     {
-        db_field_info += database::qqencode_string(it->first);
-        db_field_info += " = ";
-        db_field_info += database::qqencode_string(it->second);
-        db_field_info += " & ";
+        sl << QString("%1=%2").arg(database::qqencode_string(r.first))
+                .arg(database::qqencode_string(r.second));
     }
+    QString db_field_info = sl.join("&");
     QString query = QString("INSERT INTO %0 VALUES(NULL,'%1','%2','%3','%4','%5','%6','%7','%8','%9','%10','%11');")
                     .arg(name)
                     .arg(database::qqencode_string(info->id.address()))
@@ -95,11 +93,9 @@ void save_server_list(const QString& name, const server_list_p list)
         database* db = database::instance();
         db->query(QString("DELETE FROM %1;").arg(name));
         db->query("BEGIN TRANSACTION;");
-        const server_info_list& l = list->list();
-        int i = 0;
-        for (server_info_list::const_iterator it = l.begin(); it != l.end(); it++)
+        foreach (server_info_list::const_reference r, list->list())
         {
-            save_server_info(name, it->second);
+            save_server_info(name, r.second);
         }
         db->query("END TRANSACTION;");
     }
@@ -114,7 +110,6 @@ void load_server_list(const QString& name, server_list_p list)
     LOG_DEBUG << "Loading server list \"%1\"", name;
     try
     {
-//        server_info_list& l = list->list();
         database::result_set servers = database::instance()->query(QString("SELECT * FROM %1;").arg(name));
         foreach (const database::result_row& row, servers)
         {
@@ -133,24 +128,13 @@ void load_server_list(const QString& name, server_list_p list)
             server_info::info_t& inf = info->info;
 
             QString d_inf = row[11];
-            size_t len = d_inf.size();
-            size_t prev = 0;
-            for (size_t i=1; i<len; ++i)
+            QStringList sl = d_inf.split("&");
+            QRegExp rx("^(.+)=(.+)$");
+            foreach (const QString& s, sl)
             {
-                if (d_inf[i] == '&' && d_inf[i-1] == ' ')
-                {
-                    size_t j = i-1;
-                    for (; j>0; --j)
-                    {
-                        if (d_inf[j] == '=' && d_inf[j-1] == ' ')
-                        {
-                            break;
-                        }
-                    }
-                    inf[database::qqdecode_string(d_inf.mid(prev,j-prev-1))] =
-                        database::qqdecode_string(d_inf.mid(j+2,i-j-3));
-                    prev = i+2;
-                }
+                if (rx.exactMatch(s))
+                    inf[database::qqdecode_string(rx.cap(1))] =
+                        database::qqdecode_string(rx.cap(2));
             }
             list->add(info);
         }

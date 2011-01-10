@@ -54,7 +54,7 @@ void init_application(QApplication* a)
     a->setApplicationName("urtconnector");
 
     // loading translations
-    QTranslator qt_trans;
+    static QTranslator qt_trans;
     QString trans_name = "qt_" + QLocale::system().name();
     bool loaded = qt_trans.load(trans_name,
                                 QLibraryInfo::location(QLibraryInfo::TranslationsPath));
@@ -65,7 +65,7 @@ void init_application(QApplication* a)
 
     a->installTranslator(&qt_trans);
     
-    QTranslator urt_tr;
+    static QTranslator urt_tr;
 
     trans_name = "urtconnector_" + QLocale::system().name();
 #if defined(Q_OS_UNIX)

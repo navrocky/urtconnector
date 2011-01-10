@@ -1,5 +1,5 @@
 %define name urtconnector
-%define version 0.5.1
+%define version 0.6.0
 
 Summary: Advanced Urban Terror launcher
 Name: %{name}
@@ -10,10 +10,10 @@ Packager: Navrocky Vladislav
 Source: urtconnector.tar.gz
 BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 Release: 1
-AutoReq: off
+#AutoReq: off
 License: GPL
-BuildRequires: cmake boost-devel libqt4-devel gcc gcc-c++
-Requires: libqt4 >= 4.3.0 qstat >= 2
+BuildRequires: cmake boost-devel libqt4-devel gcc gcc-c++ sqlite3-devel
+Requires: libqt4 >= 4.3.0 qstat >= 2 sqlite3
 
 %description
 
