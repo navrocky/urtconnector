@@ -384,6 +384,9 @@ src/flags/ye.png -text
 src/flags/za.png -text
 src/flags/zm.png -text
 src/flags/zw.png -text
+src/friend_list/CMakeLists.txt -text
+src/friend_list/friend_list_widget.cpp -text
+src/friend_list/friend_list_widget.h -text
 src/geoip/CMakeLists.txt -text
 src/geoip/GeoIP_impl.c -text
 src/geoip/GeoIP_impl.h -text

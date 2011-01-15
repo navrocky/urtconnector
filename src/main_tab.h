@@ -12,47 +12,52 @@
 
 
 ///Class that provide base interface for any widget at main tab widget
-class main_tab : public QMainWindow {
+
+class main_tab : public QMainWindow
+{
     Q_OBJECT
 public:
 
-    explicit main_tab( const QString& object_name, QWidget* parent = 0, filter_factory_p factory = filter_factory_p() );
-    virtual ~main_tab();
-    
+    main_tab(const QString& object_name, QWidget* parent = 0,
+             filter_factory_p factory = filter_factory_p());
+
     ///returns currently selected server if any
     virtual server_id selected_server() const;
 
     /*! Current selection in tab */
     virtual server_id_list selection() const;
-    
+
     void set_server_list(server_list_p ptr);
     server_list_p server_list() const;
 
-    
+
 
     const filter_list& filterlist() const;
 signals:
     void contents_changed();
 
-public Q_SLOTS:
+    public
+Q_SLOTS:
     void update_servers();
     void force_update_servers();
-    
-protected Q_SLOTS:
+
+    protected
+Q_SLOTS:
 
     ///this function automatically called when server_list has some changes
     virtual void servers_updated();
     virtual void filter_changed();
 
-private Q_SLOTS:
-    
+    private
+Q_SLOTS:
+
     void update_toolbar_filter();
     void show_filter(bool);
     void save_filter();
 
 protected:
     void init_filter_toolbar();
-    
+
 private:
     struct Pimpl;
     std::auto_ptr<Pimpl> p_;
@@ -63,7 +68,7 @@ class tab_settings
 {
 public:
     tab_settings(const QString& object_name);
-    
+
     filter_p root_filter(filter_factory_p factory) const;
     void save_root_filter(filter_p f);
 
