@@ -1,5 +1,4 @@
 * text=auto !eol
-.kdev4/trunk.kdev4 -text
 /CMakeLists.txt -text
 artwork/install-header.bmp -text
 artwork/logo.png -text
@@ -532,8 +531,6 @@ src/rcon/rcon_settings.h -text
 src/rcon/rcon_settings_form.cpp -text
 src/rcon/rcon_settings_form.h -text
 src/rcon/rcon_settings_form.ui -text
-src/server_bookmark.cpp -text
-src/server_bookmark.h -text
 src/server_info_html.cpp -text
 src/server_info_html.h -text
 src/server_list_saver.cpp -text
@@ -569,11 +566,8 @@ src/tabs/status_item_delegate.cpp -text
 src/tabs/status_item_delegate.h -text
 src/tabs/tab_context.cpp -text
 src/tabs/tab_context.h -text
-src/tools.cpp -text
-src/tools.h -text
 src/urtconnector.desktop -text
 translations/CMakeLists.txt -text
 translations/urtconnector_ru.ts -text
-/trunk.kdev4 -text
 /update_translations -text
 /version -text
