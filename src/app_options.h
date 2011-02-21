@@ -5,7 +5,7 @@
 
 #include "settings/settings.h"
 
-#include "server_bookmark.h"
+#include <common/server_bookmark.h>
 #include "qstat_options.h"
 
 class app_settings: public settings_uid_provider<app_settings>

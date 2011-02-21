@@ -28,64 +28,6 @@
     <property name="margin">
      <number>0</number>
     </property>
-    <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="tabShape">
-       <enum>QTabWidget::Rounded</enum>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="tabFav">
-       <attribute name="icon">
-        <iconset resource="images.qrc">
-         <normaloff>:/icons/icons/bookmarks.png</normaloff>:/icons/icons/bookmarks.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string>Favorites</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <property name="margin">
-         <number>0</number>
-        </property>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabAll">
-       <attribute name="icon">
-        <iconset resource="images.qrc">
-         <normaloff>:/icons/icons/earth.png</normaloff>:/icons/icons/earth.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string>All</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <property name="margin">
-         <number>0</number>
-        </property>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tabHistory">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <attribute name="icon">
-        <iconset resource="images.qrc">
-         <normaloff>:/icons/icons/history.png</normaloff>:/icons/icons/history.png</iconset>
-       </attribute>
-       <attribute name="title">
-        <string>History</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <property name="margin">
-         <number>0</number>
-        </property>
-       </layout>
-      </widget>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -94,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>799</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
@@ -102,14 +44,6 @@
      <string>Settings</string>
     </property>
     <addaction name="actionOptions"/>
-   </widget>
-   <widget class="QMenu" name="menuFavorites">
-    <property name="title">
-     <string>Favorites</string>
-    </property>
-    <addaction name="actionFavAdd"/>
-    <addaction name="actionFavEdit"/>
-    <addaction name="actionFavDelete"/>
    </widget>
    <widget class="QMenu" name="menuUrbanConnector">
     <property name="title">
@@ -126,7 +60,6 @@
     <addaction name="action_about_qt"/>
    </widget>
    <addaction name="menuUrbanConnector"/>
-   <addaction name="menuFavorites"/>
    <addaction name="menuOptions"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -148,7 +81,7 @@
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Tahoma'; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
@@ -269,19 +202,6 @@ p, li { white-space: pre-wrap; }
    </attribute>
    <addaction name="actionConnect"/>
    <addaction name="separator"/>
-   <addaction name="actionFavAdd"/>
-   <addaction name="actionFavDelete"/>
-   <addaction name="actionFavEdit"/>
-   <addaction name="actionAddToFav"/>
-   <addaction name="separator"/>
-   <addaction name="actionClearSelected"/>
-   <addaction name="actionClearAll"/>
-   <addaction name="actionHistoryDelete"/>
-   <addaction name="separator"/>
-   <addaction name="actionRefreshSelected"/>
-   <addaction name="actionRefreshAll"/>
-   <addaction name="actionRefreshMaster"/>
-   <addaction name="separator"/>
    <addaction name="actionOpenRemoteConsole"/>
   </widget>
   <widget class="QStatusBar" name="status_bar"/>
@@ -324,48 +244,6 @@ p, li { white-space: pre-wrap; }
     <string>Options</string>
    </property>
   </action>
-  <action name="actionFavAdd">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add</string>
-   </property>
-   <property name="toolTip">
-    <string>Add favorite server to list</string>
-   </property>
-   <property name="statusTip">
-    <string>Add server favorite to list</string>
-   </property>
-  </action>
-  <action name="actionFavDelete">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/remove.png</normaloff>:/icons/icons/remove.png</iconset>
-   </property>
-   <property name="text">
-    <string>Delete</string>
-   </property>
-   <property name="toolTip">
-    <string>Delete favorite server from list</string>
-   </property>
-  </action>
-  <action name="actionFavEdit">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/edit.png</normaloff>:/icons/icons/edit.png</iconset>
-   </property>
-   <property name="text">
-    <string>Edit</string>
-   </property>
-   <property name="iconText">
-    <string>Edit</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit favorite server</string>
-   </property>
-  </action>
   <action name="actionConnect">
    <property name="icon">
     <iconset resource="images.qrc">
@@ -390,42 +268,6 @@ p, li { white-space: pre-wrap; }
     <string>Quick connect</string>
    </property>
   </action>
-  <action name="actionRefreshAll">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/view-refresh.png</normaloff>:/icons/icons/view-refresh.png</iconset>
-   </property>
-   <property name="text">
-    <string>Refresh</string>
-   </property>
-   <property name="toolTip">
-    <string>Refresh all servers in list</string>
-   </property>
-  </action>
-  <action name="actionAddToFav">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/bookmarks.png</normaloff>:/icons/icons/bookmarks.png</iconset>
-   </property>
-   <property name="text">
-    <string>Add to favorites</string>
-   </property>
-   <property name="toolTip">
-    <string>Add selected server to favorites list</string>
-   </property>
-  </action>
-  <action name="actionRefreshSelected">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/view-refresh.png</normaloff>:/icons/icons/view-refresh.png</iconset>
-   </property>
-   <property name="text">
-    <string>Refresh selected</string>
-   </property>
-   <property name="toolTip">
-    <string>Refresh selected server</string>
-   </property>
-  </action>
   <action name="actionShow">
    <property name="icon">
     <iconset resource="images.qrc">
@@ -440,48 +282,6 @@ p, li { white-space: pre-wrap; }
     <string>About Qt</string>
    </property>
   </action>
-  <action name="actionClearAll">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/edit-clear.png</normaloff>:/icons/icons/edit-clear.png</iconset>
-   </property>
-   <property name="text">
-    <string>Clear all</string>
-   </property>
-  </action>
-  <action name="actionClearOffline">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/edit-clear-offline.png</normaloff>:/icons/icons/edit-clear-offline.png</iconset>
-   </property>
-   <property name="text">
-    <string>Clear Offline</string>
-   </property>
-   <property name="toolTip">
-    <string>Clear Offline</string>
-   </property>
-  </action>
-  <action name="actionRefreshMaster">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/download.png</normaloff>:/icons/icons/download.png</iconset>
-   </property>
-   <property name="text">
-    <string>Update from master server</string>
-   </property>
-  </action>
-  <action name="actionClearSelected">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/edit-clear-selected.png</normaloff>:/icons/icons/edit-clear-selected.png</iconset>
-   </property>
-   <property name="text">
-    <string>Clear Selected</string>
-   </property>
-   <property name="toolTip">
-    <string>Clear Selected</string>
-   </property>
-  </action>
   <action name="actionOpenRemoteConsole">
    <property name="icon">
     <iconset resource="images.qrc">
@@ -489,18 +289,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Open Remote Console</string>
-   </property>
-  </action>
-  <action name="actionHistoryDelete">
-   <property name="icon">
-    <iconset resource="images.qrc">
-     <normaloff>:/icons/icons/remove.png</normaloff>:/icons/icons/remove.png</iconset>
-   </property>
-   <property name="text">
-    <string>Delete from history</string>
-   </property>
-   <property name="toolTip">
-    <string>Delete this entry from history</string>
    </property>
   </action>
  </widget>

@@ -1,61 +1,56 @@
 #ifndef FRIEND_LIST_WIDGET_H
 #define FRIEND_LIST_WIDGET_H
 
-#include <memory>
-
-#include <QTreeWidget>
-
-#include "common/server_id.h"
-
-#include "main_tab.h"
-
-#include "pointers.h"
-
-#include <iostream>
+//#include <common/server_id.h>
+#include <tabs/main_tab.h>
+#include <filters/pointers.h>
+//#include "pointers.h"
 
 class QTreeWidgetItem;
+class QTreeWidget;
+class friend_list;
+class server_list;
 
-class history_widget : public main_tab
+class friend_list_widget : public main_tab
 {
     Q_OBJECT
 public:
-    history_widget(QWidget *parent, history_p list, filter_factory_p factory);
-    ~history_widget();
-    QTreeWidget* tree() const;
-    void update_history();
-    int num_rows() const;
+    friend_list_widget(friend_list* fl, const tab_context& ctx, QWidget *parent);
+//    QTreeWidget* tree() const;
+//    void update_history();
+//    int num_rows() const;
 
-    virtual server_id selected_server() const;
+//    virtual server_id selected_server() const;
 
 
-    public
-Q_SLOTS:
-    void delete_selected();
+//    public
+//Q_SLOTS:
+//    void delete_selected();
 
 
 protected:
-    void changeEvent(QEvent *e);
-
-    protected
-Q_SLOTS:
-    virtual void servers_updated();
-    virtual void filter_changed();
-
+//    void changeEvent(QEvent *e);
+//
+//    protected
+//Q_SLOTS:
+//    virtual void servers_updated();
+//    virtual void filter_changed();
+//
 private slots:
-    void filter_clear();
+//    void filter_clear();
 
 private:
-    void addItem(history_item_p item);
+    void update_list();
+
+//    void addItem(history_item_p item);
     ///returns 0 if NO resort needed
-    QTreeWidgetItem* add_item(QTreeWidgetItem* item);
+//    QTreeWidgetItem* add_item(QTreeWidgetItem* item);
+//    QTreeWidgetItem* find_item(const server_id& id) const;
 
-    QTreeWidgetItem* find_item(const server_id& id) const;
+//    void resort(QTreeWidgetItem* item);
 
-    void resort(QTreeWidgetItem* item);
-
-private:
-    struct Pimpl;
-    std::auto_ptr<Pimpl> p_;
+    QTreeWidget* tree_;
+    friend_list* friends_;
 };
 
 #endif // FRIEND_LIST_WIDGET_H

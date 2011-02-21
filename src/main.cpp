@@ -12,6 +12,7 @@
 #include <QTextCodec>
 #include <QDesktopWidget>
 #include <QDesktopServices>
+#include <QLocale>
 
 #include <cl/syslog/output_stream.h>
 #include <cl/syslog/output_file.h>
@@ -19,6 +20,7 @@
 #include <common/state_settings.h>
 #include <common/exception.h>
 #include <common/str_convert.h>
+#include <common/tools.h>
 #include <launcher/launcher.h>
 #include <anticheat/settings.h>
 #include <anticheat/tools.h>
@@ -31,7 +33,6 @@
 #include "main_window.h"
 #include "application.h"
 #include "debug_help.h"
-#include "tools.h"
 #include "config.h"
 #include "pointers.h"
 #include "app_options_saver.h"
@@ -94,7 +95,6 @@ void init_application(QApplication* a)
     
     //Registering state_settings in separate file
     set.register_file( state_settings::uid(), "state.ini" );
-    set.register_file( server_list_widget_settings::uid(), "options.ini" );
     set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
     set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
 
@@ -242,8 +242,8 @@ int main(int argc, char *argv[])
         main_window w;
 
         // detect christmas and activate this mode if any
-        int month = QDate::currentDate().month();
-        w.set_christmas_mode(month == 1 || month == 12);
+//        int month = QDate::currentDate().month();
+//        w.set_christmas_mode(month == 1 || month == 12);
 
 #ifdef USE_SINGLE_APP
         //set a widget that should raise when new instance trying to start

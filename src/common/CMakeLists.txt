@@ -17,12 +17,20 @@ set(HEADERS
     qaccumulatingconnection.h
     str_convert.h
     qbuttonlineedit.h
+    main_tab_widget.h
+    server_bookmark.h
+    item_view_dblclick_action_link.h
+    tools.h
 )
 
 set(MOC_HEADERS
     server_list.h
     qaccumulatingconnection.h
     qbuttonlineedit.h
+    main_tab_widget.h
+    server_bookmark.h
+    item_view_dblclick_action_link.h
+    tools.h
 )
 
 set(SOURCES
@@ -35,6 +43,10 @@ set(SOURCES
     server_list.cpp
     qaccumulatingconnection.cpp
     qbuttonlineedit.cpp
+    main_tab_widget.cpp
+    server_bookmark.cpp
+    item_view_dblclick_action_link.cpp
+    tools.cpp
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)

@@ -6,7 +6,7 @@
 #include <QDialog>
 
 #include "pointers.h"
-#include "server_bookmark.h"
+#include <common/server_bookmark.h>
 #include <jobs/job.h>
 
 class Ui_ServOptsDialogClass;

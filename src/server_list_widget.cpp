@@ -62,71 +62,11 @@ QModelIndex server_tree::indexFromItem(QTreeWidgetItem* item) const
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// server_tree
+// server_list_widget_settings
 
-server_list_widget_settings::server_list_widget_settings(const QString& list_name)
-: name_(list_name)
+server_list_widget_settings::server_list_widget_settings(const QString& object_name)
+: filtered_tab_settings(object_name)
 {
-}
-
-filter_p server_list_widget_settings::load_root_filter(filter_factory_p factory)
-{
-    part()->beginGroup(name_);
-    QByteArray ba = part()->value("root_filter").toByteArray();
-    part()->endGroup();
-    return filter_load(ba, factory);
-}
-
-void server_list_widget_settings::save_root_filter(filter_p f)
-{
-    part()->beginGroup(name_);
-    part()->setValue("root_filter", filter_save(f));
-    part()->endGroup();
-}
-
-QString server_list_widget_settings::load_toolbar_filter()
-{
-    part()->beginGroup(name_);
-    QString res = part()->value("toolbar_filter_name").toString();
-    part()->endGroup();
-    return res;
-}
-
-void server_list_widget_settings::save_toolbar_filter(const QString& name)
-{
-    part()->beginGroup(name_);
-    part()->setValue("toolbar_filter_name", name);
-    part()->endGroup();
-}
-
-void server_list_widget_settings::save_state(const QByteArray& a)
-{
-    part()->beginGroup(name_);
-    part()->setValue("state", a);
-    part()->endGroup();
-}
-
-QByteArray server_list_widget_settings::load_state()
-{
-    part()->beginGroup(name_);
-    QByteArray res = part()->value("state").toByteArray();
-    part()->endGroup();
-    return res;
-}
-
-bool server_list_widget_settings::is_filter_visible()
-{
-    part()->beginGroup(name_);
-    bool res = part()->value("filter_visible").toBool();
-    part()->endGroup();
-    return res;
-}
-
-void server_list_widget_settings::set_filter_visible(bool val)
-{
-    part()->beginGroup(name_);
-    part()->setValue("filter_visible", val);
-    part()->endGroup();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -528,90 +468,13 @@ bool server_list_widget::eventFilter(QObject* watched, QEvent* event)
     }
 }*/
 
+
 ////////////////////////////////////////////////////////////////////////////////
-// status_item_delegate
+// server_list_tab
 
-status_item_delegate::status_item_delegate(server_list_p sl, QObject* parent)
-    : QStyledItemDelegate(parent)
-    , sl_(sl)
-{}
-
-#include <QDir>
-#include <iostream>
-void status_item_delegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
-{
-    //Draw base styled-item(gradient backgroud and other)
-    QStyledItemDelegate::paint(painter, option, index);
-
-    if( index.data( c_suppress_role ).toBool() )
-        return;
-    
-    //Rect for drawing icons
-    const QRect& optr = option.rect;
-    QRect icon_rect( optr.x() + 2, optr.y() + 2, optr.height() - 4, optr.height() - 4 );
-    
-    server_info_p si = ( sl_ )
-        ? sl_->get( index.data(c_id_role).value<server_id>() ) : server_info_p();
-
-    if (!si)
-        si = server_info_p( new server_info() );
-    
-    static QPixmap icon_none("icons:status-none.png");
-    static QPixmap icon_online("icons:status-online.png");
-    static QPixmap icon_offline("icons:status-offline.png");
-    static QPixmap icon_updating("icons:status-update.png");
-    static QPixmap icon_passwd( "icons:status-passwd.png" );
-    static QPixmap icon_empty;
-    
-    QPixmap& icon_status = icon_empty;
-
-    if (si->updating)
-        icon_status = icon_updating;
-    else
-        switch (si->status)
-        {
-            case server_info::s_none:
-                icon_status = icon_none;
-                break;
-            case server_info::s_up:
-                icon_status = icon_online;
-                break;
-            case server_info::s_down:
-                icon_status = icon_offline;
-                break;
-        }
-
-    //First icon - status icon
-    painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
-    painter->drawPixmap( icon_rect, icon_status );
-
-    next_icon( icon_rect);
-
-    if ( si->is_password_needed() ) painter->drawPixmap( icon_rect, icon_passwd );
-
-    next_icon( icon_rect);
-
-    if ( si->get_info("pure", "-1").toInt() == 0 ) 
-        painter->drawPixmap( icon_rect, QPixmap( "icons:user-identity.png" ) );
-}
-
-void status_item_delegate::next_icon(QRect& icon) const
-{ 
-    icon.adjust( icon.width(), 0, icon.width(), 0 );
-}
-
-QSize status_item_delegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
-{
-    QSize sz = QStyledItemDelegate::sizeHint(option, index);
-    if (sz.height() < 16)
-        sz.setHeight(16);
-    return sz;
-}
-
-
-
-server_list_tab::server_list_tab(const QString& object_name, filter_factory_p factory, QWidget* parent)
-    : main_tab(object_name, parent, factory )
+server_list_tab::server_list_tab(const QString& object_name, server_list_p serv_list, filter_factory_p factory, QWidget* parent)
+: filtered_tab(tab_settings_p(new server_list_widget_settings(object_name)),
+               serv_list, factory, parent)
 {
     tree_ = new QTreeWidget(this);
 //    tree_->setIconSize(QSize(32, 32));
@@ -654,7 +517,7 @@ server_list_tab::server_list_tab(const QString& object_name, filter_factory_p fa
 
     // initialize filters
 
-    init_filter_toolbar();
+//    init_filter_toolbar();
 }
 
 server_list_tab::~server_list_tab()

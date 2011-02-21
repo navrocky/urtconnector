@@ -1,4 +1,6 @@
 /.kdev4
+src/.cproject
+src/.project
 src/moc_aboutdialog.cpp
 src/moc_application.cpp
 src/moc_launcher.cpp

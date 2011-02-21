@@ -10,8 +10,8 @@
 #include <iostream>
 #include <QtGui/qcolor.h>
 
-#include "tools.h"
-#include "geoip/geoip.h"
+#include <common/tools.h>
+#include <geoip/geoip.h>
 #include "server_info_html.h"
 #include "job_update_from_master.h"
 

@@ -33,4 +33,4 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
-target_link_libraries(${TARGET} ${QT_LIBRARIES})
+target_link_libraries(${TARGET} ${QT_LIBRARIES} tabs)

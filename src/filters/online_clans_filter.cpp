@@ -6,10 +6,10 @@
 
 #include <cl/except/error.h>
 #include <common/scoped_tools.h>
+#include <common/tools.h>
 
 #include "filter_edit_widget.h"
 #include "tools.h"
-#include "../tools.h"
 
 #include "online_clans_filter.h"
 

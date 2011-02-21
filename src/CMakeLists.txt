@@ -6,16 +6,21 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
+if (WIN32)
+    set(Boost_USE_STATIC_LIBS ON)
+else()
+    set(Boost_USE_STATIC_LIBS OFF)
+endif()
 
-set(Boost_USE_STATIC_LIBS ON)
-find_package( Boost COMPONENTS
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+find_package( Boost 1.39.0 REQUIRED COMPONENTS
     program_options
     thread
     date_time
     filesystem
     system
 )
-
 include_directories(${Boost_INCLUDE_DIRS})
 
 find_package(Qt4)
@@ -49,6 +54,8 @@ add_subdirectory(history)
 add_subdirectory(anticheat)
 add_subdirectory(database)
 add_subdirectory(launcher)
+#add_subdirectory(friend_list)
+add_subdirectory(tabs)
 
 set(HEADERS
     about_dialog.h
@@ -56,16 +63,12 @@ set(HEADERS
     app_options.h
     debug_help.h
     main_window.h
-    options_dialog.h
     push_button_action_link.h
     server_list_saver.h
-    server_bookmark.h
-    server_list_widget.h
     server_options_dialog.h
     app_options_saver.h
     server_info_html.h
     config.h
-    item_view_dblclick_action_link.h
     qstat_updater.h
     qstat_options.h
     jobs/job.h
@@ -74,23 +77,17 @@ set(HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
-    tools.h
     launcher/tools.h
     setting_forms/launch_settings_form.h
     setting_forms/application_settings_form.h
-    main_tab.h
 )
 
 set(MOC_HEADERS
     about_dialog.h
     application.h
     main_window.h
-    options_dialog.h
     push_button_action_link.h
-    server_list_widget.h
-    server_bookmark.h
     server_options_dialog.h
-    item_view_dblclick_action_link.h
     qstat_updater.h
     jobs/job.h
     jobs/job_queue.h
@@ -98,13 +95,11 @@ set(MOC_HEADERS
     job_update_selected.h
     job_update_from_master.h
     clipper.h
-    tools.h
     rcon/rcon.h
     rcon/rcon_settings_form.h
     rcon/rcon_completer.h
     setting_forms/launch_settings_form.h
     setting_forms/application_settings_form.h
-    main_tab.h
 )
 
 set(SOURCES
@@ -114,15 +109,11 @@ set(SOURCES
     app_options.cpp
     debug_help.cpp
     main_window.cpp
-    options_dialog.cpp
     push_button_action_link.cpp
     server_list_saver.cpp
-    server_bookmark.cpp
-    server_list_widget.cpp
     server_options_dialog.cpp
     app_options_saver.cpp
     server_info_html.cpp
-    item_view_dblclick_action_link.cpp
     qstat_updater.cpp
     qstat_options.cpp
     jobs/job.cpp
@@ -131,19 +122,16 @@ set(SOURCES
     job_update_selected.cpp
     job_update_from_master.cpp
     clipper.cpp
-    tools.cpp
     rcon/rcon.cpp
     rcon/rcon_settings_form.cpp
     rcon/rcon_completer.cpp
     setting_forms/launch_settings_form.cpp
     setting_forms/application_settings_form.cpp
-    main_tab.cpp
 )
 
 set(IFACES
     about_dialog.ui
     main_window.ui
-    options_dialog.ui
     server_options_dialog.ui
     jobs/job_monitor.ui
     jobs/job_item.ui
@@ -177,6 +165,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     anticheat
     database
     launcher
+    tabs
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)

@@ -20,8 +20,8 @@
 #include <cl/syslog/syslog.h>
 
 #include <common/server_id.h>
-#include "../server_bookmark.h"
-#include "tools.h"
+#include <common/server_bookmark.h>
+#include <common/tools.h>
 
 #include "ui_rcon.h"
 #include "rcon.h"

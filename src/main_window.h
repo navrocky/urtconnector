@@ -11,7 +11,6 @@
 
 #include "app_options.h"
 #include <launcher/launcher.h>
-#include "server_list_widget.h"
 #include <common/server_list.h>
 #include "jobs/job_queue.h"
 #include "geoip/geoip.h"
@@ -19,13 +18,18 @@
 #include "filters/pointers.h"
 #include "history/history_widget.h"
 #include <anticheat/anticheat.h>
-#include "server_bookmark.h"
+#include <common/server_bookmark.h>
+//#include "common/main_tab_widget.h"
 
 class QTimer;
 class Ui_MainWindowClass;
 class QSessionManager;
 class QAction;
 class QProcess;
+class main_tab_widget;
+class main_tab;
+class server_list_tab;
+class bookmark_tab;
 
 class main_window : public QMainWindow
 {
@@ -34,9 +38,6 @@ public:
     main_window ( QWidget *parent = 0 );
     ~main_window();
 
-    void set_christmas_mode(bool val);
-
-
 private slots:
     void show_options();
     void show_about();
@@ -44,14 +45,14 @@ private slots:
     void quick_connect();
     void quick_add_favorite();
     void connect_selected();
-    void fav_add();
-    void fav_edit();
-    void fav_delete();
-    void history_delete();
+//    void fav_add();
+//    void fav_edit();
+//    void fav_delete();
+//    void history_delete();
 
-    void refresh_all_bookmarks();
-    void refresh_selected();
-    void refresh_master();
+//    void refresh_all_bookmarks();
+//    void refresh_selected();
+//    void refresh_master();
 
     void update_actions();
     void current_tab_changed();
@@ -84,25 +85,24 @@ private:
     void save_geometry();
     void load_geometry();
 
-    void refresh_servers(server_list_widget* current, const server_id_list& to_update, bool master );
+//    void refresh_servers(server_list_widget* current, const server_id_list& to_update, bool master );
     
     void check_anticheat_prereq() const;
     void connect_to_server(const server_id& id, const QString& player_name, const QString& password);
 
     server_id selected() const;
-    server_list_widget* current_list_widget() const;
+//    main_tab* current_list_widget() const;
     main_tab* current_tab_widget() const;
     server_info_p selected_info() const;
-    void update_christmas_mode();
 
     boost::shared_ptr<Ui_MainWindowClass> ui_;
-    
-    server_list_widget* all_list_;
-    server_list_widget* fav_list_;
+    main_tab_widget* tab_widget_;
+    server_list_tab* all_list_;
+    bookmark_tab* fav_list_;
     history_widget* history_list_;
     
     server_list_p all_sl_;
-    server_bookmark_list* bookmarks_;
+    server_bookmark_list_p bookmarks_;
     history_p history_sl_;
     server_id old_id_;
     int old_state_;
