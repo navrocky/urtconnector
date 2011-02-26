@@ -12,20 +12,20 @@
 #include "app_options.h"
 #include <launcher/launcher.h>
 #include <common/server_list.h>
-#include "jobs/job_queue.h"
-#include "geoip/geoip.h"
-#include "clipper.h"
-#include "filters/pointers.h"
-#include "history/history_widget.h"
-#include <anticheat/anticheat.h>
 #include <common/server_bookmark.h>
-//#include "common/main_tab_widget.h"
+#include <anticheat/anticheat.h>
+#include <jobs/job_queue.h>
+#include <geoip/geoip.h>
+#include <filters/pointers.h>
+#include <history/history_widget.h>
+#include "clipper.h"
 
 class QTimer;
 class Ui_MainWindowClass;
 class QSessionManager;
 class QAction;
 class QProcess;
+class QToolBar;
 class main_tab_widget;
 class main_tab;
 class server_list_tab;
@@ -45,15 +45,6 @@ private slots:
     void quick_connect();
     void quick_add_favorite();
     void connect_selected();
-//    void fav_add();
-//    void fav_edit();
-//    void fav_delete();
-//    void history_delete();
-
-//    void refresh_all_bookmarks();
-//    void refresh_selected();
-//    void refresh_master();
-
     void update_actions();
     void current_tab_changed();
     void update_server_info();
@@ -76,22 +67,17 @@ private slots:
     void launcher_stopped();
 
     void save_bookmarks();
-    void update_tabs();
 private:
-    void load_history_tab();
-
     void load_all_at_start();
     void save_state_at_exit();
     void save_geometry();
     void load_geometry();
+    void update_geoip_database();
 
-//    void refresh_servers(server_list_widget* current, const server_id_list& to_update, bool master );
-    
     void check_anticheat_prereq() const;
     void connect_to_server(const server_id& id, const QString& player_name, const QString& password);
 
     server_id selected() const;
-//    main_tab* current_list_widget() const;
     main_tab* current_tab_widget() const;
     server_info_p selected_info() const;
 
@@ -108,8 +94,6 @@ private:
     int old_state_;
     QSystemTrayIcon* tray_;
     QMenu* tray_menu_;
-    QMenu* favs_menu_;
-    QMenu* all_menu_;
     job_queue* que_;
     geoip gi_;
     clipper* clipper_;
@@ -121,6 +105,7 @@ private:
     QAction* anticheat_configure_action_;
     QPointer<QProcess> ac_proc_;
     QAccumulatingConnection* server_info_updater_;
+    QToolBar* tab_toolbar_;
 };
 
 #endif

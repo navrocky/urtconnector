@@ -28,6 +28,9 @@ history_widget::history_widget(history_p history,
 : filtered_tab(tab_settings_p(new filtered_tab_settings("history_tab")), ctx, parent)
 , history_(history)
 {
+    setWindowTitle(tr("History"));
+    setWindowIcon(QIcon("icons:history.png"));
+    
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
 //     connect(p_->ui.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));

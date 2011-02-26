@@ -4,13 +4,11 @@
 
 server_list::server_list(QObject* parent)
 : QObject(parent)
-, state_(0)
 {
 }
 
 void server_list::state_changed()
 {
-    state_++;
     emit changed();
 }
 

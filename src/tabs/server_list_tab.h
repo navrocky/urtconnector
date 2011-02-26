@@ -18,6 +18,12 @@ public:
                     const tab_context& ctx,
                     QWidget* parent);
 
+protected:
+    void showEvent(QShowEvent* event);
+
+protected slots:
+    virtual void do_selection_change();
+
 private slots:
     void update_contents();
     void add_to_favorites();
@@ -25,9 +31,11 @@ private slots:
     void clear_all();
 
 private:
+    void update_actions();
+
     typedef std::map<server_id, QTreeWidgetItem*> server_items;
 
-    int visible_count_;
+    bool update_contents_pended_;
     server_items items_;
     QAction* add_bookmark_action_;
     QAction* refresh_selected_action_;

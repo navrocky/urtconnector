@@ -13,19 +13,11 @@ class server_list : public QObject
 public:
     server_list(QObject* parent = NULL);
 
-    /*! Resulting server info list */
-    // deprecated
-//    server_info_list& list() {return list_;}
-
     const server_info_list& list() const {return list_;}
 
     server_info_p get(const server_id& id);
 
     void add(server_info_p si);
-
-    /*! List state. Changed always after list change. */
-    // deprecated
-    int state() const {return state_;}
 
     /*! Call this after any internal info change. */
     void state_changed();
@@ -39,7 +31,6 @@ signals:
 
 private:
     server_info_list list_;
-    int state_;
 };
 
 #endif

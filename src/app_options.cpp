@@ -68,7 +68,7 @@ QString app_settings::geoip_database() const
 
 void app_settings::set_geoip_database(const QString& file)
 {
-    part()->value("center_current_row", true).toBool();
+    part()->setValue("geoip_database", file);
 }
 
 

@@ -16,6 +16,7 @@
 #include "common_item_tags.h"
 
 #include "bookmark_tab.h"
+#include "main_window.h"
 
 SYSLOG_MODULE(bookmark_tab)
 
@@ -26,7 +27,10 @@ bookmark_tab::bookmark_tab(const QString& object_name,
                            const tab_context& ctx,
                            QWidget* parent)
 : server_list_common_tab(object_name, tr("Favorites"), ctx, parent)
+, update_contents_pended_(false)
 {
+    setWindowIcon(QIcon("icons:bookmarks.png"));
+
     add_action_ = new QAction(QIcon("icons:add.png"), tr("Add"), this);
     add_action_->setToolTip("Add new favorite");
     connect(add_action_, SIGNAL(triggered()), SLOT(add()));
@@ -66,12 +70,52 @@ bookmark_tab::bookmark_tab(const QString& object_name,
                                 this, SLOT(update_contents()), 100,
                                 QAccumulatingConnection::Finally,
                                 this);
+    new QAccumulatingConnection(context().serv_list().get(), SIGNAL(changed()),
+                                this, SLOT(update_servers_info()), 200,
+                                QAccumulatingConnection::Periodically,
+                                this);
 
-//    update_contents();
+    update_actions();
+}
+
+void bookmark_tab::do_selection_change()
+{
+    server_list_common_tab::do_selection_change();
+    update_actions();
+}
+
+void bookmark_tab::update_servers_info()
+{
+    if (!isVisible())
+    {
+        update_contents_pended_ = true;
+        return;
+    }
+    LOG_DEBUG << "Update servers info";
+    for (int i = 0; i < tree()->topLevelItemCount(); i++)
+    {
+        QTreeWidgetItem* item = tree()->topLevelItem(i);
+        update_item(item);
+    }
+}
+
+void bookmark_tab::showEvent(QShowEvent* event)
+{
+    server_list_common_tab::showEvent(event);
+    if (update_contents_pended_)
+    {
+        update_contents_pended_ = false;
+        update_contents();
+    }
 }
 
 void bookmark_tab::update_contents()
 {
+    if (!isVisible())
+    {
+        update_contents_pended_ = true;
+        return;
+    }
     LOG_DEBUG << "Update contents";
     QTreeWidgetItem* cur_item = tree()->currentItem();
 
@@ -93,9 +137,6 @@ void bookmark_tab::update_contents()
             item->setData( 0, c_id_role, QVariant::fromValue(id) );
             items_[id] = item;
         }
-        else
-            item = it2->second;
-        update_item(item);
     }
 
     // remove old items
@@ -110,6 +151,8 @@ void bookmark_tab::update_contents()
         items_.erase(it);
     }
 
+    update_servers_info();
+
     tree()->setSortingEnabled(true);
     tree()->setUpdatesEnabled(true);
 
@@ -118,6 +161,7 @@ void bookmark_tab::update_contents()
 
     set_total_count(items_.size());
     filter_changed();
+    update_actions();
 }
 
 void bookmark_tab::add()
@@ -171,3 +215,13 @@ void bookmark_tab::refresh_all()
     context().job_que()->add_job(job_p(new job_update_selected(l,
         context().serv_list(), *context().geo())));
 }
+
+void bookmark_tab::update_actions()
+{
+    const server_id& id = selected_server();
+    edit_action_->setEnabled(!id.is_empty());
+    remove_action_->setEnabled(!id.is_empty());
+    refresh_selected_->setEnabled(!id.is_empty());
+    refresh_all_->setEnabled(context().bookmarks()->list().size() > 0);
+}
+

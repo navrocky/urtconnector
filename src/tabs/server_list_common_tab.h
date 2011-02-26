@@ -31,6 +31,7 @@ public slots:
 protected slots:
     virtual void filter_changed();
     void refresh_selected();
+    virtual void do_selection_change();
 
 protected:
     void set_total_count(int);

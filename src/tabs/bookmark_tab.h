@@ -21,20 +21,25 @@ public:
 public slots:
 
 protected slots:
+    void do_selection_change();
 
 protected:
+    void showEvent(QShowEvent* event);
 
 private slots:
     void update_contents();
+    void update_servers_info();
     void add();
     void edit_selected();
     void remove_selected();
     void refresh_all();
 
 private:
+    void update_actions();
+
     typedef std::map<server_id, QTreeWidgetItem*> server_items;
 
-    int visible_count_;
+    bool update_contents_pended_;
     server_items items_;
     QAction* add_action_;
     QAction* edit_action_;

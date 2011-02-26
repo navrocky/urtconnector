@@ -29,7 +29,10 @@ server_list_tab::server_list_tab(const QString& object_name,
                                  const tab_context& ctx,
                                  QWidget* parent)
 : server_list_common_tab(object_name, tr("All servers"), ctx, parent)
+, update_contents_pended_(false)
 {
+    setWindowIcon(QIcon("icons:earth.png"));
+
     add_bookmark_action_ = new QAction(QIcon("icons:bookmarks.png"), tr("Add to favorites"), this);
     add_bookmark_action_->setToolTip(tr("Add selected server to favorites list"));
     connect(add_bookmark_action_, SIGNAL(triggered()), SLOT(add_to_favorites()));
@@ -67,14 +70,31 @@ server_list_tab::server_list_tab(const QString& object_name,
                                 this, SLOT(update_contents()), 200,
                                 QAccumulatingConnection::Periodically,
                                 this);
+    update_actions();
+}
+
+void server_list_tab::showEvent(QShowEvent* event)
+{
+    server_list_common_tab::showEvent(event);
+
+    if (update_contents_pended_)
+    {
+        update_contents_pended_ = false;
+        update_contents();
+    }
 }
 
 void server_list_tab::update_contents()
 {
+    if (!isVisible())
+    {
+        update_contents_pended_ = true;
+        return;
+    }
     LOG_DEBUG << "Update contents";
     QTreeWidgetItem* cur_item = tree()->currentItem();
 
-//    tree()->setUpdatesEnabled(false);
+    tree()->setUpdatesEnabled(false);
     tree()->setSortingEnabled(false);
 
     const server_info_list& sil = server_list()->list();
@@ -110,13 +130,14 @@ void server_list_tab::update_contents()
     }
 
     tree()->setSortingEnabled(true);
-//    tree()->setUpdatesEnabled(true);
+    tree()->setUpdatesEnabled(true);
 
     if (tree()->topLevelItemCount() > 0 && cur_item && app_settings().center_current_row())
         tree()->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
 
     set_total_count(items_.size());
     filter_changed();
+    update_actions();
 }
 
 void server_list_tab::add_to_favorites()
@@ -138,11 +159,27 @@ void server_list_tab::add_to_favorites()
 
 void server_list_tab::refresh_all()
 {
+    LOG_DEBUG << "Refresh server list";
     context().job_que()->add_job(job_p(
         new job_update_from_master(context().serv_list(), *context().geo())));
 }
 
 void server_list_tab::clear_all()
 {
-    // TODO
+    LOG_DEBUG << "Clear server list";
+    context().serv_list()->remove_all();
+}
+
+void server_list_tab::do_selection_change()
+{
+    server_list_common_tab::do_selection_change();
+    update_actions();
+}
+
+void server_list_tab::update_actions()
+{
+    const server_id& id = selected_server();
+    add_bookmark_action_->setEnabled(!id.is_empty());
+    refresh_selected_action_->setEnabled(!id.is_empty());
+    clear_all_action_->setEnabled(context().serv_list()->list().size() > 0);
 }

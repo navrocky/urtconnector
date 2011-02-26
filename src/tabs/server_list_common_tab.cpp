@@ -42,6 +42,7 @@ server_list_common_tab::server_list_common_tab(const QString& object_name,
     tree_->setSortingEnabled(true);
     tree_->setAllColumnsShowFocus(true);
     tree_->setWordWrap(true);
+    connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(do_selection_change()));
 
     QTreeWidgetItem *hi = tree_->headerItem();
     hi->setText(7, tr("Players"));
@@ -76,7 +77,7 @@ void server_list_common_tab::filter_changed()
     LOG_DEBUG << "Refilter list";
     filtered_tab::filter_changed();
 
-//    tree_->setUpdatesEnabled(false);
+    tree_->setUpdatesEnabled(false);
     int visible_count = 0;
     for (int i = 0; i < tree_->topLevelItemCount(); i++)
     {
@@ -94,7 +95,7 @@ void server_list_common_tab::filter_changed()
             visible_count++;
     }
     set_visible_count(visible_count);
-//    tree_->setUpdatesEnabled(true);
+    tree_->setUpdatesEnabled(true);
 }
 
 void server_list_common_tab::update_item(QTreeWidgetItem* item)
@@ -229,6 +230,11 @@ void server_list_common_tab::update_caption()
     }
 
     setWindowTitle(QString("%1%2").arg(caption_).arg(cnt));
+}
+
+void server_list_common_tab::do_selection_change()
+{
+    emit selection_changed();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
