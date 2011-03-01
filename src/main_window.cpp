@@ -214,9 +214,6 @@ main_window::main_window(QWidget *parent)
     load_all_at_start();
     load_geometry();
 
-    // history
-    history_sl_->change_max();
-
     update_actions();
     update_server_info();
 

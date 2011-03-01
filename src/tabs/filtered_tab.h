@@ -19,8 +19,6 @@ public:
                  const tab_context& ctx,
                  QWidget* parent);
 
-//    virtual bool eventFilter(QObject* watched, QEvent* event);
-
 public slots:
     virtual void save_state();
     virtual void load_state();

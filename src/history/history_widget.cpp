@@ -18,7 +18,7 @@
 //FIXME used by status_item_delegate !!
 //const int c_suppress_role = Qt::UserRole + 11;
 
-Q_DECLARE_METATYPE(history_item_p);
+Q_DECLARE_METATYPE(history_item);
 
 const int c_history_role = Qt::UserRole + 12;
 
@@ -65,7 +65,7 @@ void history_widget::update_contents()
 {
     tree_->clear();
 
-    foreach (const history_item_p& item, history_->list())
+    foreach (const history_item& item, history_->list())
     {
         addItem(item);
     }
@@ -73,17 +73,17 @@ void history_widget::update_contents()
     filter_changed();
 }
 
-void history_widget::addItem(history_item_p item)
+void history_widget::addItem(const history_item& item)
 {
     QTreeWidgetItem* item_ptr = new QTreeWidgetItem();
 
-    item_ptr->setText(0, item->server_name());
-    item_ptr->setText(2, item->date_time().toString(Qt::DefaultLocaleShortDate));
-    item_ptr->setText(3, item->address());
-    item_ptr->setText(4, item->password());
-    item_ptr->setText(5, item->player_name());
-    item_ptr->setData(0, c_id_role, QVariant::fromValue(item->id()));
-    item_ptr->setData(1, c_id_role, QVariant::fromValue(item->id()));
+    item_ptr->setText(0, item.server_name());
+    item_ptr->setText(2, item.date_time().toString(Qt::DefaultLocaleShortDate));
+    item_ptr->setText(3, item.id().address());
+    item_ptr->setText(4, item.password());
+    item_ptr->setText(5, item.player_name());
+    item_ptr->setData(0, c_id_role, QVariant::fromValue(item.id()));
+    item_ptr->setData(1, c_id_role, QVariant::fromValue(item.id()));
     item_ptr->setData(0, c_history_role, QVariant::fromValue(item));
 
     if (QTreeWidgetItem * parent = add_item(item_ptr))

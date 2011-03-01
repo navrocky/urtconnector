@@ -11,6 +11,7 @@ set(HEADERS
 
 set(MOC_HEADERS
     history_widget.h
+    history.h
 )
 
 set(SOURCES

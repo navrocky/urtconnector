@@ -48,9 +48,13 @@ public:
     bool keep_history() const;
     bool set_keep_history(bool b);
 
-    /*! Number of connections that are kept in history */
-    unsigned int number_in_history() const;
-    void set_number_in_history( unsigned int lines );
+    /*! Number of connections that are kept in history. 0 - unlimited. */
+    int number_in_history() const;
+    void set_number_in_history(int lines );
+    
+    /*! Days that are kept in history. 0 - unlimited. */
+    int days_in_history() const;
+    void set_days_in_history(int days);
 
     /*! Update server info before connect to */
     bool update_before_connect() const;

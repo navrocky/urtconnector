@@ -1,44 +1,22 @@
 #include "history_item.h"
 
-history_item::history_item(server_id& id, QString& server_name, QString& password, QString& player_name, QDateTime& date_time)
-    : id_(id), server_name_(server_name), password_(password), player_name_(player_name), date_time_(date_time)
-{
-}
+history_item::history_item()
+{}
 
-server_id history_item::id() const
+history_item::history_item(const server_id& id, const QString& server_name,
+                           const QString& password, const QString& player_name,
+                           const QDateTime& date_time)
 {
-    return id_;
-}
-
-
-QString history_item::address() const
-{
-    return id_.address();
-}
-
-QString history_item::server_name() const
-{
-    return server_name_;
-}
-
-QString history_item::password() const
-{
-    return password_;
-}
-
-QString history_item::player_name() const
-{
-    return player_name_;
-}
-
-QDateTime history_item::date_time() const
-{
-    return date_time_;
+    d->id_ = id;
+    d->server_name_ = server_name;
+    d->password_ = password;
+    d->player_name_ = player_name;
+    d->date_time_ = date_time;
 }
 
 bool history_item::operator==(const history_item& other) const
 {
     //player name ?
-    return ( id_ == other.id_ ) && ( date_time_ == other.date_time_ );
+    return ( d->id_ == other.d->id_ ) && ( d->date_time_ == other.d->date_time_ );
 }
 

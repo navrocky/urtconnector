@@ -8,6 +8,7 @@
 
 class QTreeWidget;
 class QTreeWidgetItem;
+class history_item;
 
 class history_widget : public filtered_tab
 {
@@ -32,7 +33,7 @@ protected slots:
 private:
     void update_contents();
 
-    void addItem(history_item_p item);
+    void addItem(const history_item& item);
 
     ///returns 0 if NO resort needed
     QTreeWidgetItem* add_item(QTreeWidgetItem* item);

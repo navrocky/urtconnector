@@ -4,6 +4,7 @@
 
 #include "config.h"
 #include "app_options.h"
+#include "pointers.h"
 
 
 bool app_settings::start_hidden() const
@@ -93,17 +94,25 @@ bool app_settings::set_keep_history(bool b)
     part()->setValue("keep_history", b);
 }
 
-
-unsigned int app_settings::number_in_history() const
+int app_settings::number_in_history() const
 {
-    return part()->value("number_in_history", 30).toUInt();
+    return part()->value("number_in_history", 30).toInt();
 }
 
-void app_settings::set_number_in_history(unsigned int lines)
+void app_settings::set_number_in_history(int lines)
 {
     part()->setValue("number_in_history", lines);
 }
 
+int app_settings::days_in_history() const
+{
+    return part()->value("days_in_history", 90).toInt();
+}
+
+void app_settings::set_days_in_history(int days)
+{
+    part()->setValue("days_in_history", days);
+}
 
 bool app_settings::update_before_connect() const
 {
