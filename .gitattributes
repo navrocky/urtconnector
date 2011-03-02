@@ -410,7 +410,6 @@ src/history/history_item.cpp -text
 src/history/history_item.h -text
 src/history/history_widget.cpp -text
 src/history/history_widget.h -text
-src/history/history_widget.ui -text
 src/icons/add.png -text
 src/icons/anticheat.png -text
 src/icons/application-exit.png -text

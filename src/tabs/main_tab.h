@@ -30,16 +30,11 @@ public:
     /*! Current selection in tab */
 //    virtual server_id_list selection() const = 0;
     
-//  const filter_list& filterlist() const;
-
 signals:
     void contents_changed();
     void selection_changed();
 
 public slots:
-//    void update_servers();
-//    void force_update_servers();
-
     virtual void save_state();
     virtual void load_state();
 
@@ -48,17 +43,10 @@ protected slots:
         Also emits contents_changed() signal. */
     virtual void server_list_changed();
 
-//    virtual void filter_changed();
-
 protected:
     const tab_settings_p& settings() const {return st_;}
     server_list_p server_list() const {return ctx_.serv_list();}
     const tab_context& context() const {return ctx_;}
-
-private slots:
-//    void update_toolbar_filter();
-//    void show_filter(bool);
-//    void save_filter();
 
 private:
     QAccumulatingConnection* updater_;

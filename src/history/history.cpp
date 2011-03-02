@@ -42,6 +42,7 @@ void history::shorten()
     if (max_days_ > 0)
     {
         // TODO
+        
     }
 }
 

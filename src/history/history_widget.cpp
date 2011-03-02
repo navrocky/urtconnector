@@ -1,8 +1,14 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QHeaderView>
+#include <QAction>
 
+#include <boost/bind.hpp>
+
+#include <common/qt_syslog.h>
 #include <common/server_list.h>
+#include <common/item_view_dblclick_action_link.h>
+#include <common/tools.h>
 #include <tabs/status_item_delegate.h>
 #include <tabs/common_item_tags.h>
 #include <tabs/status_item_delegate.h>
@@ -13,10 +19,7 @@
 
 #include "history_widget.h"
 
-//const int c_id_role = Qt::UserRole + 1;
-
-//FIXME used by status_item_delegate !!
-//const int c_suppress_role = Qt::UserRole + 11;
+SYSLOG_MODULE(history_widget)
 
 Q_DECLARE_METATYPE(history_item);
 
@@ -27,9 +30,16 @@ history_widget::history_widget(history_p history,
                                QWidget *parent)
 : filtered_tab(tab_settings_p(new filtered_tab_settings("history_tab")), ctx, parent)
 , history_(history)
+, group_mode_(true)
+, item_count_(0)
+, visible_item_count_(0)
+, update_contents_pended_(false)
 {
     setWindowTitle(tr("History"));
     setWindowIcon(QIcon("icons:history.png"));
+
+    remove_selected_action_ = new QAction(QIcon("icons:remove.png"), tr("Remove"), this);
+    connect(remove_selected_action_, SIGNAL(triggered()), SLOT(delete_selected()));
     
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
@@ -49,28 +59,68 @@ history_widget::history_widget(history_p history,
     hdr->resizeSection(2, 200);
 
     tree_->setItemDelegateForColumn(1, new status_item_delegate(server_list(), tree_));
+    connect(history.get(), SIGNAL(changed()), SLOT(update_contents()));
+    connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(do_selection_change()));
+
+    addAction(remove_selected_action_);
+
+    tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tree_->addAction(context().connect_action());
+    add_separator_action(tree_);
+    tree_->addAction(remove_selected_action_);
+
+    new item_view_dblclick_action_link(this, tree_, ctx.connect_action());
+
+    update_contents();
 }
 
-//int history_widget::num_rows() const
-//{
-//    return tree_->topLevelItemCount();
-//}
+void history_widget::set_group_mode(bool val)
+{
+    if (group_mode_ == val)
+        return;
+    group_mode_ = val;
+    tree_->clear();
+    update_contents();
+}
 
-//QTreeWidget* history_widget::tree() const
-//{
-//    return p_->ui.treeWidget;
-//}
+void history_widget::update_caption()
+{
+    QString num;
+    if (item_count_ > 0)
+        num = QString(" (%1)").arg(item_count_);
+    setWindowTitle(tr("History%1").arg(num));
+}
+
+void history_widget::showEvent(QShowEvent* event)
+{
+    filtered_tab::showEvent(event);
+    if (update_contents_pended_)
+    {
+        update_contents_pended_ = false;
+        update_contents();
+    }
+}
 
 void history_widget::update_contents()
 {
+    if (!isVisible())
+    {
+        update_contents_pended_ = true;
+        return;
+    }
+
+    LOG_DEBUG << "Update contents";
     tree_->clear();
+    item_count_ = 0;
 
     foreach (const history_item& item, history_->list())
     {
         addItem(item);
+        item_count_++;
     }
 
     filter_changed();
+    update_actions();
 }
 
 void history_widget::addItem(const history_item& item)
@@ -119,6 +169,8 @@ server_id history_widget::selected_server() const
 
 void history_widget::filter_changed()
 {
+    filtered_tab::filter_changed();
+
     for (int i = 0; i < tree_->topLevelItemCount(); i++)
     {
         QTreeWidgetItem* item = tree_->topLevelItem(i);
@@ -133,6 +185,7 @@ void history_widget::filter_changed()
         if (item->isHidden() != !is_visible)
             item->setHidden(!is_visible);
     }
+    update_caption();
 }
 
 QTreeWidgetItem* history_widget::find_item(const server_id& id) const
@@ -146,23 +199,35 @@ QTreeWidgetItem* history_widget::find_item(const server_id& id) const
     return 0;
 }
 
+void history_widget::do_selection_change()
+{
+    emit selection_changed();
+    update_actions();
+}
+
 void history_widget::resort(QTreeWidgetItem* item)
 {
-//    int index = tree_->indexOfTopLevelItem(item);
-//    if (index == -1)
-//        return;
-//
-//    item = p_->ui.treeWidget->takeTopLevelItem(index);
-//
-//    QList<QTreeWidgetItem*> chlds = item->takeChildren();
-//
-//    //item itself is under resorting too!
-//    chlds << item;
-//
-//    std::sort(chlds.begin(), chlds.end(),
-//              boost::bind(&QTreeWidgetItem::text, _1, 0) < boost::bind(&QTreeWidgetItem::text, _2, 0));
-//
-//    std::for_each(chlds.begin(), chlds.end(), boost::bind(&history_widget::add_item, this, _1));
+    int index = tree_->indexOfTopLevelItem(item);
+    if (index == -1)
+        return;
+
+    item = tree_->takeTopLevelItem(index);
+
+    QList<QTreeWidgetItem*> chlds = item->takeChildren();
+
+    //item itself is under resorting too!
+    chlds << item;
+
+    std::sort(chlds.begin(), chlds.end(),
+              boost::bind(&QTreeWidgetItem::text, _1, 0) < boost::bind(&QTreeWidgetItem::text, _2, 0));
+
+    std::for_each(chlds.begin(), chlds.end(), boost::bind(&history_widget::add_item, this, _1));
+}
+
+void history_widget::update_actions()
+{
+    remove_selected_action_->setEnabled(!selected_server().is_empty());
+
 }
 
 void history_widget::delete_selected()

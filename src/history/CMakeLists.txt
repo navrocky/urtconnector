@@ -21,7 +21,6 @@ set(SOURCES
 )
 
 set(IFACES
-    history_widget.ui
 )
 
 set(RESOURCES
