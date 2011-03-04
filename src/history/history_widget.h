@@ -26,6 +26,7 @@ public:
 
 public slots:
     void delete_selected();
+    void clear_all();
 
 protected slots:
     virtual void filter_changed();
@@ -38,6 +39,11 @@ private slots:
     void do_selection_change();
 
 private:
+    void update_item(QTreeWidgetItem*);
+
+    void update_contents_simple();
+    void update_contents_grouped();
+
     void update_caption();
     void update_actions();
     void addItem(const history_item& item);
