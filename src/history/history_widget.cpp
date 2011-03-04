@@ -160,10 +160,6 @@ void update_tree_contents(const List& l,
                           const boost::function<void (QTreeWidgetItem*)>& update_item,
                           const Adapter& adapter)
 {
-//    std_adapter a;
-//    if (!adapter)
-//        adapter = &a;
-
     // who appeared ?
     foreach (typename List::const_reference item, l)
     {
@@ -172,18 +168,11 @@ void update_tree_contents(const List& l,
         if (!it)
             it = adapter.create_item(tree, parent_item, item, role);
         update_item(it);
-
-
-//        if (parent_item)
-//        {
-//            for (int i = 0; i < parent_item->childCount(); ++i)
-//            {
-//                Qparent_item->child(i)
-//            }
-//        }
-
-
     }
+
+    // remove old items
+
+
 }
 
 void history_widget::update_item(QTreeWidgetItem*)
@@ -195,15 +184,9 @@ void history_widget::update_item(QTreeWidgetItem*)
 void history_widget::update_contents_simple()
 {
     const history::history_list_t& hl = history_->list();
-
     std_adapter a;
-
-//    boost::bind(&history_widget::update_item, _1);
-
-//    boost::function<void (QTreeWidgetItem*)> func =  boost::bind(&history_widget::update_item);
-
-//    update_tree_contents(hl, c_history_role, tree_, 0,
-//        boost::bind(&history_widget::update_item, _1), a);
+    update_tree_contents(hl, c_history_role, tree_, 0,
+        boost::bind(&history_widget::update_item, this, _1), a);
 
 //    history::history_list_t::const_reference
 
