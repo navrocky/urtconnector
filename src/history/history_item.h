@@ -23,6 +23,7 @@ public:
     const QDateTime& date_time() const {return d->date_time_;}
 
     bool operator==(const history_item& other) const;
+    bool operator<(const history_item& other) const;
 
 protected:
     struct impl

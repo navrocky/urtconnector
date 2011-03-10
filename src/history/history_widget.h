@@ -5,11 +5,11 @@
 #include <tabs/filtered_tab.h>
 
 #include "../pointers.h"
+#include "history_item.h"
 
 class QAction;
 class QTreeWidget;
 class QTreeWidgetItem;
-class history_item;
 
 class history_widget : public filtered_tab
 {
@@ -52,6 +52,7 @@ private:
     void resort(QTreeWidgetItem* item);
 
     QTreeWidget* tree_;
+    QMap<history_item, QTreeWidgetItem*> items_map_;
     history_p history_;
     bool group_mode_;
     int item_count_;

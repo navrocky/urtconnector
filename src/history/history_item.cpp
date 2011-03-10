@@ -20,3 +20,7 @@ bool history_item::operator==(const history_item& other) const
     return ( d->id_ == other.d->id_ ) && ( d->date_time_ == other.d->date_time_ );
 }
 
+bool history_item::operator<(const history_item& other) const
+{
+    return ( d->id_ < other.d->id_ ) && ( d->date_time_ < other.d->date_time_ );
+}

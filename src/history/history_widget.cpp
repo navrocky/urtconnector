@@ -3,7 +3,9 @@
 #include <QHeaderView>
 #include <QAction>
 
+#include <algorithm>
 #include <boost/bind.hpp>
+#include <boost/utility/enable_if.hpp>
 
 #include <common/qt_syslog.h>
 #include <common/server_list.h>
@@ -104,32 +106,32 @@ void history_widget::showEvent(QShowEvent* event)
     }
 }
 
-template <typename Item>
-QTreeWidgetItem* find_item(QTreeWidget* tree, QTreeWidgetItem* parent_item,
-                           int role, const Item& item)
-{
-    QTreeWidgetItem* res = 0;
-    if (parent_item)
-    {
-        for (int i = 0; i < parent_item->childCount(); ++i)
-        {
-            res = parent_item->child(i);
-            const Item& it = res->data(0, role).value<Item>();
-            if (it == item)
-                return res;
-        }
-    } else
-    {
-        for (int i = 0; i < tree->topLevelItemCount(); ++i)
-        {
-            res = tree->topLevelItem(i);
-            const Item& it = res->data(0, role).value<Item>();
-            if (it == item)
-                return res;
-        }
-    }
-    return 0;
-}
+//template <typename Item>
+//QTreeWidgetItem* find_item(QTreeWidget* tree, QTreeWidgetItem* parent_item,
+//                           int role, const Item& item)
+//{
+//    QTreeWidgetItem* res = 0;
+//    if (parent_item)
+//    {
+//        for (int i = 0; i < parent_item->childCount(); ++i)
+//        {
+//            res = parent_item->child(i);
+//            const Item& it = res->data(0, role).value<Item>();
+//            if (it == item)
+//                return res;
+//        }
+//    } else
+//    {
+//        for (int i = 0; i < tree->topLevelItemCount(); ++i)
+//        {
+//            res = tree->topLevelItem(i);
+//            const Item& it = res->data(0, role).value<Item>();
+//            if (it == item)
+//                return res;
+//        }
+//    }
+//    return 0;
+//}
 
 struct std_adapter
 {
@@ -152,41 +154,131 @@ struct std_adapter
     }
 };
 
-template <typename List, typename Adapter>
-void update_tree_contents(const List& l, 
-                          int role,
-                          QTreeWidget* tree,
-                          QTreeWidgetItem* parent_item, 
-                          const boost::function<void (QTreeWidgetItem*)>& update_item,
-                          const Adapter& adapter)
+template <typename T>
+struct class_has_find{
+
+    typedef char yes_type;
+    struct no_type { yes_type dummy[2]; };
+
+    template <void (T::*)()> struct void_tester;
+
+    template <typename U>
+    static yes_type has_member( void_tester<&U::find>* );
+
+    template <typename U>
+    static no_type has_member( ... );
+
+    //static const bool value = sizeof( has_member<T>(0) ) == sizeof(no_type);
+    static const bool value = sizeof( has_member<T>(0) ) == sizeof(yes_type);
+
+};
+
+template <typename T>
+struct get_value_type{
+    typedef typename T::value_type type;
+};
+
+template <typename T, typename U>
+struct get_value_type< QMap<T, U> >{
+    typedef U type;
+};
+
+template <typename T, typename U>
+struct get_value_type< std::map<T, U> >{
+    typedef U type;
+};
+
+template <typename List, typename Adapter = std_adapter>
+struct updater
 {
-    // who appeared ?
-    foreach (typename List::const_reference item, l)
+    typedef typename get_value_type<List>::type Element;
+    typedef QMap<Element, QTreeWidgetItem*> item_map_t;
+
+    static void update_tree_contents(const List& l,
+                              int role,
+                              QTreeWidget* tree,
+                              QTreeWidgetItem* parent_item,
+                              const boost::function<void (QTreeWidgetItem*)>& update_item,
+                              item_map_t& items,
+                              const Adapter& adapter = Adapter())
     {
-        // search item
-        QTreeWidgetItem* it = find_item(tree, parent_item, role, item);
-        if (!it)
-            it = adapter.create_item(tree, parent_item, item, role);
-        update_item(it);
+        // who appeared ?
+
+        foreach (const Element& item, l)
+        {
+            // search item
+            typename item_map_t::iterator it = items.find(item);
+            QTreeWidgetItem* ti;
+            if (it == items.end())
+            {
+                ti = adapter.create_item(tree, parent_item, item, role);
+                items[item] = ti;
+            } else
+                ti = it.value();
+            update_item(ti);
+        }
+
+        // remove old items
+        typename item_map_t::iterator it = items.begin();
+        for (; it != items.end(); ++it)
+        {
+           typename List::const_iterator i = find(l, it.key());
+//            std::find( l.begin(), l.end(),  )
+//            l.find(it.key());
+        }
+//        foreach (typename List::const_reference , )
+        
+
+
+
     }
 
-    // remove old items
+    template <typename T>
+    static typename List::const_iterator find(
+        const T& l, const Element& v,
+        typename boost::disable_if<class_has_find<T> >::type* dummy = 0
+    )
+    {
+        return std::find(l.begin(), l.end(), v);
+    }
 
-
-}
+    template <typename T>
+    static typename List::const_iterator find(
+        const T& l, const Element& v,
+        typename boost::enable_if<class_has_find<T> >::type* dummy = 0
+        )
+    {
+        return l.find(v);
+    }
+};
 
 void history_widget::update_item(QTreeWidgetItem*)
 {
     
 }
 
-
 void history_widget::update_contents_simple()
 {
     const history::history_list_t& hl = history_->list();
-    std_adapter a;
-    update_tree_contents(hl, c_history_role, tree_, 0,
-        boost::bind(&history_widget::update_item, this, _1), a);
+
+//    QMap<int, int>::
+//    history::history_list_t::value_type
+//    std_adapter a;
+
+    updater<history::history_list_t>::update_tree_contents(hl, c_history_role, tree_, 0,
+        boost::bind(&history_widget::update_item, this, _1), items_map_);
+
+    typedef QMap<int, int> my_type;
+    typedef QMap<int, QTreeWidgetItem*> my_items;
+
+    my_type l;
+    my_items items;
+
+
+    updater<my_type>::update_tree_contents(l, c_history_role, tree_, 0,
+        boost::bind(&history_widget::update_item, this, _1), items);
+
+
 
 //    history::history_list_t::const_reference
 
@@ -242,10 +334,10 @@ void history_widget::update_contents()
 //    tree()->setSortingEnabled(false);
 
     // take id
-//    if (group_mode_)
-//        update_contents_grouped();
-//    else
-//        update_contents_simple();
+    if (group_mode_)
+        update_contents_grouped();
+    else
+        update_contents_simple();
 
 
 
