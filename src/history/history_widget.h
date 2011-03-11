@@ -3,6 +3,7 @@
 
 #include <common/server_id.h>
 #include <tabs/filtered_tab.h>
+#include <common/list_caption_updater.h>
 
 #include "../pointers.h"
 #include "history_item.h"
@@ -37,29 +38,27 @@ protected:
 private slots:
     void update_contents();
     void do_selection_change();
+    void add_to_favorites();
 
 private:
+    typedef QMap<history_item, QTreeWidgetItem*> items_map_t;
+    
     void update_item(QTreeWidgetItem*);
-
     void update_contents_simple();
     void update_contents_grouped();
-
-    void update_caption();
     void update_actions();
-    void addItem(const history_item& item);
-    QTreeWidgetItem* add_item(QTreeWidgetItem* item);
-    QTreeWidgetItem* find_item(const server_id& id) const;
-    void resort(QTreeWidgetItem* item);
 
     QTreeWidget* tree_;
-    QMap<history_item, QTreeWidgetItem*> items_map_;
+    items_map_t items_map_;
     history_p history_;
     bool group_mode_;
     int item_count_;
     int visible_item_count_;
     bool update_contents_pended_;
+    QAction* add_bookmark_action_;
     QAction* remove_selected_action_;
     QAction* remove_all_action_;
+    list_caption_updater caption_;
 };
 
 #endif // HISTORY_WIDGET_H

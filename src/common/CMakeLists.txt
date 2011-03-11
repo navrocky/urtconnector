@@ -21,6 +21,7 @@ set(HEADERS
     server_bookmark.h
     item_view_dblclick_action_link.h
     tools.h
+    list_caption_updater.h
 )
 
 set(MOC_HEADERS
@@ -47,6 +48,7 @@ set(SOURCES
     server_bookmark.cpp
     item_view_dblclick_action_link.cpp
     tools.cpp
+    list_caption_updater.cpp 
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)

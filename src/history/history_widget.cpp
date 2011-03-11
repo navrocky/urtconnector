@@ -1,26 +1,26 @@
+#include "history_widget.h"
+
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QHeaderView>
 #include <QAction>
 
-#include <algorithm>
 #include <boost/bind.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/iterator/iterator_facade.hpp>
 
 #include <common/qt_syslog.h>
 #include <common/server_list.h>
 #include <common/item_view_dblclick_action_link.h>
 #include <common/tools.h>
+#include <common/tree_smart_updater.h>
+
 #include <tabs/status_item_delegate.h>
 #include <tabs/common_item_tags.h>
 #include <tabs/status_item_delegate.h>
+#include "../server_options_dialog.h"
 #include "history.h"
 
 // needed for status_item_delegate
 #include "server_list_widget.h"
-
-#include "history_widget.h"
 
 SYSLOG_MODULE(history_widget)
 
@@ -48,140 +48,6 @@ public:
     }
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// history_widget
-
-history_widget::history_widget(history_p history,
-                               const tab_context& ctx,
-                               QWidget *parent)
-: filtered_tab(tab_settings_p(new filtered_tab_settings("history_tab")), ctx, parent)
-, history_(history)
-, group_mode_(true)
-, item_count_(0)
-, visible_item_count_(0)
-, update_contents_pended_(false)
-{
-    setWindowTitle(tr("History"));
-    setWindowIcon(QIcon("icons:history.png"));
-
-    remove_selected_action_ = new QAction(QIcon("icons:remove.png"), tr("Remove selected record"), this);
-    connect(remove_selected_action_, SIGNAL(triggered()), SLOT(delete_selected()));
-
-    remove_all_action_ = new QAction(QIcon("icons:edit-clear.png"), tr("Clear history"), this);
-    connect(remove_all_action_, SIGNAL(triggered()), SLOT(clear_all()));
-    
-    tree_ = new QTreeWidget(this);
-    setCentralWidget(tree_);
-//     connect(p_->ui.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
-
-    QTreeWidgetItem* it = tree_->headerItem();
-    it->setText(0, tr("Server name"));
-    it->setText(1, tr("Status"));
-    it->setText(2, tr("Date and time"));
-    it->setText(3, tr("Address"));
-    it->setText(4, tr("Password"));
-    it->setText(5, tr("Player name"));
-
-    QHeaderView* hdr = tree_->header();
-    hdr->resizeSection(0, 300);
-    hdr->resizeSection(1, 80);
-    hdr->resizeSection(2, 200);
-
-    tree_->setItemDelegateForColumn(1, new status_item_delegate(server_list(), tree_));
-    connect(history.get(), SIGNAL(changed()), SLOT(update_contents()));
-    connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(do_selection_change()));
-
-    addAction(remove_selected_action_);
-    addAction(remove_all_action_);
-
-    tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
-    tree_->addAction(context().connect_action());
-    add_separator_action(tree_);
-    tree_->addAction(remove_selected_action_);
-    tree_->addAction(remove_all_action_);
-
-    new item_view_dblclick_action_link(this, tree_, ctx.connect_action());
-
-    tree_->setSortingEnabled(true);
-
-    update_contents();
-}
-
-void history_widget::set_group_mode(bool val)
-{
-    if (group_mode_ == val)
-        return;
-    group_mode_ = val;
-    tree_->clear();
-    update_contents();
-}
-
-void history_widget::update_caption()
-{
-    QString num;
-    if (item_count_ > 0)
-        num = QString(" (%1)").arg(item_count_);
-    setWindowTitle(tr("History%1").arg(num));
-}
-
-void history_widget::showEvent(QShowEvent* event)
-{
-    filtered_tab::showEvent(event);
-    if (update_contents_pended_)
-    {
-        update_contents_pended_ = false;
-        update_contents();
-    }
-}
-
-//template <typename Item>
-//QTreeWidgetItem* find_item(QTreeWidget* tree, QTreeWidgetItem* parent_item,
-//                           int role, const Item& item)
-//{
-//    QTreeWidgetItem* res = 0;
-//    if (parent_item)
-//    {
-//        for (int i = 0; i < parent_item->childCount(); ++i)
-//        {
-//            res = parent_item->child(i);
-//            const Item& it = res->data(0, role).value<Item>();
-//            if (it == item)
-//                return res;
-//        }
-//    } else
-//    {
-//        for (int i = 0; i < tree->topLevelItemCount(); ++i)
-//        {
-//            res = tree->topLevelItem(i);
-//            const Item& it = res->data(0, role).value<Item>();
-//            if (it == item)
-//                return res;
-//        }
-//    }
-//    return 0;
-//}
-
-struct std_adapter
-{
-    template <typename Item>
-    QTreeWidgetItem* create_item(QTreeWidget* tree, QTreeWidgetItem* parent_item,
-        const Item& item, int role) const
-    {
-        QTreeWidgetItem* res;
-        if (parent_item)
-            res = new QTreeWidgetItem(parent_item);
-        else
-            res = new QTreeWidgetItem(tree);
-        res->setData(0, role, QVariant::fromValue(item));
-        return res;
-    }
-
-    void remove_item(QTreeWidgetItem* item) const
-    {
-        delete item;
-    }
-};
-
 struct history_adapter
 {
     template <typename Item>
@@ -199,159 +65,113 @@ struct history_adapter
     }
 };
 
+////////////////////////////////////////////////////////////////////////////////
+// history_widget
 
-//metaclass for checking if class has find functionm with Arg argument and Ret result type
-template<typename T, typename Ret, typename Arg> struct class_has_find
+history_widget::history_widget(history_p history,
+                               const tab_context& ctx,
+                               QWidget *parent)
+: filtered_tab(tab_settings_p(new filtered_tab_settings("history_tab")), ctx, parent)
+, history_(history)
+, group_mode_(true)
+, item_count_(0)
+, visible_item_count_(0)
+, update_contents_pended_(false)
+, caption_(this, tr("History"))
 {
-    typedef char 	yes_type;
-    typedef int 	no_type;
+    setWindowIcon(QIcon("icons:history.png"));
     
-    template<typename U, Ret (U::*fn)(Arg) const> struct Checker
-    { typedef yes_type result; };
+    add_bookmark_action_ = new QAction(QIcon("icons:bookmarks.png"), tr("Add to favorites"), this);
+    add_bookmark_action_->setToolTip(tr("Add selected server to favorites list"));
+    connect(add_bookmark_action_, SIGNAL(triggered()), SLOT(add_to_favorites()));
 
-    template<typename U> static typename Checker<U, &U::find>::result has_member(U*);
-    static no_type has_member(...);
+    remove_selected_action_ = new QAction(QIcon("icons:remove.png"), tr("Remove selected record"), this);
+    connect(remove_selected_action_, SIGNAL(triggered()), SLOT(delete_selected()));
 
-    static const int value = sizeof(has_member((T*)NULL)) == 1 ? 1 : 0;      
-};
+    remove_all_action_ = new QAction(QIcon("icons:edit-clear.png"), tr("Clear history"), this);
+    connect(remove_all_action_, SIGNAL(triggered()), SLOT(clear_all()));
+    
+    tree_ = new QTreeWidget(this);
+    setCentralWidget(tree_);
 
-template <typename T>
-struct get_value_type{
-    typedef typename T::value_type type;
-};
+    QTreeWidgetItem* it = tree_->headerItem();
+    it->setText(0, tr("Server name"));
+    it->setText(1, tr("Status"));
+    it->setText(2, tr("Date and time"));
+    it->setText(3, tr("Address"));
+    it->setText(4, tr("Password"));
+    it->setText(5, tr("Player name"));
 
-template <typename T, typename U>
-struct get_value_type< QMap<T, U> >{
-    typedef U type;
-};
+    QHeaderView* hdr = tree_->header();
+    hdr->resizeSection(0, 300);
+    hdr->resizeSection(1, 80);
+    hdr->resizeSection(2, 150);
+    hdr->resizeSection(3, 200);
+    
+    tree_->setItemDelegateForColumn(1, new status_item_delegate(server_list(), tree_));
+    connect(history.get(), SIGNAL(changed()), SLOT(update_contents()));
+    connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(do_selection_change()));
 
-template <typename Container, typename Adapter = std_adapter>
-struct updater
+    addAction(add_bookmark_action_);
+    add_separator_action(this);
+    addAction(remove_selected_action_);
+    addAction(remove_all_action_);
+
+    tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tree_->addAction(context().connect_action());
+    tree_->addAction(add_bookmark_action_);
+    add_separator_action(tree_);
+    tree_->addAction(remove_selected_action_);
+    tree_->addAction(remove_all_action_);
+
+    new item_view_dblclick_action_link(this, tree_, ctx.connect_action());
+
+    tree_->setSortingEnabled(true);
+    tree_->sortByColumn(2, Qt::DescendingOrder);
+    tree_->setAlternatingRowColors(true);
+    tree_->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    tree_->setUniformRowHeights(true);
+    tree_->setAllColumnsShowFocus(true);
+    tree_->setWordWrap(true);
+
+    update_contents();
+}
+
+void history_widget::set_group_mode(bool val)
 {
-    typedef typename get_value_type<Container>::type Element;
-    typedef QMap<Element, QTreeWidgetItem*> item_map_t;
+    if (group_mode_ == val)
+        return;
+    group_mode_ = val;
+    tree_->clear();
+    update_contents();
+}
 
-    static void update_tree_contents(const Container& l,
-                              int role,
-                              QTreeWidget* tree,
-                              QTreeWidgetItem* parent_item,
-                              const boost::function<void (QTreeWidgetItem*)>& update_item,
-                              item_map_t& items,
-                              const Adapter& adapter = Adapter())
+void history_widget::showEvent(QShowEvent* event)
+{
+    filtered_tab::showEvent(event);
+    if (update_contents_pended_)
     {
-        // who appeared ?
-        foreach (const Element& item, l)
-        {
-            // search item
-            typename item_map_t::iterator it = items.find(item);
-            QTreeWidgetItem* ti;
-            if (it == items.end())
-            {
-                ti = adapter.create_item(tree, parent_item, item, role);
-                items[item] = ti;
-            } else
-                ti = it.value();
-            update_item(ti);
-        }
-
-        // remove old items
-        typename item_map_t::iterator it = items.begin();
-        for (; it != items.end(); ++it)
-        {
-            typename Container::const_iterator i = find(l, it.key());
-            if (i != l.end())
-                continue;
-            // can't find source element - delete tree item
-            delete it.value();
-            items.erase(it);
-        }
+        update_contents_pended_ = false;
+        update_contents();
     }
+}
 
+void history_widget::add_to_favorites()
+{
+    const server_id& id = selected_server();
+    server_bookmark bm;
+    bm.set_id(id);
+    server_info_p si = context().serv_list()->get(id);
+    if (si)
+        bm.set_name(si->name);
 
-    // using SFINAE for handling different types of container 
-    // http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error
-
-    template <typename T>
-    static typename Container::const_iterator find(
-        const T& container, const Element& element,
-        typename boost::disable_if< class_has_find<T, typename Container::const_iterator, const Element&> >::type* dummy = 0
-    )
-    {
-        return std::find(container.begin(), container.end(), element);
-    }
-
-    template <typename T>
-    static typename Container::const_iterator find(
-        const T& container, const Element& element,
-        typename boost::enable_if<class_has_find<T, typename Container::const_iterator, const Element&> >::type* dummy = 0
-        )
-    {
-        return container.find(element);
-    }
-};
-
-
-
-//struct that adapts std::map tp QMap type interfaces. class holds only refference to the std::map
-template <typename Map>
-struct map_adapter{
-    typedef typename Map::key_type key_type;
-    typedef typename Map::mapped_type mapped_type;
-    
-    typedef typename Map::mapped_type value_type;
-    
-    typedef std::map<key_type, mapped_type> RestoredMap;
-    
-    RestoredMap& map;
-    
-    map_adapter(Map& m):map(m){}
-    
-    template <class Type, class BaseIterator>
-    class adapt_iterator
-      : public boost::iterator_facade<
-	    adapt_iterator<Type, BaseIterator>
-	  , Type
-	  , boost::forward_traversal_tag
-	>
-    {
-      public:
-	  adapt_iterator() : it() {}
-
-	  explicit adapt_iterator(BaseIterator it) : it(it) {}
-
-	  template <class T,class I>
-	  adapt_iterator(adapt_iterator<T, I> const& other) : it(other.it) {}
-
-      private:
-	  friend class boost::iterator_core_access;
-	  template <class, class> friend class adapt_iterator;
-
-	  template <class T,class I>
-	  bool equal(adapt_iterator<T, I> const& other) const
-	  { return this->it == other.it; }
-
-	  void increment()
-	  { ++it; }
-
-	  Type& dereference() const
-	  { return it->second; }
-
-	  BaseIterator it;
-    };
-    
-    typedef adapt_iterator<value_type, typename RestoredMap::iterator > iterator;
-    typedef adapt_iterator<value_type const, typename RestoredMap::const_iterator > const_iterator;
-    
-    iterator begin() { return iterator(map.begin()); }
-    const_iterator begin() const { return const_iterator(map.begin()); }
-    
-    iterator end() { return iterator(map.end()); }
-    const_iterator end() const { return const_iterator(map.end()); }
-    
-    iterator find( const key_type& k) { return iterator(map.find(k)); }
-    const_iterator find( const key_type& k) const { return const_iterator(map.find(k)); }
-    
-};
+    server_options_dialog d(this, bm);
+    d.set_server_list(context().serv_list());
+    d.set_update_params(context().geo(), context().job_que());
+    if (d.exec() == QDialog::Rejected)
+        return;
+    context().bookmarks()->add(d.options());
+}
 
 void history_widget::update_item(QTreeWidgetItem* item)
 {
@@ -363,76 +183,73 @@ void history_widget::update_item(QTreeWidgetItem* item)
     item->setText(5, hi.player_name());
     item->setData(0, c_id_role, QVariant::fromValue(hi.id()));
     item->setData(1, c_id_role, QVariant::fromValue(hi.id()));
-//    item->setData(0, c_history_role, QVariant::fromValue(hi));
 }
 
 void history_widget::update_contents_simple()
 {
+    tree_->setRootIsDecorated(false);
     const history::history_list_t& hl = history_->list();
-
-//    QMap<int, int>::
-//    history::history_list_t::value_type
-//    std_adapter a;
-// 
     updater<history::history_list_t, history_adapter>::update_tree_contents(hl, c_history_role, tree_, 0,
         boost::bind(&history_widget::update_item, this, _1), items_map_);
-
-//     typedef QMap<int, int> my_type;
-//    typedef std::map<int, int> my_type;
-//    typedef QMap<int, QTreeWidgetItem*> my_items;
-//
-//    my_type l;
-//    my_items items;
-//
-//    typedef map_adapter<my_type> MT;
-//    MT mt(l);
-
-//     updater<my_type>::update_tree_contents(l, c_history_role, tree_, 0,
-//         boost::bind(&history_widget::update_item, this, _1), items);
-    
-//    updater<MT>::update_tree_contents(mt, c_history_role, tree_, 0,
-//        boost::bind(&history_widget::update_item, this, _1), items);
-
-
-
-//    history::history_list_t::const_reference
-
-
-
-//    const server_bookmark_list::bookmark_map_t& bms = context().bookmarks()->list();
-
-//    // who changed, appeared?
-//    foreach (const history_item& bm, hl)
-//    {
-//        const server_id& id = bm.id();
-//        server_items::iterator it2 = items_.find(id);
-//        QTreeWidgetItem* item;
-//
-//        if (it2 == items_.end())
-//        {
-//            item = new QTreeWidgetItem( tree() );
-//            item->setData( 0, c_id_role, QVariant::fromValue(id) );
-//            items_[id] = item;
-//        }
-//    }
-//
-//    // remove old items
-//    QList<server_id> to_remove;
-//    for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
-//    {
-//        const server_id& id = it->first;
-//        if ( bms.find(id) != bms.end() )
-//            continue;
-//        QTreeWidgetItem* item = it->second;
-//        delete item;
-//        items_.erase(it);
-//    }
-//
-//    update_servers_info();
 }
 
 void history_widget::update_contents_grouped()
 {
+    tree_->setRootIsDecorated(true);
+    const history::history_list_t& hl = history_->list();
+    updater<history::history_list_t, history_adapter>::update_tree_contents(hl, c_history_role, tree_, 0,
+        boost::bind(&history_widget::update_item, this, _1), items_map_);
+    
+    // find top items
+    typedef QMap<server_id, QTreeWidgetItem*> top_items_t;
+    top_items_t top_items;
+    items_map_t::iterator it = items_map_.begin();
+    for (; it != items_map_.end(); ++it)
+    {
+        const history_item& hi = it.key();
+        
+        top_items_t::iterator i = top_items.find(hi.id());
+        if (i == top_items.end())
+        {
+            top_items[hi.id()] = it.value();
+        } else
+        {
+            const history_item& hi2 = i.value()->data(0, c_history_role).value<history_item>();
+            if (hi.date_time() > hi2.date_time())
+                top_items[hi.id()] = it.value();
+        }
+    }
+    
+    // arrange top items
+    foreach (QTreeWidgetItem* item, top_items)
+    {
+        if (item->parent())
+            tree_->addTopLevelItem(item);
+    }
+    
+    // arrange nested items
+    it = items_map_.begin();
+    for (; it != items_map_.end(); ++it)
+    {
+        QTreeWidgetItem* item = it.value();
+        const history_item& hi = it.key();
+        top_items_t::iterator i = top_items.find(hi.id());
+        QTreeWidgetItem* top_item = i.value();
+        
+        LOG_DEBUG << "%1 %2", hi.id().address(), hi.date_time().toString();
+        
+        if (item != top_item && item->parent() != top_item)
+        {
+            if (item->parent())
+            {
+                item->parent()->takeChild(item->parent()->indexOfChild(item));
+            } else
+            {
+                tree_->takeTopLevelItem(tree_->indexOfTopLevelItem(item));
+            }
+            top_item->addChild(item);
+        }
+    }
 }
 
 void history_widget::update_contents()
@@ -445,64 +262,21 @@ void history_widget::update_contents()
 
     LOG_DEBUG << "Update contents";
 
-//    tree()->setUpdatesEnabled(false);
-//    tree()->setSortingEnabled(false);
+    tree_->setUpdatesEnabled(false);
+    tree_->setSortingEnabled(false);
 
-    // take id
-//    if (group_mode_)
-//        update_contents_grouped();
-//    else
+    if (group_mode_)
+        update_contents_grouped();
+    else
         update_contents_simple();
 
-//    tree()->setSortingEnabled(true);
-//    tree()->setUpdatesEnabled(true);
-
-//    tree_->clear();
-//    item_count_ = 0;
-//
-//    foreach (const history_item& item, history_->list())
-//    {
-//        addItem(item);
-//        item_count_++;
-//    }
+    tree_->setSortingEnabled(true);
+    tree_->setUpdatesEnabled(true);
+    
+    caption_.set_total_count(items_map_.size());
 
     filter_changed();
     update_actions();
-}
-
-void history_widget::addItem(const history_item& item)
-{
-    QTreeWidgetItem* item_ptr = new QTreeWidgetItem();
-
-    item_ptr->setText(0, item.server_name());
-    item_ptr->setText(2, item.date_time().toString(Qt::DefaultLocaleShortDate));
-    item_ptr->setText(3, item.id().address());
-    item_ptr->setText(4, item.password());
-    item_ptr->setText(5, item.player_name());
-    item_ptr->setData(0, c_id_role, QVariant::fromValue(item.id()));
-    item_ptr->setData(1, c_id_role, QVariant::fromValue(item.id()));
-    item_ptr->setData(0, c_history_role, QVariant::fromValue(item));
-
-    if (QTreeWidgetItem * parent = add_item(item_ptr))
-        resort(parent);
-}
-
-QTreeWidgetItem* history_widget::add_item(QTreeWidgetItem* item)
-{
-    QTreeWidgetItem* parent = find_item(item->data(0, c_id_role).value<server_id > ());
-
-    if (parent)
-    {
-        item->setData(1, c_suppress_role, true);
-        parent->insertChild(0, item);
-        return parent;
-    }
-    else
-    {
-        item->setData(1, c_suppress_role, false);
-        tree_->insertTopLevelItem(0, item);
-        return 0;
-    }
 }
 
 server_id history_widget::selected_server() const
@@ -517,10 +291,11 @@ server_id history_widget::selected_server() const
 void history_widget::filter_changed()
 {
     filtered_tab::filter_changed();
-
-    for (int i = 0; i < tree_->topLevelItemCount(); i++)
+    
+    int visible_count = 0;
+    
+    foreach (QTreeWidgetItem* item, items_map_)
     {
-        QTreeWidgetItem* item = tree_->topLevelItem(i);
         bool is_visible = true;
         if (server_list())
         {
@@ -528,22 +303,14 @@ void history_widget::filter_changed()
             if (si)
                 is_visible = filtrate(*si);
         }
+        
+        if (is_visible)
+            visible_count++;
 
         if (item->isHidden() != !is_visible)
             item->setHidden(!is_visible);
     }
-    update_caption();
-}
-
-QTreeWidgetItem* history_widget::find_item(const server_id& id) const
-{
-    for (int i = 0; i < tree_->topLevelItemCount(); ++i)
-    {
-        QTreeWidgetItem* item = tree_->topLevelItem(i);
-        if (item->data(0, c_id_role).value<server_id > () == id)
-            return item;
-    }
-    return 0;
+    caption_.set_visible_count(visible_count);
 }
 
 void history_widget::do_selection_change()
@@ -552,27 +319,9 @@ void history_widget::do_selection_change()
     update_actions();
 }
 
-void history_widget::resort(QTreeWidgetItem* item)
-{
-    int index = tree_->indexOfTopLevelItem(item);
-    if (index == -1)
-        return;
-
-    item = tree_->takeTopLevelItem(index);
-
-    QList<QTreeWidgetItem*> chlds = item->takeChildren();
-
-    //item itself is under resorting too!
-    chlds << item;
-
-    std::sort(chlds.begin(), chlds.end(),
-              boost::bind(&QTreeWidgetItem::text, _1, 0) < boost::bind(&QTreeWidgetItem::text, _2, 0));
-
-    std::for_each(chlds.begin(), chlds.end(), boost::bind(&history_widget::add_item, this, _1));
-}
-
 void history_widget::update_actions()
 {
+    add_bookmark_action_->setEnabled(!selected_server().is_empty());
     remove_selected_action_->setEnabled(!selected_server().is_empty());
     remove_all_action_->setEnabled(history_->list().size() > 0);
 }

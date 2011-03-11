@@ -97,6 +97,8 @@ src/common/iconned_dock_style.h -text
 src/common/implicit_sharing.h -text
 src/common/item_view_dblclick_action_link.cpp -text
 src/common/item_view_dblclick_action_link.h -text
+src/common/list_caption_updater.cpp -text
+src/common/list_caption_updater.h -text
 src/common/main_tab_widget.cpp -text
 src/common/main_tab_widget.h -text
 src/common/player_info.cpp -text
@@ -123,6 +125,7 @@ src/common/string_escape.cpp -text
 src/common/string_escape.h -text
 src/common/tools.cpp -text
 src/common/tools.h -text
+src/common/tree_smart_updater.h -text
 src/config.h.in -text
 src/database/CMakeLists.txt -text
 src/database/simple_database.cpp -text
