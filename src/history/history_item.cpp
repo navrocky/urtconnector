@@ -22,5 +22,9 @@ bool history_item::operator==(const history_item& other) const
 
 bool history_item::operator<(const history_item& other) const
 {
-    return ( d->id_ < other.d->id_ ) && ( d->date_time_ < other.d->date_time_ );
+    if (d->id_ == other.d->id_)
+        return ( d->date_time_ < other.d->date_time_ );
+    else
+        return ( d->id_ < other.d->id_ );
+//    return /*( d->id_ < other.d->id_ ) &&*/ ( d->date_time_ < other.d->date_time_ );
 }

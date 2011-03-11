@@ -28,6 +28,29 @@ Q_DECLARE_METATYPE(history_item);
 
 const int c_history_role = Qt::UserRole + 12;
 
+// tree item needed to custom sort by date
+class history_tree_item : public QTreeWidgetItem
+{
+public:
+    history_tree_item(QTreeWidget *view)
+    : QTreeWidgetItem(view)
+    {}
+
+    bool operator<(const QTreeWidgetItem & other) const
+    {
+        if (treeWidget()->sortColumn() == 2)
+        {
+            const history_item& hi1 = data(0, c_history_role).value<history_item>();
+            const history_item& hi2 = other.data(0, c_history_role).value<history_item>();
+            return hi1.date_time() < hi2.date_time();
+        } else
+            return QTreeWidgetItem::operator<(other);
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// history_widget
+
 history_widget::history_widget(history_p history,
                                const tab_context& ctx,
                                QWidget *parent)
@@ -41,7 +64,7 @@ history_widget::history_widget(history_p history,
     setWindowTitle(tr("History"));
     setWindowIcon(QIcon("icons:history.png"));
 
-    remove_selected_action_ = new QAction(QIcon("icons:remove.png"), tr("Remove selecter record"), this);
+    remove_selected_action_ = new QAction(QIcon("icons:remove.png"), tr("Remove selected record"), this);
     connect(remove_selected_action_, SIGNAL(triggered()), SLOT(delete_selected()));
 
     remove_all_action_ = new QAction(QIcon("icons:edit-clear.png"), tr("Clear history"), this);
@@ -69,13 +92,17 @@ history_widget::history_widget(history_p history,
     connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(do_selection_change()));
 
     addAction(remove_selected_action_);
+    addAction(remove_all_action_);
 
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(context().connect_action());
     add_separator_action(tree_);
     tree_->addAction(remove_selected_action_);
+    tree_->addAction(remove_all_action_);
 
     new item_view_dblclick_action_link(this, tree_, ctx.connect_action());
+
+    tree_->setSortingEnabled(true);
 
     update_contents();
 }
@@ -155,6 +182,23 @@ struct std_adapter
     }
 };
 
+struct history_adapter
+{
+    template <typename Item>
+    QTreeWidgetItem* create_item(QTreeWidget* tree, QTreeWidgetItem* parent_item,
+        const Item& item, int role) const
+    {
+        QTreeWidgetItem* res = new history_tree_item(tree);
+        res->setData(0, role, QVariant::fromValue(item));
+        return res;
+    }
+
+    void remove_item(QTreeWidgetItem* item) const
+    {
+        delete item;
+    }
+};
+
 
 //metaclass for checking if class has find functionm with Arg argument and Ret result type
 template<typename T, typename Ret, typename Arg> struct class_has_find
@@ -196,7 +240,6 @@ struct updater
                               const Adapter& adapter = Adapter())
     {
         // who appeared ?
-
         foreach (const Element& item, l)
         {
             // search item
@@ -215,16 +258,13 @@ struct updater
         typename item_map_t::iterator it = items.begin();
         for (; it != items.end(); ++it)
         {
-//            typename List::const_iterator i =
-           find(l, it.key());
-//            std::find( l.begin(), l.end(),  )
-//            l.find(it.key());
+            typename Container::const_iterator i = find(l, it.key());
+            if (i != l.end())
+                continue;
+            // can't find source element - delete tree item
+            delete it.value();
+            items.erase(it);
         }
-//        foreach (typename List::const_reference , )
-        
-
-
-
     }
 
 
@@ -313,9 +353,17 @@ struct map_adapter{
     
 };
 
-void history_widget::update_item(QTreeWidgetItem*)
+void history_widget::update_item(QTreeWidgetItem* item)
 {
-    
+    const history_item& hi = item->data(0, c_history_role).value<history_item>();
+    item->setText(0, hi.server_name());
+    item->setText(2, hi.date_time().toString(Qt::DefaultLocaleShortDate));
+    item->setText(3, hi.id().address());
+    item->setText(4, hi.password());
+    item->setText(5, hi.player_name());
+    item->setData(0, c_id_role, QVariant::fromValue(hi.id()));
+    item->setData(1, c_id_role, QVariant::fromValue(hi.id()));
+//    item->setData(0, c_history_role, QVariant::fromValue(hi));
 }
 
 void history_widget::update_contents_simple()
@@ -326,24 +374,24 @@ void history_widget::update_contents_simple()
 //    history::history_list_t::value_type
 //    std_adapter a;
 // 
-    updater<history::history_list_t>::update_tree_contents(hl, c_history_role, tree_, 0,
+    updater<history::history_list_t, history_adapter>::update_tree_contents(hl, c_history_role, tree_, 0,
         boost::bind(&history_widget::update_item, this, _1), items_map_);
 
 //     typedef QMap<int, int> my_type;
-    typedef std::map<int, int> my_type;
-    typedef QMap<int, QTreeWidgetItem*> my_items;
-
-    my_type l;
-    my_items items;
-
-    typedef map_adapter<my_type> MT;
-    MT mt(l);
+//    typedef std::map<int, int> my_type;
+//    typedef QMap<int, QTreeWidgetItem*> my_items;
+//
+//    my_type l;
+//    my_items items;
+//
+//    typedef map_adapter<my_type> MT;
+//    MT mt(l);
 
 //     updater<my_type>::update_tree_contents(l, c_history_role, tree_, 0,
 //         boost::bind(&history_widget::update_item, this, _1), items);
     
-    updater<MT>::update_tree_contents(mt, c_history_role, tree_, 0,
-        boost::bind(&history_widget::update_item, this, _1), items);
+//    updater<MT>::update_tree_contents(mt, c_history_role, tree_, 0,
+//        boost::bind(&history_widget::update_item, this, _1), items);
 
 
 
@@ -401,31 +449,22 @@ void history_widget::update_contents()
 //    tree()->setSortingEnabled(false);
 
     // take id
-    if (group_mode_)
-        update_contents_grouped();
-    else
+//    if (group_mode_)
+//        update_contents_grouped();
+//    else
         update_contents_simple();
-
-
 
 //    tree()->setSortingEnabled(true);
 //    tree()->setUpdatesEnabled(true);
 
-
-
-
-
-
-
-
-    tree_->clear();
-    item_count_ = 0;
-
-    foreach (const history_item& item, history_->list())
-    {
-        addItem(item);
-        item_count_++;
-    }
+//    tree_->clear();
+//    item_count_ = 0;
+//
+//    foreach (const history_item& item, history_->list())
+//    {
+//        addItem(item);
+//        item_count_++;
+//    }
 
     filter_changed();
     update_actions();
