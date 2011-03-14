@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
-    <height>280</height>
+    <width>428</width>
+    <height>316</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -162,6 +162,13 @@
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="update_server_check">
+     <property name="text">
+      <string>Check server status before connect</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer_3">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -175,9 +182,6 @@
     </spacer>
    </item>
   </layout>
-  <zorder>groupBox_2</zorder>
-  <zorder>advCmdBox</zorder>
-  <zorder>verticalSpacer_3</zorder>
  </widget>
  <resources>
   <include location="../images.qrc"/>

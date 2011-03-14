@@ -1,5 +1,4 @@
-
-#include <iostream>
+#include "launch_settings_form.h"
 
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -11,9 +10,9 @@
 #include "app_options.h"
 #include <launcher/launcher.h>
 #include <launcher/tools.h>
+#include <common/scoped_tools.h>
 
 #include "ui_launch_settings_form.h"
-#include "launch_settings_form.h"
 
 
 struct launch_settings_form::Pimpl{
@@ -21,8 +20,9 @@ struct launch_settings_form::Pimpl{
 };
 
 launch_settings_form::launch_settings_form(QWidget* parent, Qt::WindowFlags f)
-    : preferences_widget(parent, "Launch")
-    , p_( new Pimpl )
+: preferences_widget(parent, tr("Launch"))
+, p_( new Pimpl )
+, lock_change_(false)
 {
     p_->ui.setupUi(this);
 
@@ -33,6 +33,12 @@ launch_settings_form::launch_settings_form(QWidget* parent, Qt::WindowFlags f)
     connect( p_->ui.insertFileButton,   SIGNAL( clicked() ),                    this, SLOT( insert_file_path() ));
     connect( p_->ui.advCmdEdit,         SIGNAL( textChanged(const QString&)),   this, SLOT( adv_text_changed(const QString&) ) );
     connect( p_->ui.x_check_button,     SIGNAL( clicked() ),                    this, SLOT( x_check() ));
+
+    connect( p_->ui.binary_edit,        SIGNAL( textChanged(const QString &) ), this, SLOT( int_changed() ) );
+    connect( p_->ui.advCmdBox,          SIGNAL( clicked(bool) ),                this, SLOT( int_changed() ) );
+    connect( p_->ui.advCmdEdit,         SIGNAL( textChanged(const QString&)),   this, SLOT( int_changed() ) );
+    connect( p_->ui.separate_x_check,   SIGNAL( stateChanged(int)),             this, SLOT( int_changed() ) );
+    connect( p_->ui.update_server_check,SIGNAL( stateChanged(int)),             this, SLOT( int_changed() ) );
 
     p_->ui.adv_cmd_help_label->setText(tr(
         "<b>%bin%</b> - UrbanTerror binary path<br>"
@@ -49,41 +55,22 @@ launch_settings_form::launch_settings_form(QWidget* parent, Qt::WindowFlags f)
     
 }
 
-launch_settings_form::~launch_settings_form()
-{}
-
-void launch_settings_form::set_connections(bool b)
+void launch_settings_form::int_changed()
 {
-    if (b) {
-        connect( p_->ui.binary_edit,        SIGNAL( textChanged(const QString &) ), this, SIGNAL( changed() ) );
-    
-        connect( p_->ui.advCmdBox,          SIGNAL( clicked(bool) ),                this, SIGNAL( changed() ) );
-        connect( p_->ui.advCmdEdit,         SIGNAL( textChanged(const QString&)),   this, SIGNAL( changed() ) );
-
-        connect( p_->ui.separate_x_check,   SIGNAL( stateChanged(int)),             this, SIGNAL( changed() ) );
-    }
-    else {
-        disconnect( p_->ui.binary_edit,        SIGNAL( textChanged(const QString &) ), this, SIGNAL( changed() ) );
-
-        disconnect( p_->ui.advCmdBox,          SIGNAL( clicked(bool) ),                this, SIGNAL( changed() ) );
-        disconnect( p_->ui.advCmdEdit,         SIGNAL( textChanged(const QString&)),   this, SIGNAL( changed() ) );
-
-        disconnect( p_->ui.separate_x_check,   SIGNAL( stateChanged(int)),             this, SIGNAL( changed() ) );
-    }
+    if (!lock_change_)
+        emit changed();
 }
-
 
 void launch_settings_form::update_preferences()
 {
-    set_connections(false);
+    scoped_value_change<bool> s(lock_change_, true, false);
 
     app_settings as;
     p_->ui.binary_edit->setText( as.binary_path() );
     p_->ui.advCmdEdit->setText( as.adv_cmd_line() );
     p_->ui.advCmdBox->setChecked( as.use_adv_cmd_line() );
     p_->ui.separate_x_check->setChecked( as.separate_x() );
-
-    set_connections(true);
+    p_->ui.update_server_check->setChecked( as.update_before_connect() );
 }
 
 
@@ -94,6 +81,7 @@ void launch_settings_form::accept()
     as.set_use_adv_cmd_line( p_->ui.advCmdBox->isChecked() );
     as.set_adv_cmd_line( p_->ui.advCmdEdit->text() );
     as.set_separate_x( p_->ui.separate_x_check->isChecked() );
+    as.set_update_before_connect(p_->ui.update_server_check->isChecked());
     
     update_preferences();
 }
@@ -109,6 +97,8 @@ void launch_settings_form::reset_defaults()
 {
     p_->ui.binary_edit->setText("urbanterror");
     p_->ui.advCmdEdit->clear();
+    p_->ui.advCmdBox->setChecked(false);
+    p_->ui.update_server_check->setChecked(true);
 
     accept();
 }

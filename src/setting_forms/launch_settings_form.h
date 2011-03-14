@@ -10,27 +10,19 @@ class launch_settings_form: public preferences_widget {
 Q_OBJECT
 public:
     launch_settings_form(QWidget* parent = 0, Qt::WindowFlags f = 0);
-    virtual ~launch_settings_form();
 
-private Q_SLOTS:
-
-    ///Этот слот вызывается перед показом виджета и загрузка всех настроек должна поисходить здесь
+public slots:
     virtual void update_preferences();
-
-    ///Этот слот вызывается когда изменения приняты
     virtual void accept();
-
-    ///Этот слот вызывается когда изменения отклонены
     virtual void reject();
-
-    ///Этот слот вызывается чтоб узнановить значения по умолчанию
     virtual void reset_defaults();
 
-private Q_SLOTS:
+private slots:
     void choose_binary();
     void insert_file_path();
     void adv_text_changed(const QString&);
     void x_check();
+    void int_changed();
 
 private:
     void set_connections( bool b );
@@ -38,7 +30,7 @@ private:
 private:
     struct Pimpl;
     std::auto_ptr<Pimpl> p_;
-
+    bool lock_change_;
 };
 
 
