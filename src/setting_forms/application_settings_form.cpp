@@ -49,9 +49,6 @@ void application_settings_form::set_connections(bool b)
         connect( p_->ui.clip_host_spin,           SIGNAL( valueChanged(int) ),          this, SIGNAL( changed() ) );
         connect( p_->ui.clip_port_spin,           SIGNAL( valueChanged(int) ),          this, SIGNAL( changed() ) );
         connect( p_->ui.clip_password_spin,       SIGNAL( valueChanged(int) ),          this, SIGNAL( changed() ) );
-
-        connect( p_->ui.group_keep_history,       SIGNAL( clicked(bool) ),              this, SIGNAL( changed() ) );
-        connect( p_->ui.number_in_history_spin,   SIGNAL( valueChanged(int) ),          this, SIGNAL( changed() ) );
     }
     else {
         disconnect( p_->ui.hide_mainwindow_check,    SIGNAL(stateChanged(int)),            this, SIGNAL( changed() ) );
@@ -72,9 +69,6 @@ void application_settings_form::set_connections(bool b)
         disconnect( p_->ui.clip_host_spin,           SIGNAL( valueChanged(int) ),          this, SIGNAL( changed() ) );
         disconnect( p_->ui.clip_port_spin,           SIGNAL( valueChanged(int) ),          this, SIGNAL( changed() ) );
         disconnect( p_->ui.clip_password_spin,       SIGNAL( valueChanged(int) ),          this, SIGNAL( changed() ) );
-
-        disconnect( p_->ui.group_keep_history,       SIGNAL( clicked(bool) ),              this, SIGNAL( changed() ) );
-        disconnect( p_->ui.number_in_history_spin,   SIGNAL( valueChanged(int) ),          this, SIGNAL( changed() ) );
     }
 }
 
@@ -102,9 +96,6 @@ void application_settings_form::update_preferences()
     p_->ui.clip_port_spin->setValue( cs.port() );
     p_->ui.clip_password_spin->setValue( cs.password() );
 
-    p_->ui.group_keep_history->setChecked( as.keep_history() );
-    p_->ui.number_in_history_spin->setValue( as.number_in_history() );
-
     set_connections(true);
 }
 
@@ -129,9 +120,6 @@ void application_settings_form::accept()
     cs.set_host( p_->ui.clip_host_spin->value() );
     cs.set_port( p_->ui.clip_port_spin->value() );
     cs.set_password( p_->ui.clip_password_spin->value() );
-
-    as.set_keep_history( p_->ui.group_keep_history->isChecked() );
-    as.set_number_in_history( p_->ui.number_in_history_spin->value() );
 }
 
 void application_settings_form::reject()

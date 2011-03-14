@@ -143,6 +143,7 @@ void history_widget::set_group_mode(bool val)
         return;
     group_mode_ = val;
     tree_->clear();
+    items_map_.clear();
     update_contents();
 }
 
@@ -236,17 +237,12 @@ void history_widget::update_contents_grouped()
         top_items_t::iterator i = top_items.find(hi.id());
         QTreeWidgetItem* top_item = i.value();
         
-        LOG_DEBUG << "%1 %2", hi.id().address(), hi.date_time().toString();
-        
         if (item != top_item && item->parent() != top_item)
         {
             if (item->parent())
-            {
                 item->parent()->takeChild(item->parent()->indexOfChild(item));
-            } else
-            {
+            else
                 tree_->takeTopLevelItem(tree_->indexOfTopLevelItem(item));
-            }
             top_item->addChild(item);
         }
     }

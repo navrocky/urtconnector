@@ -7,25 +7,28 @@ set(HEADERS
     history.h
     history_item.h
     history_widget.h
+    history_settings_form.h
 )
 
 set(MOC_HEADERS
     history_widget.h
     history.h
+    history_settings_form.h
 )
 
 set(SOURCES
     history.cpp
     history_item.cpp
     history_widget.cpp
+    history_settings_form.cpp
 )
 
 set(IFACES
+    history_settings_form.ui
 )
 
 set(RESOURCES
 )
-
 
 qt4_add_resources(SOURCES ${RESOURCES})
 qt4_wrap_cpp(SOURCES ${MOC_HEADERS})

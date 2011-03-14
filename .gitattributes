@@ -411,6 +411,9 @@ src/history/history.cpp -text
 src/history/history.h -text
 src/history/history_item.cpp -text
 src/history/history_item.h -text
+src/history/history_settings_form.cpp -text
+src/history/history_settings_form.h -text
+src/history/history_settings_form.ui -text
 src/history/history_widget.cpp -text
 src/history/history_widget.h -text
 src/icons/add.png -text

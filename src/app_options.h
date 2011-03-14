@@ -56,6 +56,9 @@ public:
     int days_in_history() const;
     void set_days_in_history(int days);
 
+    bool history_grouping() const;
+    void set_history_grouping(bool);
+
     /*! Update server info before connect to */
     bool update_before_connect() const;
     void set_update_before_connect(bool b);

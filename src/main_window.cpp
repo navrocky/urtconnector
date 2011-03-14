@@ -34,6 +34,7 @@
 #include <launcher/launcher.h>
 #include <launcher/tools.h>
 #include <history/history.h>
+#include <history/history_settings_form.h>
 #include <jobs/job_monitor.h>
 #include <rcon/rcon.h>
 
@@ -255,12 +256,14 @@ void main_window::show_options()
     d.setWindowIcon(QIcon("icons:configure.png"));
     d.add_item( new launch_settings_form() );
     d.add_item( new application_settings_form() );
+    d.add_item( new history_settings_form() );
     d.add_item( new rcon_settings_form() );
     d.add_item( new anticheat::settings_widget() );
 
     d.exec();
     
     update_geoip_database();
+    history_list_->set_group_mode(as.history_grouping());
 }
 
 void main_window::update_geoip_database()
@@ -305,6 +308,8 @@ void main_window::load_all_at_start()
     load_server_list("all_state", all_sl_);
 
     update_geoip_database();
+    app_settings as;
+    history_list_->set_group_mode(as.history_grouping());
 }
 
 void main_window::save_state_at_exit()

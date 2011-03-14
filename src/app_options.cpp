@@ -96,7 +96,7 @@ bool app_settings::set_keep_history(bool b)
 
 int app_settings::number_in_history() const
 {
-    return part()->value("number_in_history", 30).toInt();
+    return part()->value("number_in_history", 900).toInt();
 }
 
 void app_settings::set_number_in_history(int lines)
@@ -112,6 +112,16 @@ int app_settings::days_in_history() const
 void app_settings::set_days_in_history(int days)
 {
     part()->setValue("days_in_history", days);
+}
+
+bool app_settings::history_grouping() const
+{
+    return part()->value("history_grouping", true).toBool();
+}
+
+void app_settings::set_history_grouping(bool val)
+{
+    part()->setValue("history_grouping", val);
 }
 
 bool app_settings::update_before_connect() const
