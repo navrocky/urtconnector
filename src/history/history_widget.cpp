@@ -16,6 +16,9 @@
 #include <tabs/status_item_delegate.h>
 #include <tabs/common_item_tags.h>
 #include <tabs/status_item_delegate.h>
+#include <jobs/job_queue.h>
+#include <jobs/job.h>
+#include "../job_update_selected.h"
 #include "../server_options_dialog.h"
 #include "history.h"
 
@@ -90,6 +93,12 @@ history_widget::history_widget(history_p history,
 
     remove_all_action_ = new QAction(QIcon("icons:edit-clear.png"), tr("Clear history"), this);
     connect(remove_all_action_, SIGNAL(triggered()), SLOT(clear_all()));
+
+    refresh_selected_ = new QAction(QIcon("icons:view-refresh.png"), tr("Refresh selected"), this);
+    connect(refresh_selected_, SIGNAL(triggered()), SLOT(refresh_selected()));
+
+    refresh_all_ = new QAction(QIcon("icons:download.png"), tr("Refresh all"), this);
+    connect(refresh_all_, SIGNAL(triggered()), SLOT(refresh_all()));
     
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
@@ -114,12 +123,18 @@ history_widget::history_widget(history_p history,
 
     addAction(add_bookmark_action_);
     add_separator_action(this);
+    addAction(refresh_selected_);
+    addAction(refresh_all_);
+    add_separator_action(this);
     addAction(remove_selected_action_);
     addAction(remove_all_action_);
 
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(context().connect_action());
     tree_->addAction(add_bookmark_action_);
+    add_separator_action(tree_);
+    tree_->addAction(refresh_selected_);
+    tree_->addAction(refresh_all_);
     add_separator_action(tree_);
     tree_->addAction(remove_selected_action_);
     tree_->addAction(remove_all_action_);
@@ -320,6 +335,8 @@ void history_widget::update_actions()
     add_bookmark_action_->setEnabled(!selected_server().is_empty());
     remove_selected_action_->setEnabled(!selected_server().is_empty());
     remove_all_action_->setEnabled(history_->list().size() > 0);
+    refresh_selected_->setEnabled(!selected_server().is_empty());
+    refresh_all_->setEnabled(history_->list().size() > 0);
 }
 
 void history_widget::clear_all()
@@ -335,5 +352,31 @@ void history_widget::delete_selected()
         const history_item& hi = it->data(0, c_history_role).value<history_item>();
         history_->remove(hi);
     }
+}
+
+void history_widget::refresh_selected()
+{
+    server_id_list res;
+    foreach (QTreeWidgetItem* item, tree_->selectedItems())
+    {
+        res.push_back(item->data(0, c_id_role).value<server_id>());
+    }
+    context().job_que()->add_job(job_p(
+            new job_update_selected(res,
+                                    context().serv_list(),
+                                    *context().geo())));
+}
+
+void history_widget::refresh_all()
+{
+    server_id_list l;
+
+    foreach(const history_item& hi, history_->list())
+    {
+        l.push_back(hi.id());
+    }
+
+    context().job_que()->add_job(job_p(new job_update_selected(l,
+        context().serv_list(), *context().geo())));
 }
 

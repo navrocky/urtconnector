@@ -39,6 +39,8 @@ private slots:
     void update_contents();
     void do_selection_change();
     void add_to_favorites();
+    void refresh_selected();
+    void refresh_all();
 
 private:
     typedef QMap<history_item, QTreeWidgetItem*> items_map_t;
@@ -58,6 +60,8 @@ private:
     QAction* add_bookmark_action_;
     QAction* remove_selected_action_;
     QAction* remove_all_action_;
+    QAction* refresh_selected_;
+    QAction* refresh_all_;
     list_caption_updater caption_;
 };
 
