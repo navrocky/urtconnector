@@ -140,13 +140,14 @@ void bookmark_tab::update_contents()
     }
 
     // remove old items
-    QList<server_id> to_remove;
     for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
     {
         const server_id& id = it->first;
         if ( bms.find(id) != bms.end() )
             continue;
         QTreeWidgetItem* item = it->second;
+        if (item == cur_item)
+            cur_item = 0;
         delete item;
         items_.erase(it);
     }

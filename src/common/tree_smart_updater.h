@@ -99,7 +99,18 @@ struct updater
             if (i != l.end())
                 continue;
             // can't find source element - delete tree item
-            delete it.value();
+            QTreeWidgetItem* item = it.value();
+
+            // reparent childs
+            if (item->childCount() > 0)
+            {
+                if (item->parent())
+                    item->parent()->addChildren(item->takeChildren());
+                else
+                    tree->addTopLevelItems(item->takeChildren());
+            }
+
+            delete item;
             items.erase(it);
         }
     }
