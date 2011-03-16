@@ -764,37 +764,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/server_info.cpp" line="23"/>
         <source>Free For All</source>
-        <translation>Каждый сам за себя (FFA)</translation>
+        <translation type="unfinished">FFA</translation>
     </message>
     <message>
         <location filename="../src/server_info.cpp" line="24"/>
         <source>Team DeathMatch</source>
-        <translation>Командная игра (TDM)</translation>
+        <translation type="unfinished">TDM</translation>
     </message>
     <message>
         <location filename="../src/server_info.cpp" line="25"/>
         <source>Team Survivor</source>
-        <translation>Игра на выживание (TS)</translation>
+        <translation type="unfinished">TS</translation>
     </message>
     <message>
         <location filename="../src/server_info.cpp" line="26"/>
         <source>Follow The Leader</source>
-        <translation>Следование за лидером (FTL)</translation>
+        <translation type="unfinished">FTL</translation>
     </message>
     <message>
         <location filename="../src/server_info.cpp" line="27"/>
         <source>Capture And Hold</source>
-        <translation>Захват и удержание (CAH)</translation>
+        <translation type="unfinished">CAH</translation>
     </message>
     <message>
         <location filename="../src/server_info.cpp" line="28"/>
         <source>Capture The Flag</source>
-        <translation>Захват флага (CTF)</translation>
+        <translation type="unfinished">CTF</translation>
     </message>
     <message>
         <location filename="../src/server_info.cpp" line="29"/>
         <source>Bomb Mode</source>
-        <translation>Бомба (Bomb)</translation>
+        <translation type="unfinished">Bomb</translation>
     </message>
     <message>
         <location filename="../src/server_info.cpp" line="31"/>
