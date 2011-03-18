@@ -1,7 +1,8 @@
 #ifndef FRIEND_LIST_WIDGET_H
 #define FRIEND_LIST_WIDGET_H
 
-//#include <common/server_id.h>
+#include <common/server_id.h>
+#include <common/list_caption_updater.h>
 #include <tabs/main_tab.h>
 #include <filters/pointers.h>
 //#include "pointers.h"
@@ -20,7 +21,7 @@ public:
 //    void update_history();
 //    int num_rows() const;
 
-//    virtual server_id selected_server() const;
+    server_id selected_server() const;
 
 
 //    public
@@ -51,6 +52,7 @@ private:
 
     QTreeWidget* tree_;
     friend_list* friends_;
+    list_caption_updater caption_;
 };
 
 #endif // FRIEND_LIST_WIDGET_H

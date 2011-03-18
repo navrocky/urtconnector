@@ -1,3 +1,5 @@
+#include "friend_list_widget.h"
+
 #include <QTreeWidget>
 #include <QHeaderView>
 
@@ -5,7 +7,6 @@
 //#include "filters/filter_list.h"
 //#include "filters/filter.h"
 //#include "server_list_widget.h"
-#include "friend_list_widget.h"
 //#include "ui_friend_list_widget.h"
 
 //const int c_id_role = Qt::UserRole + 1;
@@ -19,26 +20,38 @@
 
 
 friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, QWidget *parent)
-: main_tab("friend_list_widget", ctx, parent)
+: main_tab(tab_settings_p(new tab_settings("friend_list")), ctx, parent)
 , friends_(fl)
+, caption_(this, tr("Friends"))
 {
-//    init_filter_toolbar();
+    setWindowIcon(QIcon("icons:friends.png"));
 
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
 
-    QHeaderView* hdr = tree_->header();
+    QTreeWidgetItem* it = tree_->headerItem();
+    it->setText(0, tr("Server name"));
+    it->setText(1, tr("Status"));
+    it->setText(2, tr("Date and time"));
+    it->setText(3, tr("Address"));
+    it->setText(4, tr("Password"));
+    it->setText(5, tr("Player name"));
 
-    hdr->resizeSection(0, 300);
-    hdr->resizeSection(1, 80);
-    hdr->resizeSection(2, 200);
 
-
-
+//    QHeaderView* hdr = tree_->header();
+//
+//    hdr->resizeSection(0, 300);
+//    hdr->resizeSection(1, 80);
+//    hdr->resizeSection(2, 200);
 
 
 
     //     connect(p_->ui.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
+}
+
+server_id friend_list_widget::selected_server() const
+{
+    return server_id();
 }
 
 void friend_list_widget::update_list()

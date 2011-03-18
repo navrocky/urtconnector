@@ -18,6 +18,7 @@
 #include <geoip/geoip.h>
 #include <filters/pointers.h>
 #include <history/history_widget.h>
+#include <friend_list/friend_list_widget.h>
 #include "clipper.h"
 
 class QTimer;
@@ -86,6 +87,7 @@ private:
     server_list_tab* all_list_;
     bookmark_tab* fav_list_;
     history_widget* history_list_;
+    friend_list_widget* friends_list_;
     
     server_list_p all_sl_;
     server_bookmark_list_p bookmarks_;

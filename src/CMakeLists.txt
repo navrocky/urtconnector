@@ -54,7 +54,7 @@ add_subdirectory(history)
 add_subdirectory(anticheat)
 add_subdirectory(database)
 add_subdirectory(launcher)
-#add_subdirectory(friend_list)
+add_subdirectory(friend_list)
 add_subdirectory(tabs)
 
 set(HEADERS
@@ -166,6 +166,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     database
     launcher
     tabs
+    friend_list
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
