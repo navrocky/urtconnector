@@ -39,7 +39,9 @@ public:
     /*! Launch string calculated from options above */
     QString launch_string(bool separate_x);
     QString launch_string();
-
+    QString launch_string(bool use_adv_cmd_line, const QString& adv_cmd_line, 
+                          const QString& binary_path, bool separate_x);
+    
     /*! Game is started */
     bool is_started() const {return proc_;}
 

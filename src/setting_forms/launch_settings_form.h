@@ -20,7 +20,7 @@ public slots:
 private slots:
     void choose_binary();
     void insert_file_path();
-    void adv_text_changed(const QString&);
+    void update_launch_string();
     void x_check();
     void int_changed();
 

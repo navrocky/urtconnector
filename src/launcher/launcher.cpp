@@ -166,11 +166,21 @@ void launcher::proc_error(QProcess::ProcessError error)
 QString launcher::launch_string(bool separate_x)
 {
     app_settings as;
+    return launch_string(as.use_adv_cmd_line(), as.adv_cmd_line(), 
+                         as.binary_path(), separate_x);
+}
+
+
+QString launcher::launch_string ( bool use_adv_cmd_line, 
+                                  const QString& adv_cmd_line, 
+                                  const QString& binary_path, 
+                                  bool separate_x )
+{
     QString res;
-    if ( as.use_adv_cmd_line() )
+    if ( use_adv_cmd_line )
     {
-        res = as.adv_cmd_line();
-        res.replace("%bin%", as.binary_path(), Qt::CaseInsensitive)
+        res = adv_cmd_line;
+        res.replace("%bin%", binary_path, Qt::CaseInsensitive)
                 .replace("%name%", user_name_, Qt::CaseInsensitive)
                 .replace("%pwd%", password_, Qt::CaseInsensitive)
                 .replace("%addr%", id_.address(), Qt::CaseInsensitive)
@@ -179,7 +189,7 @@ QString launcher::launch_string(bool separate_x)
     }
     else
     {
-        res = QString("\"%1\"").arg( as.binary_path() );
+        res = QString("\"%1\"").arg( binary_path );
         if (!user_name_.isEmpty())
             res += QString(" +name \"%1\"").arg(user_name_);
 

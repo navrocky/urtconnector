@@ -57,6 +57,7 @@ launch_settings_form::launch_settings_form(QWidget* parent, Qt::WindowFlags f)
 
 void launch_settings_form::int_changed()
 {
+    update_launch_string();
     if (!lock_change_)
         emit changed();
 }
@@ -71,8 +72,8 @@ void launch_settings_form::update_preferences()
     p_->ui.advCmdBox->setChecked( as.use_adv_cmd_line() );
     p_->ui.separate_x_check->setChecked( as.separate_x() );
     p_->ui.update_server_check->setChecked( as.update_before_connect() );
+    update_launch_string();
 }
-
 
 void launch_settings_form::accept()
 {
@@ -91,7 +92,6 @@ void launch_settings_form::reject()
 {
     update_preferences();
 }
-
 
 void launch_settings_form::reset_defaults()
 {
@@ -125,7 +125,7 @@ void launch_settings_form::insert_file_path()
     emit changed();
 }
 
-void launch_settings_form::adv_text_changed(const QString& text)
+void launch_settings_form::update_launch_string()
 {
     launcher l;
     l.set_server_id(server_id("server:12345"));
@@ -133,8 +133,13 @@ void launch_settings_form::adv_text_changed(const QString& text)
     l.set_rcon("rcon_pAsSwOrD");
     l.set_password("pAsSwOrD");
     l.set_referee("referee_pAsSwOrD");
+    
+    QString ls = l.launch_string(p_->ui.advCmdBox->isChecked(), 
+                                 p_->ui.advCmdEdit->text(),
+                                 p_->ui.binary_edit->text(), 
+                                 p_->ui.separate_x_check->isChecked() );
 
-    p_->ui.adv_cmd_preview_edit->setText( l.launch_string() );
+    p_->ui.adv_cmd_preview_edit->setText(ls);
 }
 
 namespace {
