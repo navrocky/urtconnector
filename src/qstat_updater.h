@@ -29,6 +29,10 @@ public:
 
     void clear();
 
+    /*! Clear offline items after full refresh */
+    bool clear_offline() const {return clear_offline_;}
+    void set_clear_offline(bool);
+
 signals:
     void refresh_stopped();
 
@@ -64,6 +68,7 @@ private:
     geoip gi_;
 
     QString qstat_output_;
+    bool clear_offline_;
 };
 
 #endif	/* _QSTAT_UPDATER_H */

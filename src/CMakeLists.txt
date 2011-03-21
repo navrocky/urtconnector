@@ -56,6 +56,7 @@ add_subdirectory(database)
 add_subdirectory(launcher)
 add_subdirectory(friend_list)
 add_subdirectory(tabs)
+add_subdirectory(setting_forms)
 
 set(HEADERS
     about_dialog.h
@@ -78,8 +79,6 @@ set(HEADERS
     job_update_from_master.h
     clipper.h
     launcher/tools.h
-    setting_forms/launch_settings_form.h
-    setting_forms/application_settings_form.h
 )
 
 set(MOC_HEADERS
@@ -98,8 +97,6 @@ set(MOC_HEADERS
     rcon/rcon.h
     rcon/rcon_settings_form.h
     rcon/rcon_completer.h
-    setting_forms/launch_settings_form.h
-    setting_forms/application_settings_form.h
 )
 
 set(SOURCES
@@ -125,8 +122,6 @@ set(SOURCES
     rcon/rcon.cpp
     rcon/rcon_settings_form.cpp
     rcon/rcon_completer.cpp
-    setting_forms/launch_settings_form.cpp
-    setting_forms/application_settings_form.cpp
 )
 
 set(IFACES
@@ -167,6 +162,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     launcher
     tabs
     friend_list
+    setting_forms
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)

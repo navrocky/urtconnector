@@ -42,6 +42,7 @@ qstat_updater::qstat_updater(server_list_p list, const geoip& gi)
 , count_(0)
 , progress_(0)
 , canceled_(false)
+, clear_offline_(false)
 {
     connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
     connect(&proc_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
@@ -54,6 +55,11 @@ void qstat_updater::clear()
     progress_ = 0;
     count_ = 0;
     cur_state_ = s_init;
+}
+
+void qstat_updater::set_clear_offline(bool val)
+{
+    clear_offline_ = val;
 }
 
 void qstat_updater::refresh_all()
@@ -120,6 +126,18 @@ void qstat_updater::do_refresh_stopped()
         it->second->updating = false;
     }
     serv_list_->state_changed();
+
+    if (clear_offline_)
+    {
+        LOG_DEBUG << "Removing offline";
+        server_id_list l;
+        foreach (server_info_list::const_reference r, serv_list_->list())
+        {
+            if (r.second->status != server_info::s_up)
+                l.push_back(r.first);
+        }
+        serv_list_->remove_selected(l);
+    }
     
     emit refresh_stopped();
 }

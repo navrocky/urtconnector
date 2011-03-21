@@ -25,9 +25,6 @@ private slots:
     void int_changed();
 
 private:
-    void set_connections( bool b );
-    
-private:
     struct Pimpl;
     std::auto_ptr<Pimpl> p_;
     bool lock_change_;

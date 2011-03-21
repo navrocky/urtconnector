@@ -150,9 +150,18 @@ void app_settings::set_holiday_mode(bool b)
     part()->setValue("holiday", b);
 }
 
+bool app_settings::clear_offline() const
+{
+    return part()->value("clear_offline", true).toBool();
+}
 
+void app_settings::set_clear_offline(bool b)
+{
+    part()->setValue("clear_offline", b);
+}
 
-
+////////////////////////////////////////////////////////////////////////////////
+// clip_settings
 
 bool clip_settings::watching() const
 {

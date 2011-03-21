@@ -68,6 +68,10 @@ public:
 
     bool use_holiday_mode() const;
     void set_holiday_mode(bool b);
+
+    /*!  Clear offline servers after full refresh*/
+    bool clear_offline() const;
+    void set_clear_offline(bool b);
 };
 
 class clip_settings: public settings_uid_provider<clip_settings>

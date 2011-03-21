@@ -26,6 +26,9 @@ public:
     const QString& comment() const {return d->comment_;}
     void set_comment(const QString& val) {d->comment_ = val;}
 
+    bool operator<(const friend_record& src) const;
+    bool operator==(const friend_record& src) const;
+
 private:
     struct impl
     {

@@ -1,7 +1,12 @@
 #include "friend_list_widget.h"
 
+#include <boost/bind.hpp>
 #include <QTreeWidget>
 #include <QHeaderView>
+#include <QMap>
+
+#include <common/tree_smart_updater.h>
+#include "friend_list.h"
 
 //#include <common/server_list.h>
 //#include "filters/filter_list.h"
@@ -14,10 +19,9 @@
 //FIXME used by status_item_delegate !!
 //const int c_suppress_role = Qt::UserRole + 11;
 
-//Q_DECLARE_METATYPE(history_item_p);
+Q_DECLARE_METATYPE(friend_record)
 
-//const int c_history_role = Qt::UserRole + 12;
-
+const int c_friend_role = Qt::UserRole + 12;
 
 friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, QWidget *parent)
 : main_tab(tab_settings_p(new tab_settings("friend_list")), ctx, parent)
@@ -44,9 +48,8 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 //    hdr->resizeSection(1, 80);
 //    hdr->resizeSection(2, 200);
 
-
-
-    //     connect(p_->ui.clearFilterButton, SIGNAL(clicked()), SLOT(filter_clear()));
+    connect(friends_, SIGNAL(changed()), SLOT(update_contents()));
+    update_contents();
 }
 
 server_id friend_list_widget::selected_server() const
@@ -54,10 +57,18 @@ server_id friend_list_widget::selected_server() const
     return server_id();
 }
 
-void friend_list_widget::update_list()
+void friend_list_widget::update_contents()
+{
+//    tree_->setRootIsDecorated(false);
+//    typedef QMap<friend_record, QTreeWidgetItem*> items_map_t;
+//    const friend_list::friend_records_t& fl = friends_->list();
+//    updater<friend_list::friend_records_t>::update_tree_contents(fl, c_friend_role, tree_, 0,
+//        boost::bind(&friend_list_widget::update_friend_item, this, _1), items_map_);
+}
+
+void friend_list_widget::update_friend_item(QTreeWidgetItem* item)
 {
     
-
 }
 
 //void friend_list_widget::changeEvent(QEvent *e)

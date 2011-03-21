@@ -69,6 +69,7 @@
 #include <rcon/rcon_settings_form.h>
 #include <setting_forms/launch_settings_form.h>
 #include <setting_forms/application_settings_form.h>
+#include <setting_forms/update_settings_form.h>
 #include <tabs/tab_context.h>
 #include <tabs/bookmark_tab.h>
 #include <tabs/server_list_tab.h>
@@ -259,6 +260,7 @@ void main_window::show_options()
     d.setWindowTitle(tr("Options"));
     d.setWindowIcon(QIcon("icons:configure.png"));
     d.add_item( new launch_settings_form() );
+    d.add_item( new update_settings_form() );
     d.add_item( new application_settings_form() );
     d.add_item( new history_settings_form() );
     d.add_item( new rcon_settings_form() );

@@ -5,6 +5,7 @@
 #include <common/list_caption_updater.h>
 #include <tabs/main_tab.h>
 #include <filters/pointers.h>
+#include "friend_record.h"
 //#include "pointers.h"
 
 class QTreeWidgetItem;
@@ -38,21 +39,17 @@ protected:
 //    virtual void filter_changed();
 //
 private slots:
-//    void filter_clear();
+    void update_contents();
 
 private:
-    void update_list();
+    void update_friend_item(QTreeWidgetItem* item);
 
-//    void addItem(history_item_p item);
-    ///returns 0 if NO resort needed
-//    QTreeWidgetItem* add_item(QTreeWidgetItem* item);
-//    QTreeWidgetItem* find_item(const server_id& id) const;
-
-//    void resort(QTreeWidgetItem* item);
+    typedef QMap<friend_record, QTreeWidgetItem*> items_map_t;
 
     QTreeWidget* tree_;
     friend_list* friends_;
     list_caption_updater caption_;
+    items_map_t items_map_;
 };
 
 #endif // FRIEND_LIST_WIDGET_H

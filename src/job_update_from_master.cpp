@@ -2,6 +2,7 @@
 #include <common/server_list.h>
 #include "qstat_updater.h"
 #include "qstat_options.h"
+#include "app_options.h"
 
 #include "job_update_from_master.h"
 
@@ -9,6 +10,9 @@ job_update_from_master::job_update_from_master( server_list_p list, const geoip&
 : caption_(tr("Update from master server"))
 , updater_(new qstat_updater(list, gi))
 {
+    app_settings as;
+    updater_->set_clear_offline(as.clear_offline());
+
     connect(updater_.get(), SIGNAL(refresh_stopped()), SLOT(stopped()));
 }
 

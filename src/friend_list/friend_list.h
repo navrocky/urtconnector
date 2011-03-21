@@ -22,6 +22,7 @@ public:
     const friend_records_t& list() const {return friends_;}
 
 signals:
+    void changed();
     void added(const QString& nick_name);
     void removed(const QString& nick_name);
     void changed(const QString& old_nick_name, const QString& nick_name);
