@@ -124,7 +124,7 @@ struct player_list_parser: base_parser{
         else if( line.isEmpty() )
             disable();
         else if( is_enabled() && player_rx.exactMatch(line) )
-            players.insert( q3stripcolor( player_rx.cap(1) ) ); 
+            players.insert( q3stripcolor( player_rx.cap(1) ) );
     }
 };
 
