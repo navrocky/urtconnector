@@ -67,6 +67,16 @@ void qstat_updater::refresh_all()
     if (proc_.state() != QProcess::NotRunning) return;
     clear();
 
+    if (clear_offline_)
+        old_list_ = serv_list_->list();
+
+    // setup updating state
+    foreach (server_info_list::const_reference r, serv_list_->list())
+    {
+        r.second->updating = true;
+    }
+    serv_list_->state_changed();
+
     QStringList sl;
 #ifdef QSTAT_FAKE
     sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
@@ -131,10 +141,9 @@ void qstat_updater::do_refresh_stopped()
     {
         LOG_DEBUG << "Removing offline";
         server_id_list l;
-        foreach (server_info_list::const_reference r, serv_list_->list())
+        foreach(server_info_list::const_reference r, old_list_)
         {
-            if (r.second->status != server_info::s_up)
-                l.push_back(r.first);
+            l.push_back(r.first);
         }
         serv_list_->remove_selected(l);
     }
@@ -318,6 +327,10 @@ void qstat_updater::process_xml()
                     }
                     si->update_from(*cur_server_info_);
                     si->updating = false;
+
+                    if (clear_offline_)
+                        old_list_.erase(cur_server_info_->id);
+
                     LOG_HARD << "Received server info: %1, %2, ", si->id.address(),
                         si->name;
                 }

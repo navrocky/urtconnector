@@ -69,6 +69,7 @@ private:
 
     QString qstat_output_;
     bool clear_offline_;
+    server_info_list old_list_;
 };
 
 #endif	/* _QSTAT_UPDATER_H */
