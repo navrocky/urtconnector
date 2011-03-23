@@ -95,6 +95,12 @@ QString q3coloring(const QString & str, const Q3ColorMap& custom)
     return lst.join("");
 }
 
+QString q3stripcolor(const QString& str)
+{
+    return QString(str).replace( QRegExp("\\^\\d"), QString() );
+}
+
+
 QColor choose_for_background(Qt::GlobalColor standard, const QColor& background)
 {
     static std::map<Qt::GlobalColor, QColor> light_colors;

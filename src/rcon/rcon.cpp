@@ -105,28 +105,26 @@ struct command_list_parser: base_parser{
     }
 };
 
-/*! Parser that handles begin and end of players list, and stores it */
+/*! Parser that handles begin and end of 'status' command, and stores it */
 struct player_list_parser: base_parser{
     Strings& players;
-    const QString list_begin;
-    const QString list_end;
+    const QRegExp status_begin_rx;
     const QRegExp player_rx;
     
     player_list_parser( Strings& p )
         : players(p)
-        , list_begin( "Current players:" )
-        , list_end  ( "End current player list." )
-        , player_rx ("\\s+(\\d+):\\s+\\[(.*)\\]")
+        , status_begin_rx( "^[ ]*num[ ]+score[ ]+ping[ ]+name[ ]+lastmsg[ ]+address[ ]+qport[ ]+rate[ ]*$" )
+	, player_rx 	 ( "^[ ]*\\d+[ ]+\\d+[ ]+\\d+[ ]+(.*\\^7)[ ]+.*[ ]+.*[ ]+\\d+[ ]+.*[ ]*$")
     {}
 
     virtual void operator()(const QByteArray& line){
 
-        if( line == list_begin )
+        if( status_begin_rx.exactMatch(line) )
             enable();
-        else if( line == list_end )
+        else if( line.isEmpty() )
             disable();
         else if( is_enabled() && player_rx.exactMatch(line) )
-            players.insert( player_rx.cap(2) );
+            players.insert( q3stripcolor( player_rx.cap(1) ) ); 
     }
 };
 
@@ -516,8 +514,8 @@ QString rcon::colorize_string( rcon::TextType type, const QString& text ) const
 
 void rcon::refresh_players()
 {
-    send_command( "playerlist", true );
-    //refresh playerlist every 10 seconds
+    send_command( "status", true );
+    //refresh status every 10 seconds
     QTimer::singleShot( 10000, this, SLOT( refresh_players() ) );
 }
 

@@ -47,6 +47,9 @@ QString colorize( const QString& token, const QColor& color );
 ///Find Quake 3 color mark in string and add apropriate html color tags
 QString q3coloring( const QString& str, const Q3ColorMap& custom = Q3ColorMap()  );
 
+///Strip out Quake 3 color marks from string
+QString q3stripcolor( const QString& str ); 
+
 /*! Adds menu separator action to widget with optional text. */
 QAction* add_separator_action(QWidget* w, const QString& text = "");
 
