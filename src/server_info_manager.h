@@ -39,7 +39,11 @@ public:
     void set_server_info( const server_info& si );
 
 Q_SIGNALS:
+    ///This signal emited when manager wants to add player to favorites 
     void add_to_friend( const QString& player ) const;
+    
+protected:
+    virtual void paintEvent(QPaintEvent* e);
     
 private Q_SLOTS:
     void add_friend() const;
@@ -52,6 +56,14 @@ private:
     QToolButton* create_friend_button( const player_info& player, QObject* lifetime_dispatcher );
 
     QString make_status(  const server_info& si  ) const;
+    
+private:
+    //When widgets are layouted above QTextBrowser we associate them with textblock where they are.
+    //We need it to hide widgets when they move out from QAbstractScrollArea visible surface.
+    //List used because of multimple widgets can be associated with one QTextBlock
+    typedef std::list<QWidget*> Widgets;
+    typedef std::map<QTextBlock, Widgets> WidgetsByBlock;
+    WidgetsByBlock widgets;
 };
 
 

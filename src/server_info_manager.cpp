@@ -82,6 +82,31 @@ void server_info_manager::set_server_info(const server_info& si)
     regenerate_widgets(si);
 }
 
+///Visible part of scroll area
+QRect visible_rect( const QAbstractScrollArea* a ){
+    return QRect(
+      	a->horizontalScrollBar()->value(),
+	a->verticalScrollBar()->value(),
+	a->width(),
+	a->height()
+    );
+}
+
+void server_info_manager::paintEvent(QPaintEvent* e)
+{
+    QTextBrowser::paintEvent(e);
+    
+    //QTextBrowser engine does not updates block thas are hidden away from QAbstractScrollArea visible surface
+    //So we mannually hide widget when associated block is not int visible surface
+    BOOST_FOREACH( const WidgetsByBlock::value_type& p, widgets ){
+	QRect block_rect = document()->documentLayout()->blockBoundingRect( p.first ).toRect();
+	QRect viewport_rect = visible_rect( this );
+	
+	std::for_each( p.second.begin(), p.second.end(), bind( &QWidget::setVisible, _1, viewport_rect.intersects(block_rect) ) );
+    }
+}
+
+
 void server_info_manager::add_friend() const
 {
     QToolButton* tb = qobject_cast<QToolButton*>( sender() );
@@ -186,6 +211,7 @@ QString server_info_manager::create_html_template(const server_info& si) const
 
 void server_info_manager::regenerate_widgets( const server_info& si )
 {
+    widgets.clear();
     player_info_list plist = si.players;
     
     QTextCursor cursor;
@@ -211,6 +237,8 @@ void server_info_manager::regenerate_widgets( const server_info& si )
 
         cursor.insertText( QString(QChar::ObjectReplacementCharacter), format );
 
+	widgets[ cursor.block() ].push_back( button );
+	
         plist.erase( pinfo );
     }
 
@@ -267,6 +295,3 @@ QString server_info_manager::make_status(const server_info& si) const
     
     return status_str;
 }
-
-
-
