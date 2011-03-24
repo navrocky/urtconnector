@@ -7,20 +7,24 @@ set(HEADERS
     friend_list_widget.h
     friend_record.h
     friend_list.h
+    friend_prop_dialog.h
 )
 
 set(MOC_HEADERS
     friend_list_widget.h
     friend_list.h
+    friend_prop_dialog.h
 )
 
 set(SOURCES
     friend_list_widget.cpp
     friend_record.cpp
     friend_list.cpp
+    friend_prop_dialog.cpp
 )
 
 set(IFACES
+    friend_prop_dialog.ui
 )
 
 set(RESOURCES

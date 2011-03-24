@@ -198,7 +198,7 @@ main_window::main_window(QWidget *parent)
     tab_widget_->add_widget(history_list_);
     connect(history_list_, SIGNAL(selection_changed()), SLOT(selection_changed()));
 
-    friends_list_ = new friend_list_widget(0, ctx, this);
+    friends_list_ = new friend_list_widget(&friends_, ctx, this);
     tab_widget_->add_widget(friends_list_);
     connect(friends_list_, SIGNAL(selection_changed()), SLOT(selection_changed()));
 

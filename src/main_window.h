@@ -19,6 +19,7 @@
 #include <filters/pointers.h>
 #include <history/history_widget.h>
 #include <friend_list/friend_list_widget.h>
+#include <friend_list/friend_list.h>
 #include "clipper.h"
 
 class QTimer;
@@ -91,6 +92,7 @@ private:
     
     server_list_p all_sl_;
     server_bookmark_list_p bookmarks_;
+    friend_list friends_;
     history_p history_sl_;
     server_id old_id_;
     int old_state_;

@@ -4,9 +4,11 @@
 #include <QTreeWidget>
 #include <QHeaderView>
 #include <QMap>
+#include <QAction>
 
 #include <common/tree_smart_updater.h>
 #include "friend_list.h"
+#include "friend_prop_dialog.h"
 
 //#include <common/server_list.h>
 //#include "filters/filter_list.h"
@@ -29,25 +31,46 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 , caption_(this, tr("Friends"))
 {
     setWindowIcon(QIcon("icons:friends.png"));
+    
+    add_action_ = new QAction(QIcon("icons:add.png"), tr("Add new friend"), this);
+    connect(add_action_, SIGNAL(triggered()), SLOT(add()));
 
+    edit_action_ = new QAction(QIcon("icons:edit.png"), tr("Edit selected friend"), this);
+    connect(edit_action_, SIGNAL(triggered()), SLOT(edit_selected()));
+
+    remove_action_ = new QAction(QIcon("icons:remove.png"), tr("Remove selected"), this);
+    connect(remove_action_, SIGNAL(triggered()), SLOT(remove_selected()));
+    
+    addAction(add_action_);
+    addAction(edit_action_);
+    addAction(remove_action_);
+    
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
+    
+    tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tree_->addAction(add_action_);
+    tree_->addAction(edit_action_);
+    tree_->addAction(remove_action_);
 
     QTreeWidgetItem* it = tree_->headerItem();
-    it->setText(0, tr("Server name"));
-    it->setText(1, tr("Status"));
-    it->setText(2, tr("Date and time"));
-    it->setText(3, tr("Address"));
-    it->setText(4, tr("Password"));
-    it->setText(5, tr("Player name"));
+    it->setText(7, tr("Address"));
+    it->setText(6, tr("Players"));
+    it->setText(5, tr("Map"));
+    it->setText(4, tr("Game mode"));
+    it->setText(3, tr("Ping"));
+    it->setText(2, tr("Country"));
+    it->setText(1, tr("Name"));
+    it->setText(0, tr("Status"));
 
-
-//    QHeaderView* hdr = tree_->header();
-//
-//    hdr->resizeSection(0, 300);
-//    hdr->resizeSection(1, 80);
-//    hdr->resizeSection(2, 200);
-
+    QHeaderView* hdr = tree_->header();
+    hdr->resizeSection(0, 80);
+    hdr->resizeSection(1, 350);
+    hdr->resizeSection(2, 50);
+    hdr->resizeSection(3, 50);
+    hdr->resizeSection(4, 60);
+    hdr->setSortIndicator(3, Qt::AscendingOrder);
+    
     connect(friends_, SIGNAL(changed()), SLOT(update_contents()));
     update_contents();
 }
@@ -59,11 +82,11 @@ server_id friend_list_widget::selected_server() const
 
 void friend_list_widget::update_contents()
 {
-//    tree_->setRootIsDecorated(false);
-//    typedef QMap<friend_record, QTreeWidgetItem*> items_map_t;
-//    const friend_list::friend_records_t& fl = friends_->list();
-//    updater<friend_list::friend_records_t>::update_tree_contents(fl, c_friend_role, tree_, 0,
-//        boost::bind(&friend_list_widget::update_friend_item, this, _1), items_map_);
+    tree_->setRootIsDecorated(false);
+    typedef QMap<friend_record, QTreeWidgetItem*> items_map_t;
+    const friend_list::friend_records_t& fl = friends_->list();
+    updater<friend_list::friend_records_t>::update_tree_contents(fl, c_friend_role, tree_, 0,
+        boost::bind(&friend_list_widget::update_friend_item, this, _1), items_map_);
 }
 
 void friend_list_widget::update_friend_item(QTreeWidgetItem* item)
@@ -71,153 +94,22 @@ void friend_list_widget::update_friend_item(QTreeWidgetItem* item)
     
 }
 
-//void friend_list_widget::changeEvent(QEvent *e)
-//{
-//    QWidget::changeEvent(e);
-//    switch (e->type())
-//    {
-//        case QEvent::LanguageChange:
-//            p_->retranslate();
-//            break;
-//        default:
-//            break;
-//    }
-//}
+void friend_list_widget::add()
+{
+    friend_prop_dialog d(this);
+    if (d.exec() == QDialog::Rejected)
+        return;
+}
 
-//void friend_list_widget::filter_clear()
-//{
-//    //     p_->ui.filterEdit->clear();
-//}
+void friend_list_widget::edit_selected()
+{
+    friend_prop_dialog d(this);
+    if (d.exec() == QDialog::Rejected)
+        return;
 
-//QTreeWidget* friend_list_widget::tree() const
-//{
-//    return p_->ui.treeWidget;
-//}
+}
 
-//void friend_list_widget::update_history()
-//{
-//    p_->ui.treeWidget->clear();
-//
-//    foreach(const history_item_p& item, p_->history->list())
-//    {
-//        addItem(item);
-//    }
-//    filter_changed();
-//}
+void friend_list_widget::remove_selected()
+{
 
-//void friend_list_widget::addItem(history_item_p item)
-//{
-//    QTreeWidgetItem* item_ptr = new QTreeWidgetItem();
-//
-//    item_ptr->setText(0, item->server_name());
-//    item_ptr->setText(2, item->date_time().toString(Qt::DefaultLocaleShortDate));
-//    item_ptr->setText(3, item->address());
-//    item_ptr->setText(4, item->password());
-//    item_ptr->setText(5, item->player_name());
-//    item_ptr->setData(0, c_id_role, QVariant::fromValue(item->id()));
-//    item_ptr->setData(1, c_id_role, QVariant::fromValue(item->id()));
-//
-//    item_ptr->setData(0, c_history_role, QVariant::fromValue(item));
-//
-//    if (QTreeWidgetItem * parent = add_item(item_ptr))
-//        resort(parent);
-//}
-
-//QTreeWidgetItem* friend_list_widget::add_item(QTreeWidgetItem* item)
-//{
-//    QTreeWidgetItem* parent = find_item(item->data(0, c_id_role).value<server_id > ());
-//
-//    if (parent)
-//    {
-//        item->setData(1, c_suppress_role, true);
-//        parent->insertChild(0, item);
-//        return parent;
-//    }
-//    else
-//    {
-//        item->setData(1, c_suppress_role, false);
-//        p_->ui.treeWidget->insertTopLevelItem(0, item);
-//        return 0;
-//    }
-//}
-
-//server_id friend_list_widget::selected_server() const
-//{
-//    QTreeWidgetItem* item = p_->ui.treeWidget->currentItem();
-//    if (!item)
-//        return server_id();
-//
-//    return item->data(0, c_id_role).value<server_id > ();
-//}
-
-//void friend_list_widget::servers_updated()
-//{
-//    p_->ui.treeWidget->setItemDelegateForColumn(1, new status_item_delegate(server_list(), p_->ui.treeWidget));
-//}
-
-//void friend_list_widget::filter_changed()
-//{
-//    QList<QTreeWidgetItem *> items = p_->ui.treeWidget->findItems("", Qt::MatchStartsWith);
-//
-//    foreach(QTreeWidgetItem * item, items)
-//    {
-//        bool is_visible = true;
-//        if (server_list())
-//        {
-//            server_info_p si = server_list()->get(item->data(0, c_id_role).value<server_id > ());
-//            if (si)
-//                is_visible = filterlist().filtrate(*si);
-//        }
-//
-//        if (item->isHidden() != !is_visible)
-//            item->setHidden(!is_visible);
-//    }
-//}
-
-//QTreeWidgetItem* friend_list_widget::find_item(const server_id& id) const
-//{
-//    for (int i = 0; i < p_->ui.treeWidget->topLevelItemCount(); ++i)
-//    {
-//        QTreeWidgetItem* item = p_->ui.treeWidget->topLevelItem(i);
-//        if (item->data(0, c_id_role).value<server_id > () == id)
-//            return item;
-//    }
-//
-//    return 0;
-//}
-
-//void friend_list_widget::resort(QTreeWidgetItem* item)
-//{
-//    int index = p_->ui.treeWidget->indexOfTopLevelItem(item);
-//
-//    if (index == -1) return;
-//
-//    item = p_->ui.treeWidget->takeTopLevelItem(index);
-//
-//    QList<QTreeWidgetItem*> chlds = item->takeChildren();
-//
-//    //item itself is under resorting too!
-//    chlds << item;
-//
-//    std::sort(chlds.begin(), chlds.end(),
-//              boost::bind(&QTreeWidgetItem::text, _1, 0) < boost::bind(&QTreeWidgetItem::text, _2, 0));
-//
-//    std::for_each(chlds.begin(), chlds.end(), boost::bind(&friend_list_widget::add_item, this, _1));
-//}
-
-//void friend_list_widget::delete_selected()
-//{
-//    QList<QTreeWidgetItem*> items = p_->ui.treeWidget->selectedItems();
-//
-//    int old_size = p_->history->list().size();
-//
-//    foreach(QTreeWidgetItem* it, items)
-//    {
-//        history_item_p item = it->data(0, c_history_role).value<history_item_p > ();
-//        p_->history->remove(item);
-//    }
-//
-//    if (old_size != p_->history->list().size())
-//        update_history();
-//}
-
+}
