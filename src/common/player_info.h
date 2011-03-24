@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QString>
+#include <QVariant>
 
 #include "implicit_sharing.h"
 
@@ -27,6 +28,8 @@ private:
     };
     implicit_sharing<impl> d;
 };
+
+Q_DECLARE_METATYPE(player_info);
 
 typedef QList<player_info> player_info_list;
 

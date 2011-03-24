@@ -121,6 +121,12 @@ bool server_info::is_pure() const
     return get_info("pure", "-1").toInt() == 0;
 }
 
+bool server_info::is_full() const
+{
+    return true;
+    return ( max_player_count > 0 ) && ( players.size() >= max_player_count - private_slots() );
+}
+
 int server_info::private_slots() const
 {
     return get_info("sv_privateClients").toInt();

@@ -131,9 +131,13 @@ main_window::main_window(QWidget *parent)
 
     ui_->setupUi(this);
 
+    //Registering our-handler to make QTextBrowser widget-embeddable
+    QObject *wInterface = new widget_object;
+    ui_->server_info_browser->document()->documentLayout()->registerHandler(widget_object::WidgetFormat, wInterface);
+
     tab_toolbar_ = addToolBar(tr("Current tab toolbar"));
 
-    setWindowIcon(QIcon("images:logo.png"));
+    setWindowIcon( QIcon("images:logo.png") );
 
     tab_widget_ = new main_tab_widget(this);
     setCentralWidget(tab_widget_);
@@ -552,8 +556,7 @@ void main_window::update_server_info()
         old_state_ = si->update_stamp();
         old_id_ = si->id;
 
-        QString s = get_server_info_html(*si);
-        ui_->server_info_browser->setHtml(s);
+        ui_->server_info_browser->set_server_info(*si);
     }
     else
     {

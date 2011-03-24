@@ -1,4 +1,4 @@
-
+/*
 #include <memory>
 
 #include <boost/bind.hpp>
@@ -27,6 +27,8 @@ QString get_css()
     QString base = QPalette().color(QPalette::Base).name();
     //alternate background color in views with alternating row colors
     QString alternate = QPalette().color(QPalette::AlternateBase).name();
+    //text color
+    QString text = QPalette().color(QPalette::Text).name();
 
     QString css(
         "<style> "
@@ -37,8 +39,9 @@ QString get_css()
         ".img1{margin-right: 10px;}"
         ".serv_header{background-color: black; color:white;"
         "padding:5px 10px 5px 10px;font: bold 12pt; font-family:monospace;}"
+        ".body{ color: %5;}"
         "</style>");
-    return css.arg(window).arg(window).arg(base).arg(alternate);
+    return css.arg(window).arg(window).arg(base).arg(alternate).arg(text);
 }
 
 QString get_server_info_html(const server_info& si)
@@ -157,10 +160,10 @@ QString get_server_info_html(const server_info& si)
         ext_info += "</table>";
     }
 
-    html = QString("<html><head>%1</head><body><table width=100%><tr><td class=\"serv_header\">%2"
+    html = QString("<html><head>%1</head><body class=\"body\"><table width=100%><tr><td class=\"serv_header\">%2"
             "</td></tr></table>%3<hr>%4%5%6</body></html>")
             .arg(get_css()).arg(name).arg(si.id.address()).arg(serv_info).arg(players)
             .arg(ext_info);
     return html;
 }
-
+*/

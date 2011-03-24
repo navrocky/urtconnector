@@ -79,6 +79,7 @@ set(HEADERS
     job_update_from_master.h
     clipper.h
     launcher/tools.h
+    server_info_manager.h
 )
 
 set(MOC_HEADERS
@@ -97,6 +98,7 @@ set(MOC_HEADERS
     rcon/rcon.h
     rcon/rcon_settings_form.h
     rcon/rcon_completer.h
+    server_info_manager.h
 )
 
 set(SOURCES
@@ -122,6 +124,7 @@ set(SOURCES
     rcon/rcon.cpp
     rcon/rcon_settings_form.cpp
     rcon/rcon_completer.cpp
+    server_info_manager.cpp
 )
 
 set(IFACES

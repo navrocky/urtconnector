@@ -75,6 +75,7 @@ public:
 
     bool is_password_needed() const;
     bool is_pure() const;
+    bool is_full() const;
 
     int private_slots() const;
     int public_slots() const;

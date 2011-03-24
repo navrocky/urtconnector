@@ -539,6 +539,8 @@ src/rcon/rcon_settings_form.h -text
 src/rcon/rcon_settings_form.ui -text
 src/server_info_html.cpp -text
 src/server_info_html.h -text
+src/server_info_manager.cpp -text
+src/server_info_manager.h -text
 src/server_list_saver.cpp -text
 src/server_list_saver.h -text
 src/server_list_widget.cpp -text
