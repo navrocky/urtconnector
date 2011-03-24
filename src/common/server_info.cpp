@@ -123,7 +123,6 @@ bool server_info::is_pure() const
 
 bool server_info::is_full() const
 {
-    return true;
     return ( max_player_count > 0 ) && ( players.size() >= max_player_count - private_slots() );
 }
 
