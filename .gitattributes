@@ -397,6 +397,8 @@ src/flags/zw.png -text
 src/friend_list/CMakeLists.txt -text
 src/friend_list/friend_list.cpp -text
 src/friend_list/friend_list.h -text
+src/friend_list/friend_list_db_saver.cpp -text
+src/friend_list/friend_list_db_saver.h -text
 src/friend_list/friend_list_widget.cpp -text
 src/friend_list/friend_list_widget.h -text
 src/friend_list/friend_prop_dialog.cpp -text

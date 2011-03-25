@@ -10,6 +10,7 @@
 #include <tabs/common_item_tags.h>
 #include "friend_list.h"
 #include "friend_prop_dialog.h"
+#include "friend_list_db_saver.h"
 
 Q_DECLARE_METATYPE(friend_record)
 
@@ -70,6 +71,9 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     connect(friends_, SIGNAL(changed()), SLOT(update_contents()));
     connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(update_actions()));
     connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
+    
+    // create list saver
+    new friend_list_db_saver(friends_, this);
 
     update_contents();
 }

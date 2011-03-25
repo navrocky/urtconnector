@@ -4,6 +4,9 @@
 #include <QList>
 #include <QString>
 
+#define DB_ENC database::qqencode_string
+#define DB_DEC database::qqdecode_string
+
 class database
 {
 public:

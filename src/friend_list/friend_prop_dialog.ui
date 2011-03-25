@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>296</width>
+    <width>314</width>
     <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Friend properties</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
@@ -25,48 +25,20 @@
     <widget class="QLineEdit" name="name_edit"/>
    </item>
    <item>
-    <widget class="QGroupBox" name="expression_group">
-     <property name="title">
-      <string>Match expression</string>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Match regular expression (&lt;a href=&quot;http://en.wikipedia.org/wiki/Regex&quot;&gt;more info&lt;/a&gt;)</string>
      </property>
-     <property name="checkable">
+     <property name="openExternalLinks">
       <bool>true</bool>
      </property>
-     <property name="checked">
-      <bool>false</bool>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="expr_edit">
+     <property name="placeholderText">
+      <string>Not used if empty</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLineEdit" name="expr_edit"/>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QCheckBox" name="regexp_check">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Use regular expressions</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>(&lt;a href=&quot;http://en.wikipedia.org/wiki/Regex&quot;&gt;more info&lt;/a&gt;)</string>
-          </property>
-          <property name="openExternalLinks">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
     </widget>
    </item>
    <item>

@@ -21,7 +21,9 @@ public:
     void change(const QString& old_nick_name, const friend_record& rec);
 
     const friend_records_t& list() const {return friends_;}
-
+    
+    friend_record get_by_nick_name(const QString& nick_name) const;
+    
 signals:
     void changed();
     void added(const QString& nick_name);
@@ -29,6 +31,10 @@ signals:
     void changed(const QString& old_nick_name, const QString& nick_name);
 
 private:
+    void add_rec(const friend_record& rec);
+    
+    friend class friend_list_db_saver;
+    
     friend_records_t friends_;
 
 };

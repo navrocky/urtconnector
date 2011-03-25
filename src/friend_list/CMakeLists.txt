@@ -8,12 +8,14 @@ set(HEADERS
     friend_record.h
     friend_list.h
     friend_prop_dialog.h
+    friend_list_db_saver.h
 )
 
 set(MOC_HEADERS
     friend_list_widget.h
     friend_list.h
     friend_prop_dialog.h
+    friend_list_db_saver.h
 )
 
 set(SOURCES
@@ -21,6 +23,7 @@ set(SOURCES
     friend_record.cpp
     friend_list.cpp
     friend_prop_dialog.cpp
+    friend_list_db_saver.cpp
 )
 
 set(IFACES
