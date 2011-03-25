@@ -21,17 +21,10 @@ public:
     
     server_id selected_server() const;
 
-
 protected:
-//    void changeEvent(QEvent *e);
-//
-//    protected
-//Q_SLOTS:
-//    virtual void servers_updated();
-//    virtual void filter_changed();
-//
 private slots:
     void update_contents();
+    void update_actions();
     
     void add();
     void edit_selected();
@@ -39,6 +32,8 @@ private slots:
 
 private:
     void update_friend_item(QTreeWidgetItem* item);
+
+    friend_record get_selected_friend() const;
 
     typedef QMap<friend_record, QTreeWidgetItem*> items_map_t;
 

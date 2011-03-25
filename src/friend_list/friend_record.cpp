@@ -11,6 +11,7 @@ friend_record::friend_record(const QString& nick_name,
                              const QString& comment)
 {
     d->nick_name_ = nick_name;
+    d->use_expression_ = false;
     d->expression_ = expr;
     d->use_regexp_ = use_regexp;
     d->comment_ = comment;

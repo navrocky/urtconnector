@@ -7,19 +7,9 @@
 #include <QAction>
 
 #include <common/tree_smart_updater.h>
+#include <tabs/common_item_tags.h>
 #include "friend_list.h"
 #include "friend_prop_dialog.h"
-
-//#include <common/server_list.h>
-//#include "filters/filter_list.h"
-//#include "filters/filter.h"
-//#include "server_list_widget.h"
-//#include "ui_friend_list_widget.h"
-
-//const int c_id_role = Qt::UserRole + 1;
-
-//FIXME used by status_item_delegate !!
-//const int c_suppress_role = Qt::UserRole + 11;
 
 Q_DECLARE_METATYPE(friend_record)
 
@@ -47,6 +37,12 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
+    tree_->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    tree_->setRootIsDecorated(false);
+    tree_->setUniformRowHeights(true);
+    tree_->setSortingEnabled(true);
+    tree_->setAllColumnsShowFocus(true);
+    tree_->setWordWrap(true);
     
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(add_action_);
@@ -72,12 +68,24 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     hdr->setSortIndicator(3, Qt::AscendingOrder);
     
     connect(friends_, SIGNAL(changed()), SLOT(update_contents()));
+    connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(update_actions()));
+    connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
+
     update_contents();
 }
 
 server_id friend_list_widget::selected_server() const
 {
-    return server_id();
+    QTreeWidgetItem* item = tree_->currentItem();
+    if (item)
+    {
+        server_id id = item->data(0, c_id_role).value<server_id>();
+        if (id.is_empty() && item->childCount() > 0)
+            id = item->child(0)->data(0, c_id_role).value<server_id>();
+        return id;
+    }
+    else
+        return server_id();
 }
 
 void friend_list_widget::update_contents()
@@ -87,11 +95,22 @@ void friend_list_widget::update_contents()
     const friend_list::friend_records_t& fl = friends_->list();
     updater<friend_list::friend_records_t>::update_tree_contents(fl, c_friend_role, tree_, 0,
         boost::bind(&friend_list_widget::update_friend_item, this, _1), items_map_);
+
+    caption_.set_total_count(tree_->topLevelItemCount());
+
+    update_actions();
+}
+
+void friend_list_widget::update_actions()
+{
+    edit_action_->setEnabled(!(get_selected_friend().is_empty()));
+    remove_action_->setEnabled(tree_->selectedItems().count() > 0);
 }
 
 void friend_list_widget::update_friend_item(QTreeWidgetItem* item)
 {
-    
+    const friend_record& fr = item->data(0, c_friend_role).value<friend_record>();
+    item->setText(0, fr.nick_name());
 }
 
 void friend_list_widget::add()
@@ -99,17 +118,40 @@ void friend_list_widget::add()
     friend_prop_dialog d(this);
     if (d.exec() == QDialog::Rejected)
         return;
+    friends_->add(d.rec());
+}
+
+friend_record friend_list_widget::get_selected_friend() const
+{
+    QTreeWidgetItem* item = tree_->currentItem();
+    if (item)
+        return item->data(0, c_friend_role).value<friend_record>();
+    else
+        return friend_record();
 }
 
 void friend_list_widget::edit_selected()
 {
+    const friend_record& fr = get_selected_friend();
+    QString old_nick_name = fr.nick_name();
     friend_prop_dialog d(this);
+    d.set_rec(fr);
     if (d.exec() == QDialog::Rejected)
         return;
-
+    friends_->change(old_nick_name, d.rec());
 }
 
 void friend_list_widget::remove_selected()
 {
-
+    QList<QString> nn;
+    for (int i = 0; i < tree_->topLevelItemCount(); i++)
+    {
+        QTreeWidgetItem* ti = tree_->topLevelItem(i);
+        if (ti->isSelected())
+        {
+            const friend_record& fr = ti->data(0, c_friend_role).value<friend_record>();
+            nn.append(fr.nick_name());
+        }
+    }
+    friends_->remove(nn);
 }

@@ -27,7 +27,7 @@ struct std_adapter
             res = new QTreeWidgetItem(parent_item);
         else
             res = new QTreeWidgetItem(tree);
-        res->setData(0, role, QVariant::fromValue(item));
+//        res->setData(0, role, QVariant::fromValue(item));
         return res;
     }
 
@@ -88,6 +88,9 @@ struct updater
                 items[item] = ti;
             } else
                 ti = it.value();
+
+            ti->setData(0, role, QVariant::fromValue(item));
+
             update_item(ti);
         }
 

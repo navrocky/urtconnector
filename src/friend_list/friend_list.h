@@ -17,6 +17,7 @@ public:
     
     void add(const friend_record& rec);
     void remove(const QString& nick_name);
+    void remove(const QList<QString> nick_names);
     void change(const QString& old_nick_name, const friend_record& rec);
 
     const friend_records_t& list() const {return friends_;}
@@ -24,7 +25,7 @@ public:
 signals:
     void changed();
     void added(const QString& nick_name);
-    void removed(const QString& nick_name);
+    void removed(const QList<QString>& nicks);
     void changed(const QString& old_nick_name, const QString& nick_name);
 
 private:

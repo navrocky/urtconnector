@@ -16,10 +16,25 @@ void friend_list::add(const friend_record& rec)
 
 void friend_list::remove(const QString& nick_name)
 {
-    if (friends_.remove(nick_name) > 0)
+    QList<QString> nn;
+    nn.append(nick_name);
+    remove(nn);
+}
+
+void friend_list::remove(const QList<QString> nick_names)
+{
+    QList<QString> removed_nicks;
+    foreach (const QString& nn, nick_names)
     {
-        emit removed(nick_name);
+        if (friends_.remove(nn))
+        {
+            removed_nicks.append(nn);
+        }
+    }
+    if (removed_nicks.size() > 0)
+    {
         emit changed();
+        emit removed(removed_nicks);
     }
 }
 
