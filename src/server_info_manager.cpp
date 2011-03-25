@@ -3,9 +3,12 @@
 #include <boost/foreach.hpp>
 #include <boost/assign/list_of.hpp>
 
+#include <QTextBrowser>
 #include <QToolButton>
+#include <QComboBox>
 #include <QScrollBar>
 #include <QTextFrame>
+#include <QBoxLayout>
 
 #include "common/exception.h"
 #include "common/player_info.h"
@@ -17,6 +20,7 @@
 #include "server_info_manager.h"
 
 const QString friend_tag_c = "FRIEND_TAG=\"%1\"";
+const QString map_tag_c = "MAP_TAG=\"%1\"";
 
 const char* player_property_c = "player";
 
@@ -25,22 +29,22 @@ using namespace boost;
 QSizeF widget_object::intrinsicSize(QTextDocument* doc, int posInDocument, const QTextFormat& format)
 {
     QWidget* widget = qVariantValue<QWidget*>( format.property( widget_object::WidgetPtr ) );
-
-    assert( widget );//FIXME replace on exception on developing completiion ?
+    assert( widget );
     
     return widget->size();
 }
 
 void widget_object::drawObject(QPainter* painter, const QRectF& rect, QTextDocument* doc, int posInDocument, const QTextFormat& format)
 {
-    QWidget* widget = qVariantValue<QWidget*>( format.property( widget_object::WidgetPtr ) );
-    QWidget* scroll = qVariantValue<QWidget*>( format.property( widget_object::ScrollBarPtr ) );
-
-    assert( widget && scroll );//FIXME replace on exception on developing completiion ?
+    QWidget* widget  = format.property( widget_object::WidgetPtr ).value<QWidget*>();
+    QWidget* vscroll = format.property( widget_object::VerticalBarPtr ).value<QWidget*>();
+    QWidget* hscroll = format.property( widget_object::HorizontalBarPtr ).value<QWidget*>();
+    assert( widget && vscroll && hscroll );
     
-    int ypos = static_cast<QScrollBar*>( scroll )->value();
+    int ypos = static_cast<QScrollBar*>( vscroll )->value();
+    int xpos = static_cast<QScrollBar*>( hscroll )->value();
 
-    widget->setGeometry( rect.toRect().adjusted( 0, -ypos, 0, -ypos ) );
+    widget->setGeometry( rect.toRect().adjusted( -xpos, -ypos, -xpos, -ypos ) );
 }
 
 
@@ -70,78 +74,82 @@ QString get_css( const QPalette& palette )
     return css.arg(window).arg(window).arg(base).arg(alternate).arg(text);
 }
 
-server_info_manager::server_info_manager(QWidget* parent): QTextBrowser(parent)
-{}
+server_info_manager::server_info_manager( QWidget* parent )
+    : QWidget( parent )
+    , browser_( new QTextBrowser(this) )
+{
+    //Registering our-handler to make QTextBrowser widget-embeddable
+    QObject *wInterface = new widget_object;
+    browser_->document()->documentLayout()->registerHandler(widget_object::WidgetFormat, wInterface);
+
+    QVBoxLayout* lay = new QVBoxLayout(this);
+    lay->setContentsMargins(0,0,0,0);
+    lay->addWidget( browser_ );
+
+    browser_->installEventFilter(this);
+}
 
 server_info_manager::~server_info_manager()
 {}
 
-void server_info_manager::set_server_info(const server_info& si)
+void server_info_manager::set_server_info( server_info_p si )
 {
-    setHtml( create_html_template(si) );
-    regenerate_widgets(si);
+    si_ = si;
+
+    widgets.clear();
+    
+    if( si_ )
+    {
+        browser_->setHtml( create_html_template(*si_) );
+        regenerate_widgets(*si_);
+    }
+    else
+    {
+        browser_->setHtml( QString() );
+    }
 }
 
 ///Visible part of scroll area
 QRect visible_rect( const QAbstractScrollArea* a ){
     return QRect(
       	a->horizontalScrollBar()->value(),
-	a->verticalScrollBar()->value(),
-	a->width(),
-	a->height()
+        a->verticalScrollBar()->value(),
+        a->viewport()->width(),
+        a->viewport()->height()
     );
 }
 
-void server_info_manager::paintEvent(QPaintEvent* e)
+bool server_info_manager::eventFilter(QObject* obj, QEvent* e)
 {
-    QTextBrowser::paintEvent(e);
+    bool ret = QObject::eventFilter(obj, e);
     
-    //QTextBrowser engine does not updates block thas are hidden away from QAbstractScrollArea visible surface
-    //So we mannually hide widget when associated block is not int visible surface
-    BOOST_FOREACH( const WidgetsByBlock::value_type& p, widgets ){
-	QRect block_rect = document()->documentLayout()->blockBoundingRect( p.first ).toRect();
-	QRect viewport_rect = visible_rect( this );
-	
-	std::for_each( p.second.begin(), p.second.end(), bind( &QWidget::setVisible, _1, viewport_rect.intersects(block_rect) ) );
+    if( obj == browser_ && e->type() == QEvent::Paint)
+    {
+        //QTextBrowser engine does not updates block thas are hidden away from QAbstractScrollArea visible surface
+        //So we mannually hide widget when associated block is not in visible area
+        BOOST_FOREACH( const WidgetsByBlock::value_type& p, widgets ){
+            QRect block_rect = browser_->document()->documentLayout()->blockBoundingRect( p.first ).toRect();
+            QRect viewport_rect = visible_rect( browser_ );
+
+            std::for_each( p.second.begin(), p.second.end(), bind( &QWidget::setVisible, _1, viewport_rect.intersects(block_rect) ) );
+        }
     }
+    return ret;
 }
 
-
-void server_info_manager::add_friend() const
+void server_info_manager::friend_added() const
 {
     QToolButton* tb = qobject_cast<QToolButton*>( sender() );
     assert(tb);//FIXME replace on exception on developing completiion ?
-    
-    QString name = tb->property( player_property_c ).value<player_info>().nick_name();
-    if( name.isEmpty() ) throw qexception( tr( "Player name is empty" ) );
 
-    emit add_to_friend( name );
+    if( tb->property( player_property_c ).canConvert<player_info>() )
+        throw qexception( tr( "Can't extract player info" ) );
+
+    emit add_to_friend( tb->property( player_property_c ).value<player_info>() );
 }
 
 QString server_info_manager::create_html_template(const server_info& si) const
 {
-    QString html, players;
-
-    const player_info_list& pil = si.players;
-
-    if (pil.size() > 0)
-    {
-        players = tr("<hr>%1 players:<table width=100%>"
-                     "<tr class=\"header\"><td>Nick</td><td>Ping</td><td>Score</td></tr>").arg(pil.size());
-        int i = 0;
-        foreach (const player_info& pi, pil)
-        {
-            players += QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
-                .arg( i % 2 + 1 )
-                .arg( Qt::escape(pi.nick_name()) )
-                .arg( friend_tag_c.arg(Qt::escape(pi.nick_name())) )
-                .arg( pi.ping() )
-                .arg( pi.score() );
-            i++;
-        }
-        players += "</table>";
-    }
-
     QString name = Qt::escape(si.get_info("sv_hostname"));
     if (name.isEmpty())
         name = si.get_info("hostname");
@@ -161,107 +169,42 @@ QString server_info_manager::create_html_template(const server_info& si) const
 
     name = q3coloring(name, html_colors);
 
-    QString status_str = make_status(si);
-    QString serv_info;
+    QString body = QString( "<body class=\"body\"><table width=100%>"
+                            "<tr><td class=\"serv_header\">%1</td></tr></table>"
+                            "%2<hr>%3%4%5</body>" )
+        .arg( name )
+        .arg( si.id.address() )
+        .arg( make_info(si) )
+        .arg( make_players(si) )
+        .arg( make_ext_info(si) );
 
-    QString country_flag;
-    if( !si.country_code.isEmpty() )
-         country_flag = QString("<img class=\"img1\" src=\"%1\">")
-                 .arg(geoip::get_flag_filename_by_country(si.country_code));
-
-    serv_info = tr( "<table width=100% class=\"props\">"
-                    "<tr class=\"line1\"><td>Status</td><td>%1</td></tr>"
-                    "<tr class=\"line2\"><td>Game mode</td><td>%2</td></tr>"
-                    "<tr class=\"line1\"><td>Map</td><td>%3</td></tr>"
-                    "<tr class=\"line2\"><td>Ping</td><td>%4</td></tr>"
-                    "<tr class=\"line1\"><td>Country</td><td>%5 %6</td></tr>"
-                    "<tr class=\"line2\"><td>Public slots</td><td>%7</td></tr>"
-                    "<tr class=\"line1\"><td>Total slots</td><td>%8</td></tr>"
-                    "</table>"
-                    )
-            .arg(status_str).arg(si.mode_name()).arg(si.map).arg(si.ping)
-            .arg(country_flag).arg(si.country).arg(si.max_player_count - si.private_slots())
-            .arg(si.max_player_count);
-
-    QString ext_info;
-    if (si.info.size() > 0)
-    {
-        ext_info = tr(  "<hr>Extended info:"
-                        "<table width=100% class=\"props\">"
-                        "<tr class=\"header\"><td>Key</td><td>Value</td></tr>");
-       
-        int i = 0;
-        for (server_info::info_t::const_iterator it = si.info.begin();
-                it != si.info.end(); it++)
-        {
-            ext_info += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td></tr>")
-                        .arg(i % 2 + 1).arg(it->first).arg(Qt::escape(it->second));
-            i++;
-        }
-        ext_info += "</table>";
-    }
-
-    html = QString("<html><head>%1</head><body class=\"body\"><table width=100%><tr><td class=\"serv_header\">%2"
-            "</td></tr></table>%3<hr>%4%5%6</body></html>")
-            .arg(get_css( palette() )).arg(name).arg(si.id.address()).arg(serv_info).arg(players)
-            .arg(ext_info);
-    return html;
-}
-
-
-void server_info_manager::regenerate_widgets( const server_info& si )
-{
-    widgets.clear();
-    player_info_list plist = si.players;
-    
-    QTextCursor cursor;
-    QRegExp friend_rx( friend_tag_c.arg("(.*)") );
-
-    while ( cursor = document()->find( friend_rx ), !cursor.isNull() ){
-
-        friend_rx.exactMatch( cursor.selectedText() );
-        QString player = friend_rx.cap(1);
-
-        player_info_list::iterator pinfo = std::find_if( plist.begin(), plist.end(), bind(&player_info::nick_name, _1) == player );
-        
-        assert( pinfo != plist.end() );//FIXME replace on exception on developing completiion ?
-
-        QToolButton* button = create_friend_button( *pinfo, cursor.currentFrame() );
-
-        //Creating specific char-format for widget geometry handling
-        QTextCharFormat format;
-        format.setObjectType( widget_object::WidgetFormat );
-
-        format.setProperty( widget_object::WidgetPtr,    qVariantFromValue<QWidget*>( button ) );
-        format.setProperty( widget_object::ScrollBarPtr, qVariantFromValue<QWidget*>( verticalScrollBar() ) );
-
-        cursor.insertText( QString(QChar::ObjectReplacementCharacter), format );
-
-	widgets[ cursor.block() ].push_back( button );
-	
-        plist.erase( pinfo );
-    }
-
-    assert( plist.empty() );//FIXME replace on exception on developing completiion ?
-}
-
-QToolButton* server_info_manager::create_friend_button( const player_info& player, QObject* dispatcher )
-{
-    QToolButton* button = new QToolButton( viewport() );
-    button->setVisible( viewport()->isVisible() );
-    button->setFixedSize( QSize(22,22) );
-    button->setIcon( QIcon("icons:bookmarks.png").pixmap(QSize(12,12)) );
-    button->setAutoRaise(true);
-    button->setProperty( player_property_c, qVariantFromValue( player ) );
-
-    connect( button, SIGNAL( clicked(bool) ), this, SLOT( add_friend() ) );
-    connect( dispatcher, SIGNAL( destroyed(QObject *) ), button, SLOT( deleteLater() ) );
-
-    return button;
+    return QString( "<html><head>%1</head>%2</html>").arg( get_css( palette() ) ).arg(body);
 }
 
 namespace {
     enum Status{ Illegal = 0, Updating = 2, None = 4, Online = 8, Password = 16, Offline = 32 };
+}
+
+QString server_info_manager::make_info(const server_info& si) const
+{
+    QString country_flag = ( si.country_code.isEmpty() )
+        ? QString()
+        : QString("<img class=\"img1\" src=\"%1\">").arg(geoip::get_flag_filename_by_country(si.country_code));
+
+    QString server_info;
+    server_info += "<table width=100% class=\"props\">";
+    
+    server_info += tr("<tr class=\"line1\"><td>Status</td><td>%1</td></tr>").arg( make_status(si) );
+    server_info += tr("<tr class=\"line2\"><td>Game mode</td><td>%1</td></tr>").arg( si.mode_name() );
+    server_info += tr("<tr class=\"line1\"><td>Map</td><td>%1</td></tr>").arg( map_tag_c.arg(Qt::escape(si.map)) );
+    server_info += tr("<tr class=\"line2\"><td>Ping</td><td>%1</td></tr>").arg(si.ping);
+    server_info += tr("<tr class=\"line1\"><td>Country</td><td>%1 %2</td></tr>").arg(country_flag).arg(si.country);
+    server_info += tr("<tr class=\"line2\"><td>Public slots</td><td>%1</td></tr>").arg(si.max_player_count - si.private_slots());
+    server_info += tr("<tr class=\"line1\"><td>Total slots</td><td>%1</td></tr>").arg(si.max_player_count);
+    
+    server_info += "</table>";
+
+    return server_info;
 }
 
 QString server_info_manager::make_status(const server_info& si) const
@@ -272,7 +215,7 @@ QString server_info_manager::make_status(const server_info& si) const
         ( Online   , "<img class=\"img1\" src=\"icons:status-online.png\"> Online "   )
         ( Password , "<img class=\"img1\" src=\"icons:status-passwd.png\"> Online "   )
         ( Offline  , "<img class=\"img1\" src=\"icons:status-offline.png\"> Offline " );
-    
+
     Status st(Illegal);
 
     if ( si.updating )
@@ -287,11 +230,143 @@ QString server_info_manager::make_status(const server_info& si) const
         st = Offline;
 
     assert( st != Illegal );//FIXME replace on exception on developing completiion ?
-    
+
     QString status_str = tr( qPrintable(status.at(st) ) );
-    
+
     if ( si.is_full() && ( st & (Password | Online) ) )
         status_str += tr("Full");
-    
+
     return status_str;
 }
+
+QString server_info_manager::make_players(const server_info& si) const
+{
+    const player_info_list& pil = si.players;
+
+    QString players;
+
+    if ( pil.size() > 0 )
+    {
+        players += tr("<hr>%1 players:<table width=100%>"
+                     "<tr class=\"header\"><td>Nick</td><td>Ping</td><td>Score</td></tr>").arg( pil.size() );
+        int i = 0;
+        foreach (const player_info& pi, pil)
+        {
+            players += QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
+                .arg( i % 2 + 1 )
+                .arg( Qt::escape(pi.nick_name()) )
+                .arg( friend_tag_c.arg(Qt::escape(pi.nick_name())) )
+                .arg( pi.ping() )
+                .arg( pi.score() );
+            i++;
+        }
+
+        players += "</table>";
+    }
+
+    return players;
+}
+
+QString server_info_manager::make_ext_info(const server_info& si) const
+{
+    QString ext_info;
+    if ( si.info.size() > 0 )
+    {
+        ext_info += tr(  "<hr>Extended info:"
+                        "<table width=100% class=\"props\">"
+                        "<tr class=\"header\"><td>Key</td><td>Value</td></tr>");
+        int i = 0;
+        BOOST_FOREACH( const server_info::info_t::value_type& info, si.info ){
+            ext_info += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td></tr>")
+                .arg( i % 2 + 1 )
+                .arg( info.first )
+                .arg( Qt::escape(info.second) );
+            i++;            
+        }
+        
+        ext_info += "</table>";
+    }
+    return ext_info;
+}
+
+void server_info_manager::regenerate_widgets( const server_info& si )
+{
+    widgets.clear();
+    regenerate_friends(si);
+    regenerate_maps(si);
+}
+
+void server_info_manager::regenerate_friends(const server_info& si)
+{
+    player_info_list plist = si.players;
+
+    QTextCursor cursor( browser_->document() );
+    QRegExp friend_rx( friend_tag_c.arg("(.*)") );
+
+    while ( cursor = browser_->document()->find( friend_rx, cursor ), !cursor.isNull() ) {
+
+        friend_rx.exactMatch( cursor.selectedText() );
+        QString player = friend_rx.cap(1);
+
+        player_info_list::iterator pinfo = std::find_if( plist.begin(), plist.end(), bind(&player_info::nick_name, _1) == player );
+
+        assert( pinfo != plist.end() );//FIXME remove on developing completiion ?
+
+        wrap_widget( create_friend_button( *pinfo ), cursor );
+
+        plist.erase( pinfo );
+    }
+
+    assert( plist.empty() );//FIXME remove on developing completiion ?
+}
+
+void server_info_manager::regenerate_maps(const server_info& si)
+{
+    QTextCursor cursor( browser_->document() );
+    QRegExp map_rx( map_tag_c.arg("(.*)") );
+
+    while ( cursor = browser_->document()->find( map_rx, cursor ), !cursor.isNull() ) {
+
+        map_rx.exactMatch( cursor.selectedText() );
+        QString map = map_rx.cap(1);
+
+        wrap_widget( create_map_box( si ), cursor );
+    }
+}
+
+QToolButton* server_info_manager::create_friend_button( const player_info& player )
+{
+    QToolButton* button = new QToolButton( browser_->viewport() );
+    button->setVisible( browser_->viewport()->isVisible() );
+    button->setFixedSize( QSize(22,22) );
+    button->setIcon( QIcon("icons:bookmarks.png").pixmap(QSize(12,12)) );
+    button->setAutoRaise(true);
+    button->setProperty( player_property_c, qVariantFromValue( player ) );
+
+    connect( button, SIGNAL( clicked(bool) ), this, SLOT( friend_added() ) );
+    return button;
+}
+
+QComboBox* server_info_manager::create_map_box(const server_info& si)
+{
+    QComboBox* combo = new QComboBox( browser_->viewport() );
+    combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    combo->setVisible( browser_->viewport()->isVisible() );
+    combo->addItem(si.map);
+    connect( combo, SIGNAL( currentIndexChanged( const QString& ) ), this, SIGNAL( change_map( const QString& ) ) );
+    return combo;
+}
+
+void server_info_manager::wrap_widget( QWidget* widget, QTextCursor& cursor ) {
+    QTextCharFormat format = cursor.blockCharFormat();
+    format.setObjectType( widget_object::WidgetFormat );
+    format.setProperty( widget_object::WidgetPtr,    qVariantFromValue<QWidget*>( widget ) );
+    format.setProperty( widget_object::VerticalBarPtr, qVariantFromValue<QWidget*>( browser_->verticalScrollBar() ) );
+    format.setProperty( widget_object::HorizontalBarPtr, qVariantFromValue<QWidget*>( browser_->horizontalScrollBar() ) );
+
+    cursor.insertText( QString(QChar::ObjectReplacementCharacter), format );
+
+    QObject::connect( cursor.currentFrame(), SIGNAL( destroyed(QObject *) ), widget, SLOT( deleteLater() ) );
+    widgets[ cursor.block() ].push_back( widget );
+}
+
