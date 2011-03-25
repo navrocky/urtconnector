@@ -259,7 +259,7 @@ void qstat_updater::process_xml()
         else if (cur_state_ == s_rules && rd_.name() == c_rule)
         {
             cur_rule_ = rule_info_t();
-            cur_rule_.first = rd_.attributes().value(c_rule_name).toString();
+            cur_rule_.first = rd_.attributes().value(c_rule_name).toString().trimmed();
             cur_state_ = s_rule;
         }
 
@@ -284,7 +284,7 @@ void qstat_updater::process_xml()
     if (rd_.isCharacters())
     {
         if (cur_state_ == s_host_name)
-            cur_server_info_->id = server_id(rd_.text().toString());
+            cur_server_info_->id = server_id(rd_.text().toString().trimmed());
         else if (cur_state_ == s_name)
             cur_server_info_->name = rd_.text().toString().trimmed();
         else if (cur_state_ == s_game_type)
@@ -298,7 +298,7 @@ void qstat_updater::process_xml()
         else if (cur_state_ == s_retries)
             cur_server_info_->retries = rd_.text().toString().toInt();
         else if (cur_state_ == s_rule)
-            cur_rule_.second = rd_.text().toString();
+            cur_rule_.second = rd_.text().toString().trimmed();
         else if (cur_state_ == s_player_name)
             cur_player_info_.set_nick_name(rd_.text().toString().trimmed());
         else if (cur_state_ == s_player_score)
@@ -357,7 +357,7 @@ void qstat_updater::process_xml()
             cur_state_ = s_server;
         else if (rd_.name() == c_rule && cur_state_ == s_rule)
         {
-            cur_server_info_->info[cur_rule_.first] = cur_rule_.second;
+            cur_server_info_->info[ cur_rule_.first ] = cur_rule_.second;
             cur_state_ = s_rules;
         }
         else if (rd_.name() == c_player && cur_state_ == s_player)

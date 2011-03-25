@@ -87,6 +87,8 @@ server_info_manager::server_info_manager( QWidget* parent )
     lay->addWidget( browser_ );
 
     browser_->installEventFilter(this);
+    browser_->setOpenLinks(true);
+    browser_->setOpenExternalLinks(true);
 }
 
 server_info_manager::~server_info_manager()
@@ -150,7 +152,7 @@ void server_info_manager::friend_added() const
 
 QString server_info_manager::create_html_template(const server_info& si) const
 {
-    QString name = Qt::escape(si.get_info("sv_hostname"));
+    QString name = si.get_info("sv_hostname");
     if (name.isEmpty())
         name = si.get_info("hostname");
     if (name.isEmpty())
@@ -254,8 +256,8 @@ QString server_info_manager::make_players(const server_info& si) const
         {
             players += QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
                 .arg( i % 2 + 1 )
-                .arg( Qt::escape(pi.nick_name()) )
-                .arg( friend_tag_c.arg(Qt::escape(pi.nick_name())) )
+                .arg( q3coloring(pi.nick_name()) )
+                .arg( friend_tag_c.arg(pi.nick_name()) )
                 .arg( pi.ping() )
                 .arg( pi.score() );
             i++;
@@ -267,20 +269,32 @@ QString server_info_manager::make_players(const server_info& si) const
     return players;
 }
 
+QString make_advanced_info( const server_info::info_t::value_type& info, const server_info& si ){
+    
+    if( info.first == "Admin" )
+        return QString("<a href=\"mailto:%1;%2;\">%1</a>").arg( toplainhtml( info.second ) ).arg( toplainhtml( si.get_info("Email") ) );
+    else if( info.first == "Email" )
+        return QString("<a href=\"mailto:%1\">%1</a>").arg( toplainhtml( info.second ) );
+    else if( info.first == "sv_dlURL" && info.second.startsWith("http") )
+        return QString("<a href=\"%1\">%1</a>").arg( toplainhtml( info.second ) );
+    else
+        return q3coloring( info.second );
+}
+
 QString server_info_manager::make_ext_info(const server_info& si) const
 {
     QString ext_info;
     if ( si.info.size() > 0 )
     {
-        ext_info += tr(  "<hr>Extended info:"
+        ext_info += tr( "<hr>Extended info:"
                         "<table width=100% class=\"props\">"
                         "<tr class=\"header\"><td>Key</td><td>Value</td></tr>");
         int i = 0;
-        BOOST_FOREACH( const server_info::info_t::value_type& info, si.info ){
+        BOOST_FOREACH( const server_info::info_t::value_type& info, si.info ) {
             ext_info += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td></tr>")
                 .arg( i % 2 + 1 )
-                .arg( info.first )
-                .arg( Qt::escape(info.second) );
+                .arg( toplainhtml( info.first ) )
+                .arg( make_advanced_info(info, si) );
             i++;            
         }
         

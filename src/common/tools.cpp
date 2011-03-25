@@ -12,6 +12,7 @@
 #include <QEvent>
 #include <QDockWidget>
 #include <QStyle>
+#include <QTextDocument>
 
 #include "tools.h"
 
@@ -71,26 +72,42 @@ const QColor& color( const QString & str, const Q3ColorMap& substitute )
 QString colorize( const QString& token, const QColor& color )
 {
     static QString colored("<font color=\"%1\">%2</font>");
-    return colored.arg( color.name(), token);
+    return colored.arg( color.name(), Qt::escape(token) );
 }
 
 QString colorize_token(const QString& str, const Q3ColorMap& substitute )
 {
-    static const QRegExp color_rx("^(\\d).*");
+    static const QRegExp color_rx("^\\^(\\d).*");
     if( color_rx.exactMatch(str) )
-        return colorize( str.right( str.size() -1 ), color( color_rx.cap(1), substitute ) );
+        return colorize( str.right( str.size() -2 ), color( color_rx.cap(1), substitute ) );
     else
         return str;
 }
 
-QString q3coloring(const QString & str, const Q3ColorMap& custom)
+QStringList split_by_q3colors( const QString& str){
+    QStringList ret;
+    
+    int index_begin, index_end = 0;
+    
+    while( index_end = str.indexOf( QRegExp("\\^(\\d)"), index_end ), index_end != -1 ){
+        ret << str.mid( index_begin, index_end - index_begin );
+        
+        index_begin = index_end;
+        index_end++;
+    }
+    
+    ret << str.mid( index_begin, -1 );
+    
+    return ret;
+}
+
+QString q3coloring( const QString & str, const Q3ColorMap& custom )
 {
-    //split incoming string by quake3 color-markers
-    QStringList lst = str.split( "^" );
-    //removing empty lines
-    lst.erase( std::remove_if( lst.begin(), lst.end(), bind( &QString::isEmpty, _1 ) ), lst.end() );
+    QStringList lst = split_by_q3colors(str);
+
     //replacing quake3 color-markers by html-formated text
     std::transform(lst.begin(), lst.end(), lst.begin(), boost::bind(colorize_token, _1, boost::ref(custom)) );
+    
     //joining list to plain string
     return lst.join("");
 }
@@ -100,6 +117,10 @@ QString q3stripcolor(const QString& str)
     return QString(str).replace( QRegExp("\\^\\d"), QString() );
 }
 
+QString toplainhtml(const QString& str)
+{
+    return Qt::escape( q3stripcolor(str) );
+}
 
 QColor choose_for_background(Qt::GlobalColor standard, const QColor& background)
 {

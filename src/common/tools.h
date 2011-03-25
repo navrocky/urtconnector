@@ -48,7 +48,10 @@ QString colorize( const QString& token, const QColor& color );
 QString q3coloring( const QString& str, const Q3ColorMap& custom = Q3ColorMap()  );
 
 ///Strip out Quake 3 color marks from string
-QString q3stripcolor( const QString& str ); 
+QString q3stripcolor( const QString& str );
+
+///Strip out Quake 3 color marks from string and escape text to html( like Qt::escape )
+QString toplainhtml( const QString& str ); 
 
 /*! Adds menu separator action to widget with optional text. */
 QAction* add_separator_action(QWidget* w, const QString& text = "");
