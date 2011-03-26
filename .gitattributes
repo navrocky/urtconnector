@@ -538,6 +538,8 @@ src/rcon/rcon.h -text
 src/rcon/rcon.ui -text
 src/rcon/rcon_completer.cpp -text
 src/rcon/rcon_completer.h -text
+src/rcon/rcon_connection.cpp -text
+src/rcon/rcon_connection.h -text
 src/rcon/rcon_settings.h -text
 src/rcon/rcon_settings_form.cpp -text
 src/rcon/rcon_settings_form.h -text

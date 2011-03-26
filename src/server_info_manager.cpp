@@ -1,28 +1,32 @@
 
+#include <boost/assign/list_of.hpp>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
-#include <boost/assign/list_of.hpp>
 
-#include <QTextBrowser>
-#include <QToolButton>
+#include <QBoxLayout>
 #include <QComboBox>
 #include <QScrollBar>
+#include <QTextBrowser>
 #include <QTextFrame>
-#include <QBoxLayout>
+#include <QToolButton>
 
+#include "cl/syslog/syslog.h"
 #include "common/exception.h"
 #include "common/player_info.h"
 #include "common/server_info.h"
 #include "common/tools.h"
+#include "rcon/rcon_connection.h"
 
 #include "geoip/geoip.h"
 
 #include "server_info_manager.h"
 
-const QString friend_tag_c = "FRIEND_TAG=\"%1\"";
+const QString player_tag_c = "PLAYER_TAG=\"%1\"";
 const QString map_tag_c = "MAP_TAG=\"%1\"";
 
 const char* player_property_c = "player";
+
+SYSLOG_MODULE(server_info);
 
 using namespace boost;
 
@@ -76,7 +80,9 @@ QString get_css( const QPalette& palette )
 
 server_info_manager::server_info_manager( QWidget* parent )
     : QWidget( parent )
+    , rcon_( new rcon_connection( server_id(), "", this ) )
     , browser_( new QTextBrowser(this) )
+    , html_colors_( default_colors() )
 {
     //Registering our-handler to make QTextBrowser widget-embeddable
     QObject *wInterface = new widget_object;
@@ -90,16 +96,14 @@ server_info_manager::server_info_manager( QWidget* parent )
     browser_->setOpenLinks(true);
     browser_->setOpenExternalLinks(true);
     
-    
-
-    if( html_colors_.empty() )
-    {
-        html_colors_ = default_colors();
-        BOOST_FOREACH( Q3ColorMap::value_type& p, html_colors_ )
-            p.second = p.second.lighter();
-    }
+    BOOST_FOREACH( Q3ColorMap::value_type& p, html_colors_ )
+        p.second = p.second.lighter();
 
     html_colors_[Q3DefaultColor] = palette().color(QPalette::Text);
+    
+    connect( this, SIGNAL(kick_player(const player_info&)), rcon_, SLOT(kick_player(const player_info&)) );
+    connect( this, SIGNAL(change_map(const QString&)),      rcon_, SLOT(set_map(const QString&)) );
+    connect( rcon_, SIGNAL(bad_password(server_id)),        this,  SLOT(bad_password(server_id)) );
 }
 
 server_info_manager::~server_info_manager()
@@ -113,6 +117,8 @@ void server_info_manager::set_server_info( server_info_p si )
     
     if( si_ )
     {
+        rcon_->set_server_id( si->id );
+        rcon_->set_password("123");
         browser_->setHtml( create_html_template(*si_) );
         regenerate_widgets(*si_);
     }
@@ -135,9 +141,11 @@ QRect visible_rect( const QAbstractScrollArea* a ){
 bool server_info_manager::eventFilter(QObject* obj, QEvent* e)
 {
     bool ret = QObject::eventFilter(obj, e);
-    
     if( obj == browser_ && e->type() == QEvent::Paint)
     {
+        LOG_DEBUG << "handling widgets visibility";
+        LOG_EXIT_DEBUG << "visibility ok";
+
         //QTextBrowser engine does not updates block thas are hidden away from QAbstractScrollArea visible surface
         //So we mannually hide widget when associated block is not in visible area
         BOOST_FOREACH( const WidgetsByBlock::value_type& p, widgets ){
@@ -150,16 +158,11 @@ bool server_info_manager::eventFilter(QObject* obj, QEvent* e)
     return ret;
 }
 
-void server_info_manager::friend_added() const
+void server_info_manager::bad_password(const server_id& id)
 {
-    QToolButton* tb = qobject_cast<QToolButton*>( sender() );
-    assert(tb);//FIXME replace on exception on developing completiion ?
-
-    if( tb->property( player_property_c ).canConvert<player_info>() )
-        throw qexception( tr( "Can't extract player info" ) );
-
-    emit add_to_friend( tb->property( player_property_c ).value<player_info>() );
+    throw qexception( QString( "Bad rcon password for server: %1" ).arg(id.address()) );
 }
+
 
 QString server_info_manager::create_html_template(const server_info& si) const
 {
@@ -171,7 +174,10 @@ QString server_info_manager::create_html_template(const server_info& si) const
     if ( name.isEmpty() )
         name = tr("* Unnamed *");
 
-    name = q3coloring(name, html_colors_);
+    Q3ColorMap colors(html_colors_);
+    colors[Q3DefaultColor] = Qt::white;
+    
+    name = q3coloring(name, colors);
 
     QString body = QString( "<body class=\"body\"><table width=100%>"
                             "<tr><td class=\"serv_header\">%1</td></tr></table>"
@@ -259,7 +265,7 @@ QString server_info_manager::make_players(const server_info& si) const
             players += QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
                 .arg( i % 2 + 1 )
                 .arg( q3coloring(pi.nick_name(), html_colors_) )
-                .arg( friend_tag_c.arg( toplainhtml( pi.nick_name() ) ) )
+                .arg( player_tag_c.arg( toplainhtml( pi.nick_name() ) ) )
                 .arg( pi.ping() )
                 .arg( pi.score() );
             i++;
@@ -311,6 +317,8 @@ QString server_info_manager::make_ext_info(const server_info& si) const
 
 void server_info_manager::regenerate_widgets( const server_info& si )
 {
+    LOG_DEBUG << "regenerating widgets";
+    LOG_EXIT_DEBUG << "widget regenerating completed";
     widgets.clear();
     regenerate_friends(si);
     regenerate_maps(si);
@@ -321,7 +329,7 @@ void server_info_manager::regenerate_friends(const server_info& si)
     player_info_list plist = si.players;
 
     QTextCursor cursor( browser_->document() );
-    QRegExp friend_rx( friend_tag_c.arg("(.*)") );
+    QRegExp friend_rx( player_tag_c.arg("(.*)") );
 
     while ( cursor = browser_->document()->find( friend_rx, cursor ), !cursor.isNull() ) {
 
@@ -347,7 +355,13 @@ void server_info_manager::regenerate_friends(const server_info& si)
         
         assert( pinfo != plist.end() );//FIXME remove on developing completiion ?
 
-        wrap_widget( create_friend_button( *pinfo ), cursor );
+        wrap_widget( create_tool_button(
+            QIcon::fromTheme("bookmarks", QIcon("icons:bookmarks.png")),
+            bind( &server_info_manager::add_to_friend, this, *pinfo ) ), cursor );
+        
+        wrap_widget( create_tool_button(
+            QIcon::fromTheme("edit-delete", QIcon("icons:remove.png")),
+            bind( &server_info_manager::kick_player, this, *pinfo ) ), cursor );
 
         plist.erase( pinfo );
     }
@@ -369,26 +383,33 @@ void server_info_manager::regenerate_maps(const server_info& si)
     }
 }
 
-QToolButton* server_info_manager::create_friend_button( const player_info& player )
+QToolButton* server_info_manager::create_tool_button(const QIcon& icon, boost::function< void() > action )
 {
     QToolButton* button = new QToolButton( browser_->viewport() );
     button->setVisible( browser_->viewport()->isVisible() );
     button->setFixedSize( QSize(22,22) );
-    button->setIcon( QIcon("icons:bookmarks.png").pixmap(QSize(12,12)) );
+    button->setIcon( icon.pixmap(QSize(12,12)) );
     button->setAutoRaise(true);
-    button->setProperty( player_property_c, qVariantFromValue( player ) );
 
-    connect( button, SIGNAL( clicked(bool) ), this, SLOT( friend_added() ) );
+    connect(
+        button, SIGNAL( clicked(bool) ),
+        new qt_signal_wrapper( button, action ), SLOT( activate() ) );
+    
     return button;
 }
 
 QComboBox* server_info_manager::create_map_box(const server_info& si)
 {
-    QComboBox* combo = new QComboBox( browser_->viewport() );
+    QComboBox* combo = new map_combo( browser_->viewport() );
     combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     combo->setVisible( browser_->viewport()->isVisible() );
     combo->addItem(si.map);
+    
+    connect( rcon_, SIGNAL(maps_changed(QStringList)), combo, SLOT( set_items(QStringList ) ));
+    connect( combo, SIGNAL( before_show() ), rcon_, SLOT( maps() ) );
+    
     connect( combo, SIGNAL( currentIndexChanged( const QString& ) ), this, SIGNAL( change_map( const QString& ) ) );
+    
     return combo;
 }
 

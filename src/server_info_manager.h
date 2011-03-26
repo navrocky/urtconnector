@@ -3,6 +3,7 @@
 #define URT_SRV_INFO_MANAGER_H
 
 #include <QWidget>
+#include <QComboBox>
 #include <QTextObjectInterface>
 
 #include <common/server_info.h>
@@ -13,6 +14,8 @@ class QToolButton;
 class QComboBox;
 
 class player_info;
+class rcon_connection;
+class rcon_admin;
 
 class widget_object : public QObject, public QTextObjectInterface
 {
@@ -43,15 +46,17 @@ public:
 Q_SIGNALS:
     ///This signal emited when manager wants to add player to favorites 
     void add_to_friend( const player_info& player ) const;
+    
+    void kick_player( const player_info& player ) const;
 
     ///This signal emited when manager wants to change map on server 
     void change_map( const QString& map ) const;
     
 protected:
     virtual bool eventFilter(QObject* obj, QEvent* e);
-    
+
 private Q_SLOTS:
-    void friend_added() const;
+    void bad_password( const server_id& id );
     
 private:
 
@@ -72,8 +77,9 @@ private:
     void regenerate_friends( const server_info& si );
     void regenerate_maps( const server_info& si );
     
-    ///Cteates and initialize button to handle "add to friends" actions
-    QToolButton* create_friend_button( const player_info& player );
+    ///Cteates and initialize button and connect it to  \a action call
+    QToolButton* create_tool_button( const QIcon& icon, boost::function<void()> action );
+    
     ///Create combobox with maplist
     QComboBox*  create_map_box( const server_info& si );
 
@@ -93,9 +99,59 @@ private:
     WidgetsByBlock widgets;
 
     Q3ColorMap html_colors_;
+    
+    rcon_connection* rcon_;
 };
 
+class map_combo: public QComboBox{
+    Q_OBJECT
+public:
+    map_combo(QWidget* parent)
+        :QComboBox(parent){}
+        
+    ~map_combo(){}
+    
+    virtual void showPopup(){
+        emit before_show();
+        QComboBox::showPopup();
+    }
+    
+Q_SIGNALS:
+    void before_show();
+    
+public Q_SLOTS:
+    void set_items( const QStringList& items ){
+        //Adding items if no such items in list
+        foreach( const QString& item, items){
+            if( findText(item) == -1 )
+                addItem(item);
+        }
+        
+        int cur = currentIndex();
+        QStringList to_remove;
+        
+        //collectiong items text to remove
+        for(uint index = 0; index < count(); ++index)
+        {
+            if( !items.contains( itemText(index) ) && index != cur )
+                to_remove << itemText(index);
+        }
+        
+        //removing items
+        foreach( const QString& item, to_remove){
+            removeItem( findText(item) );
+        }
+        
+        
+        //FIXME это для того чтоб уже открытый view обновить
+        if( reinterpret_cast<QWidget*>(view())->isVisible() )
+        {
+            QComboBox::hidePopup();
+            QComboBox::showPopup();
+        }
+    }
 
+};
 
 #endif
 
