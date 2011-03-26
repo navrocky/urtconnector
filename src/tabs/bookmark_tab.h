@@ -9,6 +9,7 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class QAction;
 class server_bookmark_list;
+class visible_updater;
 
 class bookmark_tab : public server_list_common_tab
 {
@@ -23,9 +24,6 @@ public slots:
 protected slots:
     void do_selection_change();
 
-protected:
-    void showEvent(QShowEvent* event);
-
 private slots:
     void update_contents();
     void update_servers_info();
@@ -39,13 +37,13 @@ private:
 
     typedef std::map<server_id, QTreeWidgetItem*> server_items;
 
-    bool update_contents_pended_;
     server_items items_;
     QAction* add_action_;
     QAction* edit_action_;
     QAction* remove_action_;
     QAction* refresh_selected_;
     QAction* refresh_all_;
+    visible_updater* updater_;
 };
 
 #endif

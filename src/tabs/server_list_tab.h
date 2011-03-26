@@ -9,6 +9,7 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class QAction;
 class server_bookmark_list;
+class visible_updater;
 
 class server_list_tab : public server_list_common_tab
 {
@@ -17,9 +18,6 @@ public:
     server_list_tab(const QString& object_name,
                     const tab_context& ctx,
                     QWidget* parent);
-
-protected:
-    void showEvent(QShowEvent* event);
 
 protected slots:
     virtual void do_selection_change();
@@ -35,12 +33,12 @@ private:
 
     typedef std::map<server_id, QTreeWidgetItem*> server_items;
 
-    bool update_contents_pended_;
     server_items items_;
     QAction* add_bookmark_action_;
     QAction* refresh_selected_action_;
     QAction* refresh_from_master_action_;
     QAction* clear_all_action_;
+    visible_updater* updater_;
 };
 
 #endif

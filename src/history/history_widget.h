@@ -11,6 +11,7 @@
 class QAction;
 class QTreeWidget;
 class QTreeWidgetItem;
+class visible_updater;
 
 class history_widget : public filtered_tab
 {
@@ -31,9 +32,6 @@ public slots:
 
 protected slots:
     virtual void filter_changed();
-
-protected:
-    void showEvent(QShowEvent* event);
 
 private slots:
     void update_contents();
@@ -56,13 +54,13 @@ private:
     bool group_mode_;
     int item_count_;
     int visible_item_count_;
-    bool update_contents_pended_;
     QAction* add_bookmark_action_;
     QAction* remove_selected_action_;
     QAction* remove_all_action_;
     QAction* refresh_selected_;
     QAction* refresh_all_;
     list_caption_updater caption_;
+    visible_updater* updater_;
 };
 
 #endif // HISTORY_WIDGET_H

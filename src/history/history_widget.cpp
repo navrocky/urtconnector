@@ -12,9 +12,11 @@
 #include <common/item_view_dblclick_action_link.h>
 #include <common/tools.h>
 #include <common/tree_smart_updater.h>
+#include <common/qaccumulatingconnection.h>
 
 #include <tabs/status_item_delegate.h>
 #include <tabs/common_item_tags.h>
+#include <tabs/visible_updater.h>
 #include <tabs/status_item_delegate.h>
 #include <jobs/job_queue.h>
 #include <jobs/job.h>
@@ -79,8 +81,8 @@ history_widget::history_widget(history_p history,
 , group_mode_(true)
 , item_count_(0)
 , visible_item_count_(0)
-, update_contents_pended_(false)
 , caption_(this, tr("History"))
+, updater_(new visible_updater(this, SLOT(update_contents()), this))
 {
     setWindowIcon(QIcon("icons:history.png"));
     
@@ -118,7 +120,14 @@ history_widget::history_widget(history_p history,
     hdr->resizeSection(3, 200);
     
     tree_->setItemDelegateForColumn(1, new status_item_delegate(server_list(), tree_));
-    connect(history.get(), SIGNAL(changed()), SLOT(update_contents()));
+    
+    connect(history.get(), SIGNAL(changed()), updater_, SLOT(update_contents()));
+    
+    new QAccumulatingConnection(context().serv_list().get(), SIGNAL(changed()),
+                                updater_, SLOT(update_contents()), 200,
+                                QAccumulatingConnection::Periodically,
+                                this);
+    
     connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(do_selection_change()));
 
     addAction(add_bookmark_action_);
@@ -149,7 +158,7 @@ history_widget::history_widget(history_p history,
     tree_->setAllColumnsShowFocus(true);
     tree_->setWordWrap(true);
 
-    update_contents();
+    updater_->update_contents();
 }
 
 void history_widget::set_group_mode(bool val)
@@ -159,17 +168,7 @@ void history_widget::set_group_mode(bool val)
     group_mode_ = val;
     tree_->clear();
     items_map_.clear();
-    update_contents();
-}
-
-void history_widget::showEvent(QShowEvent* event)
-{
-    filtered_tab::showEvent(event);
-    if (update_contents_pended_)
-    {
-        update_contents_pended_ = false;
-        update_contents();
-    }
+    updater_->update_contents();
 }
 
 void history_widget::add_to_favorites()
@@ -265,12 +264,6 @@ void history_widget::update_contents_grouped()
 
 void history_widget::update_contents()
 {
-    if (!isVisible())
-    {
-        update_contents_pended_ = true;
-        return;
-    }
-
     LOG_DEBUG << "Update contents";
 
     tree_->setUpdatesEnabled(false);

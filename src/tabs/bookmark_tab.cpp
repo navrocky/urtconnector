@@ -14,6 +14,7 @@
 #include "../job_update_selected.h"
 #include "status_item_delegate.h"
 #include "common_item_tags.h"
+#include "visible_updater.h"
 
 #include "bookmark_tab.h"
 #include "main_window.h"
@@ -27,7 +28,7 @@ bookmark_tab::bookmark_tab(const QString& object_name,
                            const tab_context& ctx,
                            QWidget* parent)
 : server_list_common_tab(object_name, tr("Favorites"), ctx, parent)
-, update_contents_pended_(false)
+, updater_(new visible_updater(this, SLOT(update_contents()), this))
 {
     setWindowIcon(QIcon("icons:bookmarks.png"));
 
@@ -67,11 +68,11 @@ bookmark_tab::bookmark_tab(const QString& object_name,
     new item_view_dblclick_action_link(this, tree(), ctx.connect_action());
 
     new QAccumulatingConnection(context().bookmarks().get(), SIGNAL(changed()),
-                                this, SLOT(update_contents()), 100,
+                                updater_, SLOT(update_contents()), 100,
                                 QAccumulatingConnection::Finally,
                                 this);
     new QAccumulatingConnection(context().serv_list().get(), SIGNAL(changed()),
-                                this, SLOT(update_servers_info()), 200,
+                                updater_, SLOT(update_contents()), 200,
                                 QAccumulatingConnection::Periodically,
                                 this);
 
@@ -86,11 +87,6 @@ void bookmark_tab::do_selection_change()
 
 void bookmark_tab::update_servers_info()
 {
-    if (!isVisible())
-    {
-        update_contents_pended_ = true;
-        return;
-    }
     LOG_DEBUG << "Update servers info";
     for (int i = 0; i < tree()->topLevelItemCount(); i++)
     {
@@ -99,23 +95,8 @@ void bookmark_tab::update_servers_info()
     }
 }
 
-void bookmark_tab::showEvent(QShowEvent* event)
-{
-    server_list_common_tab::showEvent(event);
-    if (update_contents_pended_)
-    {
-        update_contents_pended_ = false;
-        update_contents();
-    }
-}
-
 void bookmark_tab::update_contents()
 {
-    if (!isVisible())
-    {
-        update_contents_pended_ = true;
-        return;
-    }
     LOG_DEBUG << "Update contents";
     QTreeWidgetItem* cur_item = tree()->currentItem();
 

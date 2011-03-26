@@ -26,6 +26,7 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 , friends_(fl)
 , caption_(this, tr("Friends"))
 , updater_(new visible_updater(this, SLOT(update_contents()), this))
+, online_count_(0)
 {
     setWindowIcon(QIcon("icons:friends.png"));
     
@@ -105,10 +106,12 @@ server_id friend_list_widget::selected_server() const
 
 void friend_list_widget::update_contents()
 {
+    online_count_ = 0;
     const friend_list::friend_records_t& fl = friends_->list();
     updater<friend_list::friend_records_t>::update_tree_contents(fl, c_friend_role, tree_, 0,
         boost::bind(&friend_list_widget::update_friend_item, this, _1), items_map_);
-
+    
+    caption_.set_visible_count(online_count_);
     caption_.set_total_count(tree_->topLevelItemCount());
 
     update_actions();
@@ -156,6 +159,9 @@ void friend_list_widget::update_friend_item(QTreeWidgetItem* item)
     item->setText(0, fr.nick_name());
     
     server_id_list ids = find_server_with_player(fr);
+    online_count_ += ids.size();
+    
+    int old_cnt = item->childCount();
     
     // take old items list
     typedef QMap<server_id, QTreeWidgetItem*> srv_items_map_t;
@@ -169,6 +175,9 @@ void friend_list_widget::update_friend_item(QTreeWidgetItem* item)
     // update items
     updater<server_id_list>::update_tree_contents(ids, c_id_role, tree_, item,
         boost::bind(&friend_list_widget::update_server_item, this, _1), items);
+    
+    if (old_cnt == 0 && item->childCount() > 0)
+        item->setExpanded(true);        
 }
 
 void friend_list_widget::update_server_item(QTreeWidgetItem* item)

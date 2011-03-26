@@ -48,6 +48,7 @@ private:
     QAction* add_action_;
     QAction* edit_action_;
     QAction* remove_action_;
+    int online_count_;
 };
 
 #endif // FRIEND_LIST_WIDGET_H

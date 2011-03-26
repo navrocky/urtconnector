@@ -4,6 +4,7 @@
 #include <QObject>
 
 class QWidget;
+class QAccumulatingConnection;
 
 // updates widget only if its in visible state, or pends update call until widget 
 // became visible
@@ -22,9 +23,13 @@ public slots:
 signals:
     void update_needed();
     
+private slots:
+    void invisible_update();
+    
 private:
     bool update_pended_;
     QWidget* w_;
+    QAccumulatingConnection* conn_;
 };
 
 #endif // VISIBLE_UPDATER_H

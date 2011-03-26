@@ -17,6 +17,7 @@
 #include "../job_update_from_master.h"
 #include "status_item_delegate.h"
 #include "common_item_tags.h"
+#include "visible_updater.h"
 
 #include "server_list_tab.h"
 
@@ -29,7 +30,7 @@ server_list_tab::server_list_tab(const QString& object_name,
                                  const tab_context& ctx,
                                  QWidget* parent)
 : server_list_common_tab(object_name, tr("All servers"), ctx, parent)
-, update_contents_pended_(false)
+, updater_(new visible_updater(this, SLOT(update_contents()), this))
 {
     setWindowIcon(QIcon("icons:earth.png"));
 
@@ -67,30 +68,14 @@ server_list_tab::server_list_tab(const QString& object_name,
     new item_view_dblclick_action_link(this, tree(), ctx.connect_action());
 
     new QAccumulatingConnection(context().serv_list().get(), SIGNAL(changed()),
-                                this, SLOT(update_contents()), 200,
+                                updater_, SLOT(update_contents()), 200,
                                 QAccumulatingConnection::Periodically,
                                 this);
     update_actions();
 }
 
-void server_list_tab::showEvent(QShowEvent* event)
-{
-    server_list_common_tab::showEvent(event);
-
-    if (update_contents_pended_)
-    {
-        update_contents_pended_ = false;
-        update_contents();
-    }
-}
-
 void server_list_tab::update_contents()
 {
-    if (!isVisible())
-    {
-        update_contents_pended_ = true;
-        return;
-    }
     LOG_DEBUG << "Update contents";
     QTreeWidgetItem* cur_item = tree()->currentItem();
 
