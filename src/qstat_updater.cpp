@@ -259,7 +259,7 @@ void qstat_updater::process_xml()
         else if (cur_state_ == s_rules && rd_.name() == c_rule)
         {
             cur_rule_ = rule_info_t();
-            cur_rule_.first = rd_.attributes().value(c_rule_name).toString().trimmed();
+            cur_rule_.first = rd_.attributes().value(c_rule_name).toString().simplified();
             cur_state_ = s_rule;
         }
 
@@ -284,13 +284,13 @@ void qstat_updater::process_xml()
     if (rd_.isCharacters())
     {
         if (cur_state_ == s_host_name)
-            cur_server_info_->id = server_id(rd_.text().toString().trimmed());
+            cur_server_info_->id = server_id(rd_.text().toString().simplified());
         else if (cur_state_ == s_name)
-            cur_server_info_->name = rd_.text().toString().trimmed();
+            cur_server_info_->name = rd_.text().toString().simplified();
         else if (cur_state_ == s_game_type)
-            cur_server_info_->game_type = rd_.text().toString();
+            cur_server_info_->game_type = rd_.text().toString().simplified();
         else if (cur_state_ == s_map)
-            cur_server_info_->map = rd_.text().toString();
+            cur_server_info_->map = rd_.text().toString().simplified();
         else if (cur_state_ == s_max_players)
             cur_server_info_->max_player_count = rd_.text().toString().toInt();
         else if (cur_state_ == s_ping)
@@ -298,9 +298,9 @@ void qstat_updater::process_xml()
         else if (cur_state_ == s_retries)
             cur_server_info_->retries = rd_.text().toString().toInt();
         else if (cur_state_ == s_rule)
-            cur_rule_.second = rd_.text().toString().trimmed();
+            cur_rule_.second = rd_.text().toString().simplified();
         else if (cur_state_ == s_player_name)
-            cur_player_info_.set_nick_name(rd_.text().toString().trimmed());
+            cur_player_info_.set_nick_name( rd_.text().toString().simplified());
         else if (cur_state_ == s_player_score)
             cur_player_info_.set_score(rd_.text().toString().toInt());
         else if (cur_state_ == s_player_ping)

@@ -81,13 +81,14 @@ QString colorize_token(const QString& str, const Q3ColorMap& substitute )
     if( color_rx.exactMatch(str) )
         return colorize( str.right( str.size() -2 ), color( color_rx.cap(1), substitute ) );
     else
-        return str;
+        return colorize( str, color(Q3DefaultColor, substitute) );
 }
 
 QStringList split_by_q3colors( const QString& str){
     QStringList ret;
     
-    int index_begin, index_end = 0;
+    int index_begin = 0;
+    int index_end = 0;
     
     while( index_end = str.indexOf( QRegExp("\\^(\\d)"), index_end ), index_end != -1 ){
         ret << str.mid( index_begin, index_end - index_begin );

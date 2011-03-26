@@ -89,6 +89,17 @@ server_info_manager::server_info_manager( QWidget* parent )
     browser_->installEventFilter(this);
     browser_->setOpenLinks(true);
     browser_->setOpenExternalLinks(true);
+    
+    
+
+    if( html_colors_.empty() )
+    {
+        html_colors_ = default_colors();
+        BOOST_FOREACH( Q3ColorMap::value_type& p, html_colors_ )
+            p.second = p.second.lighter();
+    }
+
+    html_colors_[Q3DefaultColor] = palette().color(QPalette::Text);
 }
 
 server_info_manager::~server_info_manager()
@@ -160,16 +171,7 @@ QString server_info_manager::create_html_template(const server_info& si) const
     if ( name.isEmpty() )
         name = tr("* Unnamed *");
 
-    static Q3ColorMap html_colors;
-
-    if( html_colors.empty() )
-    {
-        html_colors = default_colors();
-        BOOST_FOREACH( Q3ColorMap::value_type& p, html_colors )
-            p.second = p.second.lighter();
-    }
-
-    name = q3coloring(name, html_colors);
+    name = q3coloring(name, html_colors_);
 
     QString body = QString( "<body class=\"body\"><table width=100%>"
                             "<tr><td class=\"serv_header\">%1</td></tr></table>"
@@ -256,8 +258,8 @@ QString server_info_manager::make_players(const server_info& si) const
         {
             players += QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
                 .arg( i % 2 + 1 )
-                .arg( q3coloring(pi.nick_name()) )
-                .arg( friend_tag_c.arg(pi.nick_name()) )
+                .arg( q3coloring(pi.nick_name(), html_colors_) )
+                .arg( friend_tag_c.arg( toplainhtml( pi.nick_name() ) ) )
                 .arg( pi.ping() )
                 .arg( pi.score() );
             i++;
@@ -269,16 +271,20 @@ QString server_info_manager::make_players(const server_info& si) const
     return players;
 }
 
-QString make_advanced_info( const server_info::info_t::value_type& info, const server_info& si ){
+bool soft_equal( const QString& s1, const QString& s2 ){
+    return QString::compare( s1,s2, Qt::CaseInsensitive ) == 0;
+}
+
+QString make_advanced_info( const server_info::info_t::value_type& info, const server_info& si, const Q3ColorMap& subst){
     
-    if( info.first == "Admin" )
-        return QString("<a href=\"mailto:%1;%2;\">%1</a>").arg( toplainhtml( info.second ) ).arg( toplainhtml( si.get_info("Email") ) );
-    else if( info.first == "Email" )
+    if( soft_equal(info.first, "admin") && !si.get_info("Email").isEmpty() )
+        return QString("<a href=\"mailto:%1&lt;%2&gt;\">%3</a>").arg( toplainhtml( info.second ) ).arg( toplainhtml( si.get_info("Email") ) ).arg( q3coloring(info.second, subst) );
+    else if( soft_equal(info.first, "email") )
         return QString("<a href=\"mailto:%1\">%1</a>").arg( toplainhtml( info.second ) );
-    else if( info.first == "sv_dlURL" && info.second.startsWith("http") )
+    else if( ( soft_equal(info.first, "sv_dlurl") || soft_equal(info.first,"_url") ) && info.second.startsWith("http") )
         return QString("<a href=\"%1\">%1</a>").arg( toplainhtml( info.second ) );
     else
-        return q3coloring( info.second );
+        return q3coloring( info.second, subst);
 }
 
 QString server_info_manager::make_ext_info(const server_info& si) const
@@ -294,7 +300,7 @@ QString server_info_manager::make_ext_info(const server_info& si) const
             ext_info += QString("<tr class=\"line%1\"><td>%2</td><td>%3</td></tr>")
                 .arg( i % 2 + 1 )
                 .arg( toplainhtml( info.first ) )
-                .arg( make_advanced_info(info, si) );
+                .arg( make_advanced_info(info, si, html_colors_) );
             i++;            
         }
         
@@ -325,8 +331,19 @@ void server_info_manager::regenerate_friends(const server_info& si)
         player_info_list::iterator pinfo = std::find_if( plist.begin(), plist.end(), bind(&player_info::nick_name, _1) == player );
 
         // FIXME vlad: this assert crashes on the Chill BOMB[UAA] server, i write this workaround
-        if (pinfo == plist.end())
-            continue;
+        //       jerry: some fixes are made. welcome to next test cycle.
+        
+        if( pinfo == plist.end() ){
+            QStringList exception;
+            exception << "Can't process playername. Send this error to kinnalru@gmail.com"<<"\n";
+            exception << "Server: " << si.name <<"\n";
+            exception << "Payer: " << player <<"\n";
+            exception << "Payer list: "<<"\n";
+            BOOST_FOREACH( const player_info& pi, plist ) {
+                exception << "  - " << pi.nick_name() << "\n";
+            }
+            throw qexception(exception.join(""));
+        }
         
         assert( pinfo != plist.end() );//FIXME remove on developing completiion ?
 
@@ -335,27 +352,7 @@ void server_info_manager::regenerate_friends(const server_info& si)
         plist.erase( pinfo );
     }
   
-// this is an errorneous player list from html-browser on ChillBombServer
-/*    
-/29/...[Mursel]￼
-1664￼
-Krycha89FRIEND_TAG="Krycha89"
-ACAB￼
-LowPing:(((￼
-..:: JoinT::..￼
-Possest￼
-*'GWRR'*Sr.L3!￼
-xXTheKiLLXx￼
-PongoPygmaeus￼
-lr￼
-MadafakaFRIEND_TAG="Madafaka"
-Wuszu@￼
-Saucisson￼
-pulpfictlags￼
-*/
-
-// FIXME vlad: this code failed too
-//    assert( plist.empty() );//FIXME remove on developing completiion ?
+    assert( plist.empty() );//FIXME remove on developing completiion ?
 }
 
 void server_info_manager::regenerate_maps(const server_info& si)

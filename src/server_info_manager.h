@@ -6,6 +6,7 @@
 #include <QTextObjectInterface>
 
 #include <common/server_info.h>
+#include <common/tools.h>
 
 class QTextBrowser;
 class QToolButton;
@@ -91,7 +92,7 @@ private:
     typedef std::map<QTextBlock, Widgets> WidgetsByBlock;
     WidgetsByBlock widgets;
 
-    
+    Q3ColorMap html_colors_;
 };
 
 
