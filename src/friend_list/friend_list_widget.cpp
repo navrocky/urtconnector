@@ -7,7 +7,12 @@
 #include <QAction>
 
 #include <common/tree_smart_updater.h>
+#include <common/qaccumulatingconnection.h>
+#include <common/server_info.h>
+#include <common/server_list.h>
+#include <common/player_info.h>
 #include <tabs/common_item_tags.h>
+#include <tabs/visible_updater.h>
 #include "friend_list.h"
 #include "friend_prop_dialog.h"
 #include "friend_list_db_saver.h"
@@ -20,6 +25,7 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 : main_tab(tab_settings_p(new tab_settings("friend_list")), ctx, parent)
 , friends_(fl)
 , caption_(this, tr("Friends"))
+, updater_(new visible_updater(this, SLOT(update_contents()), this))
 {
     setWindowIcon(QIcon("icons:friends.png"));
     
@@ -39,11 +45,11 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
     tree_->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    tree_->setRootIsDecorated(false);
-    tree_->setUniformRowHeights(true);
+//     tree_->setRootIsDecorated(false);
+//     tree_->setUniformRowHeights(true);
     tree_->setSortingEnabled(true);
     tree_->setAllColumnsShowFocus(true);
-    tree_->setWordWrap(true);
+//     tree_->setWordWrap(true);
     
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(add_action_);
@@ -70,12 +76,17 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     
     connect(friends_, SIGNAL(changed()), SLOT(update_contents()));
     connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(update_actions()));
-    connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(selection_changed()));
+    connect(tree_, SIGNAL(itemSelectionChanged()), SIGNAL(selection_changed()));
     
     // create list saver
     new friend_list_db_saver(friends_, this);
+    
+    new QAccumulatingConnection(context().serv_list().get(), SIGNAL(changed()),
+                                updater_, SLOT(update_contents()), 200,
+                                QAccumulatingConnection::Periodically,
+                                this);
 
-    update_contents();
+    updater_->update_contents();
 }
 
 server_id friend_list_widget::selected_server() const
@@ -94,8 +105,6 @@ server_id friend_list_widget::selected_server() const
 
 void friend_list_widget::update_contents()
 {
-    tree_->setRootIsDecorated(false);
-    typedef QMap<friend_record, QTreeWidgetItem*> items_map_t;
     const friend_list::friend_records_t& fl = friends_->list();
     updater<friend_list::friend_records_t>::update_tree_contents(fl, c_friend_role, tree_, 0,
         boost::bind(&friend_list_widget::update_friend_item, this, _1), items_map_);
@@ -111,10 +120,61 @@ void friend_list_widget::update_actions()
     remove_action_->setEnabled(tree_->selectedItems().count() > 0);
 }
 
+server_id_list friend_list_widget::find_server_with_player(const friend_record& fr)
+{
+    server_id_list res;
+    if (fr.expression().isEmpty())
+    {
+        foreach (server_info_list::const_reference r, context().serv_list()->list())
+        {
+            foreach (const player_info& pi, r.second->players)
+            {
+                if (fr.nick_name().compare(pi.nick_name().trimmed(), Qt::CaseInsensitive) == 0)
+                    res.append(r.second->id);
+            }
+        }
+    } else
+    {
+        QRegExp rx(fr.expression());
+        rx.setCaseSensitivity(Qt::CaseInsensitive);
+        foreach (server_info_list::const_reference r, context().serv_list()->list())
+        {
+            foreach (const player_info& pi, r.second->players)
+            {
+                if ( rx.indexIn(pi.nick_name()) >= 0)
+                    res.append(r.second->id);
+            }
+        }
+    }
+    return res;
+}
+
+
 void friend_list_widget::update_friend_item(QTreeWidgetItem* item)
 {
     const friend_record& fr = item->data(0, c_friend_role).value<friend_record>();
     item->setText(0, fr.nick_name());
+    
+    server_id_list ids = find_server_with_player(fr);
+    
+    // take old items list
+    typedef QMap<server_id, QTreeWidgetItem*> srv_items_map_t;
+    srv_items_map_t items;
+    for (int i = 0; i < item->childCount(); i++)
+    {
+        QTreeWidgetItem* it = item->child(i);
+        items[it->data(0, c_id_role).value<server_id>()] = it;
+    }
+    
+    // update items
+    updater<server_id_list>::update_tree_contents(ids, c_id_role, tree_, item,
+        boost::bind(&friend_list_widget::update_server_item, this, _1), items);
+}
+
+void friend_list_widget::update_server_item(QTreeWidgetItem* item)
+{
+    server_id id = item->data(0, c_id_role).value<server_id>();
+    item->setText(0, id.address());
 }
 
 void friend_list_widget::add()

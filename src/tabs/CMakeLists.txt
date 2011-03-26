@@ -11,6 +11,7 @@ set(HEADERS
     bookmark_tab.h
     server_list_tab.h
     status_item_delegate.h
+    visible_updater.h
 )
 
 set(MOC_HEADERS
@@ -19,6 +20,7 @@ set(MOC_HEADERS
     server_list_common_tab.h
     bookmark_tab.h
     server_list_tab.h
+    visible_updater.h
 )
 
 set(SOURCES
@@ -29,6 +31,7 @@ set(SOURCES
     bookmark_tab.cpp
     server_list_tab.cpp
     status_item_delegate.cpp
+    visible_updater.cpp
 )
 
 set(IFACES

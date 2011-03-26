@@ -12,6 +12,7 @@ class QTreeWidget;
 class QAction;
 class friend_list;
 class server_list;
+class visible_updater;
 
 class friend_list_widget : public main_tab
 {
@@ -32,6 +33,8 @@ private slots:
 
 private:
     void update_friend_item(QTreeWidgetItem* item);
+    void update_server_item(QTreeWidgetItem* item);
+    server_id_list find_server_with_player(const friend_record& fr);
 
     friend_record get_selected_friend() const;
 
@@ -41,6 +44,7 @@ private:
     friend_list* friends_;
     list_caption_updater caption_;
     items_map_t items_map_;
+    visible_updater* updater_;
     QAction* add_action_;
     QAction* edit_action_;
     QAction* remove_action_;

@@ -324,14 +324,38 @@ void server_info_manager::regenerate_friends(const server_info& si)
 
         player_info_list::iterator pinfo = std::find_if( plist.begin(), plist.end(), bind(&player_info::nick_name, _1) == player );
 
+        // FIXME vlad: this assert crashes on the Chill BOMB[UAA] server, i write this workaround
+        if (pinfo == plist.end())
+            continue;
+        
         assert( pinfo != plist.end() );//FIXME remove on developing completiion ?
 
         wrap_widget( create_friend_button( *pinfo ), cursor );
 
         plist.erase( pinfo );
     }
+  
+// this is an errorneous player list from html-browser on ChillBombServer
+/*    
+/29/...[Mursel]￼
+1664￼
+Krycha89FRIEND_TAG="Krycha89"
+ACAB￼
+LowPing:(((￼
+..:: JoinT::..￼
+Possest￼
+*'GWRR'*Sr.L3!￼
+xXTheKiLLXx￼
+PongoPygmaeus￼
+lr￼
+MadafakaFRIEND_TAG="Madafaka"
+Wuszu@￼
+Saucisson￼
+pulpfictlags￼
+*/
 
-    assert( plist.empty() );//FIXME remove on developing completiion ?
+// FIXME vlad: this code failed too
+//    assert( plist.empty() );//FIXME remove on developing completiion ?
 }
 
 void server_info_manager::regenerate_maps(const server_info& si)
