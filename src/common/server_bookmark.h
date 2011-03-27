@@ -8,6 +8,8 @@
 #include "server_id.h"
 #include "implicit_sharing.h"
 
+class QAccumulatingConnection;
+
 /*! Server bookmark */
 class server_bookmark
 {
@@ -41,6 +43,8 @@ public:
 
     bool is_empty() const { return d->id.is_empty(); }
 
+    static const server_bookmark& empty();
+
 private:
     struct impl
     {
@@ -58,23 +62,49 @@ class server_bookmark_list : public QObject
 {
     Q_OBJECT
 public:
-    server_bookmark_list(QObject* parent = NULL);
+    server_bookmark_list();
 
     typedef QMap<server_id, server_bookmark> bookmark_map_t;
 
-    void add(const server_bookmark& bm);
-    void change(const server_id& old, const server_bookmark& bm);
-    void remove(const server_id& id);
-    void remove_all();
+    ///Add bookmark \p bm to list
+    void add( const server_bookmark& bm );
+    
+    ///Change bookmark \p bm if it's server_id changed
+    void change( const server_id& old, const server_bookmark& bm );
+    
+    ///Change bookmark \p bm 
+    void change( const server_bookmark& bm );
+    
+    ///remove bookmark stored by \p id 
+    void remove( const server_id& id );
+    
+    ///remove bookmark
+    void remove( const server_bookmark& bm );
+    
+    void clear();
+    
     const server_bookmark& get(const server_id& id) const;
 
-    const bookmark_map_t& list() const {return list_;}
+    const bookmark_map_t& list() const { return list_; }
 
 signals:
+    
+    ///emits when anything in list changed. \note this signal is emited with some delay through QAccumulatingConnection
     void changed();
 
+    /*!
+     * @brief this signal emited every time when some changes makes with bookmark 
+     *
+     * @param old_bm previous bookmark
+     * @param new_bm current bookmark
+     * @note when bookmark added \b old_bn.is_empty() returns true. when bookmark is deleted \p new_bn.is_empty() returns true;
+     **/
+    
+    void changed( const server_bookmark& old_bm, const server_bookmark& new_bm );
+    
 private:
     bookmark_map_t list_;
+    QAccumulatingConnection* acuum_;
 };
 
 typedef boost::shared_ptr<server_bookmark_list> server_bookmark_list_p;

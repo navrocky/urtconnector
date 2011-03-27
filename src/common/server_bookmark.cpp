@@ -1,4 +1,8 @@
+
+#include <boost/bind.hpp>
+
 #include "server_bookmark.h"
+#include "qaccumulatingconnection.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // server_bookmark
@@ -18,48 +22,67 @@ server_bookmark::server_bookmark(const server_id& id,
     d->ref_password = ref_password;
 }
 
+const server_bookmark& server_bookmark::empty()
+{
+    static const server_bookmark emp;
+    return emp;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // server_bookmark_list
 
-server_bookmark_list::server_bookmark_list(QObject* parent)
-: QObject(parent)
+server_bookmark_list::server_bookmark_list()
+    : QObject(0)
+    , acuum_( new QAccumulatingConnection(10, QAccumulatingConnection::Finally, this) )
 {
+     connect( this, SIGNAL( changed( const server_bookmark&, const server_bookmark& ) ), acuum_, SLOT( emitSignal() ) );
+     
+     connect( acuum_, SIGNAL( signal() ), this, SIGNAL( changed() ) );
 }
 
-void server_bookmark_list::add(const server_bookmark& bm)
+void server_bookmark_list::add( const server_bookmark& bm )
 {
-    list_[bm.id()] = bm;
-    emit changed();
+    server_bookmark old_bm = get( bm.id() );
+    emit changed( old_bm, *list_.insert( bm.id(), bm ) );
 }
 
-void server_bookmark_list::change(const server_id& old, const server_bookmark& bm)
+void server_bookmark_list::change( const server_id& old, const server_bookmark& bm )
 {
-    if (bm.id() != old)
-        list_.remove(old);
-    list_[bm.id()] = bm;
-    emit changed();
+    if ( bm.id() != old ) remove( old );
+    
+    add( bm );
 }
 
-void server_bookmark_list::remove(const server_id& id)
+void server_bookmark_list::change( const server_bookmark& bm )
 {
-    list_.remove(id);
-    emit changed();
+    add( bm );
 }
 
-const server_bookmark& server_bookmark_list::get(const server_id& id) const
+void server_bookmark_list::remove( const server_id& id )
 {
-    bookmark_map_t::const_iterator it = list_.find(id);
-    if (it == list_.end())
-    {
-        static const server_bookmark empty;
-        return empty;
-    }
+    server_bookmark old_bm = get( id );
+    list_.remove( id );
+    emit changed( old_bm, server_bookmark::empty() );
+}
+
+void server_bookmark_list::remove( const server_bookmark& bm )
+{ list_.remove( bm.id() ); }
+
+
+const server_bookmark& server_bookmark_list::get( const server_id& id ) const
+{
+    bookmark_map_t::const_iterator it = list_.find( id );
+    
+    if( it != list_.end() )
+        return *it;
     else
-        return it.value();
+        return server_bookmark::empty();
 }
 
-void server_bookmark_list::remove_all()
+void server_bookmark_list::clear()
 {
+    std::for_each( list_.begin(), list_.end(), boost::bind( &server_bookmark_list::changed, this, _1, server_bookmark::empty() ) );
     list_.clear();
-    emit changed();
 }
+
