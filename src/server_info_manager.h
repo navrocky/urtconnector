@@ -46,6 +46,8 @@ public:
     void set_bookmarks( server_bookmark_list_p bookmarks );
     void set_server_info( server_info_p si );
 
+    bool is_admin() const;
+    
 Q_SIGNALS:
     ///This signal emited when manager wants to add player to favorites 
     void add_to_friend( const player_info& player ) const;
@@ -60,9 +62,12 @@ protected:
 
 private Q_SLOTS:
     void bad_password( const server_id& id );
+    void bookmark_changed( const server_bookmark& old_bm, const server_bookmark& new_bm );
     
 private:
 
+    void update();
+    
     QString create_html_template( const server_info& si ) const;
     
     ///Create a part of html string to show server info
@@ -95,6 +100,7 @@ private:
     QTextBrowser*   browser_;
     
     server_info_p   si_;
+    server_bookmark bm_;
     //When widgets are layouted above QTextBrowser we associate them with textblock where they are.
     //We need it to hide widgets when they move out from QAbstractScrollArea visible surface.
     //List used because of multimple widgets can be associated with one QTextBlock

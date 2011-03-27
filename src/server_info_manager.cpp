@@ -5,6 +5,7 @@
 
 #include <QBoxLayout>
 #include <QComboBox>
+#include <QMessageBox>
 #include <QScrollBar>
 #include <QTextBrowser>
 #include <QTextFrame>
@@ -110,9 +111,19 @@ server_info_manager::server_info_manager( QWidget* parent )
 server_info_manager::~server_info_manager()
 {}
 
-void server_info_manager::set_bookmarks(server_bookmark_list_p bookmarks)
+void server_info_manager::set_bookmarks( server_bookmark_list_p bookmarks )
 {
+    assert( bookmarks.get() );
+    
+    if( bookmarks_.get() )
+        disconnect( bookmarks_.get(), SIGNAL( changed(const server_bookmark&, const server_bookmark&) )
+            , this, SLOT( bookmark_changed( const server_bookmark&, const server_bookmark& ) ) );    
+        
     bookmarks_ = bookmarks;
+        
+    if( bookmarks_.get() )
+        connect( bookmarks_.get(), SIGNAL( changed(const server_bookmark&, const server_bookmark&) )
+            , this, SLOT( bookmark_changed( const server_bookmark&, const server_bookmark& ) ) );
 }
 
 
@@ -120,20 +131,24 @@ void server_info_manager::set_server_info( server_info_p si )
 {
     si_ = si;
 
-    widgets.clear();
-    
     if( si_ )
     {
+        assert( bookmarks_.get() );
         rcon_->set_server_id( si_->id );
-        rcon_->set_password( bookmarks_->get( si_->id ).password() );
-        browser_->setHtml( create_html_template(*si_) );
-        regenerate_widgets(*si_);
+        bookmark_changed( bookmarks_->get( si_->id ), bookmarks_->get( si_->id ) );
     }
     else
     {
+        widgets.clear();
         browser_->setHtml( QString() );
     }
 }
+
+bool server_info_manager::is_admin() const
+{
+    return !bm_.rcon_password().isEmpty();
+}
+
 
 ///Visible part of scroll area
 QRect visible_rect( const QAbstractScrollArea* a ){
@@ -167,9 +182,26 @@ bool server_info_manager::eventFilter(QObject* obj, QEvent* e)
 
 void server_info_manager::bad_password(const server_id& id)
 {
-    throw qexception( QString( "Bad rcon password for server: %1" ).arg(id.address()) );
+    QMessageBox::warning( this, "Bad rcon password", QString( "Bad rcon password for server: %1" ).arg(id.address()) );
 }
 
+void server_info_manager::bookmark_changed( const server_bookmark& old_bm, const server_bookmark& new_bm )
+{
+    if ( !si_ ) return;
+    
+    if( ( old_bm.id() == si_->id ) || ( new_bm.id() == si_->id ) )
+    {
+        bm_ = new_bm;
+        rcon_->set_password( bm_.password() );
+        update();
+    }
+}
+
+void server_info_manager::update()
+{
+    browser_->setHtml( create_html_template(*si_) );
+    regenerate_widgets(*si_);
+}
 
 QString server_info_manager::create_html_template(const server_info& si) const
 {
@@ -186,11 +218,16 @@ QString server_info_manager::create_html_template(const server_info& si) const
     
     name = q3coloring(name, colors);
 
+    QString admin_image = ( is_admin() )
+        ? QString("<font color=red>ADMIN MODE</font>")
+        : QString();
+    
     QString body = QString( "<body class=\"body\"><table width=100%>"
                             "<tr><td class=\"serv_header\">%1</td></tr></table>"
-                            "%2<hr>%3%4%5</body>" )
+                            "%2 %3<hr>%4%5%6</body>" )
         .arg( name )
         .arg( si.id.address() )
+        .arg( admin_image )
         .arg( make_info(si) )
         .arg( make_players(si) )
         .arg( make_ext_info(si) );
@@ -366,7 +403,7 @@ void server_info_manager::regenerate_friends(const server_info& si)
             QIcon::fromTheme("bookmarks", QIcon("icons:bookmarks.png")),
             bind( &server_info_manager::add_to_friend, this, *pinfo ) ), cursor );
         
-        if( !bookmarks_->get( si_->id ).rcon_password().isEmpty() )
+        if( is_admin() )
             wrap_widget( create_tool_button(
                 QIcon::fromTheme("edit-delete", QIcon("icons:remove.png")),
                 bind( &server_info_manager::kick_player, this, *pinfo ) ), cursor );
@@ -387,7 +424,7 @@ void server_info_manager::regenerate_maps(const server_info& si)
         map_rx.exactMatch( cursor.selectedText() );
         QString map = map_rx.cap(1);
 
-        if( !bookmarks_->get( si_->id ).rcon_password().isEmpty() )
+        if( is_admin() )
             wrap_widget( create_map_box( si ), cursor );
         else
             cursor.insertText( map );

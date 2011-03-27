@@ -86,7 +86,7 @@ void save_server_bookmarks(qsettings_p s, server_bookmark_list* bml)
 
 void load_server_bookmarks(qsettings_p s, server_bookmark_list* bml)
 {
-    bml->remove_all();
+    bml->clear();
     int size = s->beginReadArray("favorites");
     for (int i = 0; i < size; i++)
     {

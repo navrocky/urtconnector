@@ -145,6 +145,17 @@ struct map_list_parser: base_parser{
     }
 };
 
+struct bad_password_parser: base_parser{
+
+    virtual void operator()(const QByteArray& line){
+        if( line == "Bad rconpassword." )
+        {
+            enable();
+            disable();
+        }
+    }
+};
+
 }
 
 //////////////////////////////////
@@ -165,6 +176,7 @@ struct rcon_connection::Pimpl{
         parsers.push_back( bind( &base_parser::operator(), boost::ref(cmdp), _1) );
         parsers.push_back( bind( &base_parser::operator(), boost::ref(plrp), _1) );
         parsers.push_back( bind( &base_parser::operator(), boost::ref(mapp), _1) );
+        parsers.push_back( bind( &base_parser::operator(), boost::ref(badp), _1) );
     }
     
     server_id id;
@@ -181,6 +193,7 @@ struct rcon_connection::Pimpl{
     command_list_parser cmdp;
     player_list_parser  plrp;
     map_list_parser     mapp;
+    bad_password_parser badp;
     
     QStringList commands;
     QStringList players;
@@ -208,6 +221,7 @@ rcon_connection::rcon_connection(const server_id& id, const QString& pass, QObje
     p_->cmdp.stop = bind( &rcon_connection::parser_completed, this, "commands" );
     p_->plrp.stop = bind( &rcon_connection::parser_completed, this, "players" );
     p_->mapp.stop = bind( &rcon_connection::parser_completed, this, "maps" );
+    p_->badp.stop = bind( &rcon_connection::parser_completed, this, "bad" );
         
     p_->regenerate_parsers();
 }
@@ -307,9 +321,6 @@ void rcon_connection::process_input(const QList< QByteArray >& data)
                 throw std::runtime_error("unknown response command in rcon");
         }
 
-        if ( line == "Bad rconpassword." )
-            emit bad_password( p_->id );
-
         std::for_each( p_->parsers.begin(), p_->parsers.end(), bind( apply<void>(), _1, line) );
     }
 }
@@ -318,7 +329,10 @@ void rcon_connection::process_queue()
 {
     set_state( !p_->waiting );
     
-    if( p_->queue.isEmpty() ) return;
+    if( p_->queue.isEmpty() ){
+        p_->send_timer.stop();
+        return;
+    }
    
     if ( p_->socket.state() == QAbstractSocket::ConnectedState )
     {
@@ -385,6 +399,10 @@ void rcon_connection::parser_completed(const QString& name)
             p_->maps = new_list;
             emit maps_changed(p_->maps);
         }
+    }
+    else if( name == "bad" )
+    {
+        emit bad_password( p_->id );
     }
 }
 
