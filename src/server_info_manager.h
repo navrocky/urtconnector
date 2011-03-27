@@ -7,6 +7,7 @@
 #include <QTextObjectInterface>
 
 #include <common/server_info.h>
+#include <common/server_bookmark.h>
 #include <common/tools.h>
 
 class QTextBrowser;
@@ -16,6 +17,7 @@ class QComboBox;
 class player_info;
 class rcon_connection;
 class rcon_admin;
+
 
 class widget_object : public QObject, public QTextObjectInterface
 {
@@ -41,6 +43,7 @@ public:
 
     virtual ~server_info_manager();
 
+    void set_bookmarks( server_bookmark_list_p bookmarks );
     void set_server_info( server_info_p si );
 
 Q_SIGNALS:
@@ -88,6 +91,7 @@ private:
     void wrap_widget( QWidget* widget, QTextCursor& cursor );
     
 private:
+    server_bookmark_list_p bookmarks_;
     QTextBrowser*   browser_;
     
     server_info_p   si_;

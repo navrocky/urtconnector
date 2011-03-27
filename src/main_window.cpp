@@ -131,6 +131,8 @@ main_window::main_window(QWidget *parent)
 
     ui_->setupUi(this);
 
+    ui_->server_info_browser->set_bookmarks( bookmarks_ );
+    
     tab_toolbar_ = addToolBar(tr("Current tab toolbar"));
 
     setWindowIcon( QIcon("images:logo.png") );
@@ -648,7 +650,7 @@ void main_window::open_remote_console()
 
     QDockWidget* dw = new QDockWidget( tr("RCon : %1").arg(id.address()), this );
     dw->setAttribute( Qt::WA_DeleteOnClose  );
-    dw->setWidget( new rcon(this, id, bookmarks_->get(id)));
+    dw->setWidget( new rcon(this, id, bookmarks_->get(id)) );
 
 #if (QT_VERSION >= QT_VERSION_CHECK(4, 6, 0))
     dw->setStyle( new iconned_dock_style( QIcon("icons:utilities-terminal.png"), dw->style() ) );

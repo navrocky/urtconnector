@@ -20,6 +20,7 @@
 #include "geoip/geoip.h"
 
 #include "server_info_manager.h"
+#include "common/server_bookmark.h"
 
 const QString player_tag_c = "PLAYER_TAG=\"%1\"";
 const QString map_tag_c = "MAP_TAG=\"%1\"";
@@ -109,6 +110,12 @@ server_info_manager::server_info_manager( QWidget* parent )
 server_info_manager::~server_info_manager()
 {}
 
+void server_info_manager::set_bookmarks(server_bookmark_list_p bookmarks)
+{
+    bookmarks_ = bookmarks;
+}
+
+
 void server_info_manager::set_server_info( server_info_p si )
 {
     si_ = si;
@@ -117,8 +124,8 @@ void server_info_manager::set_server_info( server_info_p si )
     
     if( si_ )
     {
-        rcon_->set_server_id( si->id );
-        rcon_->set_password("123");
+        rcon_->set_server_id( si_->id );
+        rcon_->set_password( bookmarks_->get( si_->id ).password() );
         browser_->setHtml( create_html_template(*si_) );
         regenerate_widgets(*si_);
     }
@@ -359,9 +366,10 @@ void server_info_manager::regenerate_friends(const server_info& si)
             QIcon::fromTheme("bookmarks", QIcon("icons:bookmarks.png")),
             bind( &server_info_manager::add_to_friend, this, *pinfo ) ), cursor );
         
-        wrap_widget( create_tool_button(
-            QIcon::fromTheme("edit-delete", QIcon("icons:remove.png")),
-            bind( &server_info_manager::kick_player, this, *pinfo ) ), cursor );
+        if( !bookmarks_->get( si_->id ).rcon_password().isEmpty() )
+            wrap_widget( create_tool_button(
+                QIcon::fromTheme("edit-delete", QIcon("icons:remove.png")),
+                bind( &server_info_manager::kick_player, this, *pinfo ) ), cursor );
 
         plist.erase( pinfo );
     }
@@ -379,7 +387,10 @@ void server_info_manager::regenerate_maps(const server_info& si)
         map_rx.exactMatch( cursor.selectedText() );
         QString map = map_rx.cap(1);
 
-        wrap_widget( create_map_box( si ), cursor );
+        if( !bookmarks_->get( si_->id ).rcon_password().isEmpty() )
+            wrap_widget( create_map_box( si ), cursor );
+        else
+            cursor.insertText( map );
     }
 }
 
