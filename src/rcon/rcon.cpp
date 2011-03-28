@@ -168,11 +168,13 @@ struct Item{
 
 typedef std::list<Item> Items;
 
+#include "rcon_connection.h"
 
 struct rcon::Pimpl{
     Pimpl( const server_id& id, const server_bookmark& options )
-        : id(id), options(options)
-        , connected(false), waiting(false)
+//         : id(id), options(options)
+//         , connected(false), waiting(false)
+        : rcon_( id, options.rcon_password() )
     {}
     void init() {
 
@@ -199,11 +201,11 @@ struct rcon::Pimpl{
 
         ui.output->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
         
-        queue_timer.setInterval( 2000 );
-        queue_timer.setSingleShot( false );
-
-        send_timer.setInterval( 2000 );
-        send_timer.setSingleShot( true );
+//         queue_timer.setInterval( 2000 );
+//         queue_timer.setSingleShot( false );
+// 
+//         send_timer.setInterval( 2000 );
+//         send_timer.setSingleShot( true );
     }
 
     void update_colors(){
@@ -255,6 +257,8 @@ struct rcon::Pimpl{
     Items               items;
     ParsersByName       parsers;
     ExpandersByName     expanders;
+    
+    rcon_connection rcon_;
 };
 
 
@@ -382,37 +386,50 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_bookmark& options)
 
     update_settings();
     
-    p_->socket.connectToHost( p_->id.ip_or_host(), p_->id.port() );
+//     p_->socket.connectToHost( p_->id.ip_or_host(), p_->id.port() );
+    
+    connect( &p_->rcon_, SIGNAL(received(QList<QByteArray>)), this, SLOT(received(QList<QByteArray>)) );
+    
 }
 
 rcon::~rcon()
 {}
 
-void rcon::send_command( const QString& command, bool supress )
+void rcon::send_command( const QString& command/*, bool supress */)
 {
-    if( command.isEmpty() )
-        return;
-    
-    p_->queue.push_back( CommandOpt(command.toStdString(), supress) );
-    if ( abs(p_->last_send.msecsTo( QTime::currentTime() )) >= 2000 )
-    {
-        process_queue();
-        p_->queue_timer.start();
+//     if( command.isEmpty() )
+//         return;
+//     
+//     p_->queue.push_back( CommandOpt(command.toStdString(), supress) );
+//     if ( abs(p_->last_send.msecsTo( QTime::currentTime() )) >= 2000 )
+//     {
+//         process_queue();
+//         p_->queue_timer.start();
+//     }
+    p_->rcon_.send_command( command );
+}
+
+void rcon::received( const QList< QByteArray >& data )
+{
+    BOOST_FOREACH( const QByteArray& line, data ){
+        Q3ColorMap map;
+        map[Q3DefaultColor] = p_->colors[rcon_settings::Text];
+        print( Simple, q3coloring(line, map) );
     }
 }
 
 
 void rcon::ready_read()
 {
-    QByteArray data = p_->socket.readAll();
-    LOG_DEBUG << format( "%1% - recieved: %2%" ) % p_->id.address().toStdString() % data.constData();
-
-    BOOST_FOREACH( const QByteArray& line, data.split('\n') )
-        parse_line( line );
-
-    p_->send_timer.stop();
-    p_->waiting = false;
-    send_timeout();
+//     QByteArray data = p_->socket.readAll();
+//     LOG_DEBUG << format( "%1% - recieved: %2%" ) % p_->id.address().toStdString() % data.constData();
+// 
+//     BOOST_FOREACH( const QByteArray& line, data.split('\n') )
+//         parse_line( line );
+// 
+//     p_->send_timer.stop();
+//     p_->waiting = false;
+//     send_timeout();
 }
 
 void rcon::update_settings()
@@ -430,7 +447,7 @@ void rcon::connected()
     p_->queue_timer.start();
 
     p_->parsers["commands"]->enable();
-    send_command( "cmdlist", true );
+//     send_command( "cmdlist", true );
     
     refresh_players();
     refresh_maps();
@@ -494,7 +511,6 @@ void rcon::parse_line( const QByteArray& line )
 void rcon::print( TextType type, const QString & text )
 {
     QString str = QString("<pre><font face=\"Terminus\",\"monospace\">%1</font></pre>").arg(colorize_string(type, text));
-
     if( !text.isEmpty() )
         p_->ui.output->append( str );
 }
@@ -514,14 +530,14 @@ QString rcon::colorize_string( rcon::TextType type, const QString& text ) const
 
 void rcon::refresh_players()
 {
-    send_command( "status", true );
+//     send_command( "status", true );
     //refresh status every 10 seconds
     QTimer::singleShot( 10000, this, SLOT( refresh_players() ) );
 }
 
 void rcon::refresh_maps()
 {
-    send_command( "fdir *.bsp", true );
+//     send_command( "fdir *.bsp", true );
     //refresh maplist every 60 seconds
     QTimer::singleShot( 50000, this, SLOT( refresh_maps() ) );
 }

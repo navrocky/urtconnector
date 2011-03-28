@@ -161,6 +161,8 @@ struct bad_password_parser: base_parser{
 //////////////////////////////////
 //    rcon_connection
 
+typedef std::pair<QString, bool> Command;
+typedef QList<Command>  CommandQueue;
 
 struct rcon_connection::Pimpl{
     Pimpl( const server_id& id_, const QString& pass )
@@ -188,7 +190,8 @@ struct rcon_connection::Pimpl{
     QUdpSocket socket;
     
     QTimer send_timer;
-    QStringList queue;
+    CommandQueue queue;
+    Command current;
     
     command_list_parser cmdp;
     player_list_parser  plrp;
@@ -255,7 +258,7 @@ const QStringList& rcon_connection::commands()
 {
     p_->cmdp.enable();
     
-    send_command( "cmdlist" );
+    send_internal( "cmdlist", true );
         
     if(p_->auto_update) QTimer::singleShot(60000, this, SLOT( commands() ) );
         
@@ -264,7 +267,7 @@ const QStringList& rcon_connection::commands()
 
 const QStringList& rcon_connection::players()
 {
-    send_command( "status" );
+    send_internal( "status", true );
     if(p_->auto_update) QTimer::singleShot(10000, this, SLOT( players() ) );
     
     return p_->players;
@@ -272,7 +275,7 @@ const QStringList& rcon_connection::players()
 
 const QStringList& rcon_connection::maps()
 {
-    send_command( "fdir *.bsp" );
+    send_internal( "fdir *.bsp", true );
     if(p_->auto_update) QTimer::singleShot(60000, this, SLOT( maps() ) );
 
     return p_->maps;
@@ -280,20 +283,25 @@ const QStringList& rcon_connection::maps()
 
 void rcon_connection::kick_player(const player_info& player)
 {
-    send_command( QString("kick \"%1\"").arg( q3stripcolor(player.nick_name() ) ) );
+    send_internal( QString("kick \"%1\"").arg( q3stripcolor(player.nick_name() ) ), true );
 }
 
 void rcon_connection::set_map(const QString& map)
 {
-    send_command( QString("map \"%1\"").arg( map ) );
+    send_internal( QString("map \"%1\"").arg( map ), true );
 }
 
 void rcon_connection::send_command( const QString& command )
 {
+    send_internal(command, false);
+}
+
+void rcon_connection::send_internal( const QString& command, bool supress )
+{
     if( command.isEmpty() )
         return;
     
-    p_->queue << command;
+    p_->queue << std::make_pair(command, supress);
     
     if( !p_->send_timer.isActive() )
         QTimer::singleShot(0, this, SLOT( process_queue() ) );
@@ -306,43 +314,40 @@ void rcon_connection::ready_read()
 
     p_->waiting = false;
     
-    emit received( data.split('\n') );   
+    QList<QByteArray> dlist = data.split('\n');
+    if(  dlist.front().startsWith( answer_header_c ) && ( dlist.front().mid( answer_header_c.size(), -1 ) != "print" ) )
+        throw std::runtime_error("unknown response command in rcon");
+
+    dlist.pop_front();
+    
+    if ( !p_->current.second )
+        emit received( dlist );   
 }
 
 void rcon_connection::process_input(const QList< QByteArray >& data)
 {
-    BOOST_FOREACH( const QByteArray& line, data ){
-        if( line.startsWith( answer_header_c ) )
-        {
-            QByteArray command = line.mid( answer_header_c.size(), -1 );
-            if( command == "print" )
-                continue;
-            else
-                throw std::runtime_error("unknown response command in rcon");
-        }
-
+    BOOST_FOREACH( const QByteArray& line, data )
         std::for_each( p_->parsers.begin(), p_->parsers.end(), bind( apply<void>(), _1, line) );
-    }
 }
 
 void rcon_connection::process_queue()
 {
     set_state( !p_->waiting );
     
-    if( p_->queue.isEmpty() ){
+    if( p_->queue.isEmpty() ) {
         p_->send_timer.stop();
         return;
     }
    
     if ( p_->socket.state() == QAbstractSocket::ConnectedState )
     {
-        QString current = p_->queue.front();
+        p_->current = p_->queue.front();
         p_->queue.pop_front();
         
         QString cmd = QString( "%1 %2 %3" )
             .arg( rcon_header_c.data() )
             .arg( p_->password )
-            .arg( qPrintable(current) );
+            .arg( qPrintable(p_->current.first) );
 
         LOG_DEBUG << "Sended to %1: %2", p_->id.address().toStdString(), cmd.toStdString();
         p_->socket.write( cmd.toStdString().data() );

@@ -48,6 +48,8 @@ Q_SIGNALS:
     
 private Q_SLOTS:
     
+    void send_internal( const QString& command, bool suppress );
+    
     ///New data from server recieved
     void ready_read();
     

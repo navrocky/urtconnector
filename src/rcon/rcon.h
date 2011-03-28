@@ -25,7 +25,9 @@ public:
 
 public Q_SLOTS:
     ///Send command to server
-    void send_command( const QString& command, bool supress_print = false );
+    void send_command( const QString& command/*, bool supress_print = false*/ );
+    
+    void received( const QList<QByteArray>& data );
     
     ///New data from server recieved
     void ready_read();

@@ -72,7 +72,7 @@ const QColor& color( const QString & str, const Q3ColorMap& substitute )
 QString colorize( const QString& token, const QColor& color )
 {
     static QString colored("<font color=\"%1\">%2</font>");
-    return colored.arg( color.name(), Qt::escape(token) );
+    return colored.arg( color.name(), /*Qt::escape*/(token) );
 }
 
 QString colorize_token(const QString& str, const Q3ColorMap& substitute )
