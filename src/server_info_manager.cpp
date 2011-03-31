@@ -105,7 +105,7 @@ server_info_manager::server_info_manager( QWidget* parent )
     
     connect( this, SIGNAL(kick_player(const player_info&)), rcon_, SLOT(kick_player(const player_info&)) );
     connect( this, SIGNAL(change_map(const QString&)),      rcon_, SLOT(set_map(const QString&)) );
-    connect( rcon_, SIGNAL(bad_password(server_id)),        this,  SLOT(bad_password(server_id)) );
+    connect( rcon_, SIGNAL(bad_password(const server_id&)),        this,  SLOT(bad_password(const server_id&)) );
 }
 
 server_info_manager::~server_info_manager()
@@ -134,8 +134,9 @@ void server_info_manager::set_server_info( server_info_p si )
     if( si_ )
     {
         assert( bookmarks_.get() );
+        bm_ = bookmarks_->get( si_->id );
         rcon_->set_server_id( si_->id );
-        bookmark_changed( bookmarks_->get( si_->id ), bookmarks_->get( si_->id ) );
+        bookmark_changed( bm_, bm_ );
     }
     else
     {
@@ -189,7 +190,9 @@ void server_info_manager::bookmark_changed( const server_bookmark& old_bm, const
 {
     if ( !si_ ) return;
     
-    if( ( old_bm.id() == si_->id ) || ( new_bm.id() == si_->id ) )
+    //Current server_info bookmark changed OR no bookmark exist for this server
+    if( ( old_bm.id() == si_->id ) || ( new_bm.id() == si_->id ) ||
+        ( bm_.is_empty() && old_bm.is_empty() && new_bm.is_empty() )  )
     {
         bm_ = new_bm;
         rcon_->set_password( bm_.password() );

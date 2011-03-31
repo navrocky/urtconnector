@@ -214,8 +214,6 @@ rcon_connection::rcon_connection(const server_id& id, const QString& pass, QObje
 
     connect( &p_->send_timer, SIGNAL(timeout()), SLOT(process_queue()) );
     
-    connect( this, SIGNAL(received(QList<QByteArray>)), SLOT(process_input(QList<QByteArray>)) );
-    
     //UdpSoket always connected, but initialization required
     connect( &p_->socket, SIGNAL( readyRead() ),   SLOT( ready_read() ) );
     
@@ -320,14 +318,17 @@ void rcon_connection::ready_read()
 
     dlist.pop_front();
     
-    if ( !p_->current.second )
-        emit received( dlist );   
+    process_input(dlist);
+    
 }
 
 void rcon_connection::process_input(const QList< QByteArray >& data)
 {
     BOOST_FOREACH( const QByteArray& line, data )
         std::for_each( p_->parsers.begin(), p_->parsers.end(), bind( apply<void>(), _1, line) );
+        
+    if ( !p_->current.second )
+        emit received( data );
 }
 
 void rcon_connection::process_queue()
