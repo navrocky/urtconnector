@@ -195,7 +195,7 @@ void server_info_manager::bookmark_changed( const server_bookmark& old_bm, const
         ( bm_.is_empty() && old_bm.is_empty() && new_bm.is_empty() )  )
     {
         bm_ = new_bm;
-        rcon_->set_password( bm_.password() );
+        rcon_->set_password( bm_.rcon_password() );
         update();
     }
 }

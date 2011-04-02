@@ -30,36 +30,30 @@ public Q_SLOTS:
     void received( const QList<QByteArray>& data );
     
     ///New data from server recieved
-    void ready_read();
+//     void ready_read();
     
     ///update settings like colors...
     void update_settings();
 
 private Q_SLOTS:
     ///used to first initialization rcon-connection
-    void connected();
+//     void connected();
+
+    void connection_changed( bool b);
     
     ///New command to server ready
     void input_enter_pressed();
     
-    ///This function called when answer from server recieved \b OR when timeout for sending reached
-    void send_timeout();
-
-    void refresh_players();
-    
-    void refresh_maps();
-
-    void process_queue();
-
     void refresh_expander( const QString& expander );
+    
+    void refresh_players( const QStringList& players );
+    void refresh_commands( const QStringList& commands );
+    void refresh_maps( const QStringList& maps );
     
 private:
     ///Connected/disconnected state
     void set_state( bool conencted );
     
-    ///parse recieved data
-    void parse_line( const QByteArray& line );
-
     ///Update autocompletition of item
     void update_item( const Item& item);
     

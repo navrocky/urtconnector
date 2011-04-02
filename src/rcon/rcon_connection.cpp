@@ -302,7 +302,7 @@ void rcon_connection::send_internal( const QString& command, bool supress )
     p_->queue << std::make_pair(command, supress);
     
     if( !p_->send_timer.isActive() )
-        QTimer::singleShot(0, this, SLOT( process_queue() ) );
+        p_->send_timer.start();
 }
 
 void rcon_connection::ready_read()
@@ -363,15 +363,15 @@ void rcon_connection::set_state(bool connected)
     if ( p_->connected && !connected )
     {
         LOG_HARD << "Connection failed to %1", p_->id.address().toStdString();
-        emit connection_changed( true );
+        p_->connected = false;
+        emit connection_changed( false );
     }
     else if( !p_->connected && connected )
     {
         LOG_HARD << "Connected to %1", p_->id.address().toStdString();
-        emit connection_changed( false );
+        p_->connected = true;
+        emit connection_changed( true );
     }
-    
-    p_->connected = connected;
 }
 
 void rcon_connection::parser_completed(const QString& name)
