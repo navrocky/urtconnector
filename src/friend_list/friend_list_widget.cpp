@@ -19,7 +19,6 @@
 
 Q_DECLARE_METATYPE(friend_record)
 
-const int c_friend_role = Qt::UserRole + 12;
 
 friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, QWidget *parent)
 : main_tab(tab_settings_p(new tab_settings("friend_list")), ctx, parent)

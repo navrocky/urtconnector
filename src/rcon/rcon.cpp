@@ -260,6 +260,13 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_bookmark& options)
     connect( p_->ui.input, SIGNAL( returnPressed() ), SLOT( input_enter_pressed() ));
 
     update_settings();
+
+    //FIXME without any text Qt set own style and forget about any styles
+    QString s = QString("<html><head>%1</head><body class=\"body\">Connecting to server...</body></html>").arg(
+        "<style>.body{ margin-top: 0px;}</style>");
+    
+    p_->ui.output->setHtml(s);
+    
     
     connect( &p_->conn, SIGNAL( received(const QList<QByteArray>&) ),
              this,      SLOT(received(const QList<QByteArray>&)) );

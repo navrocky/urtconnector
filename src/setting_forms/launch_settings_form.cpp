@@ -31,7 +31,6 @@ launch_settings_form::launch_settings_form(QWidget* parent, Qt::WindowFlags f)
 
     connect( p_->ui.select_bin_button,  SIGNAL( clicked() ),                    this, SLOT( choose_binary() ));
     connect( p_->ui.insertFileButton,   SIGNAL( clicked() ),                    this, SLOT( insert_file_path() ));
-    connect( p_->ui.advCmdEdit,         SIGNAL( textChanged(const QString&)),   this, SLOT( adv_text_changed(const QString&) ) );
     connect( p_->ui.x_check_button,     SIGNAL( clicked() ),                    this, SLOT( x_check() ));
 
     connect( p_->ui.binary_edit,        SIGNAL( textChanged(const QString &) ), this, SLOT( int_changed() ) );

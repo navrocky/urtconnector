@@ -41,14 +41,6 @@ SYSLOG_MODULE(server_list_widget)
 
 const int c_filter_info_column = 100;
 
-//Role to access server_info stored in QTreeModel
-// const int c_info_role = Qt::UserRole;
-const int c_id_role = Qt::UserRole + 1;
-const int c_stamp_role = Qt::UserRole + 2;
-
-//FIXME move to shared place USED in history_tab
-const int c_suppress_role = Qt::UserRole + 11;
-
 ////////////////////////////////////////////////////////////////////////////////
 // server_tree
 

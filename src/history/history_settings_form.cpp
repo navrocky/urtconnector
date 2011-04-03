@@ -2,8 +2,10 @@
 
 #include <QSpinBox>
 #include <QRadioButton>
+
 #include <common/scoped_tools.h>
 #include "../app_options.h"
+
 #include "ui_history_settings_form.h"
 
 history_settings_form::history_settings_form(QWidget* parent, Qt::WindowFlags f)
@@ -17,9 +19,9 @@ history_settings_form::history_settings_form(QWidget* parent, Qt::WindowFlags f)
     set_header(tr("History settings"));
 
     connect(ui_->number_in_history_spin, SIGNAL(valueChanged(int)), SLOT(int_changed()));
-    connect(ui_->days_history_spin, SIGNAL(valueChanged(int)), SLOT(int_changed()));
-    connect(ui_->group_linear_radio, SIGNAL(toggled(bool)), SLOT(int_changed()));
-    connect(ui_->group_by_server_radio, SIGNAL(toggled(bool)), SLOT(int_changed()));
+    connect(ui_->days_history_spin,      SIGNAL(valueChanged(int)), SLOT(int_changed()));
+    connect(ui_->group_linear_radio,     SIGNAL(toggled(bool)), SLOT(int_changed()));
+    connect(ui_->group_by_server_radio,  SIGNAL(toggled(bool)), SLOT(int_changed()));
 }
 
 void history_settings_form::update_preferences()

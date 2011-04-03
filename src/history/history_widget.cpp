@@ -1,5 +1,6 @@
 #include "history_widget.h"
 
+#include <QDateTime>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QHeaderView>
@@ -31,8 +32,6 @@ SYSLOG_MODULE(history_widget)
 
 Q_DECLARE_METATYPE(history_item);
 
-const int c_history_role = Qt::UserRole + 12;
-
 // tree item needed to custom sort by date
 class history_tree_item : public QTreeWidgetItem
 {
@@ -47,7 +46,7 @@ public:
         {
             const history_item& hi1 = data(0, c_history_role).value<history_item>();
             const history_item& hi2 = other.data(0, c_history_role).value<history_item>();
-            return hi1.date_time() < hi2.date_time();
+            return hi1.timestamp() < hi2.timestamp();
         } else
             return QTreeWidgetItem::operator<(other);
     }
@@ -183,7 +182,7 @@ void history_widget::add_to_favorites()
 void history_widget::update_item(QTreeWidgetItem* item, const history_item& hi)
 {
     item->setText(0, hi.server_name());
-    item->setText(2, hi.date_time().toString(Qt::DefaultLocaleShortDate));
+    item->setText(2, hi.timestamp().toString(Qt::DefaultLocaleShortDate));
     item->setText(3, hi.id().address());
     item->setText(4, hi.password());
     item->setText(5, hi.player_name());
@@ -222,7 +221,7 @@ void history_widget::update_contents_grouped()
         } else
         {
             const history_item& hi2 = i.value()->data(0, c_history_role).value<history_item>();
-            if (hi.date_time() > hi2.date_time())
+            if (hi.timestamp() > hi2.timestamp())
                 top_items[hi.id()] = it.value();
         }
     }

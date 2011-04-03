@@ -97,6 +97,8 @@ void init_application(QApplication* a)
     set.register_file( state_settings::uid(), "state.ini" );
     set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
     set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
+    
+    set.register_file( "history", "history.ini" );
 
     //Initializing resource resolution
     // to use icons from resources you must use "icons:<name>" syntax

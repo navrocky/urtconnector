@@ -12,6 +12,9 @@ static const int c_stamp_role = Qt::UserRole + 2;
 //FIXME move to shared place USED in history_tab
 static const int c_suppress_role = Qt::UserRole + 11;
 
+static const int c_history_role = Qt::UserRole + 12;
+
+static const int c_friend_role = Qt::UserRole + 13;
 
 #endif	/* COMMON_ITEM_TAGS_H */
 
