@@ -215,7 +215,7 @@ main_window::main_window(QWidget *parent)
     connect(launcher_, SIGNAL(started()), SLOT(launcher_started()));
     connect(launcher_, SIGNAL(stopped()), SLOT(launcher_stopped()));
 
-    new QAccumulatingConnection(bookmarks_.get(), SIGNAL(changed()), this, SLOT(save_bookmarks()), 10, QAccumulatingConnection::Finally, this);
+    new QAccumulatingConnection(bookmarks_.get(), SIGNAL(changed( const server_bookmark&, const server_bookmark& )), this, SLOT(save_bookmarks()), 10, QAccumulatingConnection::Finally, this);
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
 
     // loading all options

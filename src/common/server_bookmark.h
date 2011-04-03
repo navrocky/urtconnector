@@ -8,8 +8,6 @@
 #include "server_id.h"
 #include "implicit_sharing.h"
 
-class QAccumulatingConnection;
-
 /*! Server bookmark */
 class server_bookmark
 {
@@ -89,9 +87,6 @@ public:
 
 signals:
     
-    ///emits when anything in list changed. \note this signal is emited with some delay through QAccumulatingConnection
-    void changed();
-
     /*!
      * @brief this signal emited every time when some changes makes with bookmark 
      *
@@ -104,7 +99,6 @@ signals:
     
 private:
     bookmark_map_t list_;
-    QAccumulatingConnection* acuum_;
 };
 
 typedef boost::shared_ptr<server_bookmark_list> server_bookmark_list_p;

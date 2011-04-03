@@ -142,7 +142,7 @@ bool rcon_completer::items_event(QEvent* e)
     }
     else if( e->type() == QEvent::Show )
         fix_items_geometry();
-    else if( e->type() == QEvent::Move || e->type() == QEvent::Resize && p_->items->isVisible() )
+    else if( ( e->type() == QEvent::Move || e->type() == QEvent::Resize ) && p_->items->isVisible() )
         fix_items_geometry();
 
     return false;

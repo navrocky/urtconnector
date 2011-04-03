@@ -29,17 +29,13 @@ public Q_SLOTS:
     
     void received( const QList<QByteArray>& data );
     
-    ///New data from server recieved
-//     void ready_read();
-    
+   
     ///update settings like colors...
     void update_settings();
 
 private Q_SLOTS:
-    ///used to first initialization rcon-connection
-//     void connected();
-
-    void connection_changed( bool b);
+    ///Connected/disconnected state
+    void set_state( bool conencted );
     
     ///New command to server ready
     void input_enter_pressed();
@@ -51,8 +47,6 @@ private Q_SLOTS:
     void refresh_maps( const QStringList& maps );
     
 private:
-    ///Connected/disconnected state
-    void set_state( bool conencted );
     
     ///Update autocompletition of item
     void update_item( const Item& item);

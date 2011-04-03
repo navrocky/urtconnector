@@ -67,7 +67,7 @@ bookmark_tab::bookmark_tab(const QString& object_name,
 
     new item_view_dblclick_action_link(this, tree(), ctx.connect_action());
 
-    new QAccumulatingConnection(context().bookmarks().get(), SIGNAL(changed()),
+    new QAccumulatingConnection(context().bookmarks().get(), SIGNAL(changed( const server_bookmark&, const server_bookmark& )),
                                 updater_, SLOT(update_contents()), 100,
                                 QAccumulatingConnection::Finally,
                                 this);

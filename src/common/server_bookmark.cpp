@@ -2,7 +2,6 @@
 #include <boost/bind.hpp>
 
 #include "server_bookmark.h"
-#include "qaccumulatingconnection.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // server_bookmark
@@ -34,12 +33,7 @@ const server_bookmark& server_bookmark::empty()
 
 server_bookmark_list::server_bookmark_list()
     : QObject(0)
-    , acuum_( new QAccumulatingConnection(10, QAccumulatingConnection::Finally, this) )
-{
-     connect( this, SIGNAL( changed( const server_bookmark&, const server_bookmark& ) ), acuum_, SLOT( emitSignal() ) );
-     
-     connect( acuum_, SIGNAL( signal() ), this, SIGNAL( changed() ) );
-}
+{}
 
 void server_bookmark_list::add( const server_bookmark& bm )
 {

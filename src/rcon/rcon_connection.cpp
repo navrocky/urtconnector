@@ -258,7 +258,7 @@ const QStringList& rcon_connection::commands()
     
     send_internal( "cmdlist", true );
         
-    if(p_->auto_update) QTimer::singleShot(60000, this, SLOT( commands() ) );
+    if(p_->auto_update) QTimer::singleShot(180000, this, SLOT( commands() ) );
         
     return p_->commands;
 }
@@ -302,7 +302,7 @@ void rcon_connection::send_internal( const QString& command, bool supress )
     p_->queue << std::make_pair(command, supress);
     
     if( !p_->send_timer.isActive() )
-        p_->send_timer.start();
+        process_queue();
 }
 
 void rcon_connection::ready_read()

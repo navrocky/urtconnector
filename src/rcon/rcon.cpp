@@ -7,8 +7,6 @@
 #include <boost/iterator/filter_iterator.hpp>
 
 #include <QLabel>
-#include <QTimer>
-#include <QTime>
 #include <QStandardItemModel>
 
 #include <cl/syslog/syslog.h>
@@ -38,16 +36,53 @@ typedef std::set<QString>           Strings;
 typedef std::map<QString, Strings>  ExpandersByName;
 
 
+/**
+ * Expandable model:
+ * 
+ * QCompleter uses QStandartItemModel to implement tree of variants to autocompletition.
+ * 
+ * RCon implements dynamic completition on top of QCompleter:
+ * 
+ * 1. when some dynamic items are upadted we must update QCompleter model
+ * 2. rcon uses a simple syntax of text in standart model to do flexible configuration of autocompletition:
+ *      if text match this syntax - item is handled not as usually
+ *      
+ * syntax:
+ * 
+ * word     = text
+ * expander = '%' text '%'
+ * element  = word | expander
+ * group    = '{' (element | group)+ '}'
+ * token    = group | element
+ * 
+ * line     = token+
+ * 
+ * Each token represents a level in autocompletition hierarchy
+ * Each expander represents an array of words.
+ * 
+ * Examples:
+ * 1. "%commands%"     - first level list of words, that would be autocompleted when typing starts
+ * 2. "kick jerry"     - "kick" is added to first level, "jerry" to second level AFTER kick
+ * 3. "kick %players%" - "kick" is added to first level, "%players%" to second level AFTER kick(in addidtion to previous "jerry")
+ * 4. "forceteam %players% { blue, red }" - "blue" and "red" added to third level AFTER any from players.. "jerry" is NOT included!!!
+ * 
+ * but current implementation can't handle such :
+ *      "forceteam %players% { blue, red, %maps% } %players%"
+ * 
+ * %players% would expanded only after "... blue" or "... red" but NOT after "... ut4_map" 
+ * 
+  **/
 
 ///Type thar represents Item in completition model
-struct Item{
+struct Item {
     ///item which has static childs and dynamic expanders
     QStandardItem*  item;
     ///list of static childs
     Strings         st_list;
     ///list of expander names
     Strings         ex_list;
-    ///If this item is dynamically expanded holds completition config
+    ///If this item is dynamically expanded this field holds completition config
+    ///config is used for lazy creation of dynamic items
     std::list<QString>         config_list;
 };
 
@@ -55,7 +90,7 @@ typedef std::list<Item> Items;
 
 struct rcon::Pimpl{
     Pimpl( const server_id& id, const server_bookmark& options )
-        : rcon_( id, options.rcon_password() )
+        : conn( id, options.rcon_password() )
     {}
     void init() {
 
@@ -107,22 +142,20 @@ struct rcon::Pimpl{
     }
     
     Ui_rcon ui;
-
     QLabel* status;
 
     std::map<rcon_settings::Color, QColor> colors;
 
-    //TODO port to cl::timer
-    QTime           last_send;
-
     QStandardItemModel  model;
 
     Items               items;
+    //list of expanders, used by Item through name of expander in Item::ex_list field
     ExpandersByName     expanders;
     
-    rcon_connection rcon_;
+    rcon_connection     conn;
 };
 
+///Get Items::iterator linked with \p item, creates new if there is no such Item
 Items::iterator get_item( Items& items, QStandardItem* item ){
     Items::iterator it = std::find_if( items.begin(), items.end(), bind(&Item::item, _1) == item );
     if( it == items.end() )
@@ -140,6 +173,7 @@ struct find_by_expander: std::binary_function<const Item&, const std::string&, b
     }
 };
 
+///Split string by tokens according to "simple expanding syntax"
 QStringList split( const QString& str ){
     static const QRegExp rx( config_rx_c );
     QStringList ret;
@@ -151,7 +185,18 @@ QStringList split( const QString& str ){
     return ret;
 }
 
-///Function for recursevly creating items from config
+/**
+ * @brief Function for recursevly creating items from config
+ * 
+ *
+ *
+ * @param parent - item for wich dynamic and static items are created
+ * @param begin - begin iterator of config list ( tokenized "simple syntax for expanders" )
+ * @param end - end iterator of config list
+ * @param items main storage of all items
+ * @param static_item "statifiyer" to handle config tokens as simple words in some case Defaults to true.
+ * @return void
+ **/
 template <typename Iterator>
 void create_items( QStandardItem* parent, Iterator begin, Iterator end, Items& items, bool static_item = true){
     static const QRegExp expander_rx(exp_rx_c);
@@ -216,23 +261,29 @@ rcon::rcon(QWidget* parent, const server_id& id, const server_bookmark& options)
 
     update_settings();
     
-    connect( &p_->rcon_, SIGNAL(received(QList<QByteArray>)), this, SLOT(received(QList<QByteArray>)) );
-    connect( &p_->rcon_, SIGNAL(connection_changed(bool)), this, SLOT(connection_changed(bool)) );
+    connect( &p_->conn, SIGNAL( received(const QList<QByteArray>&) ),
+             this,      SLOT(received(const QList<QByteArray>&)) );
     
-    connect( &p_->rcon_, SIGNAL(players_changed(QStringList)), this, SLOT(refresh_players(QStringList)) );
-    connect( &p_->rcon_, SIGNAL(commands_changed(QStringList)), this, SLOT(refresh_commands(QStringList)) );
-    connect( &p_->rcon_, SIGNAL(maps_changed(QStringList)), this, SLOT(refresh_maps(QStringList)) );
+    connect( &p_->conn, SIGNAL(connection_changed(bool)),
+             this,      SLOT(set_state(bool)) );
     
-    p_->rcon_.commands();
+    connect( &p_->conn, SIGNAL(players_changed(const QStringList&)),
+             this,      SLOT(refresh_players(const QStringList&)) );
     
-    p_->rcon_.set_auto_update(true);
+    connect( &p_->conn, SIGNAL(commands_changed(const QStringList&)),
+             this,      SLOT(refresh_commands(const QStringList&)) );
+    
+    connect( &p_->conn, SIGNAL(maps_changed(const QStringList&)),
+             this,      SLOT(refresh_maps(const QStringList&)) );
+    
+    p_->conn.set_auto_update(true);
 }
 
 rcon::~rcon()
 {}
 
 void rcon::send_command( const QString& command )
-{ p_->rcon_.send_command( command ); }
+{ p_->conn.send_command( command ); }
 
 void rcon::received( const QList< QByteArray >& data )
 {
@@ -252,9 +303,6 @@ void rcon::update_settings()
     p_->ui.output->setPalette( p );
     p_->ui.output->setAutoFillBackground( rcon_settings().custom_colors() );
 }
-
-void rcon::connection_changed(bool b)
-{ set_state(b); }
 
 void rcon::input_enter_pressed()
 {
@@ -324,7 +372,7 @@ void rcon::refresh_maps(const QStringList& maps)
     refresh_expander("maps");
 }
 
-
+///Erase item \p item and all of it's childs from our \p items
 void erase_item( QStandardItem* item, Items& items ){
     for( int i = 0; i < item->rowCount(); ++i )
         erase_item(item->child( i ), items);
@@ -336,7 +384,7 @@ void erase_item( QStandardItem* item, Items& items ){
 
 void rcon::update_item(const Item& item)
 {
-    LOG_DEBUG << "Updating item " << item.item->text().toStdString();
+    LOG_HARD << "Updating item " << item.item->text().toStdString();
     QList<QStandardItem*> to_delete;
 
     //List of all autocompletition elements of item
@@ -364,7 +412,7 @@ void rcon::update_item(const Item& item)
 
     BOOST_FOREACH( QStandardItem* it, to_delete   )
     {
-        LOG_DEBUG << "Removing item" << it->text().toStdString();
+        LOG_HARD << "Removing item" << it->text().toStdString();
         erase_item( it, p_->items );
         p_->model.removeRow( it->row(), item.item->index() );        
     }
@@ -377,12 +425,12 @@ void rcon::update_item(const Item& item)
         {
             std::list<QString> lst( item.config_list.begin(), item.config_list.end() );
             lst.push_front(cmd);
-            LOG_DEBUG << "Creating dynamyc item" << cmd.toStdString();
+            LOG_HARD << "Creating dynamyc item" << cmd.toStdString();
             create_items( item.item, lst.begin(), lst.end(), p_->items, false);
         }
         
     }
-    LOG_DEBUG << "Items size:" << p_->items.size();
+    LOG_HARD << "Items size:" << p_->items.size();
 }
 
 
