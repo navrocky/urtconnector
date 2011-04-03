@@ -118,6 +118,7 @@ src/common/server_info.cpp -text
 src/common/server_info.h -text
 src/common/server_list.cpp -text
 src/common/server_list.h -text
+src/common/smart_updater_traits.h -text
 src/common/state_settings.cpp -text
 src/common/state_settings.h -text
 src/common/str_convert.h -text

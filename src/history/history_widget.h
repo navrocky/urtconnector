@@ -2,8 +2,9 @@
 #define HISTORY_WIDGET_H
 
 #include <common/server_id.h>
-#include <tabs/filtered_tab.h>
 #include <common/list_caption_updater.h>
+#include <common/smart_updater_traits.h>
+#include <tabs/filtered_tab.h>
 
 #include "../pointers.h"
 #include "history_item.h"
@@ -41,9 +42,10 @@ private slots:
     void refresh_all();
 
 private:
-    typedef QMap<history_item, QTreeWidgetItem*> items_map_t;
     
-    void update_item(QTreeWidgetItem*);
+    typedef updater_traits<history_item>::ItemsByElement items_map_t;
+    
+    void update_item(QTreeWidgetItem* item, const history_item& hi);
     void update_contents_simple();
     void update_contents_grouped();
     void update_actions();

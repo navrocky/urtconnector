@@ -55,19 +55,11 @@ public:
 
 struct history_adapter
 {
-    template <typename Item>
-    QTreeWidgetItem* create_item(QTreeWidget* tree, QTreeWidgetItem* parent_item,
-        const Item& item, int role) const
-    {
-        QTreeWidgetItem* res = new history_tree_item(tree);
-        res->setData(0, role, QVariant::fromValue(item));
-        return res;
-    }
+    QTreeWidgetItem* create_item(QTreeWidget* tree, QTreeWidgetItem* parent_item) const
+    { return new history_tree_item(tree); }
 
     void remove_item(QTreeWidgetItem* item) const
-    {
-        delete item;
-    }
+    { delete item; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -188,9 +180,8 @@ void history_widget::add_to_favorites()
     context().bookmarks()->add(d.options());
 }
 
-void history_widget::update_item(QTreeWidgetItem* item)
+void history_widget::update_item(QTreeWidgetItem* item, const history_item& hi)
 {
-    const history_item& hi = item->data(0, c_history_role).value<history_item>();
     item->setText(0, hi.server_name());
     item->setText(2, hi.date_time().toString(Qt::DefaultLocaleShortDate));
     item->setText(3, hi.id().address());
@@ -204,16 +195,17 @@ void history_widget::update_contents_simple()
 {
     tree_->setRootIsDecorated(false);
     const history::history_list_t& hl = history_->list();
-    updater<history::history_list_t, history_adapter>::update_tree_contents(hl, c_history_role, tree_, 0,
-        boost::bind(&history_widget::update_item, this, _1), items_map_);
+    smart_update_tree_contents( hl, c_history_role, tree_, 0,
+        boost::bind(&history_widget::update_item, this, _1, _2), items_map_, history_adapter() );
+    
 }
 
 void history_widget::update_contents_grouped()
 {
     tree_->setRootIsDecorated(true);
     const history::history_list_t& hl = history_->list();
-    updater<history::history_list_t, history_adapter>::update_tree_contents(hl, c_history_role, tree_, 0,
-        boost::bind(&history_widget::update_item, this, _1), items_map_);
+    smart_update_tree_contents(hl, c_history_role, tree_, 0,
+        boost::bind(&history_widget::update_item, this, _1, _2), items_map_, history_adapter());
     
     // find top items
     typedef QMap<server_id, QTreeWidgetItem*> top_items_t;

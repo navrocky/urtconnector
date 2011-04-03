@@ -3,6 +3,7 @@
 
 #include <common/server_id.h>
 #include <common/list_caption_updater.h>
+#include <common/smart_updater_traits.h>
 #include <tabs/main_tab.h>
 #include <filters/pointers.h>
 #include "friend_record.h"
@@ -32,13 +33,13 @@ private slots:
     void remove_selected();
 
 private:
-    void update_friend_item(QTreeWidgetItem* item);
-    void update_server_item(QTreeWidgetItem* item);
+    void update_friend_item(QTreeWidgetItem* item, const friend_record& fr );
+    void update_server_item(QTreeWidgetItem* item, const server_id& id );
     server_id_list find_server_with_player(const friend_record& fr);
 
     friend_record get_selected_friend() const;
 
-    typedef QMap<friend_record, QTreeWidgetItem*> items_map_t;
+    typedef updater_traits<friend_record>::ItemsByElement items_map_t;
 
     QTreeWidget* tree_;
     friend_list* friends_;

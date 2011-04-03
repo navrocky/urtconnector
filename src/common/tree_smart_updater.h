@@ -3,41 +3,29 @@
 
 #include <algorithm>
 #include <QTreeWidgetItem>
-#include <boost/function.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 
-//    typedef map_adapter<my_type> MT;
-//    MT mt(l);
-//     updater<my_type>::update_tree_contents(l, c_history_role, tree_, 0,
-//         boost::bind(&history_widget::update_item, this, _1), items);
-//    updater<MT>::update_tree_contents(mt, c_history_role, tree_, 0,
-//        boost::bind(&history_widget::update_item, this, _1), items);
+#include <common/smart_updater_traits.h>
 
 class QTreeWidget;
 
+namespace detail {
+
 struct std_adapter
 {
-    template <typename Item>
-    QTreeWidgetItem* create_item(QTreeWidget* tree, QTreeWidgetItem* parent_item,
-        const Item& item, int role) const
+    QTreeWidgetItem* create_item(QTreeWidget* tree, QTreeWidgetItem* parent_item) const
     {
-        QTreeWidgetItem* res;
-        if (parent_item)
-            res = new QTreeWidgetItem(parent_item);
-        else
-            res = new QTreeWidgetItem(tree);
-//        res->setData(0, role, QVariant::fromValue(item));
-        return res;
+        return ( parent_item )
+            ? new QTreeWidgetItem(parent_item)
+            : new QTreeWidgetItem(tree);
     }
 
     void remove_item(QTreeWidgetItem* item) const
-    {
-        delete item;
-    }
+    { delete item; }
 };
 
-//metaclass for checking if class has find functionm with Arg argument and Ret result type
+///metaclass for checking if class has 'find' function with \p Arg argument and \return Ret result type
 template<typename T, typename Ret, typename Arg> struct class_has_find
 {
     typedef char        yes_type;
@@ -52,6 +40,33 @@ template<typename T, typename Ret, typename Arg> struct class_has_find
     static const int value = sizeof(has_member((T*)NULL)) == 1 ? 1 : 0;      
 };
 
+/**
+ * @brief helper to implement handling different types of container for smart updating
+ * this class used SFINAE:
+ * http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error
+ *
+ **/
+template <typename Container, typename Element>
+struct update_helper{
+    template <typename T>
+    static typename Container::const_iterator find(
+        const T& container, const Element& element,
+        typename boost::disable_if< detail::class_has_find<T, typename Container::const_iterator, const Element&> >::type* dummy = 0
+    )
+    {
+        return std::find(container.begin(), container.end(), element);
+    }
+
+    template <typename T>
+    static typename Container::const_iterator find(
+        const T& container, const Element& element,
+        typename boost::enable_if< detail::class_has_find<T, typename Container::const_iterator, const Element&> >::type* dummy = 0
+        )
+    {
+        return container.find(element);
+    }
+};
+
 template <typename T>
 struct get_value_type{
     typedef typename T::value_type type;
@@ -62,86 +77,106 @@ struct get_value_type< QMap<T, U> >{
     typedef U type;
 };
 
-template <typename Container, typename Adapter = std_adapter>
-struct updater
-{
-    typedef typename get_value_type<Container>::type Element;
-    typedef QMap<Element, QTreeWidgetItem*> item_map_t;
-
-    static void update_tree_contents(const Container& l,
-                              int role,
-                              QTreeWidget* tree,
-                              QTreeWidgetItem* parent_item,
-                              const boost::function<void (QTreeWidgetItem*)>& update_item,
-                              item_map_t& items,
-                              const Adapter& adapter = Adapter())
-    {
-        // who appeared ?
-        foreach (const Element& item, l)
-        {
-            // search item
-            typename item_map_t::iterator it = items.find(item);
-            QTreeWidgetItem* ti;
-            if (it == items.end())
-            {
-                ti = adapter.create_item(tree, parent_item, item, role);
-                items[item] = ti;
-            } else
-                ti = it.value();
-
-            ti->setData(0, role, QVariant::fromValue(item));
-
-            update_item(ti);
-        }
-
-        // remove old items
-        typename item_map_t::iterator it = items.begin();
-        for (; it != items.end(); ++it)
-        {
-            typename Container::const_iterator i = find(l, it.key());
-            if (i != l.end())
-                continue;
-            // can't find source element - delete tree item
-            QTreeWidgetItem* item = it.value();
-
-            // reparent childs
-            if (item->childCount() > 0)
-            {
-                if (item->parent())
-                    item->parent()->addChildren(item->takeChildren());
-                else
-                    tree->addTopLevelItems(item->takeChildren());
-            }
-
-            delete item;
-            items.erase(it);
-        }
-    }
-
-
-    // using SFINAE for handling different types of container 
-    // http://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error
-
-    template <typename T>
-    static typename Container::const_iterator find(
-        const T& container, const Element& element,
-        typename boost::disable_if< class_has_find<T, typename Container::const_iterator, const Element&> >::type* dummy = 0
-    )
-    {
-        return std::find(container.begin(), container.end(), element);
-    }
-
-    template <typename T>
-    static typename Container::const_iterator find(
-        const T& container, const Element& element,
-        typename boost::enable_if<class_has_find<T, typename Container::const_iterator, const Element&> >::type* dummy = 0
-        )
-    {
-        return container.find(element);
-    }
+template <typename Container>
+struct updater_container_traits {
+    typedef updater_traits< typename get_value_type<Container>::type > Traits;
+    typedef typename Traits::Element         Element;
+    typedef typename Traits::ItemsByElement  ItemsByElement;
+    typedef typename Traits::Updater         Updater;
 };
 
-//struct that adapts std::map tp QMap type interfaces. class holds only refference to the std::map
+} //namespace detail
+
+
+
+/**
+ * @brief generic smart QTreeWidget updater
+ *
+ * @param l - container that stores \b elements that was updated( added, removed or changed )
+ * @param role - Qt role-engine identifyer to assign our \b elements to QTreeWidgetItem
+ * @param tree - Qt QTreeWidget
+ * @param parent_item 
+ * @param update_item - function that implement specific actions for item associated with updated \b elements
+ * @param items - associative container to link \b element with QTreeWidgetItem
+ * @param adapter custom implementation of creating and erasing QTreeWidgetItems. Defaults to Adapter().
+ * @return void
+ * 
+ * @note see updater_traits to know type of update_item paramenter
+ **/
+template <typename Container, typename Adapter>
+void smart_update_tree_contents(const Container& l,
+                            int role,
+                            QTreeWidget* tree,
+                            QTreeWidgetItem* parent_item,
+                            const typename detail::updater_container_traits<Container>::Updater&  updater,
+                            typename detail::updater_container_traits<Container>::ItemsByElement& items,
+                            const Adapter& adapter = Adapter())
+{
+    typedef typename detail::updater_container_traits<Container>::Element Element;
+    typedef typename detail::updater_container_traits<Container>::ItemsByElement ItemsByElement;
+    
+    // who appeared ?
+    foreach (const Element& item, l)
+    {
+        // search item
+        typename ItemsByElement::const_iterator it = items.find(item);
+        
+        if ( it == items.end() )
+            it = items.insert( item, adapter.create_item(tree, parent_item) );
+        
+        QTreeWidgetItem* ti = it.value();
+
+        ti->setData(0, role, QVariant::fromValue(item));
+
+        updater(ti, item);
+    }
+
+    //to avoid deletion from container when iteration over this container
+    std::list<typename ItemsByElement::iterator> to_delete;
+
+    // remove old items
+    typename ItemsByElement::iterator it = items.begin();
+    for (; it != items.end(); ++it)
+    {
+        if ( detail::update_helper<Container, Element>::find(l, it.key()) != l.end() )
+            continue;
+        // can't find source element - delete tree item
+        QTreeWidgetItem* item = it.value();
+
+        // reparent childs
+        if (item->childCount() > 0)
+        {
+            if (item->parent())
+                item->parent()->addChildren(item->takeChildren());
+            else
+                tree->addTopLevelItems(item->takeChildren());
+        }
+
+        adapter.remove_item(item);
+        to_delete.push_back(it);
+    }
+    
+    foreach( const typename ItemsByElement::iterator& it, to_delete ) {
+        items.erase(it);
+    }
+}
+
+/**
+ * @brief generic smart QTreeWidget updater used default adapter
+ * This is overloaded function that uses detail::std::adapter as default one for smart_update_tree_contents
+ **/
+template <typename Container>
+void smart_update_tree_contents(const Container& l,
+                            int role,
+                            QTreeWidget* tree,
+                            QTreeWidgetItem* parent_item,
+                            const typename detail::updater_container_traits<Container>::Updater&  updater,
+                            typename detail::updater_container_traits<Container>::ItemsByElement& items)
+{ return smart_update_tree_contents(l, role, tree, parent_item, updater, items, detail::std_adapter() ); }
+
+
+
+///struct that adapts std::map tp QMap type interfaces. class holds only refference to the std::map
 template <typename Map>
 struct map_adapter{
     typedef typename Map::key_type key_type;
@@ -164,7 +199,7 @@ struct map_adapter{
         >
     {
       public:
-          adapt_iterator() : it() {}
+          adapt_iterator(): it() {}
 
           explicit adapt_iterator(BaseIterator it) : it(it) {}
 
@@ -176,14 +211,11 @@ struct map_adapter{
           template <class, class> friend class adapt_iterator;
 
           template <class T,class I>
-          bool equal(adapt_iterator<T, I> const& other) const
-          { return this->it == other.it; }
+          bool equal(adapt_iterator<T, I> const& other) const { return this->it == other.it; }
 
-          void increment()
-          { ++it; }
+          void increment() { ++it; }
 
-          Type& dereference() const
-          { return it->second; }
+          Type& dereference() const { return it->second; }
 
           BaseIterator it;
     };
