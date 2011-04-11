@@ -69,6 +69,7 @@ private slots:
     void launcher_stopped();
 
     void save_bookmarks();
+    void add_to_friend( const player_info& player );
 private:
     void load_all_at_start();
     void save_state_at_exit();

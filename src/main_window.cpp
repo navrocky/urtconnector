@@ -37,6 +37,7 @@
 #include <history/history_settings_form.h>
 #include <jobs/job_monitor.h>
 #include <rcon/rcon.h>
+#include <friend_list/friend_prop_dialog.h>
 
 #include <filters/filter_factory.h>
 #include <filters/reg_filters.h>
@@ -217,6 +218,8 @@ main_window::main_window(QWidget *parent)
 
     new QAccumulatingConnection(bookmarks_.get(), SIGNAL(changed( const server_bookmark&, const server_bookmark& )), this, SLOT(save_bookmarks()), 10, QAccumulatingConnection::Finally, this);
     new push_button_action_link(this, ui_->quickConnectButton, ui_->actionQuickConnect);
+
+    connect(ui_->server_info_browser, SIGNAL(add_to_friend(const player_info&)), SLOT(add_to_friend(const player_info&)));
 
     // loading all options
     load_all_at_start();
@@ -690,6 +693,17 @@ void main_window::show_anticheat_options()
     d.setWindowIcon(QIcon("icons:anticheat.png"));
     d.add_item( new anticheat::settings_widget(&d) );
     d.exec();
+}
+
+void main_window::add_to_friend( const player_info& player )
+{
+    friend_prop_dialog d(this);
+    friend_record fr;
+    fr.set_nick_name(player.nick_name());
+    d.set_rec(fr);
+    if (d.exec() != QDialog::Accepted)
+        return;
+    friends_.add(fr);
 }
 
 

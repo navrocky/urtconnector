@@ -6,11 +6,13 @@
 #include <QMap>
 #include <QAction>
 
+#include <common/tools.h>
 #include <common/tree_smart_updater.h>
 #include <common/qaccumulatingconnection.h>
 #include <common/server_info.h>
 #include <common/server_list.h>
 #include <common/player_info.h>
+#include <common/item_view_dblclick_action_link.h>
 #include <tabs/common_item_tags.h>
 #include <tabs/visible_updater.h>
 #include "friend_list.h"
@@ -52,9 +54,13 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 //     tree_->setWordWrap(true);
     
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
+    tree_->addAction(ctx.connect_action());
+    add_separator_action(tree_);
     tree_->addAction(add_action_);
     tree_->addAction(edit_action_);
     tree_->addAction(remove_action_);
+
+    new item_view_dblclick_action_link(this, tree_, ctx.connect_action());
 
     QTreeWidgetItem* it = tree_->headerItem();
     it->setText(7, tr("Address"));

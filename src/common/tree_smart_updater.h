@@ -167,14 +167,14 @@ void smart_update_tree_contents(const Container& l,
  **/
 template <typename Container>
 void smart_update_tree_contents(const Container& l,
-                            int role,
-                            QTreeWidget* tree,
-                            QTreeWidgetItem* parent_item,
-                            const typename detail::updater_container_traits<Container>::Updater&  updater,
-                            typename detail::updater_container_traits<Container>::ItemsByElement& items)
-{ return smart_update_tree_contents(l, role, tree, parent_item, updater, items, detail::std_adapter() ); }
-
-
+                                int role,
+                                QTreeWidget* tree,
+                                QTreeWidgetItem* parent_item,
+                                const typename detail::updater_container_traits<Container>::Updater& updater,
+                                typename detail::updater_container_traits<Container>::ItemsByElement& items)
+{
+    return smart_update_tree_contents(l, role, tree, parent_item, updater, items, detail::std_adapter());
+}
 
 ///struct that adapts std::map tp QMap type interfaces. class holds only refference to the std::map
 template <typename Map>
