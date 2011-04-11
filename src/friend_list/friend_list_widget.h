@@ -1,6 +1,7 @@
 #ifndef FRIEND_LIST_WIDGET_H
 #define FRIEND_LIST_WIDGET_H
 
+#include <set>
 #include <common/server_id.h>
 #include <common/list_caption_updater.h>
 #include <common/smart_updater_traits.h>
@@ -32,12 +33,19 @@ private slots:
     void edit_selected();
     void remove_selected();
 
+    void update_selected();
+    void update_bookmarks();
+    void update_all();
+
 private:
     void update_friend_item(QTreeWidgetItem* item, const friend_record& fr );
     void update_server_item(QTreeWidgetItem* item, const server_id& id );
     server_id_list find_server_with_player(const friend_record& fr);
 
     friend_record get_selected_friend() const;
+
+    typedef std::set<server_id> server_set_t;
+    server_set_t get_selected_servers() const;
 
     typedef updater_traits<friend_record>::ItemsByElement items_map_t;
 
@@ -49,6 +57,9 @@ private:
     QAction* add_action_;
     QAction* edit_action_;
     QAction* remove_action_;
+    QAction* update_selected_action_;
+    QAction* update_bookmarks_action_;
+    QAction* update_all_action_;
     int online_count_;
 };
 

@@ -7,6 +7,7 @@
 #include <QAction>
 
 #include <common/tools.h>
+#include <common/qt_syslog.h>
 #include <common/tree_smart_updater.h>
 #include <common/qaccumulatingconnection.h>
 #include <common/server_info.h>
@@ -15,12 +16,16 @@
 #include <common/item_view_dblclick_action_link.h>
 #include <tabs/common_item_tags.h>
 #include <tabs/visible_updater.h>
+#include <jobs/job_queue.h>
+#include "../job_update_selected.h"
+#include "../job_update_from_master.h"
 #include "friend_list.h"
 #include "friend_prop_dialog.h"
 #include "friend_list_db_saver.h"
 
 Q_DECLARE_METATYPE(friend_record)
 
+SYSLOG_MODULE(friend_list_widget)
 
 friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, QWidget *parent)
 : main_tab(tab_settings_p(new tab_settings("friend_list")), ctx, parent)
@@ -39,10 +44,23 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 
     remove_action_ = new QAction(QIcon("icons:remove.png"), tr("Remove selected"), this);
     connect(remove_action_, SIGNAL(triggered()), SLOT(remove_selected()));
+
+    update_selected_action_ = new QAction(QIcon("icons:view-refresh.png"), tr("Update selected server"), this);
+    connect(update_selected_action_, SIGNAL(triggered()), SLOT(update_selected()));
+
+    update_bookmarks_action_ = new QAction(QIcon("icons:bookmarks-refresh.png"), tr("Update bookmarks"), this);
+    connect(update_bookmarks_action_, SIGNAL(triggered()), SLOT(update_bookmarks()));
+
+    update_all_action_ = new QAction(QIcon("icons:download.png"), tr("Update all servers"), this);
+    connect(update_all_action_, SIGNAL(triggered()), SLOT(update_all()));
     
     addAction(add_action_);
     addAction(edit_action_);
     addAction(remove_action_);
+    add_separator_action(this);
+    addAction(update_selected_action_);
+    addAction(update_bookmarks_action_);
+    addAction(update_all_action_);
     
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
@@ -59,6 +77,10 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     tree_->addAction(add_action_);
     tree_->addAction(edit_action_);
     tree_->addAction(remove_action_);
+    add_separator_action(tree_);
+    tree_->addAction(update_selected_action_);
+    tree_->addAction(update_bookmarks_action_);
+    tree_->addAction(update_all_action_);
 
     new item_view_dblclick_action_link(this, tree_, ctx.connect_action());
 
@@ -97,14 +119,9 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 
 server_id friend_list_widget::selected_server() const
 {
-    QTreeWidgetItem* item = tree_->currentItem();
-    if (item)
-    {
-        server_id id = item->data(0, c_id_role).value<server_id>();
-        if (id.is_empty() && item->childCount() > 0)
-            id = item->child(0)->data(0, c_id_role).value<server_id>();
-        return id;
-    }
+    const server_set_t& ss = get_selected_servers();
+    if (ss.begin() != ss.end())
+        return *(ss.begin());
     else
         return server_id();
 }
@@ -127,6 +144,9 @@ void friend_list_widget::update_actions()
 {
     edit_action_->setEnabled(!(get_selected_friend().is_empty()));
     remove_action_->setEnabled(tree_->selectedItems().count() > 0);
+
+    const server_set_t& ss = get_selected_servers();
+    update_selected_action_->setEnabled(ss.size() > 0);
 }
 
 server_id_list friend_list_widget::find_server_with_player(const friend_record& fr)
@@ -233,3 +253,54 @@ void friend_list_widget::remove_selected()
     }
     friends_->remove(nn);
 }
+
+friend_list_widget::server_set_t friend_list_widget::get_selected_servers() const
+{
+    server_set_t res;
+    foreach (QTreeWidgetItem* item, tree_->selectedItems())
+    {
+        server_id id = item->data(0, c_id_role).value<server_id>();
+        if (id.is_empty() && item->childCount() > 0)
+            id = item->child(0)->data(0, c_id_role).value<server_id>();
+        if (!id.is_empty())
+            res.insert(id);
+    }
+    return res;
+}
+
+void friend_list_widget::update_selected()
+{
+    LOG_DEBUG << "Refresh selected servers";
+
+    server_id_list l;
+    const server_set_t& ss = get_selected_servers();
+    foreach (const server_id& id, ss)
+    {
+        l.push_back(id);
+    }
+
+    context().job_que()->add_job(job_p(new job_update_selected(l,
+        context().serv_list(), *context().geo())));
+}
+
+void friend_list_widget::update_bookmarks()
+{
+    LOG_DEBUG << "Refresh bookmarks";
+    server_id_list l;
+
+    foreach(const server_bookmark& bm, context().bookmarks()->list())
+    {
+        l.push_back(bm.id());
+    }
+
+    context().job_que()->add_job(job_p(new job_update_selected(l,
+        context().serv_list(), *context().geo())));
+}
+
+void friend_list_widget::update_all()
+{
+    LOG_DEBUG << "Refresh all servers";
+    context().job_que()->add_job(job_p(
+        new job_update_from_master(context().serv_list(), *context().geo())));
+}
+
