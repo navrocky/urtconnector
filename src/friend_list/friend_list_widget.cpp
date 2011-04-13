@@ -5,6 +5,10 @@
 #include <QHeaderView>
 #include <QMap>
 #include <QAction>
+#include <QPixmap>
+#include <QPainter>
+#include <QIcon>
+#include <QStyledItemDelegate>
 
 #include <common/tools.h>
 #include <common/qt_syslog.h>
@@ -22,10 +26,65 @@
 #include "friend_list.h"
 #include "friend_prop_dialog.h"
 #include "friend_list_db_saver.h"
+#include <tabs/status_item_delegate.h>
+#include <tabs/common_item_tags.h>
 
 Q_DECLARE_METATYPE(friend_record)
+Q_DECLARE_METATYPE(QAbstractItemDelegate*)
 
 SYSLOG_MODULE(friend_list_widget)
+
+class proxy_item_delegate : public QStyledItemDelegate
+{
+public:
+    proxy_item_delegate(QObject* parent)
+    : QStyledItemDelegate(parent)
+    {
+    }
+
+    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option,
+                       const QModelIndex& index) const
+    {
+        QAbstractItemDelegate* d = index.data(c_delegate_ptr_role).value<QAbstractItemDelegate*>();
+        if (d)
+            d->paint(painter, option, index);
+        else
+            QStyledItemDelegate::paint(painter, option, index);
+    }
+
+    virtual QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+    {
+        QAbstractItemDelegate* d = index.data(c_delegate_ptr_role).value<QAbstractItemDelegate*>();
+        return (d)
+            ? d->sizeHint(option, index)
+            : QStyledItemDelegate::sizeHint(option, index);
+    }
+
+    static void set_delegate(QTreeWidgetItem* item, int column, QAbstractItemDelegate* d)
+    {
+        item->setData(column, c_delegate_ptr_role, QVariant::fromValue(d));
+    }
+};
+
+class name_delegate : public QStyledItemDelegate
+{
+public:
+    name_delegate(QObject* parent)
+    : QStyledItemDelegate(parent)
+    {
+    }
+
+    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option,
+                       const QModelIndex& index) const
+    {
+        QStyledItemDelegate::paint(painter, option, index);
+    }
+
+    virtual QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
+    {
+        return QStyledItemDelegate::sizeHint(option, index);
+    }
+};
 
 friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, QWidget *parent)
 : main_tab(tab_settings_p(new tab_settings("friend_list")), ctx, parent)
@@ -70,6 +129,11 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     tree_->setSortingEnabled(true);
     tree_->setAllColumnsShowFocus(true);
 //     tree_->setWordWrap(true);
+
+    tree_->setItemDelegate(new proxy_item_delegate(this));
+
+    status_delegate_ = new status_item_delegate(ctx.serv_list(), this);
+    name_delegate_ = new name_delegate(this);
     
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(ctx.connect_action());
@@ -133,6 +197,8 @@ void friend_list_widget::update_contents()
     
     smart_update_tree_contents(fl, c_friend_role, tree_, 0,
         boost::bind(&friend_list_widget::update_friend_item, this, _1, _2), items_map_ );
+
+
     
     caption_.set_visible_count(online_count_);
     caption_.set_total_count(tree_->topLevelItemCount());
@@ -178,11 +244,20 @@ server_id_list friend_list_widget::find_server_with_player(const friend_record& 
     return res;
 }
 
-
 void friend_list_widget::update_friend_item(QTreeWidgetItem* item, const friend_record& fr)
 {
     item->setText(0, fr.nick_name());
-    
+
+    proxy_item_delegate::set_delegate(item, 0, name_delegate_);
+
+//    QModelIndex mi = get_index_from_item(tree_, item);
+//    tree_->setItemDelegateForRow(mi.row(), name_delegate_);
+//    int i = mi.row();
+
+//    LOG_DEBUG << i;
+
+//    tree_->setItemDelegateForRow(mi.row(), name_delegate_);
+
     server_id_list ids = find_server_with_player(fr);
     online_count_ += ids.size();
     
@@ -200,7 +275,7 @@ void friend_list_widget::update_friend_item(QTreeWidgetItem* item, const friend_
     
     // update items
     smart_update_tree_contents( ids, c_id_role, tree_, item, 
-        boost::bind(&friend_list_widget::update_server_item, this, _1, _2), items );
+        boost::bind(&friend_list_widget::update_server_item, this, _1, _2), items);
     
     if (old_cnt == 0 && item->childCount() > 0)
         item->setExpanded(true);        
@@ -208,7 +283,8 @@ void friend_list_widget::update_friend_item(QTreeWidgetItem* item, const friend_
 
 void friend_list_widget::update_server_item(QTreeWidgetItem* item, const server_id& id)
 {
-    item->setText(0, id.address());
+    item->setText(1, id.address());
+    proxy_item_delegate::set_delegate(item, 0, status_delegate_);
 }
 
 void friend_list_widget::add()

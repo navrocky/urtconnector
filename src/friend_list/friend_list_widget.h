@@ -15,6 +15,8 @@ class QAction;
 class friend_list;
 class server_list;
 class visible_updater;
+class name_delegate;
+class status_item_delegate;
 
 class friend_list_widget : public main_tab
 {
@@ -61,6 +63,8 @@ private:
     QAction* update_bookmarks_action_;
     QAction* update_all_action_;
     int online_count_;
+    name_delegate* name_delegate_;
+    status_item_delegate* status_delegate_;
 };
 
 #endif // FRIEND_LIST_WIDGET_H
