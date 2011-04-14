@@ -10,6 +10,10 @@ friend_prop_dialog::friend_prop_dialog(QWidget* parent)
 , ui_(new Ui_friend_prop_dialog)
 {
     ui_->setupUi(this);
+
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 7, 0))
+    ui_->expr_edit->setPlaceholderText(tr("Not used if empty"));
+#endif
 }
 
 void friend_prop_dialog::set_rec(const friend_record& rec)

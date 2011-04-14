@@ -35,11 +35,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="expr_edit">
-     <property name="placeholderText">
-      <string>Not used if empty</string>
-     </property>
-    </widget>
+    <widget class="QLineEdit" name="expr_edit"/>
    </item>
    <item>
     <widget class="QLabel" name="label_3">
