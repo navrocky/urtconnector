@@ -185,11 +185,11 @@ main_window::main_window(QWidget *parent)
 
     tab_context ctx(all_sl_, filter_factory_, bookmarks_, que_, &gi_, ui_->actionConnect);
 
-    fav_list_ = new bookmark_tab("fav_list", ctx, this);
+    fav_list_ = new bookmark_tab("bookmarks_list", ctx, this);
     tab_widget_->add_widget(fav_list_);
     connect(fav_list_, SIGNAL(selection_changed()), SLOT(selection_changed()));
     
-    all_list_ = new server_list_tab("all_list", ctx, this);
+    all_list_ = new server_list_tab("full_list", ctx, this);
     tab_widget_->add_widget(all_list_);
     connect(all_list_, SIGNAL(selection_changed()), SLOT(selection_changed()));
 

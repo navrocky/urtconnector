@@ -28,6 +28,7 @@
 #include "friend_list_db_saver.h"
 #include <tabs/status_item_delegate.h>
 #include <tabs/common_item_tags.h>
+#include <tabs/tools.h>
 
 Q_DECLARE_METATYPE(friend_record)
 Q_DECLARE_METATYPE(QAbstractItemDelegate*)
@@ -156,7 +157,7 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     it->setText(3, tr("Ping"));
     it->setText(2, tr("Country"));
     it->setText(1, tr("Name"));
-    it->setText(0, tr("Status"));
+    it->setText(0, tr("Friend / Status"));
 
     QHeaderView* hdr = tree_->header();
     hdr->resizeSection(0, 80);
@@ -283,8 +284,9 @@ void friend_list_widget::update_friend_item(QTreeWidgetItem* item, const friend_
 
 void friend_list_widget::update_server_item(QTreeWidgetItem* item, const server_id& id)
 {
-    item->setText(1, id.address());
+//    item->setText(1, id.address());
     proxy_item_delegate::set_delegate(item, 0, status_delegate_);
+    update_server_info_item(context(), item);
 }
 
 void friend_list_widget::add()

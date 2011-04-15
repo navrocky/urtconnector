@@ -18,6 +18,7 @@
 #include "status_item_delegate.h"
 #include "common_item_tags.h"
 #include "visible_updater.h"
+#include "tools.h"
 
 #include "server_list_tab.h"
 
@@ -99,7 +100,7 @@ void server_list_tab::update_contents()
         }
         else
             item = it2->second;
-        update_item(item);
+        update_server_info_item(context(), item);
     }
 
     // remove old items

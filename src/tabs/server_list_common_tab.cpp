@@ -45,12 +45,12 @@ server_list_common_tab::server_list_common_tab(const QString& object_name,
     connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(do_selection_change()));
 
     QTreeWidgetItem *hi = tree_->headerItem();
-    hi->setText(7, tr("Players"));
-    hi->setText(6, tr("Map"));
-    hi->setText(5, tr("Game mode"));
-    hi->setText(4, tr("Ping"));
-    hi->setText(3, tr("Country"));
-    hi->setText(2, tr("Address"));
+    hi->setText(7, tr("Address"));
+    hi->setText(6, tr("Players"));
+    hi->setText(5, tr("Map"));
+    hi->setText(4, tr("Game mode"));
+    hi->setText(3, tr("Ping"));
+    hi->setText(2, tr("Country"));
     hi->setText(1, tr("Name"));
     hi->setText(0, tr("Status"));
     hi->setToolTip(2, tr("Server address (ip:port)"));
@@ -61,13 +61,13 @@ server_list_common_tab::server_list_common_tab(const QString& object_name,
 
     QHeaderView* hdr = tree_->header();
 
-    hdr->moveSection(2, 7);
+//    hdr->moveSection(2, 7);
     hdr->resizeSection(0, 80);
     hdr->resizeSection(1, 350);
+    hdr->resizeSection(2, 50);
     hdr->resizeSection(3, 50);
-    hdr->resizeSection(4, 50);
-    hdr->resizeSection(7, 60);
-    hdr->setSortIndicator(4, Qt::AscendingOrder);
+    hdr->resizeSection(6, 60);
+    hdr->setSortIndicator(3, Qt::AscendingOrder);
 
     update_caption();
 }
@@ -96,67 +96,6 @@ void server_list_common_tab::filter_changed()
     }
     set_visible_count(visible_count);
     tree_->setUpdatesEnabled(true);
-}
-
-void server_list_common_tab::update_item(QTreeWidgetItem* item)
-{
-    server_id id = item->data(0, c_id_role).value<server_id>();
-    if (id.is_empty())
-        return;
-
-    static const server_info_p empty( new server_info );
-
-    server_info_p si = server_list()->get(id);
-    if (!si)
-        si = empty;
-
-    int stamp = item->data(0, c_stamp_role).value<int>();
-    if ( si->update_stamp() != stamp || stamp == 0 )
-    {
-        QString name = si->name;
-        const server_bookmark& bm = context().bookmarks()->get(id);
-        if (!bm.is_empty())
-        {
-            if (!bm.name().isEmpty() && name != bm.name())
-            {
-                if (name.isEmpty())
-                    name = bm.name();
-                else
-                    name = QString("%1 (%2)").arg(name).arg(bm.name());
-            }
-        }
-
-        QStringList sl;
-        sl << si->status_name();
-
-        if (si->is_password_needed())
-            sl << tr("Private");
-        if (si->get_info("pure", "-1").toInt() == 0)
-            sl << tr("Not pure");
-
-        QString status = sl.join(", ");
-
-        item->setToolTip(0, status);
-//        item->setIcon(0, QIcon("icons:status-none.png"));
-        item->setText(1, name);
-        item->setText(2, id.address());
-        item->setIcon(3, geoip::get_flag_by_country(si->country_code));
-        item->setToolTip(3, si->country);
-        item->setText(4, QString("%1").arg(si->ping, 5));
-        item->setText(5, si->mode_name());
-        item->setText(6, si->map);
-
-        QString player_count;
-        if (si->max_player_count > 0)
-            player_count = QString("%1/%2/%3").arg(si->players.size())
-            .arg(si->public_slots()).arg(si->max_player_count);
-
-        item->setText(7, player_count);
-        item->setToolTip(7, tr("Current %1 / Public slots %2 / Total %3")
-                         .arg(si->players.size()).arg(si->public_slots())
-                         .arg(si->max_player_count));
-        item->setData(0, c_stamp_role, QVariant::fromValue(si->update_stamp()));
-    }
 }
 
 server_id server_list_common_tab::selected_server() const

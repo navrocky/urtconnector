@@ -35,7 +35,6 @@ protected slots:
 
 protected:
     void set_total_count(int);
-    void update_item(QTreeWidgetItem* item);
     QTreeWidget* tree() const {return tree_;}
 
 private slots:

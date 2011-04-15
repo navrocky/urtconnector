@@ -18,6 +18,7 @@
 
 #include "bookmark_tab.h"
 #include "main_window.h"
+#include "tools.h"
 
 SYSLOG_MODULE(bookmark_tab)
 
@@ -91,7 +92,7 @@ void bookmark_tab::update_servers_info()
     for (int i = 0; i < tree()->topLevelItemCount(); i++)
     {
         QTreeWidgetItem* item = tree()->topLevelItem(i);
-        update_item(item);
+        update_server_info_item(context(), item);
     }
 }
 

@@ -12,6 +12,7 @@ set(HEADERS
     server_list_tab.h
     status_item_delegate.h
     visible_updater.h
+    tools.h
 )
 
 set(MOC_HEADERS
@@ -32,6 +33,7 @@ set(SOURCES
     server_list_tab.cpp
     status_item_delegate.cpp
     visible_updater.cpp
+    tools.cpp
 )
 
 set(IFACES

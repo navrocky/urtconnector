@@ -587,6 +587,8 @@ src/tabs/status_item_delegate.cpp -text
 src/tabs/status_item_delegate.h -text
 src/tabs/tab_context.cpp -text
 src/tabs/tab_context.h -text
+src/tabs/tools.cpp -text
+src/tabs/tools.h -text
 src/tabs/visible_updater.cpp -text
 src/tabs/visible_updater.h -text
 src/urtconnector.desktop -text
