@@ -23,6 +23,10 @@ public:
 
     QString toolbar_filter() const;
     void save_toolbar_filter(const QString&);   
+    
+    bool is_filter_visible() const;
+    void set_filter_visible(bool val);
+    
 private:
     QString uid_;
     base_settings::settings_ptr fs;
@@ -54,8 +58,6 @@ private slots:
     void save_filter();
     void load_filter();
     void update_toolbar_filter();
-    
-    void test(bool b);
 
 private:
 

@@ -107,6 +107,10 @@ void filtered_tab::update_toolbar_filter()
     }
 }
 
+void filtered_tab::save_state()
+{
+    main_tab::save_state();
+}
 
 void filtered_tab::load_state()
 {
@@ -189,7 +193,7 @@ filtered_tab_settings::filtered_tab_settings(const tab_settings_p& ts)
     
     update_setting_value( ts_, fs, "root_filter", "root" );
     update_setting_value( ts_, fs, "toolbar_filter_name", "toolbar_filter_name" );
-    ts_->remove("filter_visible");
+    update_setting_value( ts_, fs, "filter_visible", "filter_visible" );
 }
 
 const QString& filtered_tab_settings::uid()
@@ -217,3 +221,14 @@ void filtered_tab_settings::save_toolbar_filter(const QString& name)
 {
     fs->setValue("toolbar_filter_name", name);
 }
+
+bool filtered_tab_settings::is_filter_visible() const
+{
+    return fs->value("filter_visible").toBool();
+}
+
+void filtered_tab_settings::set_filter_visible(bool val)
+{
+    fs->setValue("filter_visible", val);
+}
+
