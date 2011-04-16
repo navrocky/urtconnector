@@ -9,7 +9,27 @@
 
 class QAction;
 class QDockWidget;
-class filtered_tab_settings;
+
+
+class filtered_tab_settings
+{
+public:
+    filtered_tab_settings(const tab_settings_p& ts);
+
+    const QString& uid();
+    
+    filter_p root_filter(filter_factory_p factory) const;
+    void save_root_filter(filter_p f);
+
+    QString toolbar_filter() const;
+    void save_toolbar_filter(const QString&);   
+private:
+    QString uid_;
+    base_settings::settings_ptr fs;
+    
+    //TODO backward config compatibility - remove on 0.8.0
+    base_settings::settings_ptr ts_; // - the main_tab settings
+};
 
 class filtered_tab : public main_tab
 {
@@ -34,6 +54,8 @@ private slots:
     void save_filter();
     void load_filter();
     void update_toolbar_filter();
+    
+    void test(bool b);
 
 private:
 
@@ -42,22 +64,8 @@ private:
     QWidget* filter_holder_;
     QPointer<QWidget> filter_toolbar_widget_;
     QAction* show_filter_action_;
-    filtered_tab_settings* st_;
+    filtered_tab_settings fs_;
 };
 
-class filtered_tab_settings : public tab_settings
-{
-public:
-    filtered_tab_settings(const QString& object_name);
-
-    filter_p root_filter(filter_factory_p factory) const;
-    void save_root_filter(filter_p f);
-
-    QString toolbar_filter() const;
-    void save_toolbar_filter(const QString&);
-
-    bool is_filter_visible() const;
-    void set_filter_visible(bool val);
-};
 
 #endif

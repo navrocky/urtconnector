@@ -39,9 +39,9 @@ void correct_names(filter_list_p fl, filter_p par)
 // filtered_tab
 
 filtered_tab::filtered_tab(tab_settings_p st, const tab_context& ctx, QWidget* parent)
-: main_tab(st, ctx, parent)
-, filters_(new filter_list(ctx.filter_factory()))
-, st_(dynamic_cast<filtered_tab_settings*>(st.get()))
+    : main_tab(st, ctx, parent)
+    , filters_(new filter_list(ctx.filter_factory()))
+    , fs_( settings() )
 {
     load_filter();
 
@@ -59,7 +59,7 @@ filtered_tab::filtered_tab(tab_settings_p st, const tab_context& ctx, QWidget* p
 
     show_filter_action_ = new QAction(QIcon("icons:view-filter.png"), tr("View and edit filter"), this);
     show_filter_action_->setCheckable(true);
-    show_filter_action_->setChecked(st_->is_filter_visible());
+    show_filter_action_->setChecked( fs_.is_filter_visible() );
 
     QToolBar* tb = new QToolBar(QObject::tr("Filter toolbar"), this);
     addToolBar(Qt::TopToolBarArea, tb);
@@ -107,29 +107,24 @@ void filtered_tab::update_toolbar_filter()
     }
 }
 
-void filtered_tab::save_state()
-{
-    main_tab::save_state();
-    st_->set_filter_visible(filter_widget_->isVisible());
-}
 
 void filtered_tab::load_state()
 {
     main_tab::load_state();
-    filter_widget_->setVisible(st_->is_filter_visible());
+    restoreDockWidget(filter_widget_);
 }
 
 void filtered_tab::save_filter()
 {
-    st_->save_root_filter(filters_->root_filter());
+    fs_.save_root_filter(filters_->root_filter());
 
     filter_p tbf = filters_->toolbar_filter().lock();
     if (tbf)
-        st_->save_toolbar_filter(tbf->name());
+        fs_.save_toolbar_filter(tbf->name());
     else
-        st_->save_toolbar_filter("");
+        fs_.save_toolbar_filter("");
 
-    LOG_DEBUG << "%1: Filter saved", st_->object_name();
+    LOG_DEBUG << "%1: Filter saved", fs_.uid();
 }
 
 void filtered_tab::default_filter_initialization()
@@ -151,14 +146,14 @@ void filtered_tab::default_filter_initialization()
 
 void filtered_tab::load_filter()
 {
-    LOG_DEBUG << "%1: Load filter", st_->object_name();
+    LOG_DEBUG << "%1: Load filter", fs_.uid();
     try
     {
-        filter_p f = st_->root_filter(filters_->factory());
+        filter_p f = fs_.root_filter(filters_->factory());
         filters_->set_root_filter(f);
         correct_names(filters_, filters_->root_filter());
 
-        QString name = st_->toolbar_filter();
+        QString name = fs_.toolbar_filter();
         f = filters_->find_by_name(name);
         filters_->set_toolbar_filter(f);
     }
@@ -180,38 +175,45 @@ bool filtered_tab::filtrate(const server_info& si) const
 ////////////////////////////////////////////////////////////////////////////////
 // filtered_tab_settings
 
-filtered_tab_settings::filtered_tab_settings(const QString& object_name)
-: tab_settings(object_name)
+filtered_tab_settings::filtered_tab_settings(const tab_settings_p& ts)
 {
+    base_settings set;
+    
+    uid_ = ts->uid() + "_filter";
+   
+    set.register_sub_group( uid_, "filter", ts->uid() );
+    fs = base_settings().get_settings(uid_);
+
+    //TODO backward config compatibility - remove on 0.8.0
+    ts_ = ts->ts();
+    
+    update_setting_value( ts_, fs, "root_filter", "root" );
+    update_setting_value( ts_, fs, "toolbar_filter_name", "toolbar_filter_name" );
+    ts_->remove("filter_visible");
+}
+
+const QString& filtered_tab_settings::uid()
+{
+    return uid_;
 }
 
 filter_p filtered_tab_settings::root_filter(filter_factory_p factory) const
 {
-    QByteArray ba = st->value("root_filter").toByteArray();
+    QByteArray ba = fs->value("root").toByteArray();
     return filter_load(ba, factory);
 }
 
 void filtered_tab_settings::save_root_filter(filter_p f)
 {
-    st->setValue("root_filter", filter_save(f));
+    fs->setValue("root", filter_save(f));
 }
 
 QString filtered_tab_settings::toolbar_filter() const
 {
-    return st->value("toolbar_filter_name").toString();
+    return fs->value("toolbar_filter_name").toString();
 }
 
 void filtered_tab_settings::save_toolbar_filter(const QString& name)
 {
-    st->setValue("toolbar_filter_name", name);
-}
-
-bool filtered_tab_settings::is_filter_visible() const
-{
-    return st->value("filter_visible").toBool();
-}
-
-void filtered_tab_settings::set_filter_visible(bool val)
-{
-    st->setValue("filter_visible", val);
+    fs->setValue("toolbar_filter_name", name);
 }

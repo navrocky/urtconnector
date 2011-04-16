@@ -86,6 +86,8 @@ struct base_settings::pimpl
     settings_ptr create_group( const QString& uid, const QString group, settings_ptr settings )
     {
         settings_ptr s(new QSettings(settings->fileName(), format_c));
+        if( !settings->group().isEmpty() )
+            s->beginGroup( settings->group() );
         s->beginGroup((group.isEmpty()) ? uid : group);
         return s;
     }
@@ -145,7 +147,14 @@ base_settings::settings_ptr base_settings::get_settings(const QString& uid)
     return s.p_->get_settings(uid);
 }
 
-
+void update_setting_value(base_settings::settings_ptr& old_s, base_settings::settings_ptr& new_s, const QString& old_key, const QString& new_key)
+{
+    if( !old_s->childKeys().contains( old_key ) )
+        return;
+    
+    new_s->setValue( new_key, old_s->value(old_key) );
+    old_s->remove( old_key );
+}
 
 base_settings::settings_ptr clone_settings(base_settings::settings_ptr s, const QString& filename)
 {

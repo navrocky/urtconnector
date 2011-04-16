@@ -67,13 +67,13 @@ struct history_adapter
 history_widget::history_widget(history_p history,
                                const tab_context& ctx,
                                QWidget *parent)
-: filtered_tab(tab_settings_p(new filtered_tab_settings("history_tab")), ctx, parent)
-, history_(history)
-, group_mode_(true)
-, item_count_(0)
-, visible_item_count_(0)
-, caption_(this, tr("History"))
-, updater_(new visible_updater(this, SLOT(update_contents()), this))
+    : filtered_tab(tab_settings_p(new tab_settings("history_tab")), ctx, parent)
+    , history_(history)
+    , group_mode_(true)
+    , item_count_(0)
+    , visible_item_count_(0)
+    , caption_(this, tr("History"))
+    , updater_(new visible_updater(this, SLOT(update_contents()), this))
 {
     setWindowIcon(QIcon("icons:history.png"));
     

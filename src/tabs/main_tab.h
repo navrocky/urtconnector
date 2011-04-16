@@ -22,7 +22,7 @@ class main_tab : public QMainWindow
 {
     Q_OBJECT
 public:
-    main_tab(tab_settings_p st, const tab_context& ctx, QWidget* parent);
+    main_tab(const tab_settings_p& st, const tab_context& ctx, QWidget* parent);
 
     /// returns currently selected server if any
     virtual server_id selected_server() const = 0;
@@ -63,10 +63,17 @@ public:
     void save_state(const QByteArray& a);
     QByteArray load_state() const;
 
-    const QString& object_name() const {return object_name_;}
+    void save_geometry(const QByteArray& a);
+    QByteArray load_geometry() const;
 
-protected:
-    QString object_name_;
+    
+    const QString& uid() const {return uid_;}
+
+    //TODO backward config compatibility - remove on 0.8.0
+    const base_settings::settings_ptr& ts() const { return st; }
+
+private:
+    QString uid_;
     base_settings::settings_ptr st;
 };
 

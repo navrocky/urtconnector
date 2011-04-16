@@ -24,11 +24,11 @@ server_list_common_tab::server_list_common_tab(const QString& object_name,
                                                const QString& caption,
                                                const tab_context& ctx,
                                                QWidget* parent)
-: filtered_tab(tab_settings_p(new server_list_common_tab_settings(object_name)),
-               ctx, parent)
-, caption_(caption)
-, visible_count_(0)
-, total_count_(0)
+    : filtered_tab(tab_settings_p(new tab_settings(object_name)), ctx, parent)
+    , caption_(caption)
+    , visible_count_(0)
+    , total_count_(0)
+    , sls_( settings() )
 {
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
@@ -120,17 +120,13 @@ server_id_list server_list_common_tab::selection() const
 void server_list_common_tab::save_state()
 {
     filtered_tab::save_state();
-    server_list_common_tab_settings* s =
-            static_cast<server_list_common_tab_settings*>(settings().get());
-    s->save_header_state(tree_->header()->saveState());
+    sls_.save_header_state(tree_->header()->saveState());
 }
 
 void server_list_common_tab::load_state()
 {
     filtered_tab::load_state();
-    server_list_common_tab_settings* s =
-            static_cast<server_list_common_tab_settings*>(settings().get());
-    tree_->header()->restoreState(s->header_state());
+    tree_->header()->restoreState(sls_.header_state());
 }
 
 void server_list_common_tab::refresh_selected()
@@ -179,18 +175,28 @@ void server_list_common_tab::do_selection_change()
 ////////////////////////////////////////////////////////////////////////////////
 // server_list_common_tab_settings
 
-server_list_common_tab_settings::server_list_common_tab_settings(const QString& object_name)
-: filtered_tab_settings(object_name)
+server_list_common_tab_settings::server_list_common_tab_settings(const tab_settings_p& ts)
 {
+    base_settings set;
+    
+    uid_ = ts->uid() + "_server_list_common";
+    
+    set.register_sub_group( uid_, "server_list_common", ts->uid() );
+    sls = base_settings().get_settings(uid_);
+
+    //TODO backward config compatibility - remove on 0.8.0
+    ts_ = ts->ts();
+    
+    update_setting_value( ts_, sls, "header_state", "header_state" );
 }
 
 QByteArray server_list_common_tab_settings::header_state() const
 {
-    return st->value("header_state").toByteArray();
+    return sls->value("header_state").toByteArray();
 }
 
 void server_list_common_tab_settings::save_header_state(const QByteArray& ba)
 {
-    st->setValue("header_state", QVariant::fromValue(ba));
+    sls->setValue("header_state", QVariant::fromValue(ba));
 }
 

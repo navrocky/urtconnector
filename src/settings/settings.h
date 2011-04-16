@@ -68,10 +68,14 @@ private:
 };
 
 
+///Take value from \p old_settings by \p old_key and put it to \p new_settigns by \p new_key. Old entry completely removed from old_settings
+void update_setting_value( base_settings::settings_ptr& old_setings, base_settings::settings_ptr& new_setings, const QString& old_key, const QString& new_key );
 
 base_settings::settings_ptr clone_settings( base_settings::settings_ptr s, const QString& filename );
 
 void copy_settings( base_settings::settings_ptr src, base_settings::settings_ptr dst );
+
+
 
 ///Base class tu provide uid to any settings objects
 
