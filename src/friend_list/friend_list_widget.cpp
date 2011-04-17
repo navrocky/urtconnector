@@ -78,7 +78,19 @@ public:
     virtual void paint(QPainter* painter, const QStyleOptionViewItem& option,
                        const QModelIndex& index) const
     {
-        QStyledItemDelegate::paint(painter, option, index);
+        static int padding = option.rect.left();
+
+        painter->save();
+        painter->setClipRect(option.rect, Qt::ReplaceClip);        
+        painter->setClipping(true);
+        
+        painter->translate(-option.rect.left() + padding, 0);
+        
+        
+        QStyleOptionViewItem opt = option;
+        opt.rect.setRight(2000);
+        QStyledItemDelegate::paint(painter, opt, index.model()->sibling(index.row(), 0, index));
+        painter->restore();
     }
 
     virtual QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
@@ -249,15 +261,8 @@ void friend_list_widget::update_friend_item(QTreeWidgetItem* item, const friend_
 {
     item->setText(0, fr.nick_name());
 
-    proxy_item_delegate::set_delegate(item, 0, name_delegate_);
-
-//    QModelIndex mi = get_index_from_item(tree_, item);
-//    tree_->setItemDelegateForRow(mi.row(), name_delegate_);
-//    int i = mi.row();
-
-//    LOG_DEBUG << i;
-
-//    tree_->setItemDelegateForRow(mi.row(), name_delegate_);
+    for (int i = 0; i < 8; i++)
+        proxy_item_delegate::set_delegate(item, i, name_delegate_);
 
     server_id_list ids = find_server_with_player(fr);
     online_count_ += ids.size();
