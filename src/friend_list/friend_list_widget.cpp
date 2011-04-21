@@ -79,18 +79,31 @@ public:
                        const QModelIndex& index) const
     {
         static int padding = option.rect.left();
+//        LOG_DEBUG << option.rect.left();
+//        int padding = 20;
+
+        int d = -option.rect.left() + padding;
+
+        QPixmap pm(option.rect.size());
+        pm.fill(Qt::transparent);
+        QWidget* w = dynamic_cast<QWidget*>(painter->device());
+
+        QPainter p(&pm);
+//        p.drawEllipse(pm.rect());
+        p.translate(d, 0);
+        QStyleOptionViewItem opt = option;
+        opt.rect.moveTo(0, 0);
+//        opt.rect.setRight(painter->window().width() - padding );
+        opt.rect.setRight(10000);
+
+//            LOG_DEBUG << opt.decorationSize.width();
 
         painter->save();
-        painter->setClipRect(option.rect, Qt::ReplaceClip);        
-        painter->setClipping(true);
-        
-        painter->translate(-option.rect.left() + padding, 0);
-        
-        
-        QStyleOptionViewItem opt = option;
-        opt.rect.setRight(2000);
-        QStyledItemDelegate::paint(painter, opt, index.model()->sibling(index.row(), 0, index));
+        painter->translate(d, 0);
+        QStyledItemDelegate::paint(&p, opt, index.model()->sibling(index.row(), 0, index));
         painter->restore();
+
+        painter->drawPixmap(option.rect.topLeft(), pm);
     }
 
     virtual QSize sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
