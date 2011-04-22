@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QIcon>
 #include <QStyledItemDelegate>
+#include <QScrollBar>
 
 #include <common/tools.h>
 #include <common/qt_syslog.h>
@@ -70,8 +71,9 @@ public:
 class name_delegate : public QStyledItemDelegate
 {
 public:
-    name_delegate(QObject* parent)
+    name_delegate(QObject* parent, QTreeWidget* tw)
     : QStyledItemDelegate(parent)
+    , tw_(tw)
     {
     }
 
@@ -79,24 +81,26 @@ public:
                        const QModelIndex& index) const
     {
         static int padding = option.rect.left();
-//        LOG_DEBUG << option.rect.left();
-//        int padding = 20;
 
-        int d = -option.rect.left() + padding;
+        int cols_width = 0;
+        for (int i = 0; i < tw_->columnCount(); i++)
+            cols_width += tw_->header()->sectionSize(i);
+
+        int d = -option.rect.left() + padding - tw_->horizontalScrollBar()->sliderPosition();
 
         QPixmap pm(option.rect.size());
         pm.fill(Qt::transparent);
         QWidget* w = dynamic_cast<QWidget*>(painter->device());
 
         QPainter p(&pm);
-//        p.drawEllipse(pm.rect());
         p.translate(d, 0);
         QStyleOptionViewItem opt = option;
         opt.rect.moveTo(0, 0);
-//        opt.rect.setRight(painter->window().width() - padding );
-        opt.rect.setRight(10000);
 
-//            LOG_DEBUG << opt.decorationSize.width();
+        QFont f = opt.font;
+        f.setBold(true);
+        opt.font = f;
+        opt.rect.setRight(cols_width - padding - 1);
 
         painter->save();
         painter->translate(d, 0);
@@ -110,6 +114,9 @@ public:
     {
         return QStyledItemDelegate::sizeHint(option, index);
     }
+
+private:
+    QTreeWidget* tw_;
 };
 
 friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, QWidget *parent)
@@ -159,7 +166,7 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     tree_->setItemDelegate(new proxy_item_delegate(this));
 
     status_delegate_ = new status_item_delegate(ctx.serv_list(), this);
-    name_delegate_ = new name_delegate(this);
+    name_delegate_ = new name_delegate(this, tree_);
     
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(ctx.connect_action());
