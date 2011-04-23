@@ -54,42 +54,45 @@ void init_application(QApplication* a)
     a->setOrganizationName("urtcommunity");
     a->setApplicationName("urtconnector");
 
-    // loading translations
-    static QTranslator qt_trans;
-    QString trans_name = "qt_" + QLocale::system().name();
-    bool loaded = qt_trans.load(trans_name,
-                                QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    if (loaded)
-        LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
-    else
-        LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
-
-    a->installTranslator(&qt_trans);
+    //Initializing main settings
+    base_settings set;
+    set.register_group( app_settings::uid(),   "app_opts",   "options.ini" );    
     
-    static QTranslator urt_tr;
-
-    trans_name = "urtconnector_" + QLocale::system().name();
-#if defined(Q_OS_UNIX)
-    loaded = urt_tr.load(trans_name, "/usr/share/urtconnector/translations");
-#elif defined(Q_OS_WIN)
-    loaded = urt_tr.load(trans_name);
-#elif defined(Q_OS_MAC)
-    // FIXME i don't know how do this on mac
-    loaded = urt_tr.load(trans_name);
-#endif
-    if (loaded)
-        LOG_DEBUG << "Translation \"%1\" loaded", trans_name;
+    // loading translations
+    static boost::shared_ptr<QTranslator> qt_trans = system_translator( app_settings().country_name() );
+    
+    if ( !qt_trans->isEmpty() )
+    {
+        LOG_DEBUG << "Translation \"%1\" loaded", app_settings().country_name();
+    }
     else
-        LOG_DEBUG << "Failed to load translation \"%1\"", trans_name;
+    {
+        LOG_DEBUG << "Failed to load system translation \"%1\". Trying \"%2\" instead...", app_settings().country_name(), QLocale::system().name();
+        
+        qt_trans = system_translator( QLocale::system().name() );
+        if( !qt_trans->isEmpty() )
+            LOG_DEBUG << "Translation \"%1\" loaded", QLocale::system().name();
+        else
+            LOG_DEBUG << "Failed to load system translation \"%1\"", QLocale::system().name();
+    }
 
-    a->installTranslator(&urt_tr);
+    a->installTranslator(qt_trans.get());
+    
+    static boost::shared_ptr<QTranslator> urt_tr = local_translator( app_settings().country_name() );
+
+    if ( !urt_tr->isEmpty()  )
+    {
+        LOG_DEBUG << "Translation \"%1\" loaded", app_settings().country_name();
+    }
+    else
+    {
+        LOG_DEBUG << "Failed to load local translation \"%1\"", app_settings().country_name();
+    }
+
+    a->installTranslator(urt_tr.get());
 
     QTextCodec::setCodecForTr( QTextCodec::codecForName("utf8") );
 
-    //Initializing main settings
-    base_settings set;
-
-    set.register_group( app_settings::uid(),   "app_opts",   "options.ini" );
     set.register_group( clip_settings::uid(),  "clipboard",  "options.ini" );
     set.register_group( qstat_settings::uid(), "qstat_opts", "options.ini" );
     
@@ -113,6 +116,10 @@ void init_application(QApplication* a)
     
     QDir::addSearchPath("icons", QString(":icons/icons/"));
     QDir::addSearchPath("images", QString(":images/icons/"));
+    
+    //Define context and word to provide language choose menu tanslation
+    //world "English" must be translated as native language name for example "Русский" on russian
+    a->translate("language", "Russian");
 }
 
 int main(int argc, char *argv[])

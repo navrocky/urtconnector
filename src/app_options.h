@@ -8,6 +8,8 @@
 #include <common/server_bookmark.h>
 #include "qstat_options.h"
 
+class QTranslator;
+
 class app_settings: public settings_uid_provider<app_settings>
 {
 public:
@@ -72,6 +74,10 @@ public:
     /*!  Clear offline servers after full refresh*/
     bool clear_offline() const;
     void set_clear_offline(bool b);
+    
+    /*! Country name to select custom language*/
+    QString country_name() const;
+    void set_country_name( const QString& country );
 };
 
 class clip_settings: public settings_uid_provider<clip_settings>
@@ -99,5 +105,7 @@ public:
     void set_password(int pass);
 };
 
+boost::shared_ptr<QTranslator> system_translator(const QString& code);
+boost::shared_ptr<QTranslator> local_translator(const QString& code);
 
 #endif

@@ -1,6 +1,9 @@
 
-#include <QSettings>
 #include <QDate>
+#include <QLocale>
+#include <QSettings>
+#include <QTranslator>
+#include <QLibraryInfo>
 
 #include "config.h"
 #include "app_options.h"
@@ -160,6 +163,17 @@ void app_settings::set_clear_offline(bool b)
     part()->setValue("clear_offline", b);
 }
 
+QString app_settings::country_name() const
+{
+    return part()->value( "country_name", QLocale::system().name() ).toString();
+}
+
+void app_settings::set_country_name(const QString& country)
+{
+    part()->setValue("country_name", country);
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // clip_settings
 
@@ -226,5 +240,25 @@ void clip_settings::set_password(int pass)
 
 
 
+boost::shared_ptr<QTranslator> system_translator(const QString& code)
+{
+    boost::shared_ptr<QTranslator> ret( new QTranslator );
+    ret->load( "qt_" + code, QLibraryInfo::location(QLibraryInfo::TranslationsPath) );
+    return ret;
+}
 
+boost::shared_ptr< QTranslator > local_translator(const QString& code)
+{
+    boost::shared_ptr<QTranslator> ret( new QTranslator );
+  
+#if defined(Q_OS_UNIX)
+    ret->load( "urtconnector_" + code, "/usr/share/urtconnector/translations");
+#elif defined(Q_OS_WIN)
+    ret->load(code);
+#elif defined(Q_OS_MAC)
+    // FIXME i don't know how do this on mac
+    ret->load(code);
+#endif
+    return ret;
+}
 
