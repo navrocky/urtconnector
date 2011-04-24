@@ -259,6 +259,16 @@ QString server_info_manager::make_info(const server_info& si) const
     server_info += tr("<tr class=\"line2\"><td>Public slots</td><td>%1</td></tr>").arg(si.max_player_count - si.private_slots());
     server_info += tr("<tr class=\"line1\"><td>Total slots</td><td>%1</td></tr>").arg(si.max_player_count);
     
+    if ( !si.forbidden_gears().empty() )
+    {
+        QStringList weapons;
+        BOOST_FOREACH( Gear g, si.forbidden_gears() ){
+            weapons << gear(g);
+        }
+        
+        server_info += tr("<tr class=\"line1\"><td>Forbidden weapons</td><td>%1</td></tr>").arg( weapons.join(", ") );
+    }
+    
     server_info += "</table>";
 
     return server_info;

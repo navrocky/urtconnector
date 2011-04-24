@@ -1,7 +1,9 @@
-#include "tools.h"
+
+#include <boost/foreach.hpp>
 
 #include <QObject>
 #include <QTreeWidgetItem>
+
 #include <common/server_id.h>
 #include <common/server_info.h>
 #include <common/server_list.h>
@@ -9,6 +11,8 @@
 #include "common_item_tags.h"
 #include "tab_context.h"
 #include <geoip/geoip.h>
+
+#include "tools.h"
 
 void update_server_info_item(const tab_context& ctx, QTreeWidgetItem* item)
 {
@@ -46,6 +50,15 @@ void update_server_info_item(const tab_context& ctx, QTreeWidgetItem* item)
         if (si->get_info("pure", "-1").toInt() == 0)
             sl << QObject::tr("Not pure");
 
+        if ( !si->forbidden_gears().empty() )
+        {
+            QString text("\nForbidden weapons:\n");
+            BOOST_FOREACH( Gear g, si->forbidden_gears() ){
+                text += QString( "  %1\n" ).arg( gear(g) );
+            }
+            sl << text;
+        }
+        
         QString status = sl.join(", ");
 
         item->setToolTip(0, status);

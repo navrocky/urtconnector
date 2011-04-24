@@ -2,6 +2,7 @@
 #define TOOLS_H
 
 #include <map>
+#include <set>
 
 #include <boost/function.hpp>
 
@@ -28,9 +29,20 @@ enum Q3Color {
     Q3White
 };
 
+enum Gear{
+    Grenades = 1,
+    Snipers = 2,
+    Spas = 4,
+    Pistols = 8,
+    Automatic =16,
+    Negev = 32,
+};
+
 static const Q3Color Q3DefaultColor = Q3White;
 
 typedef std::map<Q3Color, QColor> Q3ColorMap;
+
+typedef int GearMask;
 
 ///Map of Quake 3 defaults colors
 const Q3ColorMap& default_colors();
@@ -60,6 +72,18 @@ QAction* add_separator_action(QWidget* w, const QString& text = "");
 QColor choose_for_background( Qt::GlobalColor standard, const QColor& background );
 QString common_substring_from_begin(const QString& s1, const QString& s2);
 QString common_substring_from_end(const QString& s1, const QString& s2);
+
+
+///Is \p gear allowed in this \p mask
+inline bool is_allowed( Gear gear, GearMask mask ){
+    return ( mask & gear ) != gear ;
+}
+
+///Extract set of forbidden weapons
+std::set<Gear> forbidden( GearMask mask );
+
+///Convert gear enumeration to human readable string
+QString gear( Gear g );
 
 
 class qt_signal_wrapper: public QObject

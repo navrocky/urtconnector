@@ -42,6 +42,7 @@
         <file>icons/christmas/status-online.png</file>
         <file>icons/christmas/status-update.png</file>
         <file>icons/bookmarks-refresh.png</file>
+        <file>icons/pistol.png</file>
     </qresource>
     <qresource prefix="/images">
         <file>icons/logo.png</file>

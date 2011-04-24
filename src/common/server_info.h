@@ -9,6 +9,7 @@
 #include <common/server_id.h>
 #include "player_info.h"
 #include "../pointers.h"
+#include "tools.h"
 
 class server_info
 {
@@ -79,6 +80,9 @@ public:
 
     int private_slots() const;
     int public_slots() const;
+    
+    /*! Set of forbidden weapons */
+    std::set<Gear> forbidden_gears() const;
 
 private:
     mutable QString meta_info_string_;

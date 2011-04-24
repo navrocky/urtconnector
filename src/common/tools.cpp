@@ -4,6 +4,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/assign/std/map.hpp>
+#include <boost/assign/list_of.hpp>
 
 #include <QAction>
 #include <QString>
@@ -15,6 +16,7 @@
 #include <QTextDocument>
 
 #include "tools.h"
+#include <boost/assign/list_of.hpp>
 
 using namespace std;
 
@@ -198,3 +200,32 @@ QString common_substring_from_end(const QString& s1, const QString& s2)
     }
     return res;
 }
+
+
+
+std::set< Gear > forbidden(GearMask mask)
+{
+    std::set<Gear> ret;
+    
+    for( Gear g = Grenades; g <= Negev; g = Gear( g*2 ) ){
+        if ( !is_allowed(g, mask) ) ret.insert(g);
+    }
+
+    return ret;
+}
+
+QString gear(Gear g)
+{
+    static const std::map<Gear, QString> gear = boost::assign::map_list_of
+        ( Grenades, QObject::tr("Grenades")  )
+        ( Snipers,  QObject::tr("Snipers")   )
+        ( Spas,     QObject::tr("Spas")      )
+        ( Pistols,  QObject::tr("Pistols")   )
+        ( Automatic,QObject::tr("Automatic") )
+        ( Negev,    QObject::tr("Negev")     );
+    
+    return ( gear.find(g) != gear.end() )
+        ? gear.find(g)->second
+        : "Unknown";
+}
+

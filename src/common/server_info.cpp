@@ -136,6 +136,12 @@ int server_info::public_slots() const
     return max_player_count - private_slots();
 }
 
+std::set< Gear > server_info::forbidden_gears() const
+{
+    return forbidden( get_info("g_gear").toInt() );
+}
+
+
 void server_info::changed()
 {
     update_stamp_++;

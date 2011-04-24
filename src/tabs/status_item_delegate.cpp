@@ -71,6 +71,11 @@ void status_item_delegate::paint(QPainter* painter,
 
     if (si->get_info("pure", "-1").toInt() == 0)
         painter->drawPixmap(icon_rect, QPixmap("icons:user-identity.png"));
+    
+    next_icon(icon_rect);
+
+    if ( !si->forbidden_gears().empty() )
+        painter->drawPixmap(icon_rect, QPixmap("icons:pistol.png"));
 }
 
 void status_item_delegate::next_icon(QRect& icon) const
