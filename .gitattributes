@@ -163,6 +163,8 @@ src/filters/regexp_filter.cpp -text
 src/filters/regexp_filter.h -text
 src/filters/tools.cpp -text
 src/filters/tools.h -text
+src/filters/weapon_filter.cpp -text
+src/filters/weapon_filter.h -text
 src/flags/C.png -text
 src/flags/ad.png -text
 src/flags/ae.png -text

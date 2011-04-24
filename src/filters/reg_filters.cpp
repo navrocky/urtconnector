@@ -9,6 +9,7 @@
 #include "regexp_filter.h"
 #include "online_clans_filter.h"
 #include "hide_private_filter.h"
+#include "weapon_filter.h"
 
 #include "reg_filters.h"
 
@@ -27,4 +28,5 @@ void register_filters(filter_factory_p f)
     reg<hide_full_filter_class>(f);
     reg<online_clans_filter_class>(f);
     reg<hide_private_filter_class>(f);
+    reg<weapon_filter_class>(f);
 }

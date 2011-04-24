@@ -44,6 +44,8 @@ typedef std::map<Q3Color, QColor> Q3ColorMap;
 
 typedef int GearMask;
 
+static const GearMask AllGear = Grenades | Snipers | Spas | Pistols | Automatic | Negev;
+
 ///Map of Quake 3 defaults colors
 const Q3ColorMap& default_colors();
 
