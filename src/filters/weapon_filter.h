@@ -54,9 +54,8 @@ public:
     const std::set<Gear>& available() const;
     
 private:
-    friend class weapon_filter_quick_opt_widget;
     std::set<Gear> available_;
 };
 
-#endif  /* GAME_TYPE_FILTER_H */
+#endif  /* WEAPON_FILTER_H */
 

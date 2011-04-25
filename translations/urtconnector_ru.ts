@@ -868,19 +868,69 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/tabs/tools.cpp" line="45"/>
+        <location filename="../src/tabs/tools.cpp" line="49"/>
         <source>Private</source>
         <translation type="unfinished">Частный</translation>
     </message>
     <message>
-        <location filename="../src/tabs/tools.cpp" line="47"/>
+        <location filename="../src/tabs/tools.cpp" line="51"/>
         <source>Not pure</source>
         <translation type="unfinished">Из игры</translation>
     </message>
     <message>
-        <location filename="../src/tabs/tools.cpp" line="65"/>
+        <location filename="../src/tabs/tools.cpp" line="78"/>
         <source>Current %1 / Public slots %2 / Total %3</source>
         <translation type="unfinished">Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
+    </message>
+    <message>
+        <location filename="../src/common/tools.cpp" line="220"/>
+        <source>Grenades</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/tools.cpp" line="221"/>
+        <source>Snipers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/tools.cpp" line="222"/>
+        <source>Spas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/tools.cpp" line="223"/>
+        <source>Pistols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/tools.cpp" line="224"/>
+        <source>Automatic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/tools.cpp" line="225"/>
+        <source>Negev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/weapon_filter.cpp" line="65"/>
+        <source>Weapon filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/weapon_filter.cpp" line="66"/>
+        <source>Hides all servers thats don&apos;s match selected weapons.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/ping_filter.cpp" line="104"/>
+        <source>Ping filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/ping_filter.cpp" line="105"/>
+        <source>Hides all servers that don&apos;s match selected ping</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1719,17 +1769,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">ошибка при запуске. Проверьте установленные параметры запуска</translation>
     </message>
     <message>
-        <location filename="../src/launcher/launcher.cpp" line="140"/>
+        <location filename="../src/launcher/launcher.cpp" line="136"/>
         <source>Failed to start UrbanTerror. Check launch parameters in options dialog.</source>
         <translation>Ошибка при запуске UrbanTerror. Проверьте настройки запуска игры в диалоге настройки программы.</translation>
     </message>
     <message>
-        <location filename="../src/launcher/launcher.cpp" line="144"/>
+        <location filename="../src/launcher/launcher.cpp" line="140"/>
         <source>Game already started. Close it if you want and try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/launcher/launcher.cpp" line="203"/>
+        <location filename="../src/launcher/launcher.cpp" line="163"/>
         <source>Game launch error &quot;%1&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1957,6 +2007,39 @@ Kill the game and quit now?</source>
     <message>
         <source>Another X session failed</source>
         <translation type="obsolete">Не удалось запустить дополнительную X-сессию</translation>
+    </message>
+</context>
+<context>
+    <name>ping_filter_quick_opt_widget</name>
+    <message>
+        <location filename="../src/filters/ping_filter.cpp" line="52"/>
+        <source>more</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/ping_filter.cpp" line="56"/>
+        <source>&lt;= Ping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/ping_filter.cpp" line="59"/>
+        <source>less</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/ping_filter.cpp" line="63"/>
+        <source>Ping &lt;=</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/ping_filter.cpp" line="66"/>
+        <source>between</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/ping_filter.cpp" line="70"/>
+        <source>&lt;= Ping &lt;=</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2231,17 +2314,22 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="294"/>
+        <location filename="../src/server_info_manager.cpp" line="269"/>
+        <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Forbidden weapons&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/server_info_manager.cpp" line="304"/>
         <source>Full</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="307"/>
+        <location filename="../src/server_info_manager.cpp" line="317"/>
         <source>&lt;hr&gt;%1 players:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Nick&lt;/td&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;Score&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;hr&gt;%1 игрок(а,ов):&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Имя&lt;/td&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;Счет&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="348"/>
+        <location filename="../src/server_info_manager.cpp" line="358"/>
         <source>&lt;hr&gt;Extended info:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Key&lt;/td&gt;&lt;td&gt;Value&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;hr&gt;Дополнительная информация:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Ключ&lt;/td&gt;&lt;td&gt;Значение&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
@@ -2372,7 +2460,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Из игры</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="696"/>
+        <location filename="../src/server_list_widget.cpp" line="680"/>
+        <source>Modified weapons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/server_list_widget.cpp" line="702"/>
         <source>Current %1 / Public slots %2 / Total %3</source>
         <translation type="unfinished">Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
     </message>
