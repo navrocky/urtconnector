@@ -27,6 +27,12 @@ public:
     bool is_filter_visible() const;
     void set_filter_visible(bool val);
     
+    void save_state(const QByteArray& a);
+    QByteArray load_state() const;
+
+    void save_geometry(const QByteArray& a);
+    QByteArray load_geometry() const;
+    
 private:
     QString uid_;
     base_settings::settings_ptr fs;

@@ -109,11 +109,18 @@ void filtered_tab::update_toolbar_filter()
 
 void filtered_tab::save_state()
 {
+    fs_.save_geometry( saveGeometry() );
+    fs_.save_state(saveState(1));
+    
     main_tab::save_state();
 }
 
 void filtered_tab::load_state()
 {
+    filter_edit_widget* few = reinterpret_cast<filter_edit_widget*>( filter_widget_->widget() );
+    few->restoreGeometry( fs_.load_geometry() );
+    few->restoreState( fs_.load_state(), 1 );
+    
     main_tab::load_state();
     restoreDockWidget(filter_widget_);
 }
@@ -197,9 +204,7 @@ filtered_tab_settings::filtered_tab_settings(const tab_settings_p& ts)
 }
 
 const QString& filtered_tab_settings::uid()
-{
-    return uid_;
-}
+{ return uid_; }
 
 filter_p filtered_tab_settings::root_filter(filter_factory_p factory) const
 {
@@ -208,27 +213,28 @@ filter_p filtered_tab_settings::root_filter(filter_factory_p factory) const
 }
 
 void filtered_tab_settings::save_root_filter(filter_p f)
-{
-    fs->setValue("root", filter_save(f));
-}
+{ fs->setValue("root", filter_save(f)); }
 
 QString filtered_tab_settings::toolbar_filter() const
-{
-    return fs->value("toolbar_filter_name").toString();
-}
+{ return fs->value("toolbar_filter_name").toString(); }
 
 void filtered_tab_settings::save_toolbar_filter(const QString& name)
-{
-    fs->setValue("toolbar_filter_name", name);
-}
+{ fs->setValue("toolbar_filter_name", name); }
 
 bool filtered_tab_settings::is_filter_visible() const
-{
-    return fs->value("filter_visible").toBool();
-}
+{ return fs->value("filter_visible").toBool(); }
 
 void filtered_tab_settings::set_filter_visible(bool val)
-{
-    fs->setValue("filter_visible", val);
-}
+{ fs->setValue("filter_visible", val); }
 
+void filtered_tab_settings::save_state(const QByteArray& a)
+{ fs->setValue("state", a); }
+
+QByteArray filtered_tab_settings::load_state() const
+{ return fs->value("state").toByteArray(); }
+
+void filtered_tab_settings::save_geometry(const QByteArray& a)
+{ fs->setValue("geometry", a); }
+
+QByteArray filtered_tab_settings::load_geometry() const
+{ return fs->value("geometry").toByteArray(); }
