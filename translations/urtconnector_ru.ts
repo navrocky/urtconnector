@@ -704,37 +704,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/common/server_info.cpp" line="23"/>
         <source>Free For All</source>
-        <translation type="unfinished">FFA</translation>
+        <translation>Все Против Всех</translation>
     </message>
     <message>
         <location filename="../src/common/server_info.cpp" line="24"/>
         <source>Team DeathMatch</source>
-        <translation type="unfinished">TDM</translation>
+        <translation>Командное Мясо</translation>
     </message>
     <message>
         <location filename="../src/common/server_info.cpp" line="25"/>
         <source>Team Survivor</source>
-        <translation type="unfinished">TS</translation>
+        <translation>Командное Выживание</translation>
     </message>
     <message>
         <location filename="../src/common/server_info.cpp" line="26"/>
         <source>Follow The Leader</source>
-        <translation type="unfinished">FTL</translation>
+        <translation>Прикрываем Лидера</translation>
     </message>
     <message>
         <location filename="../src/common/server_info.cpp" line="27"/>
         <source>Capture And Hold</source>
-        <translation type="unfinished">CAH</translation>
+        <translation>Захватить И Удержать</translation>
     </message>
     <message>
         <location filename="../src/common/server_info.cpp" line="28"/>
         <source>Capture The Flag</source>
-        <translation type="unfinished">CTF</translation>
+        <translation>Захватить Флаг</translation>
     </message>
     <message>
         <location filename="../src/common/server_info.cpp" line="29"/>
         <source>Bomb Mode</source>
-        <translation type="unfinished">Bomb</translation>
+        <translation>Бомба</translation>
     </message>
     <message>
         <location filename="../src/common/server_info.cpp" line="31"/>
@@ -835,112 +835,112 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/database/simple_database.cpp" line="59"/>
         <source>Incorrect hex sequence</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверная hex-последовательность</translation>
     </message>
     <message>
         <location filename="../src/database/sqlite_database.cpp" line="22"/>
         <source>Cannot open SQLite database file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть файл базы SQLite: %1</translation>
     </message>
     <message>
         <location filename="../src/database/sqlite_database.cpp" line="74"/>
         <source>Cannot execute query: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось выполнить запрос: %1</translation>
     </message>
     <message>
         <location filename="../src/database/sqlite_database.cpp" line="79"/>
         <source>Unable to finalize query: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось завершить запрос: %1</translation>
     </message>
     <message>
         <location filename="../src/main.cpp" line="197"/>
         <source>Unnamed</source>
-        <translation type="unfinished"></translation>
+        <translation>Безымянный</translation>
     </message>
     <message>
         <location filename="../src/tabs/filtered_tab.cpp" line="64"/>
         <source>Filter toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструменты фильтрации</translation>
     </message>
     <message>
         <location filename="../src/tabs/filtered_tab.cpp" line="77"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр</translation>
     </message>
     <message>
         <location filename="../src/tabs/tools.cpp" line="49"/>
         <source>Private</source>
-        <translation type="unfinished">Частный</translation>
+        <translation>Частный</translation>
     </message>
     <message>
         <location filename="../src/tabs/tools.cpp" line="51"/>
         <source>Not pure</source>
-        <translation type="unfinished">Из игры</translation>
+        <translation>Не выделенный сервер</translation>
     </message>
     <message>
         <location filename="../src/tabs/tools.cpp" line="78"/>
         <source>Current %1 / Public slots %2 / Total %3</source>
-        <translation type="unfinished">Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
+        <translation>Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
     </message>
     <message>
         <location filename="../src/common/tools.cpp" line="220"/>
         <source>Grenades</source>
-        <translation type="unfinished"></translation>
+        <translation>Гранаты</translation>
     </message>
     <message>
         <location filename="../src/common/tools.cpp" line="221"/>
         <source>Snipers</source>
-        <translation type="unfinished"></translation>
+        <translation>Снайперские винтовки</translation>
     </message>
     <message>
         <location filename="../src/common/tools.cpp" line="222"/>
         <source>Spas</source>
-        <translation type="unfinished"></translation>
+        <translation>Дробовики</translation>
     </message>
     <message>
         <location filename="../src/common/tools.cpp" line="223"/>
         <source>Pistols</source>
-        <translation type="unfinished"></translation>
+        <translation>Пистолеты</translation>
     </message>
     <message>
         <location filename="../src/common/tools.cpp" line="224"/>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматы</translation>
     </message>
     <message>
         <location filename="../src/common/tools.cpp" line="225"/>
         <source>Negev</source>
-        <translation type="unfinished"></translation>
+        <translation>Пулеметы</translation>
     </message>
     <message>
         <location filename="../src/filters/weapon_filter.cpp" line="65"/>
         <source>Weapon filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр оружия</translation>
     </message>
     <message>
         <location filename="../src/filters/weapon_filter.cpp" line="66"/>
         <source>Hides all servers thats don&apos;s match selected weapons.</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыват сервера не допускающие выбранное оружие.</translation>
     </message>
     <message>
         <location filename="../src/filters/ping_filter.cpp" line="106"/>
         <source>Ping filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр по пингу</translation>
     </message>
     <message>
         <location filename="../src/filters/ping_filter.cpp" line="107"/>
         <source>Hides all servers that don&apos;s match selected ping</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрывает сервера не удовлетворяющие условиям по пингу</translation>
     </message>
     <message>
         <location filename="../src/filters/custom_filter.cpp" line="44"/>
         <source>Custom filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользовательский фильтр</translation>
     </message>
     <message>
         <location filename="../src/filters/custom_filter.cpp" line="45"/>
         <source>Combine multiple filters into one entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Связывает несколько фильтров в один</translation>
     </message>
 </context>
 <context>
@@ -1160,7 +1160,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/anticheat/anticheat.cpp" line="24"/>
         <source>Player</source>
-        <translation type="unfinished"></translation>
+        <translation>Игрок</translation>
     </message>
 </context>
 <context>
@@ -1168,12 +1168,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/anticheat/settings_widget.cpp" line="21"/>
         <source>Anticheat settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки &quot;Античита&quot;</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.cpp" line="119"/>
         <source>Choose local folder to screenshots store</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите локальную папку для скриншотов</translation>
     </message>
 </context>
 <context>
@@ -1181,67 +1181,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/setting_forms/application_settings_form.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Форма</translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.ui" line="29"/>
         <source>Hide main window on startup</source>
-        <translation type="unfinished">Скрывать главное окно программы при запуске</translation>
+        <translation>Скрывать главное окно программы при запуске</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.ui" line="22"/>
         <source>Use holiday features</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать праздничные фишки</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.ui" line="36"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Язык</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.ui" line="55"/>
         <source>Clipboard watching for server info and password</source>
-        <translation type="unfinished">Слежение за появлением информации о сервере и пароле в буфере обмена</translation>
+        <translation>Слежение за появлением информации о сервере и пароле в буфере обмена</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.ui" line="66"/>
         <source>RegExp for watch</source>
-        <translation type="unfinished">Регулярное выражение (RegExp)</translation>
+        <translation>Регулярное выражение (RegExp)</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.ui" line="82"/>
         <source>Host match num</source>
-        <translation type="unfinished">Номер совпадения для хоста или ip</translation>
+        <translation>Номер совпадения для хоста или ip</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.ui" line="96"/>
         <source>Port match num</source>
-        <translation type="unfinished">Номер совпадения для порта</translation>
+        <translation>Номер совпадения для порта</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.ui" line="110"/>
         <source>Password match num</source>
-        <translation type="unfinished">Номер совпадения для пароля</translation>
+        <translation>Номер совпадения для пароля</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.cpp" line="55"/>
         <source>Application</source>
-        <translation type="unfinished">Приложение</translation>
+        <translation>Приложение</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.cpp" line="62"/>
         <source>Application settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки приложения</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.cpp" line="119"/>
         <source>Language preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки языка</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/application_settings_form.cpp" line="119"/>
         <source>Selected language will applyed after restart</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбраный язык будет применен после перезапуска</translation>
     </message>
 </context>
 <context>
@@ -1249,42 +1249,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tabs/bookmark_tab.cpp" line="31"/>
         <source>Favorites</source>
-        <translation type="unfinished">Закладки</translation>
+        <translation>Закладки</translation>
     </message>
     <message>
         <location filename="../src/tabs/bookmark_tab.cpp" line="36"/>
         <source>Add</source>
-        <translation type="unfinished">Добавить</translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <location filename="../src/tabs/bookmark_tab.cpp" line="40"/>
         <source>Edit</source>
-        <translation type="unfinished">Редактировать</translation>
+        <translation>Редактировать</translation>
     </message>
     <message>
         <location filename="../src/tabs/bookmark_tab.cpp" line="43"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../src/tabs/bookmark_tab.cpp" line="46"/>
         <source>Refresh selected</source>
-        <translation type="unfinished">Обновить выделенный</translation>
+        <translation>Обновить выделенные</translation>
     </message>
     <message>
         <location filename="../src/tabs/bookmark_tab.cpp" line="49"/>
         <source>Refresh all</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить все</translation>
     </message>
     <message>
         <location filename="../src/tabs/bookmark_tab.cpp" line="179"/>
         <source>Delete a favorite</source>
-        <translation type="unfinished">Удалить закладку</translation>
+        <translation>Удалить закладку</translation>
     </message>
     <message>
         <location filename="../src/tabs/bookmark_tab.cpp" line="179"/>
         <source>Delete selected favorite(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить выбранные закладки?</translation>
     </message>
 </context>
 <context>
@@ -1347,12 +1347,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tabs/filtered_tab.cpp" line="60"/>
         <source>View and edit filter</source>
-        <translation type="unfinished">Просмотр и редакция фильтра</translation>
+        <translation>Просмотр и редактирование фильтра</translation>
     </message>
     <message>
         <location filename="../src/tabs/filtered_tab.cpp" line="106"/>
         <source>No filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Без фильтра</translation>
     </message>
 </context>
 <context>
@@ -1360,77 +1360,77 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="125"/>
         <source>Friends</source>
-        <translation type="unfinished"></translation>
+        <translation>Друзья</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="131"/>
         <source>Add new friend</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить друга</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="134"/>
         <source>Edit selected friend</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать друга</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="137"/>
         <source>Remove selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить выбранное</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="140"/>
         <source>Update selected server</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить выбранный сервер</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="143"/>
         <source>Update bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить закладки</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="146"/>
         <source>Update all servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить все сервера</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="185"/>
         <source>Address</source>
-        <translation type="unfinished">Адрес</translation>
+        <translation>Адрес</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="186"/>
         <source>Players</source>
-        <translation type="unfinished">Игроки</translation>
+        <translation>Игроки</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="187"/>
         <source>Map</source>
-        <translation type="unfinished">Карта</translation>
+        <translation>Карта</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="188"/>
         <source>Game mode</source>
-        <translation type="unfinished">Тип игры</translation>
+        <translation>Тип игры</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="189"/>
         <source>Ping</source>
-        <translation type="unfinished">Пинг</translation>
+        <translation>Пинг</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="190"/>
         <source>Country</source>
-        <translation type="unfinished">Страна</translation>
+        <translation>Страна</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="191"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_list_widget.cpp" line="192"/>
         <source>Friend / Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Друг / Статус</translation>
     </message>
 </context>
 <context>
@@ -1438,12 +1438,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.ui" line="14"/>
         <source>Friend properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры друга</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.ui" line="20"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.ui" line="30"/>
@@ -1453,7 +1453,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.ui" line="43"/>
         <source>Comment</source>
-        <translation type="unfinished">Комментарий</translation>
+        <translation>Комментарий</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.cpp" line="15"/>
@@ -1463,7 +1463,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.cpp" line="35"/>
         <source>Nick name field must be defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле &quot;имя&quot; необходимо заполнить</translation>
     </message>
 </context>
 <context>
@@ -1471,42 +1471,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/history/history_settings_form.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Форма</translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/history/history_settings_form.ui" line="25"/>
         <source>Number of connections that are kept</source>
-        <translation type="unfinished"></translation>
+        <translation>Число соединений в истории</translation>
     </message>
     <message>
         <location filename="../src/history/history_settings_form.ui" line="45"/>
         <source>Number of days stored in the history</source>
-        <translation type="unfinished"></translation>
+        <translation>Сколько дней хранить историю</translation>
     </message>
     <message>
         <location filename="../src/history/history_settings_form.ui" line="67"/>
         <source>History grouping</source>
-        <translation type="unfinished"></translation>
+        <translation>Группировки истории</translation>
     </message>
     <message>
         <location filename="../src/history/history_settings_form.ui" line="73"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Линейная</translation>
     </message>
     <message>
         <location filename="../src/history/history_settings_form.ui" line="80"/>
         <source>Grouped by server</source>
-        <translation type="unfinished"></translation>
+        <translation>Групповая</translation>
     </message>
     <message>
         <location filename="../src/history/history_settings_form.cpp" line="12"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>История</translation>
     </message>
     <message>
         <location filename="../src/history/history_settings_form.cpp" line="19"/>
         <source>History settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки истории</translation>
     </message>
 </context>
 <context>
@@ -1514,67 +1514,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/history/history_widget.cpp" line="72"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>История</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="77"/>
         <source>Add to favorites</source>
-        <translation type="unfinished">Добавить в закладки</translation>
+        <translation>Добавить в закладки</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="78"/>
         <source>Add selected server to favorites list</source>
-        <translation type="unfinished">Добавить выбранный сервер в закладки</translation>
+        <translation>Добавить выбранный сервер в закладки</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="81"/>
         <source>Remove selected record</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить выбранное</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="84"/>
         <source>Clear history</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить историю</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="87"/>
         <source>Refresh selected</source>
-        <translation type="unfinished">Обновить выделенный</translation>
+        <translation>Обновить выделенный</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="90"/>
         <source>Refresh all</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить все</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="97"/>
         <source>Server name</source>
-        <translation type="unfinished">Имя сервера</translation>
+        <translation>Имя сервера</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="98"/>
         <source>Status</source>
-        <translation type="unfinished">Состояние</translation>
+        <translation>Состояние</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="99"/>
         <source>Date and time</source>
-        <translation type="unfinished"></translation>
+        <translation>Дата и время</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="100"/>
         <source>Address</source>
-        <translation type="unfinished">Адрес</translation>
+        <translation>Адрес</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="101"/>
         <source>Password</source>
-        <translation type="unfinished">Пароль</translation>
+        <translation>Пароль</translation>
     </message>
     <message>
         <location filename="../src/history/history_widget.cpp" line="102"/>
         <source>Player name</source>
-        <translation type="unfinished">Ник игрока</translation>
+        <translation>Ник игрока</translation>
     </message>
 </context>
 <context>
@@ -1628,7 +1628,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/jobs/job.cpp" line="41"/>
         <source>Can&apos;t wait a one job twice</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно ждать одну задачу дважды</translation>
     </message>
 </context>
 <context>
@@ -1650,13 +1650,19 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>language</name>
     <message>
+        <location filename="../src/main.cpp" line="121"/>
         <source>English</source>
-        <translation type="obsolete">Русский</translation>
+        <translation type="unfinished">Русский</translation>
     </message>
     <message>
         <location filename="../src/main.cpp" line="122"/>
+        <source>kitaiskij</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main.cpp" line="120"/>
         <source>Russian</source>
-        <translation type="unfinished">Русский</translation>
+        <translation>Русский</translation>
     </message>
 </context>
 <context>
@@ -1664,108 +1670,108 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Форма</translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="26"/>
         <source>UrbanTerror binary file name with path</source>
-        <translation type="unfinished">Полное имя файла бинарника Urban Terror</translation>
+        <translation>Полное имя файла бинарника Urban Terror</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="35"/>
         <source>Choose UrbanTerror binary file</source>
-        <translation type="unfinished">Укажите бинарник UrbanTerror</translation>
+        <translation>Укажите бинарник UrbanTerror</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="38"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="58"/>
         <source>Advanced launch command</source>
-        <translation type="unfinished">Расширенная строка запуска</translation>
+        <translation>Расширенная строка запуска</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="99"/>
         <source>Insert file path</source>
-        <translation type="unfinished">Вставить имя файла</translation>
+        <translation>Вставить имя файла</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="126"/>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="132"/>
         <source>Command line preview</source>
-        <translation type="unfinished">Предпросмотр командной строки</translation>
+        <translation>Предпросмотр командной строки</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="147"/>
         <source>Launch UrbanTerror in separate X session</source>
-        <translation type="unfinished"></translation>
+        <translation>Запустить UrbanTerror в отдельной X сессии</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="167"/>
         <source>Autodetect</source>
-        <translation type="unfinished">Автоопределение</translation>
+        <translation>Автоопределение</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="176"/>
         <source>Check server status before connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверять статус перед подключением</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="23"/>
         <source>Launch</source>
-        <translation type="unfinished">Запуск</translation>
+        <translation>Запуск</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="30"/>
         <source>UrbanTerror launch settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки запуска UrbanTerror</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="42"/>
         <source>&lt;b&gt;%bin%&lt;/b&gt; - UrbanTerror binary path&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - player name&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - password&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - hostname or ip and port&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - RCON password</source>
-        <translation type="unfinished">&lt;b&gt;%bin%&lt;/b&gt; - бинарник UrbanTerror&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - имя игрока&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - пароль&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - имя хоста или ip и порт&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - пароль RCON</translation>
+        <translation>&lt;b&gt;%bin%&lt;/b&gt; - бинарник UrbanTerror&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - имя игрока&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - пароль&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - имя хоста или ip и порт&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - пароль RCON</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="108"/>
         <source>Urban Terror executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Исполняемый файл UrbanTerror</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="109"/>
         <source>Executables (*.i386 *.x86_64 *.exe);;All Files (*)</source>
-        <translation type="unfinished">Бинарники (*.i386 *.x86_64 *.exe);;Все файлы (*)</translation>
+        <translation>Бинарники (*.i386 *.x86_64 *.exe);;Все файлы (*)</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="118"/>
         <source>Select file to insert</source>
-        <translation type="unfinished">Выберите файл для вставки</translation>
+        <translation>Выберите файл для вставки</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="119"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Все файлы</translation>
+        <translation>Все файлы</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="159"/>
         <source>This may take about 30 seconds</source>
-        <translation type="unfinished">Эта проверка может занять примерно 30 секунд</translation>
+        <translation>Эта проверка может занять примерно 30 секунд</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="168"/>
         <source>X session autodetection</source>
-        <translation type="unfinished">Автоопределение X-сессии</translation>
+        <translation>Автоопределение X-сессии</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="170"/>
         <source>Another X session started succesfully</source>
-        <translation type="unfinished">Дополнительная X-сессия запущена успешно</translation>
+        <translation>Дополнительная X-сессия запущена успешно</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="171"/>
         <source>Another X session failed</source>
-        <translation type="unfinished">Не удалось запустить дополнительную X-сессию</translation>
+        <translation>Не удалось запустить дополнительную X-сессию</translation>
     </message>
 </context>
 <context>
@@ -1786,12 +1792,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/launcher/launcher.cpp" line="140"/>
         <source>Game already started. Close it if you want and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Игра уже запущена. Завершите её и повторите попытку.</translation>
     </message>
     <message>
         <location filename="../src/launcher/launcher.cpp" line="163"/>
         <source>Game launch error &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка запуска игры &quot;%1&quot;.</translation>
     </message>
 </context>
 <context>
@@ -1804,12 +1810,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/main_window.cpp" line="149"/>
         <source>Enable anticheat</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить Интичит</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="153"/>
         <source>Configure anticheat</source>
-        <translation type="unfinished"></translation>
+        <translation>Настроить Античит</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="181"/>
@@ -1835,76 +1841,76 @@ Click this message to open UrTConnector.</source>
     <message>
         <location filename="../src/main_window.cpp" line="265"/>
         <source>Options</source>
-        <translation type="unfinished">Настройки</translation>
+        <translation>Настройки</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="371"/>
         <source>Game is launched already</source>
-        <translation type="unfinished"></translation>
+        <translation>Игра уже запущена</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="382"/>
         <source>Update server info and launch a game</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить информацию о сервере и запустить игру</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="404"/>
         <source>Server is full.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер полон</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="407"/>
         <source>Server is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер пуст.</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="412"/>
         <source>Connecting to the server</source>
-        <translation type="unfinished"></translation>
+        <translation>Соединяемся с сервером</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="413"/>
         <source>%1
 
 Do you want to continue connecting?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1\n\nЖелаете продолджить присоединение?</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="428"/>
         <source>This server require the password</source>
-        <translation type="unfinished"></translation>
+        <translation>Сервер требует пароль</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="429"/>
         <source>Enter the password</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите пароль</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="608"/>
         <source>Quit</source>
-        <translation type="unfinished">Выйти</translation>
+        <translation>Выйти</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="608"/>
         <source>The game is started at this moment.
 
 Kill the game and quit now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Игра запущена.\n\nЗавершить и выйти?</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="654"/>
         <source>RCon : %1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="686"/>
         <source>The player&apos;s name must be defined in the quick launch window for the anti-cheat!</source>
-        <translation type="unfinished"></translation>
+        <translation>Античиту требуется заданное имя игрока в окне быстрого запуска!</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="692"/>
         <source>Anticheat options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры Античита</translation>
     </message>
     <message>
         <source>Server require password</source>
@@ -2024,32 +2030,32 @@ Kill the game and quit now?</source>
     <message>
         <location filename="../src/filters/ping_filter.cpp" line="53"/>
         <source>more</source>
-        <translation type="unfinished"></translation>
+        <translation>больше</translation>
     </message>
     <message>
         <location filename="../src/filters/ping_filter.cpp" line="57"/>
         <source>&lt;= Ping</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;= Пинг</translation>
     </message>
     <message>
         <location filename="../src/filters/ping_filter.cpp" line="60"/>
         <source>less</source>
-        <translation type="unfinished"></translation>
+        <translation>меньше</translation>
     </message>
     <message>
         <location filename="../src/filters/ping_filter.cpp" line="64"/>
         <source>Ping &lt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>Пинг &lt;=</translation>
     </message>
     <message>
         <location filename="../src/filters/ping_filter.cpp" line="67"/>
         <source>between</source>
-        <translation type="unfinished"></translation>
+        <translation>между</translation>
     </message>
     <message>
         <location filename="../src/filters/ping_filter.cpp" line="71"/>
         <source>&lt;= Ping &lt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;= Пинг &lt;=</translation>
     </message>
 </context>
 <context>
@@ -2057,23 +2063,23 @@ Kill the game and quit now?</source>
     <message>
         <location filename="../src/preferences/src/preferences_dialog.cpp" line="337"/>
         <source>Restore to defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстановить значения по умолчанию</translation>
     </message>
     <message>
         <location filename="../src/preferences/src/preferences_dialog.cpp" line="338"/>
         <source>Continue to restore defaults settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Продолжить установку значений по умолчанию?</translation>
     </message>
     <message>
         <location filename="../src/preferences/src/preferences_dialog.cpp" line="397"/>
         <source>Apply settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Применить настройки</translation>
     </message>
     <message>
         <location filename="../src/preferences/src/preferences_dialog.cpp" line="398"/>
         <source>Current page has unsaved changes.
 Apply this changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущая страница имеет несохраненные изменения.\nприменить их?</translation>
     </message>
 </context>
 <context>
@@ -2081,7 +2087,7 @@ Apply this changes?</source>
     <message>
         <location filename="../src/preferences/src/ui/preferences_dialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Диалог</translation>
+        <translation>Диалог</translation>
     </message>
 </context>
 <context>
@@ -2194,7 +2200,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/rcon/rcon_settings_form.cpp" line="38"/>
         <source>Remote console configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки удаленного терминала</translation>
     </message>
 </context>
 <context>
@@ -2286,62 +2292,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/server_info_manager.cpp" line="217"/>
         <source>* Unnamed *</source>
-        <translation type="unfinished">* Без названия *</translation>
+        <translation>* Без названия *</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="254"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Статус&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="255"/>
         <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Тип игры&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="256"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Карта&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="257"/>
         <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="258"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Country&lt;/td&gt;&lt;td&gt;%1 %2&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Страна&lt;/td&gt;&lt;td&gt;%1 %2&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="259"/>
         <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Public slots&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Публичные слоты&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="260"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Total slots&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Всего слотов&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="269"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Forbidden weapons&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Запрещенное оружие&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="304"/>
         <source>Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Полный</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="317"/>
         <source>&lt;hr&gt;%1 players:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Nick&lt;/td&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;Score&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished">&lt;hr&gt;%1 игрок(а,ов):&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Имя&lt;/td&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;Счет&lt;/td&gt;&lt;/tr&gt;</translation>
+        <translation>&lt;hr&gt;%1 игрок(а,ов):&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Имя&lt;/td&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;Счет&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
         <location filename="../src/server_info_manager.cpp" line="358"/>
         <source>&lt;hr&gt;Extended info:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Key&lt;/td&gt;&lt;td&gt;Value&lt;/td&gt;&lt;/tr&gt;</source>
-        <translation type="unfinished">&lt;hr&gt;Дополнительная информация:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Ключ&lt;/td&gt;&lt;td&gt;Значение&lt;/td&gt;&lt;/tr&gt;</translation>
+        <translation>&lt;hr&gt;Дополнительная информация:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Ключ&lt;/td&gt;&lt;td&gt;Значение&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
 </context>
 <context>
@@ -2349,57 +2355,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="48"/>
         <source>Address</source>
-        <translation type="unfinished">Адрес</translation>
+        <translation>Адрес</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="49"/>
         <source>Players</source>
-        <translation type="unfinished">Игроки</translation>
+        <translation>Игроки</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="50"/>
         <source>Map</source>
-        <translation type="unfinished">Карта</translation>
+        <translation>Карта</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="51"/>
         <source>Game mode</source>
-        <translation type="unfinished">Тип игры</translation>
+        <translation>Тип игры</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="52"/>
         <source>Ping</source>
-        <translation type="unfinished">Пинг</translation>
+        <translation>Пинг</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="53"/>
         <source>Country</source>
-        <translation type="unfinished">Страна</translation>
+        <translation>Страна</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="54"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="55"/>
         <source>Status</source>
-        <translation type="unfinished">Состояние</translation>
+        <translation>Состояние</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="56"/>
         <source>Server address (ip:port)</source>
-        <translation type="unfinished">Адрес сервера (ip:port)</translation>
+        <translation>Адрес сервера (ip:port)</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="57"/>
         <source>Server name</source>
-        <translation type="unfinished">Имя сервера</translation>
+        <translation>Имя сервера</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_common_tab.cpp" line="58"/>
         <source>Server status</source>
-        <translation type="unfinished">Состояние сервера</translation>
+        <translation>Состояние сервера</translation>
     </message>
 </context>
 <context>
@@ -2463,32 +2469,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/tabs/server_list_tab.cpp" line="33"/>
         <source>All servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Все сервера</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_tab.cpp" line="38"/>
         <source>Add to favorites</source>
-        <translation type="unfinished">Добавить в закладки</translation>
+        <translation>Добавить в закладки</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_tab.cpp" line="39"/>
         <source>Add selected server to favorites list</source>
-        <translation type="unfinished">Добавить выбранный сервер в закладки</translation>
+        <translation>Добавить выбранный сервер в закладки</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_tab.cpp" line="42"/>
         <source>Refresh selected</source>
-        <translation type="unfinished">Обновить выделенный</translation>
+        <translation>Обновить выделенный</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_tab.cpp" line="46"/>
         <source>Update from master server</source>
-        <translation type="unfinished">Обновление списка с мастер-сервера</translation>
+        <translation>Обновление списка с мастер-сервера</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_tab.cpp" line="49"/>
         <source>Clear all</source>
-        <translation type="unfinished">Очистить все</translation>
+        <translation>Очистить все</translation>
     </message>
 </context>
 <context>
@@ -2577,67 +2583,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished">Форма</translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="50"/>
         <source>The principle of anti-cheat is that the screenshots of the game (with md5 and timestamp) periodically sent to the FTP server. This method is particularly effective against wallhack.</source>
-        <translation type="unfinished"></translation>
+        <translation>В основе античита лежит идея снимков экрана(с md5-хэшем и временной меткой) периодически отсылаемых на FTP сервер. этот метод эффективен против волхака.</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="68"/>
         <source>Screenshots</source>
-        <translation type="unfinished"></translation>
+        <translation>Снимки экрана</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="76"/>
         <source>Time interval between screenshots</source>
-        <translation type="unfinished"></translation>
+        <translation>интервал между снимками</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="83"/>
         <source>in seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>в секундах</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="99"/>
         <source>Screenshots JPEG quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Качество JPEG</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="106"/>
         <source>in percents</source>
-        <translation type="unfinished"></translation>
+        <translation>в процентах</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="121"/>
         <source>Save to FTP server</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранять на FTP</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="147"/>
         <source>Server address</source>
-        <translation type="unfinished"></translation>
+        <translation>Адрес сервера</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="154"/>
         <source>Host:port, port is optional (default 21)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="167"/>
         <source>Login name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя пользователя</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="183"/>
         <source>Password</source>
-        <translation type="unfinished">Пароль</translation>
+        <translation>Пароль</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="199"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Папка</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="209"/>
@@ -2675,78 +2681,78 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Форма</translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="20"/>
         <source>Centering on current server row during update</source>
-        <translation type="unfinished">Центрировать на текущей строке при обновлении списка серверов</translation>
+        <translation>Центрировать на текущей строке при обновлении списка серверов</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="27"/>
         <source>Clear offline servers after full refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалять offline-сервера после полного обновления</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="34"/>
         <source>QStat binary path</source>
-        <translation type="unfinished">Путь к утилите QStat</translation>
+        <translation>Путь к утилите QStat</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="43"/>
         <source>Choose QStat binary file</source>
-        <translation type="unfinished">Укажите бинарник QStat</translation>
+        <translation>Укажите бинарник QStat</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="46"/>
         <location filename="../src/setting_forms/update_settings_form.ui" line="87"/>
         <source>Choose</source>
-        <translation type="unfinished">Указать</translation>
+        <translation>Указать</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="60"/>
         <source>UrbanTerror master server</source>
-        <translation type="unfinished"></translation>
+        <translation>Мастер сервер UrbanTerror</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="72"/>
         <source>GeoIP database file</source>
-        <translation type="unfinished">Файл базы данных GeoIP</translation>
+        <translation>Файл базы данных GeoIP</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="84"/>
         <source>Choose GeoIP database file</source>
-        <translation type="unfinished">Укажите файл базы GeoIP</translation>
+        <translation>Укажите файл базы GeoIP</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.cpp" line="17"/>
         <source>Updating</source>
-        <translation type="unfinished">Обновляется</translation>
+        <translation>Обновляется</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.cpp" line="24"/>
         <source>Server list updating settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки обновления списка серверов</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.cpp" line="82"/>
         <source>QStat binary</source>
-        <translation type="unfinished">Бинарник QStat</translation>
+        <translation>Бинарник QStat</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.cpp" line="83"/>
         <source>Executables (*);;All Files (*)</source>
-        <translation type="unfinished">Бинарники (*);;Все файлы (*)</translation>
+        <translation>Бинарники (*);;Все файлы (*)</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.cpp" line="92"/>
         <source>GeoIP database</source>
-        <translation type="unfinished">База данных GeoIP</translation>
+        <translation>База данных GeoIP</translation>
     </message>
     <message>
         <location filename="../src/setting_forms/update_settings_form.cpp" line="93"/>
         <source>DataBase (*.dat);;All Files (*)</source>
-        <translation type="unfinished">Базы данных GeoIP (*.dat);;Все файлы (*)</translation>
+        <translation>Базы данных GeoIP (*.dat);;Все файлы (*)</translation>
     </message>
 </context>
 </TS>

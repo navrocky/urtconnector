@@ -117,9 +117,9 @@ void init_application(QApplication* a)
     QDir::addSearchPath("icons", QString(":icons/icons/"));
     QDir::addSearchPath("images", QString(":images/icons/"));
     
-    //Define context and word to provide language choose menu tanslation
-    //world "English" must be translated as native language name for example "Русский" on russian
     a->translate("language", "Russian");
+    a->translate("language", "English");
+    a->translate("language", "kitaiskij");
 }
 
 int main(int argc, char *argv[])
