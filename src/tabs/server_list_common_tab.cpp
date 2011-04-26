@@ -181,7 +181,7 @@ server_list_common_tab_settings::server_list_common_tab_settings(const tab_setti
     
     uid_ = ts->uid() + "_server_list_common";
     
-    set.register_sub_group( uid_, "server_list_common", ts->uid() );
+    set.register_sub_group( uid_, "server_list_common_tab", ts->uid() );
     sls = base_settings().get_settings(uid_);
 
     //TODO backward config compatibility - remove on 0.8.0
@@ -191,12 +191,8 @@ server_list_common_tab_settings::server_list_common_tab_settings(const tab_setti
 }
 
 QByteArray server_list_common_tab_settings::header_state() const
-{
-    return sls->value("header_state").toByteArray();
-}
+{ return sls->value("header_state").toByteArray(); }
 
 void server_list_common_tab_settings::save_header_state(const QByteArray& ba)
-{
-    sls->setValue("header_state", QVariant::fromValue(ba));
-}
+{ sls->setValue("header_state", QVariant::fromValue(ba)); }
 

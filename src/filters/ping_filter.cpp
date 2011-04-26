@@ -40,13 +40,14 @@ ping_filter_quick_opt_widget::ping_filter_quick_opt_widget(filter_p f, QWidget* 
     , filter_( *static_cast<ping_filter*>( f.get() ) )
 {
     QHBoxLayout* lay = new QHBoxLayout(this);
-
-    lay->setSizeConstraint(QLayout::SetMinimumSize);
     
     QSpinBox* spin1 = new QSpinBox(this);
     QSpinBox* spin2 = new QSpinBox(this);
     QLabel*   label = new QLabel(this);
     QComboBox* combo = new QComboBox(this);
+    
+    spin1->setMaximum(500);
+    spin2->setMaximum(500);
     
     //Creating combo items and fill itemData with compose function
     combo->addItem( tr("more"), qVariantFromValue( compose(
@@ -96,6 +97,7 @@ ping_filter_quick_opt_widget::ping_filter_quick_opt_widget(filter_p f, QWidget* 
     lay->addWidget(combo);
     
     update_from_filter();
+    invoke_data(combo);
 }
 
 

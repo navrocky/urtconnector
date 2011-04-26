@@ -923,13 +923,23 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="104"/>
+        <location filename="../src/filters/ping_filter.cpp" line="106"/>
         <source>Ping filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="105"/>
+        <location filename="../src/filters/ping_filter.cpp" line="107"/>
         <source>Hides all servers that don&apos;s match selected ping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/custom_filter.cpp" line="44"/>
+        <source>Custom filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/custom_filter.cpp" line="45"/>
+        <source>Combine multiple filters into one entry</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1304,7 +1314,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/filters/filter_edit_widget.cpp" line="188"/>
-        <location filename="../src/filters/filter_edit_widget.cpp" line="321"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="331"/>
         <source>Delete filter</source>
         <translation>Удалить фильтр</translation>
     </message>
@@ -1314,7 +1324,7 @@ p, li { white-space: pre-wrap; }
         <translation>Разместить фильтр на панели инструментов</translation>
     </message>
     <message>
-        <location filename="../src/filters/filter_edit_widget.cpp" line="321"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="331"/>
         <source>Continue with delete selected filter?</source>
         <translation>Удалить фильтр?</translation>
     </message>
@@ -1502,67 +1512,67 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>history_widget</name>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="75"/>
+        <location filename="../src/history/history_widget.cpp" line="72"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="80"/>
+        <location filename="../src/history/history_widget.cpp" line="77"/>
         <source>Add to favorites</source>
         <translation type="unfinished">Добавить в закладки</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="81"/>
+        <location filename="../src/history/history_widget.cpp" line="78"/>
         <source>Add selected server to favorites list</source>
         <translation type="unfinished">Добавить выбранный сервер в закладки</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="84"/>
+        <location filename="../src/history/history_widget.cpp" line="81"/>
         <source>Remove selected record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="87"/>
+        <location filename="../src/history/history_widget.cpp" line="84"/>
         <source>Clear history</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="90"/>
+        <location filename="../src/history/history_widget.cpp" line="87"/>
         <source>Refresh selected</source>
         <translation type="unfinished">Обновить выделенный</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="93"/>
+        <location filename="../src/history/history_widget.cpp" line="90"/>
         <source>Refresh all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="100"/>
+        <location filename="../src/history/history_widget.cpp" line="97"/>
         <source>Server name</source>
         <translation type="unfinished">Имя сервера</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="101"/>
+        <location filename="../src/history/history_widget.cpp" line="98"/>
         <source>Status</source>
         <translation type="unfinished">Состояние</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="102"/>
+        <location filename="../src/history/history_widget.cpp" line="99"/>
         <source>Date and time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="103"/>
+        <location filename="../src/history/history_widget.cpp" line="100"/>
         <source>Address</source>
         <translation type="unfinished">Адрес</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="104"/>
+        <location filename="../src/history/history_widget.cpp" line="101"/>
         <source>Password</source>
         <translation type="unfinished">Пароль</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="105"/>
+        <location filename="../src/history/history_widget.cpp" line="102"/>
         <source>Player name</source>
         <translation type="unfinished">Ник игрока</translation>
     </message>
@@ -2012,32 +2022,32 @@ Kill the game and quit now?</source>
 <context>
     <name>ping_filter_quick_opt_widget</name>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="52"/>
+        <location filename="../src/filters/ping_filter.cpp" line="53"/>
         <source>more</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="56"/>
+        <location filename="../src/filters/ping_filter.cpp" line="57"/>
         <source>&lt;= Ping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="59"/>
+        <location filename="../src/filters/ping_filter.cpp" line="60"/>
         <source>less</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="63"/>
+        <location filename="../src/filters/ping_filter.cpp" line="64"/>
         <source>Ping &lt;=</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="66"/>
+        <location filename="../src/filters/ping_filter.cpp" line="67"/>
         <source>between</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="70"/>
+        <location filename="../src/filters/ping_filter.cpp" line="71"/>
         <source>&lt;= Ping &lt;=</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2395,79 +2405,60 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>server_list_tab</name>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="486"/>
         <source>Players</source>
-        <translation type="unfinished">Игроки</translation>
+        <translation type="obsolete">Игроки</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="487"/>
         <source>Map</source>
-        <translation type="unfinished">Карта</translation>
+        <translation type="obsolete">Карта</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="488"/>
         <source>Game mode</source>
-        <translation type="unfinished">Тип игры</translation>
+        <translation type="obsolete">Тип игры</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="489"/>
         <source>Ping</source>
-        <translation type="unfinished">Пинг</translation>
+        <translation type="obsolete">Пинг</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="490"/>
         <source>Country</source>
-        <translation type="unfinished">Страна</translation>
+        <translation type="obsolete">Страна</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="491"/>
         <source>Address</source>
-        <translation type="unfinished">Адрес</translation>
+        <translation type="obsolete">Адрес</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="492"/>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation type="obsolete">Имя</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="493"/>
         <source>Status</source>
-        <translation type="unfinished">Состояние</translation>
+        <translation type="obsolete">Состояние</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="494"/>
         <source>Server address (ip:port)</source>
-        <translation type="unfinished">Адрес сервера (ip:port)</translation>
+        <translation type="obsolete">Адрес сервера (ip:port)</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="495"/>
         <source>Server name</source>
-        <translation type="unfinished">Имя сервера</translation>
+        <translation type="obsolete">Имя сервера</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="496"/>
         <source>Server status</source>
-        <translation type="unfinished">Состояние сервера</translation>
+        <translation type="obsolete">Состояние сервера</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="674"/>
         <source>Private</source>
-        <translation type="unfinished">Частный</translation>
+        <translation type="obsolete">Частный</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="676"/>
         <source>Not pure</source>
-        <translation type="unfinished">Из игры</translation>
+        <translation type="obsolete">Из игры</translation>
     </message>
     <message>
-        <location filename="../src/server_list_widget.cpp" line="680"/>
-        <source>Modified weapons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/server_list_widget.cpp" line="702"/>
         <source>Current %1 / Public slots %2 / Total %3</source>
-        <translation type="unfinished">Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
+        <translation type="obsolete">Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
     </message>
     <message>
         <location filename="../src/tabs/server_list_tab.cpp" line="33"/>

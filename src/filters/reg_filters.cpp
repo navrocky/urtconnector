@@ -11,6 +11,7 @@
 #include "hide_private_filter.h"
 #include "weapon_filter.h"
 #include "ping_filter.h"
+#include "custom_filter.h"
 
 #include "reg_filters.h"
 
@@ -31,4 +32,5 @@ void register_filters(filter_factory_p f)
     reg<hide_private_filter_class>(f);
     reg<weapon_filter_class>(f);
     reg<ping_filter_class>(f);
+    reg<custom_filter_class>(f);
 }

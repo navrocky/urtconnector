@@ -12,8 +12,6 @@
 
 #include "../pointers.h"
 
-class QAccumulatingConnection;
-
 class tab_settings;
 typedef boost::shared_ptr<tab_settings> tab_settings_p;
 
@@ -27,9 +25,6 @@ public:
     /// returns currently selected server if any
     virtual server_id selected_server() const = 0;
 
-    /*! Current selection in tab */
-//    virtual server_id_list selection() const = 0;
-    
 signals:
     void contents_changed();
     void selection_changed();
@@ -44,12 +39,11 @@ protected slots:
     virtual void server_list_changed();
 
 protected:
-    const tab_settings_p& settings() const {return st_;}
-    server_list_p server_list() const {return ctx_.serv_list();}
-    const tab_context& context() const {return ctx_;}
+    const tab_settings_p& settings() const { return st_; }
+    server_list_p server_list() const { return ctx_.serv_list(); }
+    const tab_context& context() const { return ctx_; }
 
 private:
-    QAccumulatingConnection* updater_;
     tab_settings_p st_;
     tab_context ctx_;
 };
@@ -62,10 +56,6 @@ public:
 
     void save_state(const QByteArray& a);
     QByteArray load_state() const;
-
-    void save_geometry(const QByteArray& a);
-    QByteArray load_geometry() const;
-
     
     const QString& uid() const {return uid_;}
 

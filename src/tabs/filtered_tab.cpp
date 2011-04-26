@@ -109,19 +109,19 @@ void filtered_tab::update_toolbar_filter()
 
 void filtered_tab::save_state()
 {
-    fs_.save_geometry( saveGeometry() );
-    fs_.save_state(saveState(1));
-    
     main_tab::save_state();
+    
+    filter_edit_widget* few = reinterpret_cast<filter_edit_widget*>( filter_widget_->widget() );
+    fs_.save_state( few->saveState(1) );
 }
 
 void filtered_tab::load_state()
 {
+    main_tab::load_state();
+    
     filter_edit_widget* few = reinterpret_cast<filter_edit_widget*>( filter_widget_->widget() );
-    few->restoreGeometry( fs_.load_geometry() );
     few->restoreState( fs_.load_state(), 1 );
     
-    main_tab::load_state();
     restoreDockWidget(filter_widget_);
 }
 
@@ -175,13 +175,10 @@ void filtered_tab::load_filter()
 }
 
 void filtered_tab::filter_changed()
-{
-}
+{}
 
 bool filtered_tab::filtrate(const server_info& si) const
-{
-    return filters_->filtrate(si);
-}
+{ return filters_->filtrate(si); }
 
 ////////////////////////////////////////////////////////////////////////////////
 // filtered_tab_settings
@@ -190,9 +187,9 @@ filtered_tab_settings::filtered_tab_settings(const tab_settings_p& ts)
 {
     base_settings set;
     
-    uid_ = ts->uid() + "_filter";
+    uid_ = ts->uid() + "_filtered_tab";
    
-    set.register_sub_group( uid_, "filter", ts->uid() );
+    set.register_sub_group( uid_, "filtered_tab", ts->uid() );
     fs = base_settings().get_settings(uid_);
 
     //TODO backward config compatibility - remove on 0.8.0
@@ -233,8 +230,3 @@ void filtered_tab_settings::save_state(const QByteArray& a)
 QByteArray filtered_tab_settings::load_state() const
 { return fs->value("state").toByteArray(); }
 
-void filtered_tab_settings::save_geometry(const QByteArray& a)
-{ fs->setValue("geometry", a); }
-
-QByteArray filtered_tab_settings::load_geometry() const
-{ return fs->value("geometry").toByteArray(); }

@@ -3,6 +3,7 @@
 
 #include "filter.h"
 #include "filter_factory.h"
+#include "custom_filter.h"
 #include "tools.h"
 
 QByteArray filter_save(filter_p f)
@@ -41,6 +42,10 @@ filter_p filter_load(const QByteArray& ba, filter_factory_p factory)
         return filter_p();
 
     filter_p res = factory->create_filter_by_id(id);
+    //if we loading custom filter - we must set factory into it
+    custom_filter* custom = qobject_cast<custom_filter*>(res.get());
+    if( custom )
+        custom->set_factory( factory );
 
     bool enabled;
     ds >> enabled;

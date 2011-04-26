@@ -30,9 +30,6 @@ public:
     void save_state(const QByteArray& a);
     QByteArray load_state() const;
 
-    void save_geometry(const QByteArray& a);
-    QByteArray load_geometry() const;
-    
 private:
     QString uid_;
     base_settings::settings_ptr fs;

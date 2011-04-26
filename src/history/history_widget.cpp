@@ -25,9 +25,6 @@
 #include "../server_options_dialog.h"
 #include "history.h"
 
-// needed for status_item_delegate
-#include "server_list_widget.h"
-
 SYSLOG_MODULE(history_widget)
 
 Q_DECLARE_METATYPE(history_item);

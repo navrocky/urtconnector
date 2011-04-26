@@ -33,6 +33,8 @@ class main_tab;
 class server_list_tab;
 class bookmark_tab;
 
+class QAccumulatingConnection;
+
 class main_window : public QMainWindow
 {
     Q_OBJECT

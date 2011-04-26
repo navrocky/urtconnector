@@ -9,9 +9,6 @@
 
 class QTreeWidget;
 class QTreeWidgetItem;
-class QAccumulatingConnection;
-
-
 
 class server_list_common_tab_settings
 {
@@ -62,7 +59,6 @@ private slots:
 private:
     void set_visible_count(int);
     
-    QAccumulatingConnection* update_caption_conn_;
     QTreeWidget* tree_;
     int visible_count_;
     int total_count_;

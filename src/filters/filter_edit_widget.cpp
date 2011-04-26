@@ -17,10 +17,10 @@
 #include "filter.h"
 #include "filter_list.h"
 #include "composite_filter.h"
+#include "custom_filter.h"
 
 #include "filter_edit_widget.h"
 #include "filter_factory.h"
-#include "server_list_widget.h"
 
 Q_DECLARE_METATYPE(filter_p)
 Q_DECLARE_METATYPE(filter_class_p)
@@ -255,6 +255,11 @@ void filter_edit_widget::update_item(QTreeWidgetItem* item)
 {
     filter_p filter = item->data(0, Qt::UserRole).value<filter_p>();
 
+    //if this filter is custom filter - then it can be without factory...
+    custom_filter* custom = qobject_cast<custom_filter*>(filter.get());
+    if( custom && !custom->factory() )
+        custom->set_factory( filters_->factory() );
+    
     filter_item_widget* w = qobject_cast<filter_item_widget*>(tree_->itemWidget(item, 0));
     if (!w)
     {
@@ -305,6 +310,11 @@ void filter_edit_widget::add_new_filter()
 
     // create filter
     filter_p f = fc->create_filter();
+    
+    //if this filter is custom filter - insert current filter factory into it
+    custom_filter* custom = qobject_cast<custom_filter*>(f.get());
+    if( custom )
+        custom->set_factory( filters_->factory() );
 
     // assign auto-generated name
     f->set_name(filters_->correct_name(fc->caption()));

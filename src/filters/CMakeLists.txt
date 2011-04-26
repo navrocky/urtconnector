@@ -20,6 +20,7 @@ set(HEADERS
     hide_private_filter.h
     weapon_filter.h
     ping_filter.h
+    custom_filter.h
 )
 
 set(MOC_HEADERS
@@ -35,6 +36,7 @@ set(MOC_HEADERS
     hide_private_filter.h
     weapon_filter.h
     ping_filter.h
+    custom_filter.h
 )
 
 set(SOURCES
@@ -53,6 +55,7 @@ set(SOURCES
     hide_private_filter.cpp
     weapon_filter.cpp
     ping_filter.cpp
+    custom_filter.cpp
 )
 
 set(IFACES
