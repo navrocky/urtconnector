@@ -1,5 +1,11 @@
 * text=auto !eol
 /CMakeLists.txt -text
+artwork/filter_weapon_icons/autos.svg -text
+artwork/filter_weapon_icons/grenade.svg -text
+artwork/filter_weapon_icons/negev.svg -text
+artwork/filter_weapon_icons/pistol.svg -text
+artwork/filter_weapon_icons/snipe.svg -text
+artwork/filter_weapon_icons/spas.svg -text
 artwork/install-header.bmp -text
 artwork/logo.png -text
 artwork/logo.svg -text

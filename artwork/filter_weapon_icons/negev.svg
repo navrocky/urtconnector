@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="autos.svg"
+   inkscape:export-filename="/home/vlad/projects/urtconnector/artwork/weapon/negev.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="32"
+     inkscape:cx="3.5327455"
+     inkscape:cy="9.5880794"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1015"
+     inkscape:window-x="-4"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3991"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1036.3622)">
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="m 1.2297098,1039.6943 c -1.12572255,0.3522 -0.88878991,2.6765 -0.65780687,4.101 l 3.54255457,-1.1185 c -0.7034765,-1.4489 -1.7424431,-3.2549 -2.886123,-2.9869 z m -0.38641453,4.8676 1.67127663,5.3159 3.5425504,-1.1187 -1.6712766,-5.3159 -3.54255043,1.1187 z m 1.94979423,6.2019 0.3568426,1.1351 3.5425564,-1.1186 -0.3568485,-1.1351 -3.5425505,1.1186 z"
+       id="path5509-86-5-1"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="m 5.861991,1038.2784 c -1.1257287,0.3521 -0.88879,2.6765 -0.657807,4.101 l 3.5425485,-1.1186 c -0.7034703,-1.4489 -1.742437,-3.2548 -2.8861169,-2.9868 z m -0.3864207,4.8675 1.6712766,5.3158 3.5425561,-1.1185 -1.6712761,-5.3159 -3.5425566,1.1186 z m 1.9497943,6.2019 0.3568486,1.1352 3.5425558,-1.1186 -0.356848,-1.1352 -3.5425564,1.1186 z"
+       id="path5509-86-5-1-1"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="m 10.455037,1036.8417 c -1.1257278,0.3521 -0.8887892,2.6765 -0.6578061,4.101 l 3.5425491,-1.1186 c -0.703471,-1.4489 -1.742438,-3.2548 -2.886117,-2.9868 z m -0.38642,4.8675 1.671276,5.3158 3.542557,-1.1185 -1.671276,-5.3159 -3.542557,1.1186 z m 1.949795,6.2019 0.356848,1.1352 3.542556,-1.1186 -0.356848,-1.1351 -3.542556,1.1185 z"
+       id="path5509-86-5-1-2"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>
