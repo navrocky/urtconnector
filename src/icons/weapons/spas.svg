@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="spas.svg"
+   inkscape:export-filename="/home/vlad/projects/urtconnector/artwork/weapon/grenade.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="22.627417"
+     inkscape:cx="12.178248"
+     inkscape:cy="6.7933967"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1015"
+     inkscape:window-x="-4"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="false">
+    <sodipodi:guide
+       orientation="0,1"
+       position="22.125,41.875"
+       id="guide3886" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="-9,17.625"
+       id="guide3989" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid3991"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1036.3622)">
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="m 10.510484,1040.8162 c 0,1.4029 -1.1028118,2.5402 -2.4631997,2.5402 -1.3603877,0 -2.4632001,-1.1373 -2.4632001,-2.5402 0,-1.4029 1.1028124,-2.5401 2.4632001,-2.5401 1.3603879,0 2.4631997,1.1372 2.4631997,2.5401 z"
+       id="path3950-9"
+       inkscape:connector-curvature="0" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="m 5.1255495,1042.1084 c -0.4173343,0.7911 -1.2177546,1.2644 -2.1524784,1.2644 -1.3603877,0 -2.46320006,-1.1373 -2.46320006,-2.5401 0,-1.403 1.10281236,-2.5402 2.46320006,-2.5402 0.9316765,0 1.7425411,0.5334 2.1610842,1.3202 -0.5294543,1.0489 -0.2533677,1.9984 -0.00861,2.4957 z"
+       id="path3950-9-1"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cssscc" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="m 2.8702306,1044.0849 c 1.380832,-0.017 1.8557734,-0.3071 2.6924482,-1.2953 l 8.4430842,7.1873 c -0.428704,0.567 -1.225016,0.8998 -2.419649,0.7671 z"
+       id="path4063"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="m 8.2805279,1043.9834 c 1.6640236,-0.2406 2.7361031,-0.7228 2.9464531,-3.2004 l 4.196785,5.3306 c 0.07332,0.6596 0.30141,1.8684 -0.933342,3.2426 z"
+       id="path4063-0"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+  </g>
+</svg>

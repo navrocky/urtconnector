@@ -913,12 +913,21 @@ p, li { white-space: pre-wrap; }
         <translation>Пулеметы</translation>
     </message>
     <message>
-        <location filename="../src/filters/weapon_filter.cpp" line="65"/>
         <source>Weapon filter</source>
-        <translation>Фильтр оружия</translation>
+        <translation type="obsolete">Фильтр оружия</translation>
     </message>
     <message>
-        <location filename="../src/filters/weapon_filter.cpp" line="66"/>
+        <location filename="../src/filters/weapon_filter.h" line="37"/>
+        <source>Forbidden weapon</source>
+        <translation>Запрещенное оружие</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/weapon_filter.h" line="38"/>
+        <source>Allowed weapon</source>
+        <translation>Разрешенное оружие</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/weapon_filter.h" line="39"/>
         <source>Hides all servers thats don&apos;s match selected weapons.</source>
         <translation>Скрыват сервера не допускающие выбранное оружие.</translation>
     </message>
@@ -1652,7 +1661,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/main.cpp" line="121"/>
         <source>English</source>
-        <translation type="unfinished">Русский</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/main.cpp" line="122"/>

@@ -13,22 +13,22 @@
 Q_DECLARE_METATYPE(Gear);
 
 weapon_filter_quick_opt_widget::weapon_filter_quick_opt_widget(filter_p f, QWidget* parent)
-    : QGroupBox( parent )
+    : QWidget( parent )
     , filter_( *static_cast<weapon_filter*>( f.get() ) )
 
 {
-    setTitle("Weapon types allowed");
-    
     QHBoxLayout* lay = new QHBoxLayout(this);
-    lay->setContentsMargins(0, 0, 0, 0);
+    lay->setContentsMargins(2, 2, 2, 2);
     
     group_ = new QButtonGroup(this);
     group_->setExclusive(false);
     
     BOOST_FOREACH(Gear g, forbidden( AllGear ) ) {
-        QCheckBox* cb = new QCheckBox( gear(g), this );
+        QCheckBox* cb = new QCheckBox( this );
         cb->setProperty("gear", g);
-        
+        cb->setIcon( QIcon( icon(g) ) );
+        cb->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+        cb->setMinimumWidth( cb->sizeHint().width() + 6 );
         group_->addButton(cb, g);
 
         lay->addWidget(cb);
@@ -37,9 +37,9 @@ weapon_filter_quick_opt_widget::weapon_filter_quick_opt_widget(filter_p f, QWidg
     connect( group_, SIGNAL( buttonClicked(int) ), SLOT( clicked(int) ) );
     connect( &filter_, SIGNAL( changed_signal() ), SLOT( filter_changed() ) );
 
-    lay->addStretch();
-    
     filter_changed();
+    
+    setMinimumWidth ( group_->buttons().size()*(group_->button(Grenades)->sizeHint().width() + 6 ) );
 }
 
 
@@ -57,38 +57,12 @@ void weapon_filter_quick_opt_widget::filter_changed()
     }
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// weapon_filter_class
-
-weapon_filter_class::weapon_filter_class()
-: filter_class(get_id(), QObject::tr("Weapon filter"),
-               QObject::tr("Hides all servers thats don's match selected weapons."))
-{}
-
-
-QWidget* weapon_filter_class::create_quick_opts_widget(filter_p f, QWidget* parent)
-{
-    return new weapon_filter_quick_opt_widget( f, parent );
-}
-
-
-filter_p weapon_filter_class::create_filter()
-{
-    return filter_p( new weapon_filter( shared_from_this() ) );
-}
-
-const char* weapon_filter_class::get_id()
-{
-    return "weapon_filter";
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 // weapon_filter
 
-weapon_filter::weapon_filter(filter_class_p fc)
+weapon_filter::weapon_filter( bool invert, filter_class_p fc )
     : filter(fc)
+    , invert_(invert)
     , available_( forbidden( AllGear ) )
 {}
 
@@ -104,7 +78,9 @@ bool weapon_filter::filter_server( const server_info& si )
     if (!enabled())
         return true;
 
-    return interserction( si.forbidden_gears(), available_ ).empty();
+    return (invert_)
+        ? !interserction( si.forbidden_gears(), available_ ).empty()
+        : interserction( si.forbidden_gears(), available_ ).empty();
 }
 
 QByteArray weapon_filter::save()
@@ -114,6 +90,7 @@ QByteArray weapon_filter::save()
 
     ds << (qint32)1; // version
 
+    ds << invert_;
     BOOST_FOREACH( Gear g, available_ ){
         ds << (qint32)g;
     }
@@ -131,6 +108,8 @@ void weapon_filter::load(const QByteArray& ba, filter_factory_p factory)
         throw cl::except::error("Invalid filter version");
 
     available_.clear();
+    
+    ds >> invert_;
     
     BOOST_FOREACH( Gear g, forbidden( AllGear ) ){
         qint32 v;

@@ -229,3 +229,19 @@ QString gear(Gear g)
         : "Unknown";
 }
 
+
+QString icon(Gear g)
+{
+    static const std::map<Gear, QString> icons = boost::assign::map_list_of
+        ( Grenades, "icons:weapons/grenade.svg" )
+        ( Snipers,  "icons:weapons/snipe.svg"   )
+        ( Spas,     "icons:weapons/spas.svg"    )
+        ( Pistols,  "icons:weapons/pistol.svg"  )
+        ( Automatic,"icons:weapons/autos.svg"   )
+        ( Negev,    "icons:weapons/negev.svg"   );
+        
+    return ( icons.find(g) != icons.end() )
+        ? icons.find(g)->second
+        : "Unknown";
+}
+

@@ -75,7 +75,7 @@ void status_item_delegate::paint(QPainter* painter,
     next_icon(icon_rect);
 
     if ( !si->forbidden_gears().empty() )
-        painter->drawPixmap(icon_rect, QPixmap("icons:pistol.png"));
+        painter->drawPixmap(icon_rect, QPixmap("icons:weapons/pistol.svg"));
 }
 
 void status_item_delegate::next_icon(QRect& icon) const

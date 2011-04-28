@@ -482,6 +482,12 @@ src/icons/utilities-terminal.png -text
 src/icons/view-filter.png -text
 src/icons/view-refresh.png -text
 src/icons/visible-on.png -text
+src/icons/weapons/autos.svg -text
+src/icons/weapons/grenade.svg -text
+src/icons/weapons/negev.svg -text
+src/icons/weapons/pistol.svg -text
+src/icons/weapons/snipe.svg -text
+src/icons/weapons/spas.svg -text
 src/icons/zoom.png -text
 src/images.qrc -text
 src/job_update_from_master.cpp -text

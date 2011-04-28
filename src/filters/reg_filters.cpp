@@ -30,7 +30,8 @@ void register_filters(filter_factory_p f)
     reg<hide_full_filter_class>(f);
     reg<online_clans_filter_class>(f);
     reg<hide_private_filter_class>(f);
-    reg<weapon_filter_class>(f);
+    reg<weapon_filter_class<false> >(f); // allow weapon filter
+    reg<weapon_filter_class<true> >(f);  // forbid weapon filter
     reg<ping_filter_class>(f);
     reg<custom_filter_class>(f);
 }

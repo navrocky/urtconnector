@@ -87,6 +87,8 @@ std::set<Gear> forbidden( GearMask mask );
 ///Convert gear enumeration to human readable string
 QString gear( Gear g );
 
+///Convert gear enumeration to name of icon from resource file
+QString icon( Gear g );
 
 class qt_signal_wrapper: public QObject
 {

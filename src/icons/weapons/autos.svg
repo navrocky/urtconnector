@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="pistol.svg"
+   inkscape:export-filename="/home/vlad/projects/urtconnector/artwork/weapon/pistol.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="11.313708"
+     inkscape:cx="-21.40459"
+     inkscape:cy="12.657581"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1015"
+     inkscape:window-x="-4"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="false">
+    <sodipodi:guide
+       orientation="0,1"
+       position="7.9017857,8.125"
+       id="guide3886" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid3991"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="5.15625,12.6875"
+       id="guide5483" />
+    <sodipodi:guide
+       orientation="0,1"
+       position="9.46875,12.0625"
+       id="guide5485" />
+    <sodipodi:guide
+       orientation="1,0"
+       position="2.032932,14.694563"
+       id="guide5487" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1036.3622)">
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none"
+       d="m 13.657148,1039.3792 -1.4375,0.031 -0.375,0.5312 -8.9062506,0 -0.3125,-0.5312 -0.6875,0 0,1.0625 -1.50000005,0 0,0.625 1.50000005,0 0,0.6875 2.34375,0.031 c 0.4213406,3.3839 -0.9883786,5.8743 -1.71875,7.7813 l 2.875,0.4062 c 0.905119,-1.9247 1.4398688,-3.5359 1.6875,-5.5625 0.7611029,1.9209 1.4964255,1.9035 4.1250006,2.0313 0.312477,0.8209 0.682301,1.7154 0.875,2.2812 l 3.09375,-1 c -0.42817,-1.2798 -1.214912,-2.7509 -1.8125,-4.2812 l 1.53125,-0.3438 c 0.403422,-0.1834 0.521405,-0.6262 0.15625,-1.1562 z m -5.8437506,4.0625 2.1875006,0.031 0.90625,2.0937 c -1.6988029,0.3089 -2.653886,-0.2904 -3.0937506,-2.125 z"
+       id="path3980"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccccccccccccccccc" />
+  </g>
+</svg>

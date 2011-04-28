@@ -43,6 +43,12 @@
         <file>icons/christmas/status-update.png</file>
         <file>icons/bookmarks-refresh.png</file>
         <file>icons/pistol.png</file>
+        <file>icons/weapons/grenade.svg</file>
+        <file>icons/weapons/snipe.svg</file>
+        <file>icons/weapons/spas.svg</file>
+        <file>icons/weapons/pistol.svg</file>
+        <file>icons/weapons/autos.svg</file>
+        <file>icons/weapons/negev.svg</file>
     </qresource>
     <qresource prefix="/images">
         <file>icons/logo.png</file>
