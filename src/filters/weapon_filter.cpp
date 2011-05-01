@@ -2,7 +2,7 @@
 #include <boost/foreach.hpp>
 
 #include <QHBoxLayout>
-#include <QCheckBox>
+#include <QToolButton>
 #include <QResizeEvent>
 #include <QButtonGroup>
 
@@ -24,14 +24,15 @@ weapon_filter_quick_opt_widget::weapon_filter_quick_opt_widget(filter_p f, QWidg
     group_->setExclusive(false);
     
     BOOST_FOREACH(Gear g, forbidden( AllGear ) ) {
-        QCheckBox* cb = new QCheckBox( this );
-        cb->setProperty("gear", g);
-        cb->setIcon( QIcon( icon(g) ) );
-        cb->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-        cb->setMinimumWidth( cb->sizeHint().width() + 6 );
-        group_->addButton(cb, g);
+        QToolButton* tb = new QToolButton( this );
+        tb->setProperty("gear", g);
+        tb->setIcon( QIcon( icon(g) ) );
+        tb->setToolTip(gear(g));
+        tb->setCheckable(true);
+        tb->setAutoRaise(true);
+        group_->addButton(tb, g);
 
-        lay->addWidget(cb);
+        lay->addWidget(tb);
     }
     
     connect( group_, SIGNAL( buttonClicked(int) ), SLOT( clicked(int) ) );
