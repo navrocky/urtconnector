@@ -16,7 +16,6 @@
 #include <QTextDocument>
 
 #include "tools.h"
-#include <boost/assign/list_of.hpp>
 
 using namespace std;
 
@@ -202,7 +201,6 @@ QString common_substring_from_end(const QString& s1, const QString& s2)
 }
 
 
-
 std::set< Gear > forbidden(GearMask mask)
 {
     std::set<Gear> ret;
@@ -213,6 +211,30 @@ std::set< Gear > forbidden(GearMask mask)
 
     return ret;
 }
+
+std::set< Gear > allowed(GearMask mask)
+{
+    std::set<Gear> ret;
+    
+    for( Gear g = Grenades; g <= Negev; g = Gear( g*2 ) ){
+        if ( is_allowed(g, mask) ) ret.insert(g);
+    }
+
+    return ret;
+}
+
+GearMask to_mask(const std::set< Gear >& st)
+{
+    GearMask m(0);
+    std::set<Gear>::const_iterator it = st.begin();
+    
+    for( ; it != st.end(); ++it ){
+        m |= *it;
+    }
+    
+    return m;
+}
+
 
 QString gear(Gear g)
 {

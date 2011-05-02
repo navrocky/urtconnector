@@ -84,6 +84,11 @@ inline bool is_allowed( Gear gear, GearMask mask ){
 ///Extract set of forbidden weapons
 std::set<Gear> forbidden( GearMask mask );
 
+///Extract set of allowed weapons
+std::set<Gear> allowed( GearMask mask );
+
+GearMask to_mask( const std::set<Gear>& st );
+
 ///Convert gear enumeration to human readable string
 QString gear( Gear g );
 

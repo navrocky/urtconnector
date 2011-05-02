@@ -80,7 +80,7 @@ bool weapon_filter::filter_server( const server_info& si )
         return true;
 
     return (invert_)
-        ? !interserction( si.forbidden_gears(), available_ ).empty()
+        ? interserction( allowed( to_mask( si.forbidden_gears() ) ), available_ ).empty()
         : interserction( si.forbidden_gears(), available_ ).empty();
 }
 
