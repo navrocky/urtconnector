@@ -4,6 +4,7 @@
 #include <QPointer>
 
 #include "server_list_common_tab.h"
+#include <common/smart_updater_traits.h>
 
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -30,10 +31,11 @@ private slots:
 
 private:
     void update_actions();
+    void update_item(QTreeWidgetItem* item, const server_id& id );
 
-    typedef std::map<server_id, QTreeWidgetItem*> server_items;
-
+    typedef updater_traits<server_id>::ItemsByElement server_items;
     server_items items_;
+
     QAction* add_bookmark_action_;
     QAction* refresh_selected_action_;
     QAction* refresh_from_master_action_;

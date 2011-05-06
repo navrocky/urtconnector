@@ -1,3 +1,7 @@
+#include "server_list_tab.h"
+
+#include <boost/bind.hpp>
+
 #include <QTreeWidget>
 #include <QHeaderView>
 #include <QAction>
@@ -10,6 +14,7 @@
 #include <common/qaccumulatingconnection.h>
 #include <common/tools.h>
 #include <common/item_view_dblclick_action_link.h>
+#include <common/tree_smart_updater.h>
 #include <jobs/job_queue.h>
 
 #include "../app_options.h"
@@ -19,8 +24,6 @@
 #include "common_item_tags.h"
 #include "visible_updater.h"
 #include "tools.h"
-
-#include "server_list_tab.h"
 
 SYSLOG_MODULE(server_list_tab)
 
@@ -80,43 +83,18 @@ void server_list_tab::update_contents()
     LOG_DEBUG << "Update contents";
     QTreeWidgetItem* cur_item = tree()->currentItem();
 
-    tree()->setUpdatesEnabled(false);
-    tree()->setSortingEnabled(false);
-
     const server_info_list& sil = server_list()->list();
 
-    // who changed, appeared?
-    foreach (server_info_list::const_reference r, sil)
+    // TODO make this code smarter ===
+    QList<server_id> l;
+    foreach (server_info_list::const_reference r, server_list()->list())
     {
-        const server_id& id = r.first;
-        server_items::iterator it2 = items_.find(id);
-        QTreeWidgetItem* item;
-
-        if (it2 == items_.end())
-        {
-            item = new QTreeWidgetItem( tree() );
-            item->setData( 0, c_id_role, QVariant::fromValue(id) );
-            items_[id] = item;
-        }
-        else
-            item = it2->second;
-        update_server_info_item(context(), item);
+        l.push_back(r.first);
     }
+    // ===
 
-    // remove old items
-    QList<server_id> to_remove;
-    for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
-    {
-        const server_id& id = it->first;
-        if ( sil.find(id) != sil.end() )
-            continue;
-        QTreeWidgetItem* item = it->second;
-        delete item;
-        items_.erase(it);
-    }
-
-    tree()->setSortingEnabled(true);
-    tree()->setUpdatesEnabled(true);
+    smart_update_tree_contents(l, c_id_role, tree(), NULL,
+        boost::bind(&server_list_tab::update_item, this, _1, _2), items_);
 
     if (tree()->topLevelItemCount() > 0 && cur_item && app_settings().center_current_row())
         tree()->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
@@ -168,4 +146,9 @@ void server_list_tab::update_actions()
     add_bookmark_action_->setEnabled(!id.is_empty());
     refresh_selected_action_->setEnabled(!id.is_empty());
     clear_all_action_->setEnabled(context().serv_list()->list().size() > 0);
+}
+
+void server_list_tab::update_item(QTreeWidgetItem* item, const server_id& id )
+{
+    update_server_info_item(context(), item);
 }
