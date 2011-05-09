@@ -23,8 +23,9 @@ SYSLOG_MODULE(server_list_common_tab)
 server_list_common_tab::server_list_common_tab(const QString& object_name,
                                                const QString& caption,
                                                const tab_context& ctx,
+                                               bool complex_filter,
                                                QWidget* parent)
-    : filtered_tab(tab_settings_p(new tab_settings(object_name)), ctx, parent)
+    : filtered_tab(tab_settings_p(new tab_settings(object_name)), ctx, complex_filter, parent)
     , caption_(caption)
     , visible_count_(0)
     , total_count_(0)

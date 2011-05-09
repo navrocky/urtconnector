@@ -64,7 +64,7 @@ struct history_adapter
 history_widget::history_widget(history_p history,
                                const tab_context& ctx,
                                QWidget *parent)
-    : filtered_tab(tab_settings_p(new tab_settings("history_tab")), ctx, parent)
+    : filtered_tab(tab_settings_p(new tab_settings("history_tab")), ctx, false, parent)
     , history_(history)
     , group_mode_(true)
     , item_count_(0)

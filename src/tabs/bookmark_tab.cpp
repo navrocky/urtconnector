@@ -28,7 +28,7 @@ SYSLOG_MODULE(bookmark_tab)
 bookmark_tab::bookmark_tab(const QString& object_name,
                            const tab_context& ctx,
                            QWidget* parent)
-: server_list_common_tab(object_name, tr("Favorites"), ctx, parent)
+: server_list_common_tab(object_name, tr("Favorites"), ctx, false, parent)
 , updater_(new visible_updater(this, SLOT(update_contents()), this))
 {
     setWindowIcon(QIcon("icons:bookmarks.png"));

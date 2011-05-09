@@ -35,6 +35,7 @@ public:
     server_list_common_tab(const QString& object_name,
                            const QString& caption,
                            const tab_context& ctx,
+                           bool complex_filter,
                            QWidget* parent);
 
     virtual server_id selected_server() const;

@@ -44,6 +44,7 @@ class filtered_tab : public main_tab
 public:
     filtered_tab(tab_settings_p st,
                  const tab_context& ctx,
+                 bool complex_filter,
                  QWidget* parent);
 
 public slots:
@@ -56,10 +57,11 @@ protected slots:
 protected:
     void default_filter_initialization();
     bool filtrate(const server_info& si) const;
+    const filter_list_p& filters() const {return filters_;}
+    void load_filter();
 
 private slots:
     void save_filter();
-    void load_filter();
     void update_toolbar_filter();
 
 private:
@@ -70,6 +72,7 @@ private:
     QPointer<QWidget> filter_toolbar_widget_;
     QAction* show_filter_action_;
     filtered_tab_settings fs_;
+    bool complex_filter_;
 };
 
 

@@ -47,7 +47,7 @@ public:
         return filter_p( new weapon_filter( Invert, shared_from_this() ) );
     }
 
-    const char* get_id(){
+    static const char* get_id(){
         return (Invert)
             ? "weapon_filter_f"
             : "weapon_filter_a";

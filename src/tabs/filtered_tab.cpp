@@ -11,6 +11,14 @@
 #include <filters/filter_edit_widget.h>
 #include <filters/regexp_filter.h>
 #include <filters/tools.h>
+#include <filters/composite_filter.h>
+#include <filters/hide_empty_filter.h>
+#include <filters/hide_private_filter.h>
+#include <filters/hide_full_filter.h>
+#include <filters/ping_filter.h>
+#include <filters/weapon_filter.h>
+#include <filters/game_type_filter.h>
+
 
 #include "filtered_tab.h"
 
@@ -38,10 +46,12 @@ void correct_names(filter_list_p fl, filter_p par)
 ////////////////////////////////////////////////////////////////////////////////
 // filtered_tab
 
-filtered_tab::filtered_tab(tab_settings_p st, const tab_context& ctx, QWidget* parent)
+filtered_tab::filtered_tab(tab_settings_p st, const tab_context& ctx, 
+                           bool complex_filter, QWidget* parent)
     : main_tab(st, ctx, parent)
     , filters_(new filter_list(ctx.filter_factory()))
     , fs_( settings() )
+    , complex_filter_(complex_filter)
 {
     load_filter();
 
@@ -153,6 +163,64 @@ void filtered_tab::default_filter_initialization()
 
     // select regexp filter for toolbar
     filters_->set_toolbar_filter(f);
+
+    if (complex_filter_)
+    {
+        f = filters()->create_by_class_id(ping_filter_class::get_id());
+        f->set_name(f->get_class()->caption());
+        f->set_enabled(false);
+        cf->add_filter(f);
+
+        ping_filter* pf = dynamic_cast<ping_filter*> (f.get());
+        pf->set_max(200);
+        pf->set_min(0);
+        pf->set_type(ping_filter::less);
+
+        f = filters()->create_by_class_id(hide_empty_filter_class::get_id());
+        f->set_name(f->get_class()->caption());
+        f->set_enabled(false);
+        cf->add_filter(f);
+
+        f = filters()->create_by_class_id(hide_full_filter_class::get_id());
+        f->set_name(f->get_class()->caption());
+        f->set_enabled(false);
+        cf->add_filter(f);
+
+        f = filters()->create_by_class_id(hide_private_filter_class::get_id());
+        f->set_name(f->get_class()->caption());
+        f->set_enabled(false);
+        cf->add_filter(f);
+
+        f = filters()->create_by_class_id(weapon_filter_class < false > ::get_id());
+        f->set_name(f->get_class()->caption());
+        f->set_enabled(false);
+        cf->add_filter(f);
+
+        f = filters_->create_by_class_id(composite_filter_class::get_id());
+        f->set_name(f->get_class()->caption());
+        cf->add_filter(f);
+        f->set_enabled(false);
+        cf = dynamic_cast<composite_filter*> (f.get());
+        cf->set_operation(composite_filter::op_or);
+
+        f = filters()->create_by_class_id(game_type_filter_class::get_id());
+        f->set_name(f->get_class()->caption());
+        cf->add_filter(f);
+        game_type_filter* gt = dynamic_cast<game_type_filter*>(f.get());
+        gt->set_mode(server_info::gm_team_survivor);
+
+        f = filters()->create_by_class_id(game_type_filter_class::get_id());
+        f->set_name(f->get_class()->caption());
+        cf->add_filter(f);
+        gt = dynamic_cast<game_type_filter*>(f.get());
+        gt->set_mode(server_info::gm_bomb_mode);
+
+        f = filters()->create_by_class_id(game_type_filter_class::get_id());
+        f->set_name(f->get_class()->caption());
+        cf->add_filter(f);
+        gt = dynamic_cast<game_type_filter*>(f.get());
+        gt->set_mode(server_info::gm_capture_the_flag);
+    }
 }
 
 void filtered_tab::load_filter()
