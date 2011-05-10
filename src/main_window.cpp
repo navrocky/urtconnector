@@ -135,6 +135,7 @@ main_window::main_window(QWidget *parent)
     ui_->server_info_browser->set_bookmarks( bookmarks_ );
     
     tab_toolbar_ = addToolBar(tr("Current tab toolbar"));
+    tab_toolbar_->setObjectName("tab_toolbar");
 
     setWindowIcon( QIcon("images:logo.png") );
 

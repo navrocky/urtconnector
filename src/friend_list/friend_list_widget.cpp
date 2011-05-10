@@ -98,7 +98,7 @@ public:
         opt.rect.moveTo(0, 0);
 
         QFont f = opt.font;
-        f.setBold(true);
+//        f.setBold(true);
         opt.font = f;
         opt.rect.setRight(cols_width - padding - 1);
 

@@ -67,4 +67,17 @@ private:
     status_item_delegate* status_delegate_;
 };
 
+//class friend_list_widget_settings
+//{
+//public:
+//    friend_list_widget_settings(const tab_settings_p& ts);
+//
+//    QByteArray header_state() const;
+//    void save_header_state(const QByteArray&);
+//
+//private:
+//    QString uid_;
+//    base_settings::settings_ptr sls;
+//};
+
 #endif // FRIEND_LIST_WIDGET_H

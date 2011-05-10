@@ -193,7 +193,8 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     connect(select_toolbar_filter_action_, SIGNAL(triggered()), SLOT(select_toolbar_filter()));
     connect(delete_filter_action_, SIGNAL(triggered()), SLOT(delete_filter()));
 
-    QToolBar* tb = new QToolBar(this);
+    QToolBar* tb = new QToolBar(tr("Filter toolbar"), this);
+    tb->setObjectName("filter_toolbar");
     tb->addAction(add_new_filter_action_);
     tb->addAction(select_toolbar_filter_action_);
     tb->addSeparator();
