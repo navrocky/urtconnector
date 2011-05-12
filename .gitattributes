@@ -115,6 +115,8 @@ src/common/qbuttonlineedit.cpp -text
 src/common/qbuttonlineedit.h -text
 src/common/qt_syslog.cpp -text
 src/common/qt_syslog.h -text
+src/common/qtreesearcher.cpp -text
+src/common/qtreesearcher.h -text
 src/common/scoped_tools.h -text
 src/common/server_bookmark.cpp -text
 src/common/server_bookmark.h -text
