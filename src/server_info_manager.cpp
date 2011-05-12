@@ -11,6 +11,8 @@
 #include <QTextFrame>
 #include <QToolButton>
 
+#define SYSLOG_WRITE_FUNCTIONS
+
 #include "cl/syslog/syslog.h"
 #include "common/exception.h"
 #include "common/player_info.h"
@@ -28,7 +30,7 @@ const QString map_tag_c = "MAP_TAG=\"%1\"";
 
 const char* player_property_c = "player";
 
-SYSLOG_MODULE(server_info);
+SYSLOG_MODULE(server_info_manager);
 
 using namespace boost;
 
@@ -308,6 +310,8 @@ QString server_info_manager::make_status(const server_info& si) const
 
 QString server_info_manager::make_players(const server_info& si) const
 {
+    LOG_HARD << "creating players template";
+    LOG_EXIT_HARD << "completed";
     const player_info_list& pil = si.players;
 
     QString players;
@@ -319,18 +323,23 @@ QString server_info_manager::make_players(const server_info& si) const
         int i = 0;
         foreach (const player_info& pi, pil)
         {
-            players += QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
+            QString player = QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
                 .arg( i % 2 + 1 )
                 .arg( q3coloring(pi.nick_name(), html_colors_) )
                 .arg( player_tag_c.arg( toplainhtml( pi.nick_name() ) ) )
                 .arg( pi.ping() )
                 .arg( pi.score() );
+
+            LOG_HARD << "adding player " << player.toStdString();
+                
+            players += player;
             i++;
         }
 
         players += "</table>";
     }
 
+    LOG_HARD << "success";
     return players;
 }
 
@@ -384,14 +393,17 @@ void server_info_manager::regenerate_widgets( const server_info& si )
 void server_info_manager::regenerate_friends(const server_info& si)
 {
     player_info_list plist = si.players;
+    LOG_HARD << "players count: " << plist.size();
 
     QTextCursor cursor( browser_->document() );
     QRegExp friend_rx( player_tag_c.arg("(.*)") );
 
     while ( cursor = browser_->document()->find( friend_rx, cursor ), !cursor.isNull() ) {
-
+        
         friend_rx.exactMatch( cursor.selectedText() );
         QString player = friend_rx.cap(1);
+        
+        LOG_HARD << "next player tag finded: "<< player.toStdString();
 
         player_info_list::iterator pinfo = std::find_if( plist.begin(), plist.end(), bind(&player_info::nick_name, _1) == player );
 

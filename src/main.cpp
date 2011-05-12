@@ -133,6 +133,7 @@ int main(int argc, char *argv[])
         desc.add_options()
                 ("help", "Produce help message")
                 ("debug,D", "Produce debug messages")
+                ("hard", "Produce hard debug messages")
                 ("pipe-log", "Redirect all logging to stderr with a special marks")
                 ("anticheat,A", "Activate anticheat")
                 ("launch,L", "Launch a game")
@@ -170,6 +171,9 @@ int main(int argc, char *argv[])
             logman().level_set(debug);
         else
             logman().level_set(info);
+        
+        if( vm.count("hard") )
+            logman().level_set(harddebug);
 
         output_p cerr_out, file_out;
         if (vm.count("pipe-log"))
