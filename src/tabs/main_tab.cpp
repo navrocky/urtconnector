@@ -46,3 +46,10 @@ void tab_settings::save_state(const QByteArray& a)
 QByteArray tab_settings::load_state() const
 { return st->value("state").toByteArray(); }
 
+QByteArray tab_settings::load_header_state() const
+{ return st->value("header_state").toByteArray(); }
+
+void tab_settings::save_header_state(const QByteArray& ba)
+{ st->setValue("header_state", QVariant::fromValue(ba)); }
+
+

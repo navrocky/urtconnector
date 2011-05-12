@@ -10,23 +10,6 @@
 class QTreeWidget;
 class QTreeWidgetItem;
 
-class server_list_common_tab_settings
-{
-public:
-    server_list_common_tab_settings(const tab_settings_p& ts);
-
-    QByteArray header_state() const;
-    void save_header_state(const QByteArray&);
-
-private:
-    QString uid_;
-    base_settings::settings_ptr sls;
-    
-    //TODO backward config compatibility - remove on 0.8.0
-    base_settings::settings_ptr ts_; // - the main_tab settings
-};
-
-
 // Common tab widget for bookmarks and all server list
 class server_list_common_tab : public filtered_tab
 {
@@ -64,7 +47,6 @@ private:
     int visible_count_;
     int total_count_;
     QString caption_;
-    server_list_common_tab_settings sls_;
 };
 
 

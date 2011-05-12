@@ -320,6 +320,18 @@ void history_widget::update_actions()
     refresh_all_->setEnabled(history_->list().size() > 0);
 }
 
+void history_widget::save_state()
+{
+    filtered_tab::save_state();
+    settings()->save_header_state(tree_->header()->saveState());
+}
+
+void history_widget::load_state()
+{
+    filtered_tab::load_state();
+    tree_->header()->restoreState(settings()->load_header_state());
+}
+
 void history_widget::clear_all()
 {
     history_->clear();

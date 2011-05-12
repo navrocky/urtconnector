@@ -57,6 +57,9 @@ public:
     void save_state(const QByteArray& a);
     QByteArray load_state() const;
     
+    void save_header_state(const QByteArray&);
+    QByteArray load_header_state() const;
+    
     const QString& uid() const {return uid_;}
 
     //TODO backward config compatibility - remove on 0.8.0

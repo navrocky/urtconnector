@@ -223,6 +223,18 @@ server_id friend_list_widget::selected_server() const
         return server_id();
 }
 
+void friend_list_widget::save_state()
+{
+    main_tab::save_state();
+    settings()->save_header_state(tree_->header()->saveState());
+}
+
+void friend_list_widget::load_state()
+{
+    main_tab::load_state();
+    tree_->header()->restoreState(settings()->load_header_state());
+}
+
 void friend_list_widget::update_contents()
 {
     online_count_ = 0;

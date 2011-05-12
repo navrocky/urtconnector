@@ -26,7 +26,10 @@ public:
     
     server_id selected_server() const;
 
-protected:
+public slots:
+    virtual void save_state();
+    virtual void load_state();
+
 private slots:
     void update_contents();
     void update_actions();

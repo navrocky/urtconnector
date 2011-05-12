@@ -28,6 +28,9 @@ public:
     void set_group_mode(bool);
 
 public slots:
+    virtual void save_state();
+    virtual void load_state();
+    
     void delete_selected();
     void clear_all();
 
