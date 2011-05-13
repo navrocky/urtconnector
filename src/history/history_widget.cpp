@@ -192,7 +192,8 @@ void history_widget::update_contents_simple()
     tree_->setRootIsDecorated(false);
     const history::history_list_t& hl = history_->list();
     smart_update_tree_contents( hl, c_history_role, tree_, 0,
-        boost::bind(&history_widget::update_item, this, _1, _2), items_map_, history_adapter() );
+        boost::bind(&history_widget::update_item, this, _1, _2), items_map_, 
+        true, history_adapter() );
     
 }
 
@@ -201,7 +202,8 @@ void history_widget::update_contents_grouped()
     tree_->setRootIsDecorated(true);
     const history::history_list_t& hl = history_->list();
     smart_update_tree_contents(hl, c_history_role, tree_, 0,
-        boost::bind(&history_widget::update_item, this, _1, _2), items_map_, history_adapter());
+        boost::bind(&history_widget::update_item, this, _1, _2), items_map_, 
+        true, history_adapter());
     
     // find top items
     typedef QMap<server_id, QTreeWidgetItem*> top_items_t;

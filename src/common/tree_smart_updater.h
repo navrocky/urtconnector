@@ -110,6 +110,7 @@ void smart_update_tree_contents(const Container& l,
                             QTreeWidgetItem* parent_item,
                             const typename detail::updater_container_traits<Container>::Updater&  updater,
                             typename detail::updater_container_traits<Container>::ItemsByElement& items,
+                            bool reparent_childs,
                             const Adapter& adapter = Adapter())
 {
     typedef typename detail::updater_container_traits<Container>::Element Element;
@@ -144,7 +145,7 @@ void smart_update_tree_contents(const Container& l,
         QTreeWidgetItem* item = it.value();
 
         // reparent childs
-        if (item->childCount() > 0)
+        if (reparent_childs && item->childCount() > 0)
         {
             if (item->parent())
                 item->parent()->addChildren(item->takeChildren());
@@ -173,7 +174,8 @@ void smart_update_tree_contents(const Container& l,
                                 const typename detail::updater_container_traits<Container>::Updater& updater,
                                 typename detail::updater_container_traits<Container>::ItemsByElement& items)
 {
-    return smart_update_tree_contents(l, role, tree, parent_item, updater, items, detail::std_adapter());
+    return smart_update_tree_contents(l, role, tree, parent_item, updater, items, 
+                                      false, detail::std_adapter());
 }
 
 ///struct that adapts std::map tp QMap type interfaces. class holds only refference to the std::map
