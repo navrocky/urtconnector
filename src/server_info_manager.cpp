@@ -165,19 +165,22 @@ QRect visible_rect( const QAbstractScrollArea* a ){
 
 bool server_info_manager::eventFilter(QObject* obj, QEvent* e)
 {
+    LOG_HARD << "event:"<<e->type();
     bool ret = QObject::eventFilter(obj, e);
     if( obj == browser_ && e->type() == QEvent::Paint)
     {
-        LOG_DEBUG << "handling widgets visibility";
-        LOG_EXIT_DEBUG << "visibility ok";
+        LOG_HARD << "handling widgets visibility, Paint Event";
 
         //QTextBrowser engine does not updates block thas are hidden away from QAbstractScrollArea visible surface
         //So we mannually hide widget when associated block is not in visible area
         BOOST_FOREACH( const WidgetsByBlock::value_type& p, widgets ){
+            LOG_HARD << "handling widget favorites: %1%" << p.second.front();
             QRect block_rect = browser_->document()->documentLayout()->blockBoundingRect( p.first ).toRect();
+            LOG_HARD << "block_rect: %1%-%2% %3%-%4%" ,  block_rect.left(), block_rect.right(), block_rect.width(), block_rect.height();
             QRect viewport_rect = visible_rect( browser_ );
-
+            LOG_HARD << "viewport: %1%-%2% %3%-%4%" ,  viewport_rect.left(), viewport_rect.right(), viewport_rect.width(), viewport_rect.height();
             std::for_each( p.second.begin(), p.second.end(), bind( &QWidget::setVisible, _1, viewport_rect.intersects(block_rect) ) );
+            LOG_HARD << "visibility:"<< viewport_rect.intersects(block_rect);
         }
     }
     return ret;
@@ -424,9 +427,12 @@ void server_info_manager::regenerate_friends(const server_info& si)
         
         assert( pinfo != plist.end() );//FIXME remove on developing completiion ?
 
-        wrap_widget( create_tool_button(
+        QWidget* debug_ptr = wrap_widget( create_tool_button(
             QIcon::fromTheme("bookmarks", QIcon("icons:bookmarks.png")),
             bind( &server_info_manager::add_to_friend, this, *pinfo ) ), cursor );
+        
+        LOG_HARD<<"wraping player" << pinfo->nick_name().toStdString();
+        LOG_HARD<<"wraping favorites pointer" << debug_ptr;
         
         if( is_admin() )
             wrap_widget( create_tool_button(
@@ -486,7 +492,7 @@ QComboBox* server_info_manager::create_map_box(const server_info& si)
     return combo;
 }
 
-void server_info_manager::wrap_widget( QWidget* widget, QTextCursor& cursor ) {
+QWidget* server_info_manager::wrap_widget( QWidget* widget, QTextCursor& cursor ) {
     QTextCharFormat format = cursor.blockCharFormat();
     format.setObjectType( widget_object::WidgetFormat );
     format.setProperty( widget_object::WidgetPtr,    qVariantFromValue<QWidget*>( widget ) );
@@ -497,5 +503,6 @@ void server_info_manager::wrap_widget( QWidget* widget, QTextCursor& cursor ) {
 
     QObject::connect( cursor.currentFrame(), SIGNAL( destroyed(QObject *) ), widget, SLOT( deleteLater() ) );
     widgets[ cursor.block() ].push_back( widget );
+    return widget;
 }
 

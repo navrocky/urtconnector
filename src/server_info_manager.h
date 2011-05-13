@@ -93,7 +93,7 @@ private:
 
     ///Magic function that creates "render" for \p widget at position cursor.
     ///\note ownership of widget is at widget's parent but when textBlock at position \p cursor is deleted widget is deleted \b too
-    void wrap_widget( QWidget* widget, QTextCursor& cursor );
+    QWidget* wrap_widget( QWidget* widget, QTextCursor& cursor );
     
 private:
     server_bookmark_list_p bookmarks_;
