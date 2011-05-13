@@ -78,6 +78,11 @@ public:
     /*! Country name to select custom language*/
     QString country_name() const;
     void set_country_name( const QString& country );
+
+    bool use_mumble_overlay() const;
+    void set_use_mumble_overlay(bool);
+    QString mumble_overlay_bin() const;
+    void set_mumble_overlay_bin(const QString&);
 };
 
 class clip_settings: public settings_uid_provider<clip_settings>

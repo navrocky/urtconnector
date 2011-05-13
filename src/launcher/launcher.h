@@ -31,6 +31,9 @@ public:
     void set_rcon(const QString& value);
     void set_referee(const QString& value);
     void set_config_url(const QString& value);
+
+    void set_mumble_overlay(bool);
+    void set_mumble_overlay_bin(const QString&);
     
     /*! Urban Terror detaches from UrTconnector  */
     bool is_detach() const {return detach_;}
@@ -73,6 +76,8 @@ private:
     QString rcon_;
     QString referee_;
     bool detach_;
+    bool mumble_overlay_;
+    QString mumble_overlay_bin_;
     QPointer<QProcess> proc_;
 };
 

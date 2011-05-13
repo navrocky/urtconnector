@@ -480,6 +480,8 @@ void main_window::connect_to_server(const server_id& id, const QString& player_n
     l->set_password(pass);
     l->set_referee(bm.ref_password());
     l->set_rcon(bm.rcon_password());
+    l->set_mumble_overlay(as.use_mumble_overlay());
+    l->set_mumble_overlay_bin(as.mumble_overlay_bin());
     l->launch();
 }
 

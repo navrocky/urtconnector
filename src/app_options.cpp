@@ -173,6 +173,25 @@ void app_settings::set_country_name(const QString& country)
     part()->setValue("country_name", country);
 }
 
+bool app_settings::use_mumble_overlay() const
+{
+    return part()->value("use_mumble_overlay", false).toBool();
+}
+
+void app_settings::set_use_mumble_overlay(bool val)
+{
+    part()->setValue("use_mumble_overlay", val);
+}
+
+QString app_settings::mumble_overlay_bin() const
+{
+    return part()->value("mumble_overlay_bin", "/usr/bin/mumble-overlay").toString();
+}
+
+void app_settings::set_mumble_overlay_bin(const QString& val)
+{
+    part()->setValue("mumble_overlay_bin", val);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // clip_settings

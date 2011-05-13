@@ -178,6 +178,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="mumble_overlay_check">
+     <property name="text">
+      <string>Use mumble-overlay</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer_3">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

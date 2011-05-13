@@ -72,6 +72,7 @@ static QStringList __parse_combined_arg_string(const QString &program)
 launcher::launcher(QObject* parent)
 : QObject(parent)
 , detach_(false)
+, mumble_overlay_(false)
 {
 }
 
@@ -105,6 +106,16 @@ void launcher::set_password(const QString & value)
 void launcher::set_config_url(const QString & value)
 {
     config_url_ = value;
+}
+
+void launcher::set_mumble_overlay(bool value)
+{
+    mumble_overlay_ = value;
+}
+
+void launcher::set_mumble_overlay_bin(const QString& value)
+{
+    mumble_overlay_bin_ = value;
 }
 
 void launcher::set_rcon(const QString & value)
@@ -203,6 +214,9 @@ QString launcher::launch_string ( bool use_adv_cmd_line,
 
         res += QString(" +set fs_game q3ut4");
     }
+
+    if (mumble_overlay_)
+        res = mumble_overlay_bin_ + res;
 
 #if defined(Q_OS_UNIX)
     if ( separate_x )
