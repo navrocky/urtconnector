@@ -30,6 +30,8 @@ Countries find_countries()
 {
     Countries ret;
     
+    ret << CountryId( "English", "" );
+    
     QDir dir( QLibraryInfo::location(QLibraryInfo::TranslationsPath) );
     
     //find all translation files in qt standard path
