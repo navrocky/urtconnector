@@ -69,6 +69,10 @@ server_list_common_tab::server_list_common_tab(const QString& object_name,
     hdr->resizeSection(6, 60);
     hdr->setSortIndicator(3, Qt::AscendingOrder);
 
+    tree_->addAction(context().connect_action());
+    //copy self actions to tree popup-context
+    tree()->addActions( actions() );
+    
     update_caption();
 }
 

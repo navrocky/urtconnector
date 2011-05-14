@@ -118,24 +118,25 @@ history_widget::history_widget(history_p history,
     
     connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(do_selection_change()));
 
-    addAction(add_bookmark_action_);
-    add_separator_action(this);
-    addAction(refresh_selected_);
-    addAction(refresh_all_);
-    add_separator_action(this);
-    addAction(remove_selected_action_);
-    addAction(remove_all_action_);
+    QList<QAction*> acts;
+    
+    acts << add_bookmark_action_
+        << add_separator_action(this)
+        << refresh_selected_
+        << refresh_all_
+        << add_separator_action(this)
+        << remove_selected_action_
+        << remove_all_action_;
 
+    insertActions( actions().front(), acts );
+    
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(context().connect_action());
-    tree_->addAction(add_bookmark_action_);
-    add_separator_action(tree_);
-    tree_->addAction(refresh_selected_);
-    tree_->addAction(refresh_all_);
-    add_separator_action(tree_);
-    tree_->addAction(remove_selected_action_);
-    tree_->addAction(remove_all_action_);
-
+    add_separator_action( tree_ );
+    
+    //copy self actions to tree popup-context
+    tree_->addActions( actions() );
+    
     new item_view_dblclick_action_link(this, tree_, ctx.connect_action());
 
     tree_->setSortingEnabled(true);

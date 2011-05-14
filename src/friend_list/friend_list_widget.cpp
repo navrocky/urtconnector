@@ -146,13 +146,18 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     update_all_action_ = new QAction(QIcon("icons:download.png"), tr("Update all servers"), this);
     connect(update_all_action_, SIGNAL(triggered()), SLOT(update_all()));
     
-    addAction(add_action_);
-    addAction(edit_action_);
-    addAction(remove_action_);
-    add_separator_action(this);
-    addAction(update_selected_action_);
-    addAction(update_bookmarks_action_);
-    addAction(update_all_action_);
+    QList<QAction*> acts;
+    
+    acts << add_action_
+        << edit_action_
+        << remove_action_
+        << add_separator_action(this)
+        << update_selected_action_
+        << update_bookmarks_action_
+        << update_all_action_;
+
+    insertActions( actions().front(), acts );
+
     
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
@@ -170,15 +175,9 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(ctx.connect_action());
-    add_separator_action(tree_);
-    tree_->addAction(add_action_);
-    tree_->addAction(edit_action_);
-    tree_->addAction(remove_action_);
-    add_separator_action(tree_);
-    tree_->addAction(update_selected_action_);
-    tree_->addAction(update_bookmarks_action_);
-    tree_->addAction(update_all_action_);
 
+    tree_->addActions( actions() );
+    
     new item_view_dblclick_action_link(this, tree_, ctx.connect_action());
 
     QTreeWidgetItem* it = tree_->headerItem();

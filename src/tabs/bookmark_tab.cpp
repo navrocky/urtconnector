@@ -49,22 +49,23 @@ bookmark_tab::bookmark_tab(const QString& object_name,
     refresh_all_ = new QAction(QIcon("icons:download.png"), tr("Refresh all"), this);
     connect(refresh_all_, SIGNAL(triggered()), SLOT(refresh_all()));
 
-    addAction(add_action_);
-    addAction(edit_action_);
-    addAction(remove_action_);
-    add_separator_action(this);
-    addAction(refresh_selected_);
-    addAction(refresh_all_);
+    QList<QAction*> acts;
+    
+    acts << add_action_
+        << edit_action_
+        << remove_action_
+        << add_separator_action(this)
+        << refresh_selected_
+        << refresh_all_;
+
+    insertActions( actions().front(), acts );
+
 
     tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree()->addAction(context().connect_action());
     add_separator_action(tree());
-    tree()->addAction(add_action_);
-    tree()->addAction(edit_action_);
-    tree()->addAction(remove_action_);
-    add_separator_action(tree());
-    tree()->addAction(refresh_selected_);
-    tree()->addAction(refresh_all_);
+
+    tree()->addActions( actions() );
 
     new item_view_dblclick_action_link(this, tree(), ctx.connect_action());
 

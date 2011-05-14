@@ -52,22 +52,24 @@ server_list_tab::server_list_tab(const QString& object_name,
     clear_all_action_ = new QAction(QIcon("icons:edit-clear.png"), tr("Clear all"), this);
     connect(clear_all_action_, SIGNAL(triggered()), SLOT(clear_all()));
 
-    addAction(add_bookmark_action_);
-    add_separator_action(this);
-    addAction(refresh_selected_action_);
-    addAction(refresh_from_master_action_);
-    add_separator_action(this);
-    addAction(clear_all_action_);
     
+    QList<QAction*> acts;
+    
+    acts << add_bookmark_action_
+        << add_separator_action(this)
+        << refresh_selected_action_
+        << refresh_from_master_action_
+        << add_separator_action(this)
+        << clear_all_action_
+        << add_separator_action(this);
+
+    insertActions( actions().front(), acts );
+    
+    //install actions to tree popup-context
     tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
-    tree()->addAction(context().connect_action());
-    add_separator_action(tree());
-    tree()->addAction(add_bookmark_action_);
-    add_separator_action(tree());
-    tree()->addAction(refresh_selected_action_);
-    tree()->addAction(refresh_from_master_action_);
-    add_separator_action(tree());
-    tree()->addAction(clear_all_action_);
+    
+    //copy self actions to tree popup-context
+    tree()->addActions( actions() );
 
     new item_view_dblclick_action_link(this, tree(), ctx.connect_action());
 
