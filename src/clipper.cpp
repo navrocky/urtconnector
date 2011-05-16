@@ -14,15 +14,9 @@ clipper::clipper( QObject* parent )
         : QObject(parent)
 {
     connect ( QApplication::clipboard(), SIGNAL( changed(QClipboard::Mode) ), SLOT( changed(QClipboard::Mode) ) );
-    connect ( QApplication::clipboard(), SIGNAL( dataChanged() ), SLOT( data_changed() ) );
 }
 
 clipper::~clipper() {}
-
-void clipper::data_changed()
-{
-    changed(QClipboard::Clipboard);
-}
 
 void clipper::changed(QClipboard::Mode mode)
 {

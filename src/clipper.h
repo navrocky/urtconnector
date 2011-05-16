@@ -21,7 +21,6 @@ signals:
 
 public slots:
     void changed ( QClipboard::Mode mode );
-    void data_changed();
 
 private:
     QString address_;
