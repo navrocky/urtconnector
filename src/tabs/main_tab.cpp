@@ -21,9 +21,8 @@ void server_to_clipboard( const server_id& id, const tab_context& ctx ){
         return;
     
     QApplication::clipboard()->setText(
-        QString("/connect %1:%2; password %3")
-            .arg( id.ip() )
-            .arg( id.port() )
+        QString("/connect %1; password %2")
+            .arg( id.address() )
             .arg( ctx.bookmarks()->get( id ).password() )
     );
 }
