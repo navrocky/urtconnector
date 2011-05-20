@@ -167,17 +167,18 @@ bool server_info_manager::eventFilter(QObject* obj, QEvent* e)
 {
     LOG_HARD << "event:"<<e->type();
     bool ret = QObject::eventFilter(obj, e);
-    if( obj == browser_ && e->type() == QEvent::Paint)
+    if( obj == browser_ && ( e->type() == QEvent::Paint || e->type() == QEvent::Resize ) )
     {
         LOG_HARD << "handling widgets visibility, Paint Event";
 
+        QRect viewport_rect = visible_rect( browser_ );
+        
         //QTextBrowser engine does not updates block thats are hidden away from QAbstractScrollArea visible surface
         //So we mannually hide widget when associated block is not in visible area
         BOOST_FOREACH( const WidgetsByBlock::value_type& p, widgets ) {
             LOG_HARD << "handling widget favorites. Block:%1 Widget: %2", p.first.blockNumber(), p.second.front();
             QRect block_rect = browser_->document()->documentLayout()->blockBoundingRect( p.first ).toRect();
             LOG_HARD << "block_rect: %1-%2 %3-%4" ,  block_rect.left(), block_rect.top(), block_rect.width(), block_rect.height();
-            QRect viewport_rect = visible_rect( browser_ );
             LOG_HARD << "viewport: %1-%2 %3-%4" ,  viewport_rect.left(), viewport_rect.top(), viewport_rect.width(), viewport_rect.height();
             std::for_each( p.second.begin(), p.second.end(), bind( &QWidget::setVisible, _1, viewport_rect.intersects(block_rect) ) );
             LOG_HARD << "visibility:"<< viewport_rect.intersects(block_rect);
