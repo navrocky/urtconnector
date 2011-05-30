@@ -156,8 +156,7 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
         << update_bookmarks_action_
         << update_all_action_;
 
-    insertActions( actions().front(), acts );
-
+    addActions(acts);
     
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);

@@ -58,8 +58,7 @@ bookmark_tab::bookmark_tab(const QString& object_name,
         << refresh_selected_
         << refresh_all_;
 
-    insertActions( actions().front(), acts );
-
+    addActions(acts);
 
     tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree()->addAction(context().connect_action());

@@ -128,7 +128,7 @@ history_widget::history_widget(history_p history,
         << remove_selected_action_
         << remove_all_action_;
 
-    insertActions( actions().front(), acts );
+    addActions(acts);
     
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(context().connect_action());

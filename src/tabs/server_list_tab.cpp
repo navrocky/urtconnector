@@ -60,10 +60,9 @@ server_list_tab::server_list_tab(const QString& object_name,
         << refresh_selected_action_
         << refresh_from_master_action_
         << add_separator_action(this)
-        << clear_all_action_
-        << add_separator_action(this);
+        << clear_all_action_;
 
-    insertActions( actions().front(), acts );
+    addActions( acts );
     
     //install actions to tree popup-context
     tree()->setContextMenuPolicy(Qt::ActionsContextMenu);

@@ -60,6 +60,7 @@ private slots:
     void commit_data_request(QSessionManager&);
     void clipboard_info_obtained();
     void raise_window();
+    void copy_info();
 
     void open_remote_console();
     
@@ -113,6 +114,7 @@ private:
     QPointer<QProcess> ac_proc_;
     QAccumulatingConnection* server_info_updater_;
     QToolBar* tab_toolbar_;
+    QAction* copy_info_action_;
 };
 
 #endif

@@ -14,20 +14,6 @@
 
 #include "main_tab.h"
 
-namespace {
-void server_to_clipboard( const server_id& id, const tab_context& ctx ){
-
-    if( id.is_empty() )
-        return;
-    
-    QApplication::clipboard()->setText(
-        QString("/connect %1; password %2")
-            .arg( id.address() )
-            .arg( ctx.bookmarks()->get( id ).password() )
-    );
-}
-}
-
 main_tab::main_tab(const tab_settings_p& st, const tab_context& ctx, QWidget* parent)
     : QMainWindow(parent)
     , st_(st)
@@ -39,18 +25,6 @@ main_tab::main_tab(const tab_settings_p& st, const tab_context& ctx, QWidget* pa
     new QAccumulatingConnection(ctx_.serv_list().get(), SIGNAL(changed()),
                                     this, SLOT(server_list_changed()),
                                     500, QAccumulatingConnection::Periodically, this);
-    
-    qt_signal_wrapper* qsw = new qt_signal_wrapper( this,
-        boost::bind( server_to_clipboard, boost::bind( &main_tab::selected_server, this ), ctx_ ) );
-    
-    QAction* a = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy to clipboard"), this);
-
-    connect( new QShortcut( QKeySequence( QKeySequence::Copy ), this ), SIGNAL( activated() ), qsw, SLOT( activate() ) );
-    connect( a, SIGNAL( activated() ), qsw, SLOT( activate() ) );    
-    
-    add_separator_action(this);
-    addAction(a);
-    add_separator_action(this);
 }
 
 void main_tab::load_state()

@@ -153,6 +153,11 @@ main_window::main_window(QWidget *parent)
 //    anticheat_open_action_ = new QAction(QIcon(":/images/icons/zoom.png"), tr("Enable anticheat"), this);
     anticheat_configure_action_ = new QAction(QIcon("icons:configure.png"), tr("Configure anticheat"), this);
     connect( anticheat_configure_action_, SIGNAL(triggered(bool)), SLOT(show_anticheat_options()) );
+
+    copy_info_action_ = new QAction(QIcon::fromTheme("edit-copy"),
+                                    tr("Copy server info to clipboard"), this);
+    copy_info_action_->setShortcut(QKeySequence::Copy);
+    connect(copy_info_action_, SIGNAL(triggered()), SLOT(copy_info()));
     
     QMenu* m = new QMenu(this);
 //    m->addAction(anticheat_open_action_);
@@ -160,6 +165,7 @@ main_window::main_window(QWidget *parent)
     anticheat_enabled_action_->setMenu(m);
 
     ui_->toolBar->addAction(anticheat_enabled_action_);
+    ui_->toolBar->addAction(copy_info_action_);
 
     que_ = new job_queue(this);
     job_monitor* jm = new job_monitor(que_, this);
@@ -503,11 +509,12 @@ main_tab* main_window::current_tab_widget() const
 
 void main_window::update_actions()
 {
-    main_tab* cw = current_tab_widget();
+//    main_tab* cw = current_tab_widget();
     bool sel = !(selected().is_empty());
 
     ui_->actionConnect->setEnabled(sel);
     ui_->actionOpenRemoteConsole->setEnabled(sel);
+    copy_info_action_->setEnabled(sel);
 }
 
 void main_window::current_tab_changed()
@@ -709,4 +716,15 @@ void main_window::add_to_friend( const player_info& player )
     friends_.add(fr);
 }
 
+void main_window::copy_info()
+{
+    const server_id& id = selected();
+    if (id.is_empty())
+        return;
 
+    QApplication::clipboard()->setText(
+        QString("/connect %1; password %2")
+        .arg(id.address())
+        .arg(bookmarks_->get(id).password())
+    );
+}

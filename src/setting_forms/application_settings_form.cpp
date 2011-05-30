@@ -118,7 +118,8 @@ void application_settings_form::accept()
     QString country_code =  p_->ui.language_box->itemData( p_->ui.language_box->currentIndex() ).toString();
     
     if( country_code != as.country_name() )
-        QMessageBox::information(this, tr("Language preferences"), tr("Selected language will applyed after restart"));
+        QMessageBox::information(this, tr("Language preferences"), 
+                                 tr("Selected language will be applied after restart"));
     
     as.set_country_name( country_code );
     
