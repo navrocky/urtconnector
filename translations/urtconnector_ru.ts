@@ -1139,17 +1139,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/about_dialog.cpp" line="56"/>
         <source>&lt;p&gt;Developed by members of the best russian clan &lt;a href=&quot;http://www.urt-xaoc.ru&quot;&gt;=XaoC=&lt;/a&gt;.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Navrocky Vladislav (=XaoC=vlad.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:navrocky@visualdata.ru&quot;&gt;navrocky@visualdata.ru&lt;/a&gt;&lt;br&gt;Project leader, maintainer, architecture, windows and rpm packager.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;EnD3n1s&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:endenis@mail.ru&quot;&gt;endenis@mail.ru&lt;/a&gt;&lt;br&gt;Founder, base concept, first release, tester.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Samoilenko Yuri (jerry.gkb.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:kinallru@gmail.com&quot;&gt;kinallru@gmail.com&lt;/a&gt;&lt;br&gt;Code, ideas, Gentoo packager.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Konstantin J. Chernov&lt;p&gt;&lt;p class=&quot;info&quot;&gt;Fast SQLite code.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/about_dialog.cpp" line="73"/>
         <source>&lt;p class=&quot;name&quot;&gt;Tsyss Dmitry (=XaoC=Dmitro)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:dtsyss@gmail.com&quot;&gt;dtsyss@gmail.com&lt;/a&gt;&lt;br&gt;Clan leader, help on project, tester.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Stanislav Nikitin (LA|p0z1tr0n)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:pozitpoh@gmail.com&quot;&gt;pozitpoh@gmail.com&lt;/a&gt;&lt;br&gt;Contributor, help on project, tester, ideas generator.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/about_dialog.cpp" line="82"/>
         <source>&lt;p&gt;UrTConnector translated to many languages. Thanks to people who helped with translation.&lt;/p&gt;&lt;p&gt;If you want to help with translation UrTConnector to your language - &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;join&lt;/a&gt; us!&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&lt;p&gt;Developed by members of the best russian clan &lt;a href=&quot;http://www.urt-xaoc.ru&quot;&gt;=XaoC=&lt;/a&gt;.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Navrocky Vladislav (=XaoC=vlad.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:navrocky@visualdata.ru&quot;&gt;navrocky@visualdata.ru&lt;/a&gt;&lt;br&gt;Project leader, maintainer, architecture, windows and rpm packager.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;EnD3n1s&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:endenis@mail.ru&quot;&gt;endenis@mail.ru&lt;/a&gt;&lt;br&gt;Founder, base concept, first release, tester.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Samoilenko Yuri (jerry.gkb.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:kinallru@gmail.com&quot;&gt;kinallru@gmail.com&lt;/a&gt;&lt;br&gt;Code, ideas, Gentoo packager.&lt;/p&gt;</source>
@@ -1457,7 +1457,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.ui" line="30"/>
         <source>Match regular expression (&lt;a href=&quot;http://en.wikipedia.org/wiki/Regex&quot;&gt;more info&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Соответствие регулярному выражению (&lt;a href=&quot;http://en.wikipedia.org/wiki/Regex&quot;&gt;подробнее&lt;/a&gt;)</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.ui" line="43"/>
@@ -1467,7 +1467,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.cpp" line="15"/>
         <source>Not used if empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Не используется если пусто</translation>
     </message>
     <message>
         <location filename="../src/friend_list/friend_prop_dialog.cpp" line="35"/>
@@ -1661,12 +1661,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/main.cpp" line="121"/>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation>Английский</translation>
     </message>
     <message>
         <location filename="../src/main.cpp" line="122"/>
         <source>kitaiskij</source>
-        <translation type="unfinished"></translation>
+        <translation>Китайский</translation>
     </message>
     <message>
         <location filename="../src/main.cpp" line="120"/>
@@ -1814,7 +1814,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/main_window.cpp" line="137"/>
         <source>Current tab toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель инструментов текущей закладки</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="149"/>
@@ -2657,32 +2657,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="209"/>
         <source>If unchecked then sends to ftp server both screenshots and their md5 sums</source>
-        <translation type="unfinished"></translation>
+        <translation>Если не выбрано то на ftp сервер отсылаются скриншот с контрольной суммой md5</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="212"/>
         <source>Send only screenshots MD5</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсылать только контрольную сумму MD5</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="224"/>
         <source>Save to local folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранять в локальную папку</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="241"/>
         <source>Local folder to save screenshots</source>
-        <translation type="unfinished"></translation>
+        <translation>Локальная папка для сохранения скриншотов</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="248"/>
         <source>Choose local folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор локальной папки</translation>
     </message>
     <message>
         <location filename="../src/anticheat/settings_widget.ui" line="251"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
