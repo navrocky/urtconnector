@@ -5,6 +5,7 @@
 
 #include <common/qt_syslog.h>
 #include <common/server_list.h>
+#include <common/qtreesearcher.h>
 #include <jobs/job_queue.h>
 #include <geoip/geoip.h>
 
@@ -72,6 +73,8 @@ server_list_common_tab::server_list_common_tab(const QString& object_name,
     tree_->addAction(context().connect_action());
     //copy self actions to tree popup-context
     tree()->addActions( actions() );
+
+    new QTreeSearcher(tree(), this);
     
     update_caption();
 }

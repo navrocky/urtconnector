@@ -19,6 +19,7 @@
 #include <common/server_list.h>
 #include <common/player_info.h>
 #include <common/item_view_dblclick_action_link.h>
+#include <common/qtreesearcher.h>
 #include <tabs/common_item_tags.h>
 #include <tabs/visible_updater.h>
 #include <jobs/job_queue.h>
@@ -27,6 +28,7 @@
 #include "friend_list.h"
 #include "friend_prop_dialog.h"
 #include "friend_list_db_saver.h"
+#include "common/qtreesearcher.h"
 #include <tabs/status_item_delegate.h>
 #include <tabs/common_item_tags.h>
 #include <tabs/tools.h>
@@ -166,6 +168,7 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     tree_->setSortingEnabled(true);
     tree_->setAllColumnsShowFocus(true);
 //     tree_->setWordWrap(true);
+    new QTreeSearcher(tree_, this);
 
     tree_->setItemDelegate(new proxy_item_delegate(this));
 

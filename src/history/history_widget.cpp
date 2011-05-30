@@ -14,6 +14,7 @@
 #include <common/tools.h>
 #include <common/tree_smart_updater.h>
 #include <common/qaccumulatingconnection.h>
+#include <common/qtreesearcher.h>
 
 #include <tabs/status_item_delegate.h>
 #include <tabs/common_item_tags.h>
@@ -146,6 +147,8 @@ history_widget::history_widget(history_p history,
     tree_->setUniformRowHeights(true);
     tree_->setAllColumnsShowFocus(true);
     tree_->setWordWrap(true);
+
+    new QTreeSearcher(tree_, this);
 
     updater_->update_contents();
 }

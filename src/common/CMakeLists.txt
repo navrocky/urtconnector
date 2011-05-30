@@ -22,6 +22,7 @@ set(HEADERS
     item_view_dblclick_action_link.h
     tools.h
     list_caption_updater.h
+    qtreesearcher.h
 )
 
 set(MOC_HEADERS
@@ -32,6 +33,7 @@ set(MOC_HEADERS
     server_bookmark.h
     item_view_dblclick_action_link.h
     tools.h
+    qtreesearcher.h
 )
 
 set(SOURCES
@@ -48,7 +50,8 @@ set(SOURCES
     server_bookmark.cpp
     item_view_dblclick_action_link.cpp
     tools.cpp
-    list_caption_updater.cpp 
+    list_caption_updater.cpp
+    qtreesearcher.cpp
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)
