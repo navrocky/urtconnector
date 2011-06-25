@@ -459,6 +459,7 @@ src/icons/edit-clear-locationbar-rtl.png -text
 src/icons/edit-clear-offline.png -text
 src/icons/edit-clear-selected.png -text
 src/icons/edit-clear.png -text
+src/icons/edit-copy.png -text
 src/icons/edit-find.png -text
 src/icons/edit.png -text
 src/icons/friends.png -text
