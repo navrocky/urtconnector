@@ -154,7 +154,7 @@ main_window::main_window(QWidget *parent)
     anticheat_configure_action_ = new QAction(QIcon("icons:configure.png"), tr("Configure anticheat"), this);
     connect( anticheat_configure_action_, SIGNAL(triggered(bool)), SLOT(show_anticheat_options()) );
 
-    copy_info_action_ = new QAction(QIcon::fromTheme("edit-copy"),
+    copy_info_action_ = new QAction(QIcon("icons:edit-copy.png"),
                                     tr("Copy server info to clipboard"), this);
     copy_info_action_->setShortcut(QKeySequence::Copy);
     connect(copy_info_action_, SIGNAL(triggered()), SLOT(copy_info()));
