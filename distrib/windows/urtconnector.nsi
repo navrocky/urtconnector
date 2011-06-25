@@ -91,6 +91,8 @@ Section "UrT Connector"
   !ifdef ICON_FILE
     File "${DIR_IMAGES}\${ICON_FILE}"
   !endif
+  SetOutPath "$INSTDIR\imageformats"
+  File "qjpeg4.dll"
   CreateDirectory "$SMPROGRAMS\${START_MENU_ENTRY}"
   
   !ifdef ICON_FILE
