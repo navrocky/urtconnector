@@ -431,7 +431,7 @@ void server_info_manager::regenerate_friends(const server_info& si)
         assert( pinfo != plist.end() );//FIXME remove on developing completiion ?
 
         QWidget* debug_ptr = wrap_widget( create_tool_button(
-            QIcon::fromTheme("bookmarks", QIcon("icons:bookmarks.png")),
+            QIcon("icons:bookmarks.png"),
             bind( &server_info_manager::add_to_friend, this, *pinfo ) ), cursor );
         
         LOG_HARD<<"wraping player" << pinfo->nick_name().toStdString();
@@ -439,7 +439,7 @@ void server_info_manager::regenerate_friends(const server_info& si)
         
         if( is_admin() )
             wrap_widget( create_tool_button(
-                QIcon::fromTheme("edit-delete", QIcon("icons:remove.png")),
+                QIcon("icons:remove.png"),
                 bind( &server_info_manager::kick_player, this, *pinfo ) ), cursor );
 
         plist.erase( pinfo );

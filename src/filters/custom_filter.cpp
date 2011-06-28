@@ -59,7 +59,7 @@ QWidget* custom_filter_class::create_quick_opts_widget(filter_p f, QWidget* pare
     lay->setContentsMargins(left,0,right,0);
     
     QToolButton* edit = new QToolButton( frame );
-    edit->setIcon( QIcon::fromTheme("configure", QIcon("icons:configure.png") ) );
+    edit->setIcon( QIcon("icons:configure.png") );
     edit->setAutoRaise(true);
 
     custom_filter_editor* editor = new custom_filter_editor( filter, edit );
