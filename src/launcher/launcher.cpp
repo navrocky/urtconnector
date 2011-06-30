@@ -177,14 +177,14 @@ void launcher::proc_error(QProcess::ProcessError error)
 QString launcher::launch_string(bool separate_x)
 {
     app_settings as;
-    return launch_string(as.use_adv_cmd_line(), as.adv_cmd_line(), 
+    return launch_string(as.use_adv_cmd_line(), as.adv_cmd_line(),
                          as.binary_path(), separate_x);
 }
 
 
-QString launcher::launch_string ( bool use_adv_cmd_line, 
-                                  const QString& adv_cmd_line, 
-                                  const QString& binary_path, 
+QString launcher::launch_string ( bool use_adv_cmd_line,
+                                  const QString& adv_cmd_line,
+                                  const QString& binary_path,
                                   bool separate_x )
 {
     QString res;
@@ -215,14 +215,14 @@ QString launcher::launch_string ( bool use_adv_cmd_line,
         res += QString(" +set fs_game q3ut4");
     }
 
-    if (mumble_overlay_)
-        res = mumble_overlay_bin_ + res;
-
 #if defined(Q_OS_UNIX)
+    if (mumble_overlay_)
+        res = mumble_overlay_bin_ + " " + res;
+
     if ( separate_x )
         res = get_separate_x_launch_str(res);
 #endif
-    
+
     return res;
 }
 

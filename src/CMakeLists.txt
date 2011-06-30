@@ -23,6 +23,8 @@ find_package( Boost 1.39.0 REQUIRED COMPONENTS
 )
 include_directories(${Boost_INCLUDE_DIRS})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+
 find_package(Qt4)
 set(QT_USE_QTXML true)
 set(QT_USE_QTNETWORK true)

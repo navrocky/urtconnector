@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
-    <height>350</height>
+    <width>404</width>
+    <height>417</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -178,10 +178,40 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="mumble_overlay_check">
-     <property name="text">
-      <string>Use mumble-overlay</string>
+    <widget class="QGroupBox" name="mumble_overlay_group">
+     <property name="title">
+      <string>Use mumble overlay</string>
      </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Binary</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLineEdit" name="mumble_bin_edit"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="select_mumble_bin_button">
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../images.qrc">
+            <normaloff>:/icons/icons/choose-file.png</normaloff>:/icons/icons/choose-file.png</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>

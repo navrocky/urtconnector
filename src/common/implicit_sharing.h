@@ -1,4 +1,5 @@
-#pragma once
+#ifndef IMPLICIT_SHARING_H
+#define IMPLICIT_SHARING_H
 
 #include <boost/make_shared.hpp>
 #include <boost/shared_ptr.hpp>
@@ -36,3 +37,5 @@ public:
 private:
     boost::shared_ptr<Body> body_;
 };
+
+#endif

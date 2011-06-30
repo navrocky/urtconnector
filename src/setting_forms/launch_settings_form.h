@@ -19,6 +19,7 @@ public slots:
 
 private slots:
     void choose_binary();
+    void choose_mumble_bin();
     void insert_file_path();
     void update_launch_string();
     void x_check();

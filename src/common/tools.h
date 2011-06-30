@@ -35,7 +35,7 @@ enum Gear{
     Spas = 4,
     Pistols = 8,
     Automatic =16,
-    Negev = 32,
+    Negev = 32
 };
 
 static const Q3Color Q3DefaultColor = Q3White;
