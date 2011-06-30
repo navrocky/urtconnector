@@ -1,6 +1,6 @@
 !define APP_SHORT_NAME "urtconnector"
 !define PRODUCT_NAME "UrTConnector"
-!define PRODUCT_VERSION "0.7.0"
+!define PRODUCT_VERSION "0.7.1"
 !define ICON_FILE "urtconnector.ico"
 !define USE_COMPRESS
 
