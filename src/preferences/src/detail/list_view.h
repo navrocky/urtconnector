@@ -58,8 +58,6 @@ struct list_view : base_view {
     virtual void insert_widget( preferences_item item )
     {
         preferences_widget* cw = item.widget();
-        ui.header->setText( cw->header() );
-        ui.icon->setPixmap( cw->icon().pixmap( ui.icon->size() ) );
         item.set_index( ui.pages->addWidget(cw) );
         ui.pages->setMinimumSize( ui.pages->minimumSizeHint().expandedTo( cw->sizeHint() ) += QSize(5,0) );
     }
