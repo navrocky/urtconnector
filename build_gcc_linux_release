@@ -1,0 +1,6 @@
+#!/bin/bash
+mkdir release
+pushd release
+cmake ..
+make
+popd

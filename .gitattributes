@@ -1,1 +1,10 @@
 * text=auto !eol
+/CMakeLists.txt -text
+/build_gcc_linux_debug -text
+/build_gcc_linux_release -text
+/distclean -text
+src/CMakeLists.txt -text
+src/main.cpp -text
+src/main_form.cpp -text
+src/main_form.h -text
+src/main_form.ui -text
