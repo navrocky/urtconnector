@@ -6,26 +6,32 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>535</width>
-    <height>403</height>
+    <width>550</width>
+    <height>68</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>main_form</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>160</y>
-     <width>93</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Click me</string>
-   </property>
-  </widget>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLineEdit" name="edit1"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="edit2"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="button">
+     <property name="text">
+      <string>Click me</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
