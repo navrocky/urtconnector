@@ -1,7 +1,8 @@
 #include <algorithm>
 #include <vector>
-#include <stdexcept>
+//#include <stdexcept>
 
+#include <common/exception.h>
 #include <boost/bind.hpp>
 #include <boost/assign/std/map.hpp>
 #include <boost/assign/list_of.hpp>
@@ -14,6 +15,9 @@
 #include <QDockWidget>
 #include <QStyle>
 #include <QTextDocument>
+#include <QFile>
+#include <QTextStream>
+#include <QApplication>
 
 #include "tools.h"
 
@@ -265,5 +269,25 @@ QString icon(Gear g)
     return ( icons.find(g) != icons.end() )
         ? icons.find(g)->second
         : "Unknown";
+}
+
+void load_app_style_sheet(const QString& file_name)
+{
+    if (file_name.isEmpty())
+    {
+        qApp->setStyleSheet(QString());
+        return;
+    }
+    QFile f(file_name);
+    if (!f.exists())
+        throw qexception(QObject::tr("File \"%1\" does not exists").arg(f.fileName()));
+
+    if (!f.open(QFile::ReadOnly))
+        throw qexception(QObject::tr("Cannot open file \"%1\" to read").arg(f.fileName()));
+
+    QTextStream ts(&f);
+    QString s = ts.readAll();
+
+    qApp->setStyleSheet(s);
 }
 

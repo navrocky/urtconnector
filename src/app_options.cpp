@@ -9,6 +9,11 @@
 #include "app_options.h"
 #include "pointers.h"
 
+namespace
+{
+const QString c_style_sheet_file = "style_sheet_file";
+}
+
 
 bool app_settings::start_hidden() const
 {
@@ -192,6 +197,22 @@ void app_settings::set_mumble_overlay_bin(const QString& val)
 {
     part()->setValue("mumble_overlay_bin", val);
 }
+
+QString app_settings::style_sheet_file() const
+{
+    return part()->value(c_style_sheet_file, "").toString();
+}
+
+void app_settings::reset_style_sheet_file()
+{
+    part()->remove(c_style_sheet_file);
+}
+
+void app_settings::set_style_sheet_file(const QString& val)
+{
+    part()->setValue(c_style_sheet_file, val);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // clip_settings

@@ -252,6 +252,16 @@ int main(int argc, char *argv[])
         sqlite_database db(fn);
         init_database();
 
+        // apply style sheets
+        try
+        {
+            app_settings as;
+            load_app_style_sheet(as.style_sheet_file());
+        }
+        catch(...)
+        {
+        }
+
         main_window w;
 
         // detect christmas and activate this mode if any

@@ -3,8 +3,12 @@
 #include <QLibraryInfo>
 #include <QTranslator>
 #include <QMessageBox>
+#include <QFile>
+#include <QTextStream>
 
 #include <common/scoped_tools.h>
+#include <common/exception.h>
+#include <common/tools.h>
 #include "app_options.h"
 #include "qstat_options.h"
 
@@ -63,6 +67,12 @@ application_settings_form::application_settings_form(QWidget* parent)
     set_icon(QIcon("icons:configure.png"));
     set_header(tr("Application settings"));
 
+    connect(p_->ui.style_sheet_refresh_button, SIGNAL(clicked()), SLOT(apply_style_sheet()));
+    QToolButton* tb = p_->ui.style_sheet_file_edit->addButton();
+    tb->setIcon(QIcon("icons:choose-file.png"));
+    tb->setToolTip(tr("Choose a style sheet file name"));
+    connect(tb, SIGNAL(clicked()), SLOT(select_css_file()));
+
     connect(p_->ui.hide_mainwindow_check, SIGNAL(stateChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.holiday_check, SIGNAL(stateChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.language_box, SIGNAL(currentIndexChanged(int)), this, SLOT(int_changed()));
@@ -71,6 +81,7 @@ application_settings_form::application_settings_form(QWidget* parent)
     connect(p_->ui.clip_host_spin, SIGNAL(valueChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.clip_port_spin, SIGNAL(valueChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.clip_password_spin, SIGNAL(valueChanged(int)), this, SLOT(int_changed()));
+    connect(p_->ui.style_sheet_file_edit, SIGNAL(textChanged(const QString&)), this, SLOT(int_changed()));
 }
 
 void application_settings_form::int_changed()
@@ -105,6 +116,7 @@ void application_settings_form::update_preferences()
     p_->ui.clip_host_spin->setValue(cs.host());
     p_->ui.clip_port_spin->setValue(cs.port());
     p_->ui.clip_password_spin->setValue(cs.password());
+    p_->ui.style_sheet_file_edit->setText(as.style_sheet_file());
 }
 
 void application_settings_form::accept()
@@ -128,6 +140,8 @@ void application_settings_form::accept()
     cs.set_host(p_->ui.clip_host_spin->value());
     cs.set_port(p_->ui.clip_port_spin->value());
     cs.set_password(p_->ui.clip_password_spin->value());
+    as.set_style_sheet_file(p_->ui.style_sheet_file_edit->text());
+    apply_style_sheet();
 }
 
 void application_settings_form::reject()
@@ -137,7 +151,24 @@ void application_settings_form::reject()
 
 void application_settings_form::reset_defaults()
 {
-    clip_settings().reset_regexp();
-
+    app_settings as;
+    clip_settings cs;
+    as.reset_style_sheet_file();
+    cs.reset_regexp();
     update_preferences();
+    apply_style_sheet();
+}
+
+void application_settings_form::apply_style_sheet()
+{
+    QString fn = p_->ui.style_sheet_file_edit->text();
+    load_app_style_sheet(fn);
+}
+
+void application_settings_form::select_css_file()
+{
+    QString fn = QFileDialog::getOpenFileName(this, tr("Choose a style sheet file"),
+                                              QString(), tr("CSS Files (*.css)(*.css);;All files(*)"));
+    if (!fn.isEmpty())
+        p_->ui.style_sheet_file_edit->setText(fn);
 }

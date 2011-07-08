@@ -17,6 +17,8 @@ private slots:
     virtual void accept();
     virtual void reject();
     virtual void reset_defaults();
+    void apply_style_sheet();
+    void select_css_file();
 
     void int_changed();
 

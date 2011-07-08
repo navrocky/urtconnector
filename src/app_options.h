@@ -83,6 +83,11 @@ public:
     void set_use_mumble_overlay(bool);
     QString mumble_overlay_bin() const;
     void set_mumble_overlay_bin(const QString&);
+
+    // application style sheet
+    void reset_style_sheet_file();
+    QString style_sheet_file() const;
+    void set_style_sheet_file(const QString&);
 };
 
 class clip_settings: public settings_uid_provider<clip_settings>

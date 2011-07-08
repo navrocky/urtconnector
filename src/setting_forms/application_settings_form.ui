@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>409</width>
-    <height>216</height>
+    <height>316</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
@@ -122,6 +122,49 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="style_sheet_gb">
+     <property name="title">
+      <string>Style sheet</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>File</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QButtonLineEdit" name="style_sheet_file_edit"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="style_sheet_refresh_button">
+          <property name="toolTip">
+           <string>Reread and apply style sheet from selected file</string>
+          </property>
+          <property name="text">
+           <string>Refresh</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="style_sheet_info_label">
+        <property name="text">
+         <string>You can learn more about the style sheets &lt;a href=&quot;http://doc.qt.nokia.com/latest/stylesheet.html&quot;&gt;here&lt;/a&gt;</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -136,6 +179,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QButtonLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">common/qbuttonlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../images.qrc"/>
  </resources>

@@ -126,6 +126,7 @@ private:
     std::vector<function> functions_;
 };
 
-
+// loads and apply style sheet
+void load_app_style_sheet(const QString& file_name);
 
 #endif
