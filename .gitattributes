@@ -618,3 +618,4 @@ translations/CMakeLists.txt -text
 translations/urtconnector_ru.ts -text
 /update_translations -text
 /version -text
+/versionfix.sh -text
