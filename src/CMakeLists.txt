@@ -18,6 +18,10 @@ include(${QT_USE_FILE})
 
 set(HEADERS
     main_form.h
+    exchange/exchange.hpp
+    blowfish/blowfish.hpp
+    blowfish/pi.h
+    rand/rand_gen.hpp
 )
 
 set(MOC_HEADERS
@@ -27,6 +31,9 @@ set(MOC_HEADERS
 set(SOURCES
     main_form.cpp
     main.cpp
+    exchange/exchange.cpp
+    blowfish/blowfish.cpp
+    rand/rand_gen.cpp
 )
 
 set(IFACES

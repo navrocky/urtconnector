@@ -4,7 +4,15 @@
 /build_gcc_linux_release -text
 /distclean -text
 src/CMakeLists.txt -text
+src/blowfish/blowfish.cpp -text
+src/blowfish/blowfish.hpp -text
+src/blowfish/pi.h -text
+src/exchange/exchange.cpp -text
+src/exchange/exchange.hpp -text
 src/main.cpp -text
 src/main_form.cpp -text
 src/main_form.h -text
 src/main_form.ui -text
+src/rand/LICENSE -text
+src/rand/rand_gen.cpp -text
+src/rand/rand_gen.hpp -text

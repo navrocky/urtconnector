@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <QWidget>
+#include <QHttp>
+#include <QBuffer>
 
 class Ui_main_form;
 
