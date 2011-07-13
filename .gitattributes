@@ -38,7 +38,13 @@ doc/class_model.xmi -text
 doc/filters.xmi -text
 doc/qstat_out.txt -text
 doc/settings_ideas.txt -text
+doc/style_sheets/background.png -text
 doc/style_sheets/sample.css -text
+doc/style_sheets/urt-iface-2.jpg -text
+doc/style_sheets/urt-iface-3.jpg -text
+doc/style_sheets/urt-iface-4.jpg -text
+doc/style_sheets/urt-iface-5.jpg -text
+doc/style_sheets/urt-iface-6.jpg -text
 doc/style_sheets/urt-iface.jpg -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text

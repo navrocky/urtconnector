@@ -1,4 +1,74 @@
 QWidget{
-    background-color: rgb(0, 75, 130);
+    /*background-color: rgb(0, 75, 130);*/
+    alternate-background-color: rgb(0, 90, 200);
     color: white;
+}
+QToolButton{
+/*  border: 2px solid #8f8f91; */
+     border-radius: 10px;
+}
+QMainWindow#MainWindowClass{
+  border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch;
+}
+
+QDialog{
+  border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch;
+}
+
+QListView {
+  background-color: rgba(0, 0, 0, 150);
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
+}
+QTreeView {
+  background-color: rgba(0, 0, 0, 150);
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
+}
+
+QLineEdit {
+  background-color: rgba(0, 0, 0, 200);
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
+  
+}
+
+QGroupBox{
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
+  padding-top: 20%;
+  background-color: rgba(0, 0, 0, 150);
+  
+}
+
+QGroupBox::title {
+     subcontrol-origin: margin;
+     subcontrol-position: top center; /* position at the top center */
+  border-top-width: 1px;
+  border-style: solid;
+  border-color: white;
+  padding: 0 0;
+     /*background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                       stop: 0 #FFOECE, stop: 1 #FFFFFF);*/
+ }
+ 
+QPushButton {
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 100);
+  padding: 5 5;
+}
+
+QPushButton:hover {
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
+  background-color: rgba(0, 0, 255, 100);
+  padding: 5 5;
 }
