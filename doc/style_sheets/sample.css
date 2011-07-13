@@ -5,70 +5,192 @@ QWidget{
 }
 QToolButton{
 /*  border: 2px solid #8f8f91; */
-     border-radius: 10px;
+    border-radius: 10px;
 }
 QMainWindow#MainWindowClass{
-  border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch;
+/*   border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch; */
+    border-image: url(/home/jerry/devel/urtconnector/trunk/doc/style_sheets/background.png) stretch stretch;
 }
 
 QDialog{
-  border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch;
+/*     border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch; */
+    border-image: url(/home/jerry/devel/urtconnector/trunk/doc/style_sheets/background.png) stretch stretch;
 }
 
 QListView {
-  background-color: rgba(0, 0, 0, 150);
-  border-width: 1px;
-  border-style: solid;
-  border-color: white;
+    background-color: rgba(0, 0, 0, 150);
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 3px;
 }
 QTreeView {
-  background-color: rgba(0, 0, 0, 150);
-  border-width: 1px;
-  border-style: solid;
-  border-color: white;
+    background-color: rgba(0, 0, 0, 150);
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 3px;
 }
 
 QLineEdit {
-  background-color: rgba(0, 0, 0, 200);
-  border-width: 1px;
-  border-style: solid;
-  border-color: white;
-  
+    background-color: rgba(0, 0, 0, 200);
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;  
+    border-radius: 3px;
 }
 
 QGroupBox{
-  border-width: 1px;
-  border-style: solid;
-  border-color: white;
-  padding-top: 20%;
-  background-color: rgba(0, 0, 0, 150);
-  
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 3px;
+    padding-top: 20%;
+    background-color: rgba(0, 0, 0, 150);  
 }
 
 QGroupBox::title {
-     subcontrol-origin: margin;
-     subcontrol-position: top center; /* position at the top center */
-  border-top-width: 1px;
-  border-style: solid;
-  border-color: white;
-  padding: 0 0;
-     /*background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                       stop: 0 #FFOECE, stop: 1 #FFFFFF);*/
- }
+    subcontrol-origin: margin;
+    subcontrol-position: top center; /* position at the top center */
+    border-top-width: 1px;
+    border-style: solid;
+    border-color: white;
+    padding: 0 0;
+    
+}
  
 QPushButton {
-  border-width: 1px;
-  border-style: solid;
-  border-color: white;
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, 100);
-  padding: 5 5;
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 100);
+    padding: 5 5;
 }
 
 QPushButton:hover {
-  border-width: 1px;
-  border-style: solid;
-  border-color: white;
-  background-color: rgba(0, 0, 255, 100);
-  padding: 5 5;
+    background-color: rgba(0, 0, 255, 100);
 }
+
+
+
+
+/* Scroll bar */
+
+QScrollBar {
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+    background-color: rgba(0, 0, 0, 100);
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+    background: none;
+}
+
+QScrollBar:vertical {
+    width: 15;
+    margin: 20px 0px  20px 0;
+    
+    border-width: 0px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+}
+
+QScrollBar:horizontal {
+    height: 15;
+    margin: 0px 20px 0px 20px;
+    
+    border-width: 0px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+}
+
+QScrollBar::handle {
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+    
+    background-color: blue;
+}
+
+
+QScrollBar::sub-line:vertical {
+    border-width: 1px;
+    border-bottom-width: 0px;
+    
+    height: 19;
+    
+    border-style: solid;
+    border-color: white;
+    background-color: rgba(0, 0, 0, 100);
+
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-line:vertical {
+    border-width: 1px;
+    border-top-width: 0px;
+
+    height: 19px;
+    
+    border-style: solid;
+    border-color: white;
+    background-color: rgba(0, 0, 0, 100);
+
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal {
+    border-width: 1px;
+    border-right-width: 0px;
+    
+    width: 19;
+    
+    border-style: solid;
+    border-color: white;
+    background-color: rgba(0, 0, 0, 100);
+
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-line:horizontal {
+    border-width: 1px;
+    border-left-width: 0px;
+
+    width: 19px;
+    
+    border-style: solid;
+    border-color: white;
+    background-color: rgba(0, 0, 0, 100);
+
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    border-color: white;
+    width: 5px;
+    height: 10px;
+    background: white;
+    
+    image: url(leftarrow.png);
+}
+
+
+QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+    border-color: white;
+    width: 10px;
+    height: 5px;
+    background: white;
+    
+    image: url(leftarrow.png);
+}
+
+
+
+ 
