@@ -15,7 +15,10 @@
 #include <QDockWidget>
 #include <QStyle>
 #include <QTextDocument>
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
+
 #include <QTextStream>
 #include <QApplication>
 
@@ -285,6 +288,8 @@ void load_app_style_sheet(const QString& file_name)
     if (!f.open(QFile::ReadOnly))
         throw qexception(QObject::tr("Cannot open file \"%1\" to read").arg(f.fileName()));
 
+    QDir::setSearchPaths ( "skin", QStringList( QFileInfo( file_name ).absoluteDir().absolutePath() ) );
+    
     QTextStream ts(&f);
     QString s = ts.readAll();
 

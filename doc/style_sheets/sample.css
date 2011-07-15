@@ -9,12 +9,12 @@ QToolButton{
 }
 QMainWindow#MainWindowClass{
 /*   border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch; */
-    border-image: url(/home/jerry/devel/urtconnector/trunk/doc/style_sheets/background.png) stretch stretch;
+    border-image: url(skin:background.png) stretch stretch;
 }
 
 QDialog{
 /*     border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch; */
-    border-image: url(/home/jerry/devel/urtconnector/trunk/doc/style_sheets/background.png) stretch stretch;
+    border-image: url(skin:background.png) stretch stretch;
 }
 
 QListView {
