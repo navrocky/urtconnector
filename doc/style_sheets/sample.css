@@ -1,6 +1,6 @@
 QWidget{
     /*background-color: rgb(0, 75, 130);*/
-    alternate-background-color: rgb(0, 90, 200);
+    alternate-background-color: rgba(0, 90, 200, 60);
     color: white;
 }
 QToolButton{
@@ -27,6 +27,10 @@ QListView, QLineEdit, QTreeView, QTextEdit, QGroupBox, QPushButton {
 
 QGroupBox{
     padding-top: 20%;
+    
+    border-image: url(skin:tab.png) 0 0 0 0 repeat;
+    background: url(skin:corner.png) no-repeat right bottom;
+    
 }
 
 QGroupBox::title {
@@ -87,7 +91,7 @@ QScrollBar::handle {
     border-style: solid;
     border-color: white;
     
-    background-color: blue;
+    background-color: rgba(0, 0, 255, 150);
 }
 
 
@@ -148,25 +152,16 @@ QScrollBar::add-line:horizontal {
 }
 
 
-QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+QScrollBar::down-arrow, up-arrow, left-arrow, right-arrow {
     border-color: white;
-    width: 5px;
-    height: 10px;
-    background: white;
-    
-    image: url(leftarrow.png);
+    width: 15px;
+    height: 15px;
 }
 
-
-QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
-    border-color: white;
-    width: 10px;
-    height: 5px;
-    background: white;
-    
-    image: url(leftarrow.png);
-}
-
+QScrollBar::down-arrow { image: url(skin:downarrow.png); }
+QScrollBar::up-arrow { image: url(skin:uparrow.png); }
+QScrollBar::left-arrow { image: url(skin:leftarrow.png); }
+QScrollBar::right-arrow { image: url(skin:rightarrow.png); }
 
 
  

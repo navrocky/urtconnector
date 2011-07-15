@@ -39,7 +39,13 @@ doc/filters.xmi -text
 doc/qstat_out.txt -text
 doc/settings_ideas.txt -text
 doc/style_sheets/background.png -text
+doc/style_sheets/corner.png -text
+doc/style_sheets/downarrow.png -text
+doc/style_sheets/leftarrow.png -text
+doc/style_sheets/rightarrow.png -text
 doc/style_sheets/sample.css -text
+doc/style_sheets/tab.png -text
+doc/style_sheets/uparrow.png -text
 doc/style_sheets/urt-iface-2.jpg -text
 doc/style_sheets/urt-iface-3.jpg -text
 doc/style_sheets/urt-iface-4.jpg -text
