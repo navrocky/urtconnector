@@ -17,42 +17,22 @@ QDialog{
     border-image: url(skin:background.png) stretch stretch;
 }
 
-QListView {
+QListView, QLineEdit, QTreeView, QTextEdit, QGroupBox, QPushButton {
     background-color: rgba(0, 0, 0, 150);
     border-width: 1px;
     border-style: solid;
     border-color: white;
-    border-radius: 3px;
-}
-QTreeView {
-    background-color: rgba(0, 0, 0, 150);
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
-    border-radius: 3px;
-}
-
-QLineEdit {
-    background-color: rgba(0, 0, 0, 200);
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;  
     border-radius: 3px;
 }
 
 QGroupBox{
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
-    border-radius: 3px;
     padding-top: 20%;
-    background-color: rgba(0, 0, 0, 150);  
 }
 
 QGroupBox::title {
     subcontrol-origin: margin;
     subcontrol-position: top center; /* position at the top center */
-    border-top-width: 1px;
+    border-width: 1px;
     border-style: solid;
     border-color: white;
     padding: 0 0;
@@ -60,10 +40,6 @@ QGroupBox::title {
 }
  
 QPushButton {
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
-    border-radius: 3px;
     background-color: rgba(0, 0, 0, 100);
     padding: 5 5;
 }
