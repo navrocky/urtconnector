@@ -1,11 +1,11 @@
 QWidget{
-    /*background-color: rgb(0, 75, 130);*/
+/*     background-color: rgb(0, 75, 130); */
     alternate-background-color: rgba(0, 90, 200, 60);
     color: white;
 }
 QToolButton{
 /*  border: 2px solid #8f8f91; */
-    border-radius: 10px;
+/*     border-radius: 10px; */
 }
 QMainWindow#MainWindowClass{
 /*   border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch; */
@@ -17,12 +17,13 @@ QDialog{
     border-image: url(skin:background.png) stretch stretch;
 }
 
-QListView, QLineEdit, QTreeView, QTextEdit, QGroupBox, QPushButton {
+QListView, QLineEdit, QTreeView, QTextEdit, QGroupBox, QPushButton, QMenu, QSpinBox, QComboBox {
     background-color: rgba(0, 0, 0, 150);
     border-width: 1px;
     border-style: solid;
     border-color: white;
     border-radius: 3px;
+    padding: 2 2;
 }
 
 QGroupBox{
@@ -162,6 +163,54 @@ QScrollBar::down-arrow { image: url(skin:downarrow.png); }
 QScrollBar::up-arrow { image: url(skin:uparrow.png); }
 QScrollBar::left-arrow { image: url(skin:leftarrow.png); }
 QScrollBar::right-arrow { image: url(skin:rightarrow.png); }
+
+
+ 
+QTabWidget::pane {
+   top: -1;
+}
+
+
+QTabBar::tab {
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+
+    padding: 2 2;
+    
+    background-color: rgba(0, 0, 0, 100);
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background-color: rgba(0, 0, 255, 100);
+}
+
+
+QMenu {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+QMenu::item:selected { 
+    background-color: rgba(0, 90, 255, 100);
+}
+
+QMenuBar {
+    background-color: transparent;
+}
+
+QMenuBar::item {
+    padding: 1px 4px;
+}
+
+QMenuBar::item:selected, QMenuBar::item:pressed {
+    background-color: rgba(0, 90, 255, 100);
+} 
+
+server_info_manager{
+    background-color: rgba(0, 0, 0, 150);
+}
+
 
 
  
