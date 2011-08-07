@@ -12,7 +12,7 @@
 #include <QTimer>
 #include <QUdpSocket>
 
-#include <cl/syslog//syslog.h>
+#include <cl/syslog/syslog.h>
 #include <common/server_id.h>
 #include <common/player_info.h>
 #include <common/tools.h>

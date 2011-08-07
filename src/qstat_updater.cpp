@@ -1,9 +1,13 @@
+#include "qstat_updater.h"
+
+#include <cassert>
+#include <QTimer>
+
 #include <common/qt_syslog.h>
 #include <common/exception.h>
 #include <common/server_id.h>
 #include <common/server_list.h>
 
-#include "qstat_updater.h"
 
 SYSLOG_MODULE(qstat_updater)
 
@@ -41,12 +45,29 @@ qstat_updater::qstat_updater(server_list_p list, const geoip& gi)
 , serv_list_(list)
 , count_(0)
 , progress_(0)
-, canceled_(false)
 , clear_offline_(false)
 {
-    connect(&proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
-    connect(&proc_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
-    connect(&proc_, SIGNAL(readyReadStandardOutput()), SLOT(ready_read_output()));
+}
+
+void qstat_updater::qprocess_needed()
+{
+    if (proc_)
+        return;
+    proc_ = new QProcess(this);
+    connect(proc_, SIGNAL(error(QProcess::ProcessError)), SLOT(error(QProcess::ProcessError)));
+    connect(proc_, SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(finished(int,QProcess::ExitStatus)));
+    connect(proc_, SIGNAL(readyReadStandardOutput()), SLOT(ready_read_output()));
+}
+
+qstat_updater::~qstat_updater()
+{
+    if (proc_)
+    {
+        disconnect(proc_, SIGNAL(error(QProcess::ProcessError)), this, SLOT(error(QProcess::ProcessError)));
+        disconnect(proc_, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
+        disconnect(proc_, SIGNAL(readyReadStandardOutput()), this, SLOT(ready_read_output()));
+        proc_->kill();
+    }
 }
 
 void qstat_updater::clear()
@@ -64,7 +85,10 @@ void qstat_updater::set_clear_offline(bool val)
 
 void qstat_updater::refresh_all()
 {
-    if (proc_.state() != QProcess::NotRunning) return;
+    assert(!proc_);
+    if (proc_)
+        return;
+
     clear();
 
     if (clear_offline_)
@@ -77,6 +101,8 @@ void qstat_updater::refresh_all()
     }
     serv_list_->state_changed();
 
+    qprocess_needed();
+
     QStringList sl;
 #ifdef QSTAT_FAKE
     sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
@@ -85,13 +111,16 @@ void qstat_updater::refresh_all()
     qstat_settings qs;
     sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";// << "-retry" << "10";
     sl << "-q3m" << qs.master_server();
-    proc_.start(qs.qstat_path(), sl);
+    proc_->start(qs.qstat_path(), sl);
 #endif
 }
 
 void qstat_updater::refresh_selected(const server_id_list& list)
 {
-    if (proc_.state() != QProcess::NotRunning) return;
+    assert(!proc_);
+    if (proc_)
+        return;
+
     clear();
 
     count_ = list.size();
@@ -111,6 +140,8 @@ void qstat_updater::refresh_selected(const server_id_list& list)
 
     QStringList sl;
 
+    qprocess_needed();
+
 #ifdef QSTAT_FAKE
     //sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
     sl << "-c" << "sleep 1; cat ../doc/bug1.txt | awk '{print $0;}'";
@@ -121,7 +152,7 @@ void qstat_updater::refresh_selected(const server_id_list& list)
     for (server_id_list::const_iterator it = list.begin(); it != list.end(); it++)
         sl << "-q3s" << it->address();
 
-    proc_.start(qstat_settings().qstat_path(), sl);
+    proc_->start(qstat_settings().qstat_path(), sl);
 #endif
 }
 
@@ -153,16 +184,20 @@ void qstat_updater::do_refresh_stopped()
 
 void qstat_updater::refresh_cancel()
 {
-    if (proc_.state() == QProcess::NotRunning) return;
-    canceled_ = true;
-    proc_.kill();
+    if (!proc_)
+        return;
+    disconnect(proc_, SIGNAL(error(QProcess::ProcessError)), this, SLOT(error(QProcess::ProcessError)));
+    disconnect(proc_, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
+    disconnect(proc_, SIGNAL(readyReadStandardOutput()), this, SLOT(ready_read_output()));
+    proc_->kill();
+    delete proc_;
+    do_refresh_stopped();
     clear();
 }
 
 void qstat_updater::error(QProcess::ProcessError error)
 {
-    do_refresh_stopped();
-    if (canceled_) return;
+    QTimer::singleShot(0, this, SLOT(refresh_cancel()));
     switch (error)
     {
         case QProcess::FailedToStart:
@@ -184,23 +219,30 @@ void qstat_updater::error(QProcess::ProcessError error)
 void qstat_updater::finished(int, QProcess::ExitStatus)
 {
     LOG_HARD << "QStat output: %1", qstat_output_;
-    do_refresh_stopped();
+    QTimer::singleShot(0, this, SLOT(refresh_cancel()));
 }
 
 void qstat_updater::ready_read_output()
 {
-    QByteArray a = proc_.readAll();
-    qstat_output_.append(a);
-    rd_.addData(a);
-
-    while (!rd_.atEnd() && !canceled_)
+    try
     {
-        if (rd_.readNext() != QXmlStreamReader::Invalid)
-            process_xml();
-        else
-        if (rd_.hasError() && (rd_.error() != QXmlStreamReader::PrematureEndOfDocumentError)
-            && !canceled_)
-            throw qexception(rd_.errorString());
+        QByteArray a = proc_->readAll();
+        qstat_output_.append(a);
+        rd_.addData(a);
+
+        while (!rd_.atEnd())
+        {
+            if (rd_.readNext() != QXmlStreamReader::Invalid)
+                process_xml();
+            else
+            if (rd_.hasError() && (rd_.error() != QXmlStreamReader::PrematureEndOfDocumentError))
+                throw qexception(rd_.errorString());
+        }
+    }
+    catch(...)
+    {
+        QTimer::singleShot(0, this, SLOT(refresh_cancel()));
+        throw;
     }
 }
 

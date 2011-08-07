@@ -120,17 +120,11 @@ void filtered_tab::update_toolbar_filter()
 void filtered_tab::save_state()
 {
     main_tab::save_state();
-    
-    filter_edit_widget* few = reinterpret_cast<filter_edit_widget*>( filter_widget_->widget() );
-    fs_.save_state( few->saveState(1) );
 }
 
 void filtered_tab::load_state()
 {
     main_tab::load_state();
-    
-    filter_edit_widget* few = reinterpret_cast<filter_edit_widget*>( filter_widget_->widget() );
-    few->restoreState( fs_.load_state(), 1 );
     
     restoreDockWidget(filter_widget_);
 }

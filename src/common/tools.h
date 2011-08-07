@@ -16,6 +16,7 @@ class QAction;
 class QDockWidget;
 class QLabel;
 class QIcon;
+class QComboBox;
 
 
 enum Q3Color {
@@ -75,6 +76,7 @@ QColor choose_for_background( Qt::GlobalColor standard, const QColor& background
 QString common_substring_from_begin(const QString& s1, const QString& s2);
 QString common_substring_from_end(const QString& s1, const QString& s2);
 
+int combo_find_item(QComboBox*, const QVariant&);
 
 ///Is \p gear allowed in this \p mask
 inline bool is_allowed( Gear gear, GearMask mask ){

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QProcess>
+#include <QPointer>
 #include <QXmlStreamReader>
 
 #include "qstat_options.h"
@@ -16,10 +17,10 @@ class qstat_updater : public QObject
     Q_OBJECT
 public:
     qstat_updater( server_list_p list, const geoip& gi );
+    ~qstat_updater();
 
     void refresh_all();
     void refresh_selected(const server_id_list& list);
-    void refresh_cancel();
 
     /* total count servers to refresh */
     int get_count() const {return count_;}
@@ -33,6 +34,9 @@ public:
     bool clear_offline() const {return clear_offline_;}
     void set_clear_offline(bool);
 
+public slots:
+    void refresh_cancel();
+
 signals:
     void refresh_stopped();
 
@@ -45,8 +49,9 @@ private:
     void process_xml();
     void prepare_info();
     void do_refresh_stopped();
+    void qprocess_needed();
 
-    QProcess proc_;
+    QPointer<QProcess> proc_;
     QXmlStreamReader rd_;
 
     enum state_t

@@ -1,9 +1,6 @@
 #ifndef _JOB_H
 #define	_JOB_H
 
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
-
 #include <QObject>
 #include <QString>
 #include <QPointer>
@@ -49,6 +46,8 @@ public:
     /*! Starts local event loop and waits to job finish */
     void wait_for_finish();
 
+
+    // deprectaed
     void start_and_wait_for_finish();
 
 signals:
@@ -62,8 +61,4 @@ private:
     QPointer<QEventLoop> event_loop_;
 };
 
-typedef boost::shared_ptr<job_t> job_p;
-typedef boost::weak_ptr<job_t> job_weak_p;
-
 #endif	/* _JOB_H */
-

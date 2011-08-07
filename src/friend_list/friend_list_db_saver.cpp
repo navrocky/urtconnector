@@ -47,14 +47,6 @@ friend_list_db_saver::friend_list_db_saver(friend_list* list, QObject* parent)
     connect(list, SIGNAL(removed(QList<QString>)), SLOT(list_removed(QList<QString>)));
 }
 
-void friend_list_db_saver::remove_rec(const QString& nick_name)
-{
-    database* db = database::instance();
-    db->query(QString("DELETE FROM friends WHERE nick_name='%1';")
-        .arg(DB_ENC(nick_name)));
-}
-
-
 void friend_list_db_saver::list_added(const QString& nick_name)
 {
     list_changed(nick_name, nick_name);
@@ -65,7 +57,9 @@ void friend_list_db_saver::list_changed(const QString& old_nick_name, const QStr
     const friend_record& fr = list_->get_by_nick_name(nick_name);
     
     // removing old record if any
-    remove_rec(old_nick_name);
+    QList<QString> sl;
+    sl << old_nick_name;
+    list_removed(sl);
     
     // inserting new record
     database* db = database::instance();
@@ -78,9 +72,12 @@ void friend_list_db_saver::list_changed(const QString& old_nick_name, const QStr
 
 void friend_list_db_saver::list_removed(const QList< QString >& nicks)
 {
+    QString query;
     foreach (const QString& nn, nicks)
     {
-        remove_rec(nn);
+        query += QString("DELETE FROM friends WHERE nick_name='%1';").arg(DB_ENC(nn));
     }
+    database* db = database::instance();
+    db->query(query);
 }
 

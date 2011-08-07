@@ -59,6 +59,8 @@ add_subdirectory(launcher)
 add_subdirectory(friend_list)
 add_subdirectory(tabs)
 add_subdirectory(setting_forms)
+add_subdirectory(updater)
+add_subdirectory(tracking)
 
 set(HEADERS
     about_dialog.h
@@ -170,6 +172,8 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     tabs
     friend_list
     setting_forms
+    updater
+    tracking
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)

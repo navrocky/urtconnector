@@ -18,6 +18,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QComboBox>
+#include <qnamespace.h>
 
 #include <QTextStream>
 #include <QApplication>
@@ -296,3 +298,12 @@ void load_app_style_sheet(const QString& file_name)
     qApp->setStyleSheet(s);
 }
 
+int combo_find_item(QComboBox* c, const QVariant& v)
+{
+    for (int i = 0; i < c->count(); i++)
+    {
+        if (c->itemData(i, Qt::UserRole) == v)
+            return i;
+    }
+    return -1;
+}

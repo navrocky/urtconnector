@@ -1,14 +1,13 @@
 #ifndef _JOB_QUEUE_H
 #define	_JOB_QUEUE_H
 
-#include <vector>
-
+#include <QList>
 #include <QObject>
-#include <QTimer>
 
 #include "job.h"
+#include "pointers.h"
 
-typedef std::vector<job_p> jobs_t;
+typedef QList<job_p> jobs_t;
 
 class job_queue : public QObject
 {
@@ -17,27 +16,20 @@ public:
     job_queue(QObject* parent = 0);
 
     // add job to queue
-    void add_job(job_p j);
+    void add_job(job_p j, bool start = true);
 
     // get job list
     const jobs_t& get_jobs() const {return jobs_;}
 
-    // current job
-    job_weak_p get_current_job();
-
 signals:
-    void job_added(job_weak_p);
+    void changed();
 
 private slots:
     void job_state_changed(job_t::state_t);
     void clear_stopped();
 
 private:
-    void try_execute();
-    void request_clear_stopped();
-
     jobs_t jobs_;
-    QTimer clear_timer_;
 };
 
 #endif

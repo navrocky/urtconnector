@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>799</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
@@ -197,6 +197,15 @@
    <addaction name="actionOpenRemoteConsole"/>
   </widget>
   <widget class="QStatusBar" name="status_bar"/>
+  <widget class="QDockWidget" name="tasks_tracking_dock">
+   <property name="windowTitle">
+    <string>Tasks tracking</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
   <action name="actionQuit">
    <property name="icon">
     <iconset resource="images.qrc">

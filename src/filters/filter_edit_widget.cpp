@@ -174,11 +174,9 @@ void filter_item_widget::update_contents()
 // filter_edit_widget
 
 filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
-: QMainWindow(parent)
+: QWidget(parent)
 , filters_(filters)
 {
-    setWindowFlags(windowFlags() & (~Qt::Window));
-
     setWindowTitle(tr("Filter options"));
     setWindowIcon(QIcon("icons:view-filter.png"));
 
@@ -193,18 +191,30 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     connect(select_toolbar_filter_action_, SIGNAL(triggered()), SLOT(select_toolbar_filter()));
     connect(delete_filter_action_, SIGNAL(triggered()), SLOT(delete_filter()));
 
-    QToolBar* tb = new QToolBar(tr("Filter toolbar"), this);
-    tb->setObjectName("filter_toolbar");
-    tb->addAction(add_new_filter_action_);
-    tb->addAction(select_toolbar_filter_action_);
-    tb->addSeparator();
-    tb->addAction(delete_filter_action_);
-    tb->setMovable(false);
-    tb->setFloatable(false);
-    addToolBar(Qt::TopToolBarArea, tb);
+    QVBoxLayout* l = new QVBoxLayout(this);
+    l->setContentsMargins(0, 0, 0, 0);
+
+    QWidget* w = new QWidget(this);
+    l->addWidget(w);
+    QHBoxLayout* lay = new QHBoxLayout(w);
+    lay->setContentsMargins(0, 0, 0, 0);
+    QToolButton* tb = new QToolButton(w);
+    tb->setAutoRaise(true);
+    tb->setDefaultAction(add_new_filter_action_);
+    lay->addWidget(tb);
+    tb = new QToolButton(w);
+    tb->setAutoRaise(true);
+    tb->setDefaultAction(delete_filter_action_);
+    lay->addWidget(tb);
+    lay->addStretch();
+    tb = new QToolButton(w);
+    snap_button_ = tb;
+    tb->setAutoRaise(true);
+    tb->setDefaultAction(select_toolbar_filter_action_);
+    lay->addWidget(tb);
 
     tree_ = new QTreeWidget(this);
-    setCentralWidget(tree_);
+    l->addWidget(tree_);
     tree_->header()->setVisible(false);
     tree_->setAlternatingRowColors(true);
 
@@ -222,6 +232,17 @@ filter_edit_widget::filter_edit_widget(filter_list_p filters, QWidget* parent)
     resize(400, 250);
     update_contents();
     update_actions();
+}
+
+bool filter_edit_widget::show_snap() const
+{
+    return select_toolbar_filter_action_->isVisible();
+}
+
+void filter_edit_widget::set_show_snap(bool val)
+{
+    select_toolbar_filter_action_->setVisible(val);
+    snap_button_->setVisible(val);
 }
 
 void filter_edit_widget::item_changed()

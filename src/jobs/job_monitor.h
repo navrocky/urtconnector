@@ -2,17 +2,16 @@
 #define	_JOB_MONITOR_H
 
 #include <memory>
-#include <vector>
 
-#include <boost/shared_ptr.hpp>
-
+#include <QList>
 #include <QWidget>
 #include <QFrame>
 
 #include "job_queue.h"
+#include "pointers.h"
 
 class QTimer;
-class QLayout;
+class QBoxLayout;
 
 class Ui_job_monitor;
 class Ui_job_item;
@@ -22,20 +21,18 @@ class job_item : public QWidget
     Q_OBJECT
 public:
     job_item(job_weak_p job, QWidget* parent = 0);
-    virtual ~job_item();
 
-    const job_weak_p& job() const {return job_;}
+    job_p job() const {return job_.lock();}
+
+    void update_contents();
 
 private slots:
     void cancel();
 
 private:
-    void update();
     std::auto_ptr<Ui_job_item> ui_;
     job_weak_p job_;
 };
-
-typedef boost::shared_ptr<job_item> job_item_p;
 
 class job_que_popup : public QFrame
 {
@@ -45,36 +42,40 @@ public:
 
     void setVisible(bool);
 
+    job_p current_job();
+
+    void show();
+    void hide();
+    void show_temporarily();
+
 public slots:
     void correct_position();
-    void update();
+    void update_contents();
+    void hide_by_timer();
 
 private:
+
     job_item* find_item(job_p j);
 
-    typedef std::vector<job_item_p> items_t;
+    typedef QList<job_item*> items_t;
     items_t items_;
     job_queue* que_;
-    QLayout* lay_;
+    QBoxLayout* lay_;
     QTimer* update_timer_;
+    QTimer* hide_timer_;
 };
 
 class job_monitor : public QWidget
 {
     Q_OBJECT
 public:
-    job_monitor(job_queue* que, QWidget* parent = 0);
-    virtual ~job_monitor();
+    job_monitor(job_queue* que, QWidget* parent);
 
 private slots:
-    void update();
+    void update_contents();
     void cancel();
     void show();
-    void job_added(job_weak_p);
-    void show_popup();
-    void hide_popup();
-    void show_popup_temp();
-
+    void job_que_changed();
 
 private:
     bool has_queued_jobs();
@@ -82,7 +83,6 @@ private:
     std::auto_ptr<Ui_job_monitor> ui_;
     job_queue* que_;
     QTimer* update_timer_;
-    QTimer* popup_timer_;
     job_weak_p cur_job_;
     job_que_popup* popup_;
 };

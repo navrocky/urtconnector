@@ -52,6 +52,8 @@ doc/style_sheets/urt-iface-4.jpg -text
 doc/style_sheets/urt-iface-5.jpg -text
 doc/style_sheets/urt-iface-6.jpg -text
 doc/style_sheets/urt-iface.jpg -text
+doc/task_edit_panel_concept.ui -text
+doc/tracking_rus.odt -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text
 src/CMakeLists.txt -text
@@ -110,6 +112,7 @@ src/cl/syslog/thread_info.h -text
 src/clipper.cpp -text
 src/clipper.h -text
 src/common/CMakeLists.txt -text
+src/common/class_list.h -text
 src/common/exception.cpp -text
 src/common/exception.h -text
 src/common/iconned_dock_style.cpp -text
@@ -121,6 +124,8 @@ src/common/list_caption_updater.cpp -text
 src/common/list_caption_updater.h -text
 src/common/main_tab_widget.cpp -text
 src/common/main_tab_widget.h -text
+src/common/notificator.cpp -text
+src/common/notificator.h -text
 src/common/player_info.cpp -text
 src/common/player_info.h -text
 src/common/qaccumulatingconnection.cpp -text
@@ -134,6 +139,7 @@ src/common/qtreesearcher.h -text
 src/common/scoped_tools.h -text
 src/common/server_bookmark.cpp -text
 src/common/server_bookmark.h -text
+src/common/server_connect_iface.h -text
 src/common/server_id.cpp -text
 src/common/server_id.h -text
 src/common/server_info.cpp -text
@@ -463,6 +469,7 @@ src/icons/christmas/status-none.png -text
 src/icons/christmas/status-offline.png -text
 src/icons/christmas/status-online.png -text
 src/icons/christmas/status-update.png -text
+src/icons/chronometer.png -text
 src/icons/close.png -text
 src/icons/configure.png -text
 src/icons/dialog-ok-apply.png -text
@@ -484,6 +491,8 @@ src/icons/history.png -text
 src/icons/insert-link.png -text
 src/icons/launch.png -text
 src/icons/logo.png -text
+src/icons/media-playback-pause.png -text
+src/icons/media-playback-start.png -text
 src/icons/pin.png -text
 src/icons/pistol.png -text
 src/icons/remove.png -text
@@ -519,6 +528,7 @@ src/jobs/job_monitor.h -text
 src/jobs/job_monitor.ui -text
 src/jobs/job_queue.cpp -text
 src/jobs/job_queue.h -text
+src/jobs/pointers.h -text
 src/launcher/CMakeLists.txt -text
 src/launcher/launcher.cpp -text
 src/launcher/launcher.h -text

@@ -13,6 +13,7 @@
 #include <launcher/launcher.h>
 #include <common/server_list.h>
 #include <common/server_bookmark.h>
+#include <common/server_connect_iface.h>
 #include <anticheat/anticheat.h>
 #include <jobs/job_queue.h>
 #include <geoip/geoip.h>
@@ -20,6 +21,8 @@
 #include <history/history_widget.h>
 #include <friend_list/friend_list_widget.h>
 #include <friend_list/friend_list.h>
+#include <updater/update_dispatcher.h>
+#include <tracking/pointers.h>
 #include "clipper.h"
 
 class QTimer;
@@ -35,7 +38,13 @@ class bookmark_tab;
 
 class QAccumulatingConnection;
 
-class main_window : public QMainWindow
+namespace tracking
+{
+class manager;
+class db_saver;
+}
+
+class main_window : public QMainWindow, public server_connect_iface
 {
     Q_OBJECT
 public:
@@ -81,7 +90,10 @@ private:
     void update_geoip_database();
 
     void check_anticheat_prereq() const;
-    void connect_to_server(const server_id& id, const QString& player_name, const QString& password);
+    void connect_to_server(const server_id& id, const QString& player_name,
+        const QString& password);
+    void connect_to_server(const server_id& id, const QString& player_name,
+        const QString& password, bool check_before_connect);
 
     server_id selected() const;
     main_tab* current_tab_widget() const;
@@ -115,6 +127,11 @@ private:
     QAccumulatingConnection* server_info_updater_;
     QToolBar* tab_toolbar_;
     QAction* copy_info_action_;
+    update_dispatcher* update_dispatcher_;
+    tracking::manager* track_man_;
+    tracking::condition_factory_p track_cond_factory_;
+    tracking::action_factory_p track_acts_factory_;
+    tracking::db_saver* track_db_saver_;
 };
 
 #endif

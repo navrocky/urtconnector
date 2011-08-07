@@ -1,7 +1,6 @@
 #ifndef FILTER_EDIT_WIDGET_H
 #define	FILTER_EDIT_WIDGET_H
 
-#include <QMainWindow>
 #include <QWidget>
 #include <QDialog>
 
@@ -66,13 +65,16 @@ private:
 };
 
 
-class filter_edit_widget : public QMainWindow
+class filter_edit_widget : public QWidget
 {
     Q_OBJECT
 public:
     filter_edit_widget(filter_list_p filters, QWidget* parent = NULL);
 
     void update_contents();
+
+    bool show_snap() const;
+    void set_show_snap(bool);
 
 private slots:
     void add_new_filter();
@@ -92,6 +94,7 @@ private:
     QAction* add_new_filter_action_;
     QAction* delete_filter_action_;
     QAction* select_toolbar_filter_action_;
+    QToolButton* snap_button_;
 };
 
 #endif	/* FILTER_EDIT_WIDGET_H */

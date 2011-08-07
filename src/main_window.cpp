@@ -39,6 +39,14 @@
 #include <rcon/rcon.h>
 #include <friend_list/friend_prop_dialog.h>
 
+#include <tracking/tasks_panel.h>
+#include <tracking/db_saver.h>
+#include <tracking/manager.h>
+#include <tracking/context.h>
+#include <tracking/pointers.h>
+#include <tracking/conditions/reg_conditions.h>
+#include <tracking/actions/reg_actions.h>
+
 #include <filters/filter_factory.h>
 #include <filters/reg_filters.h>
 #include <filters/filter_edit_widget.h>
@@ -76,6 +84,7 @@
 #include <tabs/server_list_tab.h>
 
 #include "main_window.h"
+#include "updater/update_task.h"
 
 SYSLOG_MODULE(main_window)
 
@@ -208,6 +217,30 @@ main_window::main_window(QWidget *parent)
     tab_widget_->add_widget(friends_list_);
     connect(friends_list_, SIGNAL(selection_changed()), SLOT(selection_changed()));
 
+    ////////////////////////////////////////////////////////////////////////////
+    // tracking subsystem
+    {
+        using namespace tracking;
+        update_dispatcher_ = new update_dispatcher(all_sl_, gi_, que_, this);
+
+        context_p ctx(new context_t(all_sl_, update_dispatcher_, tray_, this));
+        track_cond_factory_ = reg_conditions(ctx);
+        track_acts_factory_ = reg_actions(ctx);
+
+        track_man_ = new manager(this);
+        track_db_saver_ = new db_saver(track_man_, track_cond_factory_,
+                                       track_acts_factory_, this);
+
+        tasks_panel* tp = new tasks_panel(track_man_, track_cond_factory_, track_acts_factory_, this);
+        ui_->tasks_tracking_dock->setWidget(tp);
+    }
+
+//    update_task* task = new update_task(this);
+//    task->set_interval(20*1000);
+//    update_dispatcher_->add_task(task);
+
+    ////////////////////////////////////////////////////////////////////////////
+
     connect(tab_widget_, SIGNAL(currentChanged(int)), SLOT(current_tab_changed()));
     connect(ui_->actionOptions, SIGNAL(triggered()), SLOT(show_options()));
     connect(ui_->actionQuickConnect, SIGNAL(triggered()), SLOT(quick_connect()));
@@ -238,10 +271,14 @@ main_window::main_window(QWidget *parent)
     setVisible( !(app_settings().start_hidden()) );
 
     current_tab_changed();
+    
+    // launch tracking
+    track_man_->start();
 }
 
 main_window::~main_window()
 {
+    delete track_db_saver_;
 }
 
 void main_window::clipboard_info_obtained()
@@ -372,7 +409,17 @@ server_info_p main_window::selected_info() const
         return all_sl_->get(id);
 }
 
-void main_window::connect_to_server(const server_id& id, const QString& player_name, const QString& password)
+void main_window::connect_to_server(const server_id& id,
+                                    const QString& player_name,
+                                    const QString& password)
+{
+    connect_to_server(id, player_name, password, app_settings().update_before_connect());
+}
+
+void main_window::connect_to_server(const server_id& id,
+                                    const QString& player_name,
+                                    const QString& password,
+                                    bool check_before_connect)
 {
     if (launcher_->is_started() || ac_proc_)
         throw qexception(tr("Game is launched already"));
@@ -382,7 +429,7 @@ void main_window::connect_to_server(const server_id& id, const QString& player_n
 
     app_settings as;
     // update server info
-    if ( as.update_before_connect() )
+    if ( check_before_connect )
     {
         server_id_list idl;
         idl.push_back(id);
@@ -673,6 +720,8 @@ void main_window::open_remote_console()
 
 void main_window::launcher_started()
 {
+    LOG_DEBUG << "Game started";
+    update_dispatcher_->set_game_started(true);
     if (!anticheat_enabled_action_->isChecked())
         return;
 
@@ -684,6 +733,8 @@ void main_window::launcher_started()
 
 void main_window::launcher_stopped()
 {
+    LOG_DEBUG << "Game stopped";
+    update_dispatcher_->set_game_started(false);
     delete anticheat_;
 }
 

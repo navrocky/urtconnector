@@ -17,8 +17,6 @@ private slots:
     void list_changed(const QString& old_nick_name, const QString& nick_name);
     
 private:
-    void remove_rec(const QString& nick_name);
-
     friend_list* list_;
 };
 

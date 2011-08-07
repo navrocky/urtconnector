@@ -23,6 +23,8 @@ set(HEADERS
     tools.h
     list_caption_updater.h
     qtreesearcher.h
+    class_list.h
+    notificator.h
 )
 
 set(MOC_HEADERS
@@ -34,6 +36,7 @@ set(MOC_HEADERS
     item_view_dblclick_action_link.h
     tools.h
     qtreesearcher.h
+    notificator.h
 )
 
 set(SOURCES
@@ -52,6 +55,7 @@ set(SOURCES
     tools.cpp
     list_caption_updater.cpp
     qtreesearcher.cpp
+    notificator.cpp
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)
