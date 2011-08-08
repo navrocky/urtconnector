@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>541</width>
-    <height>350</height>
+    <height>309</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -86,6 +86,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QTreeWidget" name="actions_list">
+         <property name="verticalScrollMode">
+          <enum>QAbstractItemView::ScrollPerPixel</enum>
+         </property>
          <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
@@ -116,6 +119,9 @@
             <iconset resource="../images.qrc">
              <normaloff>:/icons/icons/add.png</normaloff>:/icons/icons/add.png</iconset>
            </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -126,6 +132,47 @@
            <property name="icon">
             <iconset resource="../images.qrc">
              <normaloff>:/icons/icons/remove.png</normaloff>:/icons/icons/remove.png</iconset>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButton">
+           <property name="icon">
+            <iconset resource="../images.qrc">
+             <normaloff>:/icons/icons/go-up.png</normaloff>:/icons/icons/go-up.png</iconset>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButton_2">
+           <property name="icon">
+            <iconset resource="../images.qrc">
+             <normaloff>:/icons/icons/go-down.png</normaloff>:/icons/icons/go-down.png</iconset>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -175,6 +222,24 @@
    </property>
    <property name="text">
     <string>Delete selected action</string>
+   </property>
+  </action>
+  <action name="move_up_action">
+   <property name="icon">
+    <iconset resource="../images.qrc">
+     <normaloff>:/icons/icons/go-up.png</normaloff>:/icons/icons/go-up.png</iconset>
+   </property>
+   <property name="text">
+    <string>Move up</string>
+   </property>
+  </action>
+  <action name="move_down_action">
+   <property name="icon">
+    <iconset resource="../images.qrc">
+     <normaloff>:/icons/icons/go-down.png</normaloff>:/icons/icons/go-down.png</iconset>
+   </property>
+   <property name="text">
+    <string>Move down</string>
    </property>
   </action>
  </widget>

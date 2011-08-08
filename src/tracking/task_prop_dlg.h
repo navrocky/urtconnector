@@ -48,6 +48,7 @@ private:
     QTreeWidgetItem* item_;
     QWidget* new_action_panel_;
     QWidget* action_panel_holder_;
+//    QToolButton* expand_btn_;
     QLabel* header_icon_;
     QLabel* header_label_;
     QToolButton* delete_btn_;

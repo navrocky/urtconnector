@@ -1,8 +1,9 @@
 #include "show_message_action.h"
 
 #include <QHBoxLayout>
-#include <QLineEdit>
+#include <QTextEdit>
 #include <QSystemTrayIcon>
+#include <QMessageBox>
 
 #include <common/notificator.h>
 
@@ -33,6 +34,7 @@ action_p show_message_action_class::create()
 
 show_message_action::show_message_action(const action_class_p& c)
 : action_t(c)
+, show_mode_(m_messagebox)
 {
 }
 
@@ -40,9 +42,16 @@ void show_message_action::execute()
 {
     QString s = message_;
     replace_msg_tags(s, get_class()->context()->data);
-    get_class()->context()->tray->showMessage(tr("Tracking"), s, QSystemTrayIcon::Information, 3000);
 
-//    Notificator::showMessage(QIcon("icons:help-about.png"), "", s);
+    switch (show_mode_)
+    {
+        case m_messagebox:
+            QMessageBox::information(0, tr("Title here"), s, QMessageBox::Ok);
+            break;
+        case m_tooltip:
+            get_class()->context()->tray->showMessage(tr("Tracking"), s, QSystemTrayIcon::Information, 3000);
+            break;
+    }
 }
 
 QWidget* show_message_action::create_options_widget(QWidget* parent)
@@ -80,15 +89,16 @@ show_message_option_widget::show_message_option_widget(show_message_action* acti
 {
     QHBoxLayout* l = new QHBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
-    msg_edit_ = new QLineEdit(this);
+    msg_edit_ = new QTextEdit(this);
     connect(msg_edit_, SIGNAL(textChanged(const QString&)), SLOT(text_changed()));
     l->addWidget(msg_edit_);
     msg_edit_->setText(action_->message());
+    msg_edit_->setFixedHeight(100);
 }
 
 void show_message_option_widget::text_changed()
 {
-    action_->set_message(msg_edit_->text());
+    action_->set_message(msg_edit_->toPlainText());
 }
 
 

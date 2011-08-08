@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/icons">
+    <file>icons/go-down.png</file>
     <file>icons/media-playback-start.png</file>
     <file>icons/utilities-terminal.png</file>
     <file>icons/edit-clear-selected.png</file>
