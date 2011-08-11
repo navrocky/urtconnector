@@ -7,6 +7,7 @@
 #include "../action.h"
 
 class QTextEdit;
+class QLineEdit;
 
 namespace tracking
 {
@@ -22,26 +23,18 @@ class show_message_action : public action_t
 {
     Q_OBJECT
 public:
-    enum show_mode_t
-    {
-        m_tooltip,
-        m_messagebox
-    };
-
     show_message_action(const action_class_p& c);
 
     const QString& message() const {return message_;}
     void set_message(const QString&);
 
-    void execute();
+    bool execute();
     QWidget* create_options_widget(QWidget* parent);
 
     virtual void save(settings_t& s);
     virtual void load(const settings_t& s);
 
-
 private:
-    show_mode_t show_mode_;
     QString message_;
 };
 
@@ -55,7 +48,6 @@ private slots:
     void text_changed();
 
 private:
-    QLineEdit* title_edit_;
     QTextEdit* msg_edit_;
     QPointer<show_message_action> action_;
 };

@@ -29,13 +29,7 @@ public:
     server_id server() const {return server_;}
     void set_server(const server_id& id);
 
-    bool query_before_connect() const {return query_before_connect_;}
-    void set_query_before_connect(bool);
-
-    const QString& message() const {return msg_;}
-    void set_message(const QString& id);
-
-    void execute();
+    bool execute();
     QWidget* create_options_widget(QWidget* parent);
 
     virtual void save(settings_t& s);
@@ -43,8 +37,6 @@ public:
 
 private:
     server_id server_;
-    bool query_before_connect_;
-    QString msg_;
     bool block_execute_;
 };
 
@@ -56,13 +48,9 @@ public:
 
 private slots:
     void server_changed();
-    void query_checked();
-    void msg_changed();
 
 private:
     QLineEdit* server_edit_;
-    QLineEdit* msg_edit_;
-    QCheckBox* query_check_;
     QPointer<connect_action> action_;
 };
 

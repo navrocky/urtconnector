@@ -148,7 +148,7 @@ void action_widget::delete_action()
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 // task_prop_dlg
 
 task_prop_dlg::task_prop_dlg(task_t* t,
@@ -172,17 +172,22 @@ task_prop_dlg::task_prop_dlg(task_t* t,
 
     ui_->add_action_btn->setDefaultAction(ui_->create_new_action);
     ui_->del_action_btn->setDefaultAction(ui_->delete_selected_action);
+    ui_->move_up_btn->setDefaultAction(ui_->move_up_action);
+    ui_->move_down_btn->setDefaultAction(ui_->move_down_action);
 
     connect(ui_->cond_combo, SIGNAL(currentIndexChanged(int)), SLOT(cond_combo_changed()));
     connect(ui_->create_new_action, SIGNAL(triggered()), SLOT(add_action()));
     connect(ui_->delete_selected_action, SIGNAL(triggered()), SLOT(delete_selected_action()));
+    connect(ui_->move_up_action, SIGNAL(triggered()), SLOT(move_up()));
+    connect(ui_->move_down_action, SIGNAL(triggered()), SLOT(move_down()));
     connect(ui_->actions_list, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)), SLOT(update_actions()));
     
     QVBoxLayout* lay = new QVBoxLayout(ui_->cond_holder_widget);
     lay->setContentsMargins(0, 0, 0, 0);
 
     QList<QAction*> al;
-    al << ui_->create_new_action << ui_->delete_selected_action;
+    al << ui_->create_new_action << ui_->delete_selected_action
+            << ui_->move_up_action << ui_->move_down_action;
     ui_->actions_list->addActions(al);
     ui_->actions_list->setContextMenuPolicy(Qt::ActionsContextMenu);
     update_contents();
@@ -194,6 +199,14 @@ void task_prop_dlg::accept()
 {
     QDialog::accept();
     task_->set_caption(ui_->name_edit->text());
+}
+
+void task_prop_dlg::assign_action_to_item(QTreeWidgetItem* item, const action_p& a)
+{
+    action_widget* aw = new action_widget(item, acts_, a, this);
+    ui_->actions_list->setItemWidget(item, 0, aw);
+    connect(aw, SIGNAL(action_canceled()), SLOT(action_canceled()));
+    connect(aw, SIGNAL(action_created()), SLOT(new_action_created()));
 }
 
 void task_prop_dlg::update_contents()
@@ -237,10 +250,7 @@ void task_prop_dlg::update_contents()
     foreach (const action_p& a, task_->actions())
     {
         QTreeWidgetItem* item = new QTreeWidgetItem(tree);
-        action_widget* aw = new action_widget(item, acts_, a, this);
-        tree->setItemWidget(item, 0, aw);
-        connect(aw, SIGNAL(action_canceled()), SLOT(action_canceled()));
-        connect(aw, SIGNAL(action_created()), SLOT(new_action_created()));
+        assign_action_to_item(item, a);
     }
 
     update_actions();
@@ -319,9 +329,13 @@ action_p task_prop_dlg::get_action_from_item(QTreeWidgetItem* item)
 
 void task_prop_dlg::update_actions()
 {
-    QTreeWidgetItem* item = ui_->actions_list->currentItem();
+    QTreeWidget* list = ui_->actions_list;
+    QTreeWidgetItem* item = list->currentItem();
     action_p a = get_action_from_item(item);
     ui_->del_action_btn->setEnabled(a);
+    int i = list->indexOfTopLevelItem(item);
+    ui_->move_up_action->setEnabled(item && i > 0);
+    ui_->move_down_action->setEnabled(item && list->topLevelItemCount() > 0 && i < list->topLevelItemCount() - 1);
 }
 
 void task_prop_dlg::delete_selected_action()
@@ -339,5 +353,43 @@ void task_prop_dlg::mode_combo_changed()
     task_->set_operation_mode(task_t::operation_mode_t(ui_->mode_combo->itemData(
         ui_->mode_combo->currentIndex()).toInt()));
 }
+
+void task_prop_dlg::move(int delta)
+{
+    QTreeWidget* list = ui_->actions_list;
+    QTreeWidgetItem* item = list->currentItem();
+    if (!item)
+        return;
+    action_p a = get_action_from_item(item);
+
+    int i = list->indexOfTopLevelItem(item);
+    int newpos = i + delta;
+    if (newpos < 0)
+        newpos = 0;
+    if (newpos >= list->topLevelItemCount())
+        newpos = list->topLevelItemCount() - 1;
+
+    if (i == newpos)
+        return;
+    
+    item = list->takeTopLevelItem(i);
+    list->insertTopLevelItem(newpos, item);
+    task_->move_action(a, delta);
+    assign_action_to_item(item, a);
+    list->setCurrentItem(item);
+    item->setSelected(true);
+    update_actions();
+}
+
+void task_prop_dlg::move_up()
+{
+    move(-1);
+}
+
+void task_prop_dlg::move_down()
+{
+    move(1);
+}
+
 
 }

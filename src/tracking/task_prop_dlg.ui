@@ -155,7 +155,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QToolButton" name="toolButton">
+          <widget class="QToolButton" name="move_up_btn">
            <property name="icon">
             <iconset resource="../images.qrc">
              <normaloff>:/icons/icons/go-up.png</normaloff>:/icons/icons/go-up.png</iconset>
@@ -166,7 +166,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="toolButton_2">
+          <widget class="QToolButton" name="move_down_btn">
            <property name="icon">
             <iconset resource="../images.qrc">
              <normaloff>:/icons/icons/go-down.png</normaloff>:/icons/icons/go-down.png</iconset>

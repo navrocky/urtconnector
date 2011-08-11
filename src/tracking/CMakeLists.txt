@@ -19,6 +19,7 @@ set(HEADERS
     conditions/server_filter_condition.h
 
     actions/reg_actions.h
+    actions/show_query_action.h
     actions/show_message_action.h
     actions/connect_action.h
 )
@@ -35,6 +36,7 @@ set(MOC_HEADERS
     conditions/timer_condition.h
     conditions/server_filter_condition.h
 
+    actions/show_query_action.h
     actions/show_message_action.h
     actions/connect_action.h
 )
@@ -55,6 +57,7 @@ set(SOURCES
     conditions/server_filter_condition.cpp
 
     actions/reg_actions.cpp
+    actions/show_query_action.cpp
     actions/show_message_action.cpp
     actions/connect_action.cpp
 )

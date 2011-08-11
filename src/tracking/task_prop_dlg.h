@@ -81,9 +81,13 @@ private slots:
     void delete_action();
     void update_actions();
     void delete_selected_action();
+    void move_up();
+    void move_down();
 
 private:
+    void move(int delta);
     void update_contents();
+    void assign_action_to_item(QTreeWidgetItem*, const action_p&);
     action_p get_action_from_item(QTreeWidgetItem*);
 
     std::auto_ptr<Ui_task_prop_dlg> ui_;

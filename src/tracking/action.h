@@ -49,7 +49,7 @@ public:
 
     const action_class_p& get_class() const {return class_;}
 
-    virtual void execute() = 0;
+    virtual bool execute() = 0;
 
     virtual void save(settings_t& s) {}
     virtual void load(const settings_t& s) {}

@@ -41,6 +41,7 @@ public:
 
     void add_action(const action_p&);
     void remove_action(const action_p&);
+    int move_action(const action_p&, int delta);
 
     const actions_t& actions() {return actions_;}
 
@@ -64,6 +65,7 @@ private:
     actions_t actions_;
     operation_mode_t op_mode_;
     bool block_changed_;
+    bool block_execute_;
 };
 
 }

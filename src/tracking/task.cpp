@@ -13,6 +13,7 @@ task_t::task_t(QObject* parent)
 : QObject(parent)
 , op_mode_(om_multi_trigger)
 , block_changed_(false)
+, block_execute_(false)
 {
 }
 
@@ -59,8 +60,23 @@ void task_t::remove_action(const action_p& a)
     do_changed();
 }
 
+int task_t::move_action(const action_p& a, int delta)
+{
+    int i = actions_.indexOf(a);
+    int newpos = i + delta;
+    if (newpos < 0)
+        newpos = 0;
+    if (newpos > actions_.size() - 1)
+        newpos = actions_.size() - 1;
+    actions_.move(i, newpos);
+    return newpos - i;
+}
+
 void task_t::condition_triggered()
 {
+    if (block_execute_)
+        return;
+    SCOPE_COCK_FLAG(block_execute_);
     switch (op_mode_)
     {
         case om_multi_trigger:
@@ -76,7 +92,8 @@ void task_t::condition_triggered()
 
     foreach (const action_p& a, actions_)
     {
-        a->execute();
+        if (!a->execute())
+            return;
     }
 }
 

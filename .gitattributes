@@ -496,6 +496,7 @@ src/icons/media-playback-pause.png -text
 src/icons/media-playback-start.png -text
 src/icons/pin.png -text
 src/icons/pistol.png -text
+src/icons/question.png -text
 src/icons/remove.png -text
 src/icons/status-none.png -text
 src/icons/status-offline.png -text
@@ -645,6 +646,8 @@ src/tracking/actions/reg_actions.cpp -text
 src/tracking/actions/reg_actions.h -text
 src/tracking/actions/show_message_action.cpp -text
 src/tracking/actions/show_message_action.h -text
+src/tracking/actions/show_query_action.cpp -text
+src/tracking/actions/show_query_action.h -text
 src/tracking/common.h -text
 src/tracking/condition.cpp -text
 src/tracking/condition.h -text
