@@ -44,12 +44,13 @@ private slots:
     void error( QProcess::ProcessError error );
     void finished( int exitCode, QProcess::ExitStatus exit_status );
     void ready_read_output();
+    void refresh_finish();
 
 private:
     void process_xml();
     void prepare_info();
-    void do_refresh_stopped();
     void qprocess_needed();
+    void refresh_stop(bool clear_offline);
 
     QPointer<QProcess> proc_;
     QXmlStreamReader rd_;

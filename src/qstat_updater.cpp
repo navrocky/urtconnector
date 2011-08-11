@@ -156,10 +156,18 @@ void qstat_updater::refresh_selected(const server_id_list& list)
 #endif
 }
 
-void qstat_updater::do_refresh_stopped()
+void qstat_updater::refresh_stop(bool clear_offline)
 {
+    if (!proc_)
+        return;
+    disconnect(proc_, SIGNAL(error(QProcess::ProcessError)), this, SLOT(error(QProcess::ProcessError)));
+    disconnect(proc_, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
+    disconnect(proc_, SIGNAL(readyReadStandardOutput()), this, SLOT(ready_read_output()));
+    proc_->kill();
+    delete proc_;
+
     LOG_DEBUG << "Refresh stopped";
-    
+
     // clear updating state
     const server_info_list& il = serv_list_->list();
     for (server_info_list::const_iterator it = il.begin(); it != il.end(); it++)
@@ -168,7 +176,7 @@ void qstat_updater::do_refresh_stopped()
     }
     serv_list_->state_changed();
 
-    if (clear_offline_)
+    if (clear_offline)
     {
         LOG_DEBUG << "Removing offline";
         server_id_list l;
@@ -178,21 +186,15 @@ void qstat_updater::do_refresh_stopped()
         }
         serv_list_->remove_selected(l);
     }
-    
+
     emit refresh_stopped();
+
+    clear();
 }
 
 void qstat_updater::refresh_cancel()
 {
-    if (!proc_)
-        return;
-    disconnect(proc_, SIGNAL(error(QProcess::ProcessError)), this, SLOT(error(QProcess::ProcessError)));
-    disconnect(proc_, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished(int,QProcess::ExitStatus)));
-    disconnect(proc_, SIGNAL(readyReadStandardOutput()), this, SLOT(ready_read_output()));
-    proc_->kill();
-    delete proc_;
-    do_refresh_stopped();
-    clear();
+    refresh_stop(false);
 }
 
 void qstat_updater::error(QProcess::ProcessError error)
@@ -219,7 +221,12 @@ void qstat_updater::error(QProcess::ProcessError error)
 void qstat_updater::finished(int, QProcess::ExitStatus)
 {
     LOG_HARD << "QStat output: %1", qstat_output_;
-    QTimer::singleShot(0, this, SLOT(refresh_cancel()));
+    QTimer::singleShot(0, this, SLOT(refresh_finish()));
+}
+
+void qstat_updater::refresh_finish()
+{
+    refresh_stop(clear_offline_);
 }
 
 void qstat_updater::ready_read_output()
