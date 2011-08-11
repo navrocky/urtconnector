@@ -32,6 +32,7 @@
 #include <tabs/status_item_delegate.h>
 #include <tabs/common_item_tags.h>
 #include <tabs/tools.h>
+#include <tracking/task.h>
 
 Q_DECLARE_METATYPE(friend_record)
 Q_DECLARE_METATYPE(QAbstractItemDelegate*)
@@ -147,6 +148,9 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 
     update_all_action_ = new QAction(QIcon("icons:download.png"), tr("Update all servers"), this);
     connect(update_all_action_, SIGNAL(triggered()), SLOT(update_all()));
+
+    wait_for_friend_action_ = new QAction(QIcon("icons:chronometer.png"), tr("Wait for the friend"), this);
+    connect(wait_for_friend_action_, SIGNAL(triggered()), SLOT(wait_for_friend()));
     
     QList<QAction*> acts;
     
@@ -156,7 +160,9 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
         << add_separator_action(this)
         << update_selected_action_
         << update_bookmarks_action_
-        << update_all_action_;
+        << update_all_action_
+        << add_separator_action(this)
+        << wait_for_friend_action_;
 
     addActions(acts);
     
@@ -255,6 +261,7 @@ void friend_list_widget::update_contents()
 void friend_list_widget::update_actions()
 {
     edit_action_->setEnabled(!(get_selected_friend().is_empty()));
+    wait_for_friend_action_->setEnabled(!(get_selected_friend().is_empty()));
     remove_action_->setEnabled(tree_->selectedItems().count() > 0);
 
     const server_set_t& ss = get_selected_servers();
@@ -368,6 +375,11 @@ void friend_list_widget::remove_selected()
         }
     }
     friends_->remove(nn);
+}
+
+void friend_list_widget::wait_for_friend()
+{
+    const friend_record& fr = get_selected_friend();
 }
 
 friend_list_widget::server_set_t friend_list_widget::get_selected_servers() const

@@ -37,6 +37,7 @@ private slots:
     void add();
     void edit_selected();
     void remove_selected();
+    void wait_for_friend();
 
     void update_selected();
     void update_bookmarks();
@@ -65,6 +66,7 @@ private:
     QAction* update_selected_action_;
     QAction* update_bookmarks_action_;
     QAction* update_all_action_;
+    QAction* wait_for_friend_action_;
     int online_count_;
     name_delegate* name_delegate_;
     status_item_delegate* status_delegate_;

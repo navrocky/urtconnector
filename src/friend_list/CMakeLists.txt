@@ -42,4 +42,5 @@ add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 target_link_libraries(${TARGET} ${QT_LIBRARIES}
     common
     tabs
+    tracking
 )
