@@ -188,6 +188,8 @@ src/filters/online_clans_filter.cpp -text
 src/filters/online_clans_filter.h -text
 src/filters/ping_filter.cpp -text
 src/filters/ping_filter.h -text
+src/filters/player_filter.cpp -text
+src/filters/player_filter.h -text
 src/filters/pointers.h -text
 src/filters/reg_filters.cpp -text
 src/filters/reg_filters.h -text

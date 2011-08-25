@@ -89,12 +89,23 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
 , filter_(filter)
 , quick_opts_widget_(NULL)
 {
-    QBoxLayout* lay = new QHBoxLayout(this);
+    QBoxLayout* hl = new QHBoxLayout(this);
     enabled_check_ = new QCheckBox(this);
     enabled_check_->setToolTip(tr("Enable filter"));
     enabled_check_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(enabled_check_, SIGNAL(stateChanged(int)), SLOT(enable_toggled()));
 
+    // FIXME checkbox square hack
+    QSize sz = enabled_check_->sizeHint();
+    enabled_check_->setFixedWidth(sz.height());
+
+    connect(enabled_check_, SIGNAL(stateChanged(int)), SLOT(enable_toggled()));
+    hl->addWidget(enabled_check_);
+
+    QBoxLayout* vl = new QVBoxLayout;
+    vl->setSizeConstraint(QLayout::SetMaximumSize);
+    hl->addLayout(vl);
+    QBoxLayout* lay = new QHBoxLayout;
+    vl->addLayout(lay);
     int is = QApplication::style()->pixelMetric(QStyle::PM_SmallIconSize);
     pin_label_ = new QLabel(this);
     pin_label_->setPixmap(QIcon("icons:pin.png").pixmap(is));
@@ -103,13 +114,16 @@ filter_item_widget::filter_item_widget(filter_p filter, QWidget* parent)
 
     label_ = new QLabel(this);
     label_->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-    lay->addWidget(enabled_check_);
+    label_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    QFont fnt = label_->font();
+    fnt.setBold(true);
+    label_->setFont(fnt);
     lay->addWidget(pin_label_);
     lay->addWidget(label_);
 
     options_lay_ = new QHBoxLayout;
     options_lay_->setContentsMargins(0, 0, 0, 0);
-    lay->addLayout(options_lay_);
+    vl->addLayout(options_lay_);
 
     options_button_ = new QToolButton(this);
     options_button_->setIcon(QIcon("icons:configure.png"));
@@ -290,6 +304,8 @@ void filter_edit_widget::update_item(QTreeWidgetItem* item)
     }
     w->set_pin(filter == filters_->toolbar_filter().lock());
     w->set_selected(tree_->currentItem() == item);
+//    item->setCheckState(0, Qt::Unchecked);
+//    item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
 }
 
 void filter_edit_widget::update_contents()

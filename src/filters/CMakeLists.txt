@@ -21,6 +21,7 @@ set(HEADERS
     weapon_filter.h
     ping_filter.h
     custom_filter.h
+    player_filter.h
 )
 
 set(MOC_HEADERS
@@ -37,6 +38,7 @@ set(MOC_HEADERS
     weapon_filter.h
     ping_filter.h
     custom_filter.h
+    player_filter.h
 )
 
 set(SOURCES
@@ -56,6 +58,7 @@ set(SOURCES
     weapon_filter.cpp
     ping_filter.cpp
     custom_filter.cpp
+    player_filter.cpp
 )
 
 set(IFACES

@@ -10,6 +10,7 @@
 #include <QIcon>
 #include <QStyledItemDelegate>
 #include <QScrollBar>
+#include <QUuid>
 
 #include <common/tools.h>
 #include <common/qt_syslog.h>
@@ -33,6 +34,11 @@
 #include <tabs/common_item_tags.h>
 #include <tabs/tools.h>
 #include <tracking/task.h>
+#include <tracking/manager.h>
+#include <tracking/conditions/server_filter_condition.h>
+#include <filters/composite_filter.h>
+#include <filters/player_filter.h>
+#include <filters/filter_list.h>
 
 Q_DECLARE_METATYPE(friend_record)
 Q_DECLARE_METATYPE(QAbstractItemDelegate*)
@@ -380,6 +386,34 @@ void friend_list_widget::remove_selected()
 void friend_list_widget::wait_for_friend()
 {
     const friend_record& fr = get_selected_friend();
+    using namespace tracking;
+
+    // creating task
+    task_t* task = new task_t(this);
+    task->set_caption(tr("Wait for a friend %1").arg(fr.nick_name()));
+    task->set_operation_mode(task_t::om_destroy_after_trigger);
+    QUuid uid = QUuid::createUuid();
+    task->set_id(uid.toString());
+
+    // assign filter condition to the task
+    condition_class_p cc(new server_filter_condition_class(context().track_ctx()));
+    condition_p cond = cc->create();
+    server_filter_condition* sfc = dynamic_cast<server_filter_condition*>(cond.get());
+    task->set_condition(cond);
+
+    // add regexp filter
+    composite_filter* cf = dynamic_cast<composite_filter*>(sfc->filters()->root_filter().get());
+
+    filter_class_p fc(new player_filter_class);
+    filter_p flt = fc->create_filter();
+    cf->add_filter(flt);
+    player_filter* rf = dynamic_cast<player_filter*>(flt.get());
+    rf->set_name(QUuid::createUuid().toString());
+    rf->set_pattern(fr.nick_name());
+
+
+
+    context().track_man()->add_task(task);
 }
 
 friend_list_widget::server_set_t friend_list_widget::get_selected_servers() const

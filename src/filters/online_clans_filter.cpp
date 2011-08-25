@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QSpinBox>
 #include <QHBoxLayout>
+#include <QLabel>
 
 #include <cl/except/error.h>
 #include <common/scoped_tools.h>
@@ -151,20 +152,28 @@ online_clans_filter_quick_opt_widget::online_clans_filter_quick_opt_widget(filte
 {
     QHBoxLayout* lay = new QHBoxLayout(this);
     lay->setContentsMargins(0, 0, 0, 0);
+
+    QLabel* lb = new QLabel(this);
+    lb->setText(tr("Tag size"));
+    lay->addWidget(lb);
+
     tag_length_spin_ = new QSpinBox(this);
     tag_length_spin_->setToolTip(tr("Minimal tag length in chars"));
     lay->addWidget(tag_length_spin_);
 
+    lb = new QLabel(this);
+    lb->setText(tr("Players"));
+    lay->addWidget(lb);
+
     players_spin_ = new QSpinBox(this);
     players_spin_->setToolTip(tr("Minimal players number"));
     lay->addWidget(players_spin_);
+    lay->addStretch();
     
     connect(f.get(), SIGNAL(changed_signal()), SLOT(filter_changed()));
     filter_changed();
     connect(tag_length_spin_, SIGNAL(valueChanged(int)), SLOT(tag_length_changed()));
     connect(players_spin_, SIGNAL(valueChanged(int)), SLOT(players_changed()));
-
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
 void online_clans_filter_quick_opt_widget::filter_changed()

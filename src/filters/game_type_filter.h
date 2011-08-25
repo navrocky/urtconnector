@@ -8,15 +8,18 @@
 #include "filter.h"
 #include <common/server_info.h>
 
-class game_type_filter_quick_opt_widget : public QComboBox
+class game_type_filter_quick_opt_widget : public QWidget
 {
     Q_OBJECT
 public:
     game_type_filter_quick_opt_widget(filter_p f, QWidget* parent);
+
 private slots:
     void filter_changed();
     void combo_changed();
+
 private:
+    QComboBox* combo_;
     filter_p filter_;
     bool block_filter_change_;
     bool block_combo_change_;

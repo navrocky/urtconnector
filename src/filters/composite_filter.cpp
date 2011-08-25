@@ -1,4 +1,5 @@
 #include <QObject>
+#include <QFormLayout>
 #include <QComboBox>
 //#include <boost/make_shared.hpp>
 #include <cl/except/error.h>
@@ -29,7 +30,7 @@ filter_p composite_filter_class::create_filter()
 
 QWidget* composite_filter_class::create_quick_opts_widget(filter_p f, QWidget* parent)
 {
-    return new composite_filter_quick_opt_widget(f);
+    return new composite_filter_quick_opt_widget(f, parent);
 }
 
 
@@ -150,17 +151,23 @@ void composite_filter::load(const QByteArray& ba, filter_factory_p factory)
 ////////////////////////////////////////////////////////////////////////////////
 // composite_filter_quick_opt_widget
 
-composite_filter_quick_opt_widget::composite_filter_quick_opt_widget(filter_p f)
-: filter_(f)
+composite_filter_quick_opt_widget::composite_filter_quick_opt_widget(filter_p f, QWidget* parent)
+: QWidget(parent)
+, filter_(f)
 , block_filter_change_(false)
 , block_combo_change_(false)
 {
-    addItem(tr("AND"), QVariant::fromValue((int)composite_filter::op_and));
-    addItem(tr("OR"), QVariant::fromValue((int)composite_filter::op_or));
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    QFormLayout* l = new QFormLayout(this);
+    l->setContentsMargins(0, 0, 0, 0);
+    combo_ = new QComboBox(this);
+    l->addRow(tr("Logical operation"), combo_);
+    
+    combo_->addItem(tr("AND"), QVariant::fromValue((int)composite_filter::op_and));
+    combo_->addItem(tr("OR"), QVariant::fromValue((int)composite_filter::op_or));
+//    combo_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(f.get(), SIGNAL(changed_signal()), SLOT(filter_changed()));
     filter_changed();
-    connect(this, SIGNAL(currentIndexChanged(int)), SLOT(combo_changed()));
+    connect(combo_, SIGNAL(currentIndexChanged(int)), SLOT(combo_changed()));
 }
 
 void composite_filter_quick_opt_widget::filter_changed()
@@ -169,8 +176,8 @@ void composite_filter_quick_opt_widget::filter_changed()
         return;
     block_combo_change_ = true;
     composite_filter* cf = qobject_cast<composite_filter*>(filter_.get());
-    int i = findData((int)cf->operation());
-    setCurrentIndex(i);
+    int i = combo_->findData((int)cf->operation());
+    combo_->setCurrentIndex(i);
     block_combo_change_ = false;
 }
 
@@ -180,7 +187,7 @@ void composite_filter_quick_opt_widget::combo_changed()
         return;
     block_filter_change_ = true;
     composite_filter* cf = qobject_cast<composite_filter*>(filter_.get());
-    cf->set_operation((composite_filter::operation_t)(itemData(currentIndex())
+    cf->set_operation((composite_filter::operation_t)(combo_->itemData(combo_->currentIndex())
         .value<int>()));
     block_filter_change_ = false;
 }

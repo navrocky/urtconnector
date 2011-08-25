@@ -4,10 +4,16 @@
 #include <common/server_list.h>
 #include <common/server_bookmark.h>
 #include <filters/pointers.h>
+#include <tracking/pointers.h>
 
 class job_queue;
 class geoip;
 class QAction;
+
+namespace tracking
+{
+class manager;
+}
 
 class tab_context
 {
@@ -17,7 +23,9 @@ public:
                 server_bookmark_list_p bookmarks,
                 job_queue* que,
                 geoip* geo,
-                QAction* connect_action);
+                QAction* connect_action,
+                tracking::manager* track_man,
+                tracking::context_p track_ctx);
 
     server_list_p serv_list() const {return serv_list_;}
     filter_factory_p filter_factory() const {return filter_factory_;}
@@ -25,6 +33,8 @@ public:
     job_queue* job_que() const {return que_;}
     geoip* geo() const {return geo_;}
     QAction* connect_action() const {return connect_action_;}
+    tracking::manager* track_man() const {return track_man_;}
+    const tracking::context_p& track_ctx() const {return track_ctx_;}
 
 private:
     server_list_p serv_list_;
@@ -33,6 +43,8 @@ private:
     job_queue* que_;
     geoip* geo_;
     QAction* connect_action_;
+    tracking::manager* track_man_;
+    tracking::context_p track_ctx_;
 };
 
 #endif	/* TAB_CONTEXT_H */

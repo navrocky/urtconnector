@@ -18,7 +18,7 @@ weapon_filter_quick_opt_widget::weapon_filter_quick_opt_widget(filter_p f, QWidg
 
 {
     QHBoxLayout* lay = new QHBoxLayout(this);
-    lay->setContentsMargins(2, 2, 2, 2);
+    lay->setContentsMargins(0, 0, 0, 0);
     
     group_ = new QButtonGroup(this);
     group_->setExclusive(false);
@@ -34,6 +34,7 @@ weapon_filter_quick_opt_widget::weapon_filter_quick_opt_widget(filter_p f, QWidg
 
         lay->addWidget(tb);
     }
+    lay->addStretch();
     
     connect( group_, SIGNAL( buttonClicked(int) ), SLOT( clicked(int) ) );
     connect( &filter_, SIGNAL( changed_signal() ), SLOT( filter_changed() ) );

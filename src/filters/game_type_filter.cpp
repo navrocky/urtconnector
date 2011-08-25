@@ -1,5 +1,6 @@
 #include <QObject>
 #include <QComboBox>
+#include <QHBoxLayout>
 
 #include <cl/except/error.h>
 
@@ -93,23 +94,29 @@ void add_item(QComboBox* cb, server_info::game_mode mode)
 }
 
 game_type_filter_quick_opt_widget::game_type_filter_quick_opt_widget(filter_p f, QWidget* parent)
-: QComboBox(parent)
+: QWidget(parent)
 , filter_(f)
 , block_filter_change_(false)
 , block_combo_change_(false)
 {
-    add_item(this, server_info::gm_free_for_all);
-    add_item(this, server_info::gm_team_death_match);
-    add_item(this, server_info::gm_team_survivor);
-    add_item(this, server_info::gm_bomb_mode);
-    add_item(this, server_info::gm_capture_the_flag);
-    add_item(this, server_info::gm_follow_the_leader);
-    add_item(this, server_info::gm_capture_and_hold);
+    QHBoxLayout* l = new QHBoxLayout(this);
+    l->setContentsMargins(0, 0, 0, 0);
+    combo_ = new QComboBox(this);
+//    combo_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    l->addWidget(combo_);
+    l->addStretch();
 
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    add_item(combo_, server_info::gm_free_for_all);
+    add_item(combo_, server_info::gm_team_death_match);
+    add_item(combo_, server_info::gm_team_survivor);
+    add_item(combo_, server_info::gm_bomb_mode);
+    add_item(combo_, server_info::gm_capture_the_flag);
+    add_item(combo_, server_info::gm_follow_the_leader);
+    add_item(combo_, server_info::gm_capture_and_hold);
+
     connect(f.get(), SIGNAL(changed_signal()), SLOT(filter_changed()));
     filter_changed();
-    connect(this, SIGNAL(currentIndexChanged(int)), SLOT(combo_changed()));
+    connect(combo_, SIGNAL(currentIndexChanged(int)), SLOT(combo_changed()));
 }
 
 void game_type_filter_quick_opt_widget::filter_changed()
@@ -118,8 +125,8 @@ void game_type_filter_quick_opt_widget::filter_changed()
         return;
     block_combo_change_ = true;
     game_type_filter* cf = qobject_cast<game_type_filter*>(filter_.get());
-    int i = findData((int)cf->mode());
-    setCurrentIndex(i);
+    int i = combo_->findData((int)cf->mode());
+    combo_->setCurrentIndex(i);
     block_combo_change_ = false;
 }
 
@@ -129,7 +136,7 @@ void game_type_filter_quick_opt_widget::combo_changed()
         return;
     block_filter_change_ = true;
     game_type_filter* cf = qobject_cast<game_type_filter*>(filter_.get());
-    cf->set_mode((server_info::game_mode)(itemData(currentIndex())
+    cf->set_mode((server_info::game_mode)(combo_->itemData(combo_->currentIndex())
         .value<int>()));
     block_filter_change_ = false;
 }

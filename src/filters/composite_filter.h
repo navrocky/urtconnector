@@ -7,18 +7,20 @@
 #include "pointers.h"
 #include "filter.h"
 
-class composite_filter_quick_opt_widget : public QComboBox
+class composite_filter_quick_opt_widget : public QWidget
 {
     Q_OBJECT
 public:
-    composite_filter_quick_opt_widget(filter_p f);
+    composite_filter_quick_opt_widget(filter_p f, QWidget* parent);
 private slots:
     void filter_changed();
     void combo_changed();
+
 private:
     filter_p filter_;
     bool block_filter_change_;
     bool block_combo_change_;
+    QComboBox* combo_;
 };
 
 class composite_filter_class : public filter_class

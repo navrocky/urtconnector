@@ -197,9 +197,27 @@ main_window::main_window(QWidget *parent)
     tray_->setToolTip(tr("Click to show/hide UrTConnector or middle click to quick launch"));
     connect(tray_, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             SLOT(tray_activated(QSystemTrayIcon::ActivationReason)));
-    connect(tray_, SIGNAL(messageClicked()), SLOT(raise_window()));        
+    connect(tray_, SIGNAL(messageClicked()), SLOT(raise_window()));
 
-    tab_context ctx(all_sl_, filter_factory_, bookmarks_, que_, &gi_, ui_->actionConnect);
+    ////////////////////////////////////////////////////////////////////////////
+    // tracking subsystem
+    using namespace tracking;
+    update_dispatcher_ = new update_dispatcher(all_sl_, gi_, que_, this);
+
+    context_p track_ctx(new context_t(all_sl_, update_dispatcher_, tray_, this));
+    track_cond_factory_ = reg_conditions(track_ctx);
+    track_acts_factory_ = reg_actions(track_ctx);
+
+    track_man_ = new manager(this);
+    track_db_saver_ = new db_saver(track_man_, track_cond_factory_,
+                                   track_acts_factory_, this);
+
+    tasks_panel* tp = new tasks_panel(track_man_, track_cond_factory_, track_acts_factory_, this);
+    ui_->tasks_tracking_dock->setWidget(tp);
+    ////////////////////////////////////////////////////////////////////////////
+
+    tab_context ctx(all_sl_, filter_factory_, bookmarks_, que_, &gi_, 
+                    ui_->actionConnect, track_man_, track_ctx);
 
     fav_list_ = new bookmark_tab("bookmarks_list", ctx, this);
     tab_widget_->add_widget(fav_list_);
@@ -216,24 +234,6 @@ main_window::main_window(QWidget *parent)
     friends_list_ = new friend_list_widget(&friends_, ctx, this);
     tab_widget_->add_widget(friends_list_);
     connect(friends_list_, SIGNAL(selection_changed()), SLOT(selection_changed()));
-
-    ////////////////////////////////////////////////////////////////////////////
-    // tracking subsystem
-    {
-        using namespace tracking;
-        update_dispatcher_ = new update_dispatcher(all_sl_, gi_, que_, this);
-
-        context_p ctx(new context_t(all_sl_, update_dispatcher_, tray_, this));
-        track_cond_factory_ = reg_conditions(ctx);
-        track_acts_factory_ = reg_actions(ctx);
-
-        track_man_ = new manager(this);
-        track_db_saver_ = new db_saver(track_man_, track_cond_factory_,
-                                       track_acts_factory_, this);
-
-        tasks_panel* tp = new tasks_panel(track_man_, track_cond_factory_, track_acts_factory_, this);
-        ui_->tasks_tracking_dock->setWidget(tp);
-    }
 
 //    update_task* task = new update_task(this);
 //    task->set_interval(20*1000);
