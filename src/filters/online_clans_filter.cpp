@@ -48,7 +48,7 @@ online_clans_filter::online_clans_filter(filter_class_p fc)
 {
 }
 
-bool online_clans_filter::filter_server(const server_info& si)
+bool online_clans_filter::filter_server(const server_info& si, filter_context& ctx)
 {
     if (!enabled())
         return true;

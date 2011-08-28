@@ -36,6 +36,9 @@
 #include <tracking/task.h>
 #include <tracking/manager.h>
 #include <tracking/conditions/server_filter_condition.h>
+#include <tracking/actions/select_server_action.h>
+#include <tracking/actions/show_query_action.h>
+#include <tracking/actions/connect_action.h>
 #include <filters/composite_filter.h>
 #include <filters/player_filter.h>
 #include <filters/filter_list.h>
@@ -411,9 +414,27 @@ void friend_list_widget::wait_for_friend()
     rf->set_name(QUuid::createUuid().toString());
     rf->set_pattern(fr.nick_name());
 
+    // add select action
+    action_class_p ac(new select_server_action_class(context().track_ctx()));
+    action_p a = ac->create();
+    task->add_action(a);
 
+    // add query action
+    ac.reset(new show_query_action_class(context().track_ctx()));
+    a = ac->create();
+    show_query_action* qa = dynamic_cast<show_query_action*>(a.get());
+    qa->set_title(tr("Friend found"));
+    qa->set_message(tr("Your friend <b>%nickname</b> found on the server:<br><b>%server</b>.<br><br>"
+                       "Do you want to join him?"));
+    task->add_action(a);
+
+    // add connect action
+    ac.reset(new connect_action_class(context().track_ctx()));
+    a = ac->create();
+    task->add_action(a);
 
     context().track_man()->add_task(task);
+    task->condition()->start();
 }
 
 friend_list_widget::server_set_t friend_list_widget::get_selected_servers() const

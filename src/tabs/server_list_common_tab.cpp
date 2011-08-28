@@ -114,6 +114,23 @@ server_id server_list_common_tab::selected_server() const
         return server_id();
 }
 
+void server_list_common_tab::set_selected_server(const server_id& id)
+{
+    for (int i = 0; i < tree_->topLevelItemCount(); ++i)
+    {
+        QTreeWidgetItem* item = tree_->topLevelItem(i);
+        server_id id2 = item->data(0, c_id_role).value<server_id>();
+        if (id == id2)
+        {
+            tree_->setCurrentItem(item);
+            tree_->clearSelection();
+            item->setSelected(true);
+            tree_->scrollToItem(item);
+            break;
+        }
+    }
+}
+
 server_id_list server_list_common_tab::selection() const
 {
     server_id_list res;

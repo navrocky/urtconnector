@@ -259,6 +259,11 @@ void filter_edit_widget::set_show_snap(bool val)
     snap_button_->setVisible(val);
 }
 
+QSize filter_edit_widget::sizeHint() const
+{
+    return QSize(200, QWidget::sizeHint().height());
+}
+
 void filter_edit_widget::item_changed()
 {
     update_actions();

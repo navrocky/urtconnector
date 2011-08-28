@@ -15,6 +15,8 @@
 using boost::bind;
 using boost::ref;
 
+const char* c_ping = "ping";
+
 namespace
 {
 
@@ -137,14 +139,18 @@ const char* ping_filter_class::get_id()
     return "ping_filter";
 }
 
-bool ping_filter::filter_server(const server_info& si)
+bool ping_filter::filter_server(const server_info& si, filter_context& ctx)
 {
+    bool res;
     switch (type_)
     {
-        case more: return si.ping >= borders_.first;
-        case less: return si.ping <= borders_.second;
-        case between: return (si.ping >= borders_.first) && (si.ping <= borders_.second);
+        case more: res = si.ping >= borders_.first;
+        case less: res = si.ping <= borders_.second;
+        case between: res = si.ping >= borders_.first && si.ping <= borders_.second;
     }
+    if (res && ctx.data)
+        ctx.data->insert(c_ping, QString("%1").arg(si.ping));
+    return res;
 }
 
 ping_filter::ping_filter(filter_class_p fc)

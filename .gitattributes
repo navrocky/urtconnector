@@ -170,6 +170,7 @@ src/filters/custom_filter.cpp -text
 src/filters/custom_filter.h -text
 src/filters/filter.cpp -text
 src/filters/filter.h -text
+src/filters/filter_context.h -text
 src/filters/filter_edit_widget.cpp -text
 src/filters/filter_edit_widget.h -text
 src/filters/filter_factory.cpp -text
@@ -646,6 +647,8 @@ src/tracking/actions/connect_action.cpp -text
 src/tracking/actions/connect_action.h -text
 src/tracking/actions/reg_actions.cpp -text
 src/tracking/actions/reg_actions.h -text
+src/tracking/actions/select_server_action.cpp -text
+src/tracking/actions/select_server_action.h -text
 src/tracking/actions/show_message_action.cpp -text
 src/tracking/actions/show_message_action.h -text
 src/tracking/actions/show_query_action.cpp -text

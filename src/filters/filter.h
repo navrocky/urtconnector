@@ -6,6 +6,7 @@
 #include <QObject>
 #include <boost/enable_shared_from_this.hpp>
 
+#include "filter_context.h"
 #include "pointers.h"
 
 class server_info;
@@ -27,7 +28,7 @@ public:
     void set_enabled(bool val);
 
     /*! Filters server by server info. */
-    virtual bool filter_server(const server_info& si) = 0;
+    virtual bool filter_server(const server_info& si, filter_context& ctx) = 0;
 
     /*! Save filter settings to QByteArray. */
     virtual QByteArray save();

@@ -45,7 +45,6 @@ public:
     };
 
     composite_filter(filter_class_p fc);
-    ~composite_filter();
 
     operation_t operation() const {return operation_;}
     void set_operation(operation_t op);
@@ -54,7 +53,7 @@ public:
     void remove_filter(filter_p f);
     const filters_t& filters() const {return filters_;}
 
-    virtual bool filter_server(const server_info& si);
+    virtual bool filter_server(const server_info& si, filter_context& ctx);
     virtual QByteArray save();
     virtual void load(const QByteArray& ba, filter_factory_p factory);
 
@@ -64,7 +63,6 @@ private slots:
 private:
     operation_t operation_;
     filters_t filters_;
-    QPointer<QComboBox> combo_;
 };
 
 #endif	/* COMPOSITE_FILTER_H */

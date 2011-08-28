@@ -94,6 +94,7 @@ private:
         const QString& password);
     void connect_to_server(const server_id& id, const QString& player_name,
         const QString& password, bool check_before_connect);
+    void select_server(const server_id&);
 
     server_id selected() const;
     main_tab* current_tab_widget() const;

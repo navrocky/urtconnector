@@ -45,7 +45,7 @@ public:
     server_info::game_mode mode() const {return mode_;}
     void set_mode(server_info::game_mode op);
 
-    virtual bool filter_server(const server_info& si);
+    virtual bool filter_server(const server_info& si, filter_context& ctx);
     virtual QByteArray save();
     virtual void load(const QByteArray& ba, filter_factory_p factory);
 

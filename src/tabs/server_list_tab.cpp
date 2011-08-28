@@ -84,21 +84,30 @@ void server_list_tab::update_contents()
     LOG_DEBUG << "Update contents";
     QTreeWidgetItem* cur_item = tree()->currentItem();
 
+    server_id cur_item_id;
+    if (cur_item)
+        cur_item_id = cur_item->data(0, c_id_role).value<server_id>();
+
     const server_info_list& sil = server_list()->list();
 
     // TODO make this code smarter ===
-    QList<server_id> l;
+    QVector<server_id> l;
+    l.reserve(server_list()->list().size());
     foreach (server_info_list::const_reference r, server_list()->list())
     {
-        l.push_back(r.first);
+        l.append(r.first);
     }
     // ===
 
     smart_update_tree_contents(l, c_id_role, tree(), NULL,
         boost::bind(&server_list_tab::update_item, this, _1, _2), items_);
 
-    if (tree()->topLevelItemCount() > 0 && cur_item && app_settings().center_current_row())
-        tree()->scrollToItem(cur_item, QAbstractItemView::PositionAtCenter);
+    if (tree()->topLevelItemCount() > 0 && !cur_item_id.is_empty() && app_settings().center_current_row())
+    {
+        server_items::iterator it = items_.find(cur_item_id);
+        if (it != items_.end())
+            tree()->scrollToItem(it.value(), QAbstractItemView::PositionAtCenter);
+    }
 
     set_total_count(items_.size());
     filter_changed();

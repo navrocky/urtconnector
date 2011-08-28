@@ -28,7 +28,7 @@ hide_private_filter::hide_private_filter(filter_class_p fc)
 {
 }
 
-bool hide_private_filter::filter_server(const server_info& si)
+bool hide_private_filter::filter_server(const server_info& si, filter_context& ctx)
 {
     if (!enabled())
         return true;

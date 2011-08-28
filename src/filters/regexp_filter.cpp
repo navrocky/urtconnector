@@ -45,7 +45,7 @@ regexp_filter::regexp_filter(filter_class_p fc)
     rx_.setCaseSensitivity(Qt::CaseInsensitive);
 }
 
-bool regexp_filter::filter_server(const server_info& si)
+bool regexp_filter::filter_server(const server_info& si, filter_context& ctx)
 {
     if (!enabled())
         return true;

@@ -18,7 +18,7 @@ class hide_full_filter : public filter
     Q_OBJECT
 public:
     hide_full_filter(filter_class_p fc);
-    virtual bool filter_server(const server_info& si);
+    virtual bool filter_server(const server_info& si, filter_context& ctx);
 };
 
 

@@ -22,6 +22,7 @@ set(HEADERS
     actions/show_query_action.h
     actions/show_message_action.h
     actions/connect_action.h
+    actions/select_server_action.h
 )
 
 set(MOC_HEADERS
@@ -39,6 +40,7 @@ set(MOC_HEADERS
     actions/show_query_action.h
     actions/show_message_action.h
     actions/connect_action.h
+    actions/select_server_action.h
 )
 
 set(SOURCES
@@ -60,6 +62,7 @@ set(SOURCES
     actions/show_query_action.cpp
     actions/show_message_action.cpp
     actions/connect_action.cpp
+    actions/select_server_action.cpp
 )
 
 set(IFACES

@@ -204,7 +204,8 @@ main_window::main_window(QWidget *parent)
     using namespace tracking;
     update_dispatcher_ = new update_dispatcher(all_sl_, gi_, que_, this);
 
-    context_p track_ctx(new context_t(all_sl_, update_dispatcher_, tray_, this));
+    context_p track_ctx(new context_t(all_sl_, update_dispatcher_, tray_, this,
+                                      boost::bind(&main_window::select_server, this, _1)));
     track_cond_factory_ = reg_conditions(track_ctx);
     track_acts_factory_ = reg_actions(track_ctx);
 
@@ -778,4 +779,11 @@ void main_window::copy_info()
         .arg(id.address())
         .arg(bookmarks_->get(id).password())
     );
+}
+
+
+void main_window::select_server(const server_id& id)
+{
+    tab_widget_->setCurrentIndex(1);
+    all_list_->set_selected_server(id);
 }

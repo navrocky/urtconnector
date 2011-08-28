@@ -59,7 +59,7 @@ bool connect_action::execute()
     server_id id = server_;
     if (id.is_empty())
     {
-        data_map_t::iterator it = ctx->data.find("server");
+        data_map_t::iterator it = ctx->data.find("server_id");
         if (it != ctx->data.end())
         {
             QString s = it.value();

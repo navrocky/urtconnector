@@ -13,6 +13,8 @@
 
 #include "player_filter.h"
 
+const char* c_nick_name = "nickname";
+
 ////////////////////////////////////////////////////////////////////////////////
 // player_filter_class
 
@@ -48,7 +50,7 @@ player_filter::player_filter(filter_class_p fc)
     rx_.setCaseSensitivity(Qt::CaseInsensitive);
 }
 
-bool player_filter::filter_server(const server_info& si)
+bool player_filter::filter_server(const server_info& si, filter_context& ctx)
 {
     if (!enabled())
         return true;
@@ -67,10 +69,18 @@ bool player_filter::filter_server(const server_info& si)
         if (use_rx_)
         {
             if (rx_.isEmpty() || rx_.indexIn(pi.nick_name()) != -1)
+            {
+                if (ctx.data)
+                    ctx.data->insert(c_nick_name, pi.nick_name());
                 return true;
+            }
         } else
             if (pattern_.isEmpty() || pi.nick_name().contains(pattern_, Qt::CaseInsensitive))
+            {
+                if (ctx.data)
+                    ctx.data->insert(c_nick_name, pi.nick_name());
                 return true;
+            }
     }
     return false;
 }

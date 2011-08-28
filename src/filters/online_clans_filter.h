@@ -50,7 +50,7 @@ public:
     int minimal_players() const {return minimal_players_;}
     void set_minimal_players(int val);
 
-    virtual bool filter_server(const server_info& si);
+    virtual bool filter_server(const server_info& si, filter_context& ctx);
     virtual QByteArray save();
     virtual void load(const QByteArray& ba, filter_factory_p factory);
 

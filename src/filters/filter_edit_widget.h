@@ -75,6 +75,7 @@ public:
 
     bool show_snap() const;
     void set_show_snap(bool);
+    QSize sizeHint() const;
 
 private slots:
     void add_new_filter();

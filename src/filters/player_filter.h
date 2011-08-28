@@ -57,7 +57,7 @@ public:
     bool use_rx() const {return use_rx_;}
     void set_use_rx(bool);
 
-    virtual bool filter_server(const server_info& si);
+    virtual bool filter_server(const server_info& si, filter_context& ctx);
     virtual QByteArray save();
     virtual void load(const QByteArray& ba, filter_factory_p factory);
 

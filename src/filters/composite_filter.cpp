@@ -43,12 +43,7 @@ composite_filter::composite_filter(filter_class_p fc)
 {
 }
 
-composite_filter::~composite_filter()
-{
-    delete combo_;
-}
-
-bool composite_filter::filter_server(const server_info& si)
+bool composite_filter::filter_server(const server_info& si, filter_context& ctx)
 {
     if (!enabled())
         return true;
@@ -57,17 +52,37 @@ bool composite_filter::filter_server(const server_info& si)
     {
         case op_and:
         {
-            foreach (filter_p f, filters_)
-                if (f->enabled() && !f->filter_server(si))
-                    return false;
-            return true;
+            if (ctx.full_filter_process)
+            {
+                bool res = true;
+                foreach (filter_p f, filters_)
+                    if (f->enabled() && !f->filter_server(si, ctx))
+                        res = false;
+                return res;
+            } else
+            {
+                foreach (filter_p f, filters_)
+                    if (f->enabled() && !f->filter_server(si, ctx))
+                        return false;
+                return true;
+            }
         }
         case op_or:
         {
-            foreach (filter_p f, filters_)
-                if (f->enabled() && f->filter_server(si))
-                    return true;
-            return filters_.size() > 0 ? false : true;
+            if (ctx.full_filter_process)
+            {
+                bool res = filters_.size() > 0 ? false : true;
+                foreach (filter_p f, filters_)
+                    if (f->enabled() && f->filter_server(si, ctx))
+                        res = true;
+                return res;
+            } else
+            {
+                foreach (filter_p f, filters_)
+                    if (f->enabled() && f->filter_server(si, ctx))
+                        return true;
+                return filters_.size() > 0 ? false : true;
+            }
         }
 
         default:;

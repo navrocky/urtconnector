@@ -75,7 +75,7 @@ std::set<Gear> interserction( const std::set<Gear>& s1, const std::set<Gear>& s2
     return ret;
 }
 
-bool weapon_filter::filter_server( const server_info& si )
+bool weapon_filter::filter_server( const server_info& si, filter_context& ctx)
 {
     if (!enabled())
         return true;

@@ -42,7 +42,7 @@ game_type_filter::game_type_filter(filter_class_p fc)
 {
 }
 
-bool game_type_filter::filter_server(const server_info& si)
+bool game_type_filter::filter_server(const server_info& si, filter_context& ctx)
 {
     if (!enabled())
         return true;

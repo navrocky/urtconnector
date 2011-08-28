@@ -160,14 +160,21 @@ void server_filter_condition::srv_list_changed()
 {
     LOG_DEBUG << "Check condition";
 
-    server_list_p srv_list = get_class()->context()->srv_list;
+    context_p tr_ctx = get_class()->context();
+
+    server_list_p srv_list = tr_ctx->srv_list;
+
+    filter_context ctx;
+    ctx.data = &(tr_ctx->data);
+    ctx.full_filter_process = true;
 
     server_id founded_server;
     if (srv_list_.isEmpty())
     {
         foreach (server_info_list::const_reference r, srv_list->list())
         {
-            if (filters_->filtrate(*r.second.get()))
+            server_info_p si = r.second;
+            if (si->status == server_info::s_up && !si->updating && filters_->filtrate(*si, ctx))
             {
                 founded_server = r.first;
                 break;
@@ -177,8 +184,8 @@ void server_filter_condition::srv_list_changed()
     {
         foreach (const server_id& id, srv_list_)
         {
-            const server_info_p& si = srv_list->get(id);
-            if (filters_->filtrate(*si.get()))
+            server_info_p si = srv_list->get(id);
+            if (si->status == server_info::s_up && !si->updating && filters_->filtrate(*si, ctx))
             {
                 founded_server = id;
                 break;
@@ -188,7 +195,20 @@ void server_filter_condition::srv_list_changed()
 
     if (!founded_server.is_empty())
     {
-        get_class()->context()->data.insert("server", founded_server.address());
+        QString srv_id = founded_server.address();
+        QString srv_name;
+        tr_ctx->data.insert("server_id", srv_id);
+        server_info_list::const_iterator it = srv_list->list().find(founded_server);
+        if (it != srv_list->list().end())
+        {
+            srv_name = it->second->name;
+            tr_ctx->data.insert("server_name", srv_name);
+        }
+        if (srv_name.isEmpty())
+            tr_ctx->data.insert("server", srv_id);
+        else
+            tr_ctx->data.insert("server", QString("%1 (%2)").arg(srv_name).arg(srv_id));
+
         // condition arised
         trigger();
     }
@@ -201,8 +221,10 @@ server_filter_condition_widget::server_filter_condition_widget(QWidget* parent, 
 : QWidget(parent)
 , cond_(cond)
 {
-    QFormLayout* l = new QFormLayout(this);
-    l->setContentsMargins(0, 0, 0, 0);
+    QVBoxLayout* vl = new QVBoxLayout(this);
+    vl->setContentsMargins(0, 0, 0, 0);
+    QFormLayout* l = new QFormLayout;
+    vl->addLayout(l);
 
     auto_update_check_ = new QCheckBox(this);
     auto_update_check_->setText(tr("Use auto update"));
@@ -227,7 +249,7 @@ server_filter_condition_widget::server_filter_condition_widget(QWidget* parent, 
 
     filter_panel_ = new filter_edit_widget(cond_->filters(), this);
     filter_panel_->set_show_snap(false);
-    l->addRow(filter_panel_);
+    vl->addWidget(filter_panel_);
     update_auto_update();
 }
 

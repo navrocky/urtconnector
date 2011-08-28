@@ -102,13 +102,16 @@ void action_widget::update_contents()
     {
         new_action_panel_->hide();
         action_panel_holder_->show();
-        action_panel_ = action_->create_options_widget(action_panel_holder_);
         int size = style()->pixelMetric(QStyle::PM_ButtonIconSize);
         action_class_p ac = action_->get_class();
         header_icon_->setPixmap(ac->icon().pixmap(size));
         header_label_->setText(ac->caption());
-        static_cast<QBoxLayout*>(action_panel_holder_->layout())->addWidget(action_panel_);
-        action_panel_->setFocus();
+        action_panel_ = action_->create_options_widget(action_panel_holder_);
+        if (action_panel_)
+        {
+            static_cast<QBoxLayout*>(action_panel_holder_->layout())->addWidget(action_panel_);
+            action_panel_->setFocus();
+        }
         item_->setHidden(true);
         item_->setHidden(false);
         setToolTip(ac->description());
@@ -191,7 +194,7 @@ task_prop_dlg::task_prop_dlg(task_t* t,
     ui_->actions_list->addActions(al);
     ui_->actions_list->setContextMenuPolicy(Qt::ActionsContextMenu);
     update_contents();
-    ui_->splitter->setStretchFactor(0, 100);
+    ui_->splitter->setStretchFactor(0, 250);
     ui_->splitter->setStretchFactor(1, 100);
 }
 

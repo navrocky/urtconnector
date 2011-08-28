@@ -8,6 +8,7 @@
 #include "pointers.h"
 
 class server_info;
+class filter_context;
 
 class filter_list : public QObject
 {
@@ -40,7 +41,7 @@ public:
         with other filters. */
     QString correct_name(const QString& name);
 
-    bool filtrate( const server_info& si) const;
+    bool filtrate( const server_info& si, filter_context& ctx) const;
 
 
 signals:

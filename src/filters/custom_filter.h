@@ -39,7 +39,7 @@ public:
     
     custom_filter(filter_class_p fc);
 
-    virtual bool filter_server(const server_info& si);
+    virtual bool filter_server(const server_info& si, filter_context& ctx);
     virtual QByteArray save();
     virtual void load(const QByteArray& ba, filter_factory_p factory);
 

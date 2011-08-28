@@ -35,7 +35,8 @@ void correct_names(filter_list_p fl, filter_p par)
     composite_filter* cf = dynamic_cast<composite_filter*> (par.get());
     if (!cf)
         return;
-    foreach (filter_p f, cf->filters())
+
+    foreach(filter_p f, cf->filters())
     {
         correct_names(fl, f);
     }
@@ -46,12 +47,14 @@ void correct_names(filter_list_p fl, filter_p par)
 ////////////////////////////////////////////////////////////////////////////////
 // filtered_tab
 
-filtered_tab::filtered_tab(tab_settings_p st, const tab_context& ctx, 
-                           bool complex_filter, QWidget* parent)
-    : main_tab(st, ctx, parent)
-    , filters_(new filter_list(ctx.filter_factory()))
-    , fs_( settings() )
-    , complex_filter_(complex_filter)
+filtered_tab::filtered_tab(tab_settings_p st,
+                           const tab_context& ctx,
+                           bool complex_filter,
+                           QWidget* parent)
+: main_tab(st, ctx, parent)
+, filters_(new filter_list(ctx.filter_factory()))
+, fs_(settings())
+, complex_filter_(complex_filter)
 {
     load_filter();
 
@@ -69,12 +72,12 @@ filtered_tab::filtered_tab(tab_settings_p st, const tab_context& ctx,
 
     show_filter_action_ = new QAction(QIcon("icons:view-filter.png"), tr("View and edit filter"), this);
     show_filter_action_->setCheckable(true);
-    show_filter_action_->setChecked( fs_.is_filter_visible() );
+    show_filter_action_->setChecked(fs_.is_filter_visible());
 
     QToolBar* tb = new QToolBar(QObject::tr("Filter toolbar"), this);
     addToolBar(Qt::TopToolBarArea, tb);
     tb->setFloatable(false);
-    tb->setObjectName("filter_toolbar");
+    tb->setObjectName(objectName() + "_filter_toolbar");
     tb->addAction(show_filter_action_);
 
     filter_holder_ = new QWidget(this);
@@ -86,12 +89,14 @@ filtered_tab::filtered_tab(tab_settings_p st, const tab_context& ctx,
 
     filter_widget_ = new QDockWidget(QObject::tr("Filter"), this);
     filter_widget_->setFeatures(filter_widget_->features() ^ QDockWidget::DockWidgetFloatable);
-    filter_widget_->setObjectName("filter_widget");
+    filter_widget_->setObjectName(objectName() + "_filter_widget");
 
     filter_edit_widget* filter = new filter_edit_widget(filters_, filter_widget_);
     filter_widget_->setWidget(filter);
 
     addDockWidget(Qt::LeftDockWidgetArea, filter_widget_);
+    // FIXME restoring a dock widgets size dont work as expected
+    filter_widget_->setMinimumSize(300, 0);
 
     connect(show_filter_action_, SIGNAL(triggered(bool)), filter_widget_, SLOT(setVisible(bool)));
     connect(filter_widget_, SIGNAL(visibilityChanged(bool)), show_filter_action_, SLOT(setChecked(bool)));
@@ -111,7 +116,8 @@ void filtered_tab::update_toolbar_filter()
             filter_holder_->layout()->addWidget(w);
         filter_holder_->setToolTip(f->get_class()->caption());
         filter_toolbar_widget_ = w;
-    } else
+    }
+    else
     {
         filter_holder_->setToolTip(tr("No filter"));
     }
@@ -125,8 +131,9 @@ void filtered_tab::save_state()
 void filtered_tab::load_state()
 {
     main_tab::load_state();
+
+//    restoreDockWidget(filter_widget_);
     
-    restoreDockWidget(filter_widget_);
 }
 
 void filtered_tab::save_filter()
@@ -200,19 +207,19 @@ void filtered_tab::default_filter_initialization()
         f = filters()->create_by_class_id(game_type_filter_class::get_id());
         f->set_name(f->get_class()->caption());
         cf->add_filter(f);
-        game_type_filter* gt = dynamic_cast<game_type_filter*>(f.get());
+        game_type_filter* gt = dynamic_cast<game_type_filter*> (f.get());
         gt->set_mode(server_info::gm_team_survivor);
 
         f = filters()->create_by_class_id(game_type_filter_class::get_id());
         f->set_name(f->get_class()->caption());
         cf->add_filter(f);
-        gt = dynamic_cast<game_type_filter*>(f.get());
+        gt = dynamic_cast<game_type_filter*> (f.get());
         gt->set_mode(server_info::gm_bomb_mode);
 
         f = filters()->create_by_class_id(game_type_filter_class::get_id());
         f->set_name(f->get_class()->caption());
         cf->add_filter(f);
-        gt = dynamic_cast<game_type_filter*>(f.get());
+        gt = dynamic_cast<game_type_filter*> (f.get());
         gt->set_mode(server_info::gm_capture_the_flag);
     }
 }
@@ -237,10 +244,14 @@ void filtered_tab::load_filter()
 }
 
 void filtered_tab::filter_changed()
-{}
+{
+}
 
 bool filtered_tab::filtrate(const server_info& si) const
-{ return filters_->filtrate(si); }
+{
+    filter_context ctx;
+    return filters_->filtrate(si, ctx);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // filtered_tab_settings
@@ -248,22 +259,24 @@ bool filtered_tab::filtrate(const server_info& si) const
 filtered_tab_settings::filtered_tab_settings(const tab_settings_p& ts)
 {
     base_settings set;
-    
+
     uid_ = ts->uid() + "_filtered_tab";
-   
-    set.register_sub_group( uid_, "filtered_tab", ts->uid() );
+
+    set.register_sub_group(uid_, "filtered_tab", ts->uid());
     fs = base_settings().get_settings(uid_);
 
     //TODO backward config compatibility - remove on 0.8.0
     ts_ = ts->ts();
-    
-    update_setting_value( ts_, fs, "root_filter", "root" );
-    update_setting_value( ts_, fs, "toolbar_filter_name", "toolbar_filter_name" );
-    update_setting_value( ts_, fs, "filter_visible", "filter_visible" );
+
+    update_setting_value(ts_, fs, "root_filter", "root");
+    update_setting_value(ts_, fs, "toolbar_filter_name", "toolbar_filter_name");
+    update_setting_value(ts_, fs, "filter_visible", "filter_visible");
 }
 
 const QString& filtered_tab_settings::uid()
-{ return uid_; }
+{
+    return uid_;
+}
 
 filter_p filtered_tab_settings::root_filter(filter_factory_p factory) const
 {
@@ -272,23 +285,37 @@ filter_p filtered_tab_settings::root_filter(filter_factory_p factory) const
 }
 
 void filtered_tab_settings::save_root_filter(filter_p f)
-{ fs->setValue("root", filter_save(f)); }
+{
+    fs->setValue("root", filter_save(f));
+}
 
 QString filtered_tab_settings::toolbar_filter() const
-{ return fs->value("toolbar_filter_name").toString(); }
+{
+    return fs->value("toolbar_filter_name").toString();
+}
 
 void filtered_tab_settings::save_toolbar_filter(const QString& name)
-{ fs->setValue("toolbar_filter_name", name); }
+{
+    fs->setValue("toolbar_filter_name", name);
+}
 
 bool filtered_tab_settings::is_filter_visible() const
-{ return fs->value("filter_visible").toBool(); }
+{
+    return fs->value("filter_visible").toBool();
+}
 
 void filtered_tab_settings::set_filter_visible(bool val)
-{ fs->setValue("filter_visible", val); }
+{
+    fs->setValue("filter_visible", val);
+}
 
 void filtered_tab_settings::save_state(const QByteArray& a)
-{ fs->setValue("state", a); }
+{
+    fs->setValue("state", a);
+}
 
 QByteArray filtered_tab_settings::load_state() const
-{ return fs->value("state").toByteArray(); }
+{
+    return fs->value("state").toByteArray();
+}
 

@@ -22,6 +22,7 @@ public:
                            QWidget* parent);
 
     virtual server_id selected_server() const;
+    virtual void set_selected_server(const server_id&);
     server_id_list selection() const;
 
 public slots:

@@ -28,7 +28,7 @@ hide_full_filter::hide_full_filter(filter_class_p fc)
 {
 }
 
-bool hide_full_filter::filter_server(const server_info& si)
+bool hide_full_filter::filter_server(const server_info& si, filter_context& ctx)
 {
     if (!enabled())
         return true;
