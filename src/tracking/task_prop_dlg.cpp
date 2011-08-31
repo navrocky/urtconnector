@@ -8,9 +8,11 @@
 #include <QTreeWidgetItem>
 #include <QTimer>
 #include <QLabel>
+#include <QSettings>
 
 #include <common/scoped_tools.h>
 #include <common/tools.h>
+#include <settings/settings.h>
 
 #include "task.h"
 #include "condition.h"
@@ -24,6 +26,10 @@ Q_DECLARE_METATYPE(tracking::task_t::operation_mode_t)
 
 namespace tracking
 {
+
+static const char* c_task_prop_dlg = "task_prop_dlg";
+static const char* c_state = "state";
+static const char* c_splitter = "splitter";
 
 ////////////////////////////////////////////////////////////////////////////////
 // action_widget
@@ -196,6 +202,16 @@ task_prop_dlg::task_prop_dlg(task_t* t,
     update_contents();
     ui_->splitter->setStretchFactor(0, 250);
     ui_->splitter->setStretchFactor(1, 100);
+
+    base_settings::settings_ptr s = base_settings::get_settings(c_task_prop_dlg);
+    QVariant v = s->value(c_state);
+    if (v.isValid())
+        restoreGeometry(v.toByteArray());
+    else
+        resize(800, 500);
+    v = s->value(c_splitter);
+    if (v.isValid())
+        ui_->splitter->restoreState(v.toByteArray());
 }
 
 void task_prop_dlg::accept()
@@ -392,6 +408,14 @@ void task_prop_dlg::move_up()
 void task_prop_dlg::move_down()
 {
     move(1);
+}
+
+void task_prop_dlg::closeEvent(QCloseEvent* e)
+{
+    base_settings::settings_ptr s = base_settings::get_settings(c_task_prop_dlg);
+    s->setValue(c_state, saveGeometry());
+    s->setValue(c_splitter, ui_->splitter->saveState());
+    QDialog::closeEvent(e);
 }
 
 

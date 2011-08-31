@@ -72,6 +72,9 @@ public:
 public slots:
     virtual void accept();
 
+protected:
+    void closeEvent(QCloseEvent*);
+
 private slots:
     void cond_combo_changed();
     void mode_combo_changed();
