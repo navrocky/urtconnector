@@ -499,6 +499,7 @@ src/icons/media-playback-pause.png -text
 src/icons/media-playback-start.png -text
 src/icons/pin.png -text
 src/icons/pistol.png -text
+src/icons/play-sound.png -text
 src/icons/question.png -text
 src/icons/remove.png -text
 src/icons/status-none.png -text
@@ -645,6 +646,8 @@ src/tracking/action.cpp -text
 src/tracking/action.h -text
 src/tracking/actions/connect_action.cpp -text
 src/tracking/actions/connect_action.h -text
+src/tracking/actions/play_sound_action.cpp -text
+src/tracking/actions/play_sound_action.h -text
 src/tracking/actions/reg_actions.cpp -text
 src/tracking/actions/reg_actions.h -text
 src/tracking/actions/select_server_action.cpp -text

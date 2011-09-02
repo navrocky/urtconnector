@@ -35,9 +35,6 @@ public:
 
     virtual condition_p create() = 0;
 
-//    virtual QWidget* create_quick_opts_widget(filter_p f, QWidget* parent);
-//    virtual bool has_additional_options();
-//    virtual prop_panel create_prop_panel() = 0;
 private:
     context_p ctx_;
     QString id_;
@@ -69,6 +66,8 @@ public:
     virtual void assign(condition_t* src);
 
     virtual QWidget* create_options_widget(QWidget* parent) = 0;
+
+    virtual void skip_current() = 0;
 
 signals:
     void triggered();

@@ -31,7 +31,7 @@ select_server_action::select_server_action(const action_class_p& c)
 {
 }
 
-bool select_server_action::execute()
+action_t::result_t select_server_action::execute()
 {
     context_p ctx = get_class()->context();
     data_map_t::iterator it = ctx->data.find("server_id");
@@ -41,7 +41,7 @@ bool select_server_action::execute()
         server_id id(s);
         ctx->select_server(id);
     }
-    return true;
+    return r_continue;
 }
 
 QWidget* select_server_action::create_options_widget(QWidget* parent)

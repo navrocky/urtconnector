@@ -4,6 +4,8 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QStyle>
 
 #include "../context.h"
 #include "../tools.h"
@@ -35,7 +37,7 @@ show_query_action::show_query_action(const action_class_p& c)
 {
 }
 
-bool show_query_action::execute()
+action_t::result_t show_query_action::execute()
 {
     QString title = title_;
     replace_msg_tags(title, get_class()->context()->data);
@@ -45,8 +47,25 @@ bool show_query_action::execute()
     QString msg = message_;
     replace_msg_tags(msg, get_class()->context()->data);
 
-    int res = QMessageBox::question(0, title, msg, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-    return res == QMessageBox::Yes;
+    QMessageBox mb;
+    mb.setWindowTitle(title);
+    mb.setText(msg);
+    mb.setIcon(QMessageBox::Question);
+    QPushButton* yes_btn = mb.addButton(QMessageBox::Yes);
+    QPushButton* no_btn = mb.addButton(QMessageBox::No);
+    QPushButton* skip_btn = mb.addButton(tr("Skip"), QMessageBox::RejectRole);
+    skip_btn->setIcon(mb.style()->standardIcon(QStyle::SP_DialogResetButton));
+    mb.exec();
+    result_t res;
+    if (mb.clickedButton() == yes_btn)
+        return r_continue;
+    else if (mb.clickedButton() == no_btn)
+        return r_cancel;
+    else if (mb.clickedButton() == skip_btn)
+        return r_skip;
+    else
+        assert(false);
+    return r_cancel;
 }
 
 QWidget* show_query_action::create_options_widget(QWidget* parent)

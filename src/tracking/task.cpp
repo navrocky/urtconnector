@@ -77,6 +77,21 @@ void task_t::condition_triggered()
     if (block_execute_)
         return;
     SCOPE_COCK_FLAG(block_execute_);
+
+    action_t::result_t res = action_t::r_continue;
+    foreach (const action_p& a, actions_)
+    {
+        res = a->execute();
+        if (res != action_t::r_continue)
+            break;
+    }
+    
+    if (res == action_t::r_skip)
+    {
+        cond_->skip_current();
+        return;
+    }
+
     switch (op_mode_)
     {
         case om_multi_trigger:
@@ -88,12 +103,6 @@ void task_t::condition_triggered()
             cond_->stop();
             deleteLater();
             break;
-    }
-
-    foreach (const action_p& a, actions_)
-    {
-        if (!a->execute())
-            return;
     }
 }
 

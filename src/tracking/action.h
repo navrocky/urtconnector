@@ -45,11 +45,18 @@ class action_t : public QObject
 {
     Q_OBJECT
 public:
+    enum result_t
+    {
+        r_continue, // continue actions execution
+        r_cancel, // cancels actions execution
+        r_skip // skip condition trigger and try again
+    };
+
     action_t(const action_class_p& c);
 
     const action_class_p& get_class() const {return class_;}
 
-    virtual bool execute() = 0;
+    virtual result_t execute() = 0;
 
     virtual void save(settings_t& s) {}
     virtual void load(const settings_t& s) {}

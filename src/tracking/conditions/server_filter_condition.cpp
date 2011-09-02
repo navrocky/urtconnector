@@ -143,6 +143,8 @@ void server_filter_condition::do_start()
     srv_list_changed_conn_ = new QAccumulatingConnection(ctx->srv_list.get(),
         SIGNAL(changed()), this, SLOT(srv_list_changed()), 500,
         QAccumulatingConnection::Periodically, this);
+    
+    skipped_servers_.clear();
 }
 
 void server_filter_condition::do_stop()
@@ -168,50 +170,68 @@ void server_filter_condition::srv_list_changed()
     ctx.data = &(tr_ctx->data);
     ctx.full_filter_process = true;
 
-    server_id founded_server;
     if (srv_list_.isEmpty())
     {
         foreach (server_info_list::const_reference r, srv_list->list())
         {
+            // server is skipped?
+            if (skipped_servers_.find(r.first) != skipped_servers_.end())
+                continue;
+
             server_info_p si = r.second;
             if (si->status == server_info::s_up && !si->updating && filters_->filtrate(*si, ctx))
             {
-                founded_server = r.first;
-                break;
+                server_found(r.first);
+                if (!is_started())
+                    break;
             }
         }
     } else
     {
         foreach (const server_id& id, srv_list_)
         {
+            // server is skipped?
+            if (skipped_servers_.find(id) != skipped_servers_.end())
+                continue;
+
             server_info_p si = srv_list->get(id);
             if (si->status == server_info::s_up && !si->updating && filters_->filtrate(*si, ctx))
             {
-                founded_server = id;
-                break;
+                server_found(id);
+                if (!is_started())
+                    break;
             }
         }
     }
+}
 
-    if (!founded_server.is_empty())
+void server_filter_condition::server_found(const server_id& id)
+{
+    context_p tr_ctx = get_class()->context();
+    server_list_p srv_list = tr_ctx->srv_list;
+    QString srv_id = id.address();
+    QString srv_name;
+    tr_ctx->data.insert("server_id", srv_id);
+    founded_server_ = id;
+    server_info_list::const_iterator it = srv_list->list().find(id);
+    if (it != srv_list->list().end())
     {
-        QString srv_id = founded_server.address();
-        QString srv_name;
-        tr_ctx->data.insert("server_id", srv_id);
-        server_info_list::const_iterator it = srv_list->list().find(founded_server);
-        if (it != srv_list->list().end())
-        {
-            srv_name = it->second->name;
-            tr_ctx->data.insert("server_name", srv_name);
-        }
-        if (srv_name.isEmpty())
-            tr_ctx->data.insert("server", srv_id);
-        else
-            tr_ctx->data.insert("server", QString("%1 (%2)").arg(srv_name).arg(srv_id));
-
-        // condition arised
-        trigger();
+        srv_name = it->second->name;
+        tr_ctx->data.insert("server_name", srv_name);
     }
+    if (srv_name.isEmpty())
+        tr_ctx->data.insert("server", srv_id);
+    else
+        tr_ctx->data.insert("server", QString("%1 (%2)").arg(srv_name).arg(srv_id));
+
+    // condition arised
+    trigger();
+}
+
+void server_filter_condition::skip_current()
+{
+    if (!founded_server_.is_empty())
+        skipped_servers_.insert(founded_server_);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

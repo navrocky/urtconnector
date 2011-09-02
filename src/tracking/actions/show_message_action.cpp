@@ -34,12 +34,12 @@ show_message_action::show_message_action(const action_class_p& c)
 {
 }
 
-bool show_message_action::execute()
+action_t::result_t show_message_action::execute()
 {
     QString s = message_;
     replace_msg_tags(s, get_class()->context()->data);
     int res = QMessageBox::information(0, tr("Information"), s, QMessageBox::Ok);
-    return res == QMessageBox::Ok;
+    return res == QMessageBox::Ok ? r_continue : r_cancel;
 }
 
 QWidget* show_message_action::create_options_widget(QWidget* parent)

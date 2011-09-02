@@ -30,7 +30,7 @@ public:
     const QString& message() const {return message_;}
     void set_message(const QString&);
 
-    bool execute();
+    result_t execute();
     QWidget* create_options_widget(QWidget* parent);
 
     virtual void save(settings_t& s);

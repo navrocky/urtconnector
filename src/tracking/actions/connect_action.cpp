@@ -47,10 +47,10 @@ void connect_action::set_server(const server_id& id)
     emit changed();
 }
 
-bool connect_action::execute()
+action_t::result_t connect_action::execute()
 {
     if (block_execute_)
-        return false;
+        return r_cancel;
 
     SCOPE_COCK_FLAG(block_execute_);
 
@@ -68,10 +68,10 @@ bool connect_action::execute()
     }
 
     if (id.is_empty())
-        return false;
+        return r_cancel;
 
     ctx->connect_iface->connect_to_server(id, QString(), QString(), false);
-    return true;
+    return r_continue;
 }
 
 QWidget* connect_action::create_options_widget(QWidget* parent)

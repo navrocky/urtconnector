@@ -34,6 +34,8 @@ public:
 
     QWidget* create_options_widget(QWidget* parent);
 
+    void skip_current();
+
 protected:
     void do_start();
     void do_stop();

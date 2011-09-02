@@ -1,6 +1,7 @@
 #ifndef TRACKING_SERVER_FILTER_CONDITION_H
 #define	TRACKING_SERVER_FILTER_CONDITION_H
 
+#include <set>
 #include <QWidget>
 #include <QPointer>
 
@@ -48,6 +49,8 @@ public:
 
     QWidget* create_options_widget(QWidget* parent);
 
+    void skip_current();
+
 private slots:
     void srv_list_changed();
 
@@ -56,6 +59,8 @@ protected:
     void do_stop();
 
 private:
+    void server_found(const server_id&);
+
     int update_interval_;
     bool use_auto_update_;
     QString servers_;
@@ -63,6 +68,9 @@ private:
     filter_list_p filters_;
     QPointer<update_task> update_task_;
     QPointer<QAccumulatingConnection> srv_list_changed_conn_;
+    server_id founded_server_;
+    typedef std::set<server_id> servers_set_t;
+    servers_set_t skipped_servers_;
 };
 
 class server_filter_condition_widget : public QWidget

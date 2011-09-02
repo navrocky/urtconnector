@@ -21,7 +21,7 @@ class select_server_action : public action_t
 public:
     select_server_action(const action_class_p& c);
 
-    bool execute();
+    result_t execute();
     QWidget* create_options_widget(QWidget* parent);
 };
 

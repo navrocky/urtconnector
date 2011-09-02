@@ -75,6 +75,11 @@ QWidget* timer_condition::create_options_widget(QWidget* parent)
     return new timer_condition_widget(parent, this);
 }
 
+void timer_condition::skip_current()
+{
+    // nothing to do
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // timer_condition_widget
 

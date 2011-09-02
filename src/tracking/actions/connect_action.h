@@ -29,7 +29,7 @@ public:
     server_id server() const {return server_;}
     void set_server(const server_id& id);
 
-    bool execute();
+    result_t execute();
     QWidget* create_options_widget(QWidget* parent);
 
     virtual void save(settings_t& s);
