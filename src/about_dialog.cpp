@@ -71,10 +71,10 @@ about_dialog::about_dialog(QWidget *parent)
     )));
     ui_->thanks_browser->setPalette(transp_palette);
     ui_->thanks_browser->setHtml(prepare_html(tr(
-        "<p class=\"name\">Tsyss Dmitry (=XaoC=Dmitro)<p>"
+        "<p class=\"name\">Tsyss Dmitry (Dmitro)<p>"
         "<p class=\"info\"><a href=\"mailto:dtsyss@gmail.com\">dtsyss@gmail.com</a><br>"
         "Clan leader, help on project, tester.</p>"
-        "<p class=\"name\">Stanislav Nikitin (LA|p0z1tr0n)<p>"
+        "<p class=\"name\">Stanislav Nikitin (p0z1tr0n)<p>"
         "<p class=\"info\"><a href=\"mailto:pozitpoh@gmail.com\">pozitpoh@gmail.com</a><br>"
         "Contributor, help on project, tester, ideas generator.</p>"
     )));
@@ -173,7 +173,7 @@ bool blizzard::eventFilter(QObject* o, QEvent* e)
     if ( o != w_ || ( o == w_ && e->type() != QEvent::Paint ) )
         return ret;
 
-    
+
 
     BOOST_FOREACH( snowflake& sf, flakes_ ){
 

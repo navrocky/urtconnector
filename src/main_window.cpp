@@ -19,6 +19,7 @@
 #include <QHeaderView>
 #include <QProcess>
 #include <QToolBar>
+#include <QUuid>
 
 #include <cl/syslog/manager.h>
 #include <common/exception.h>
@@ -44,13 +45,20 @@
 #include <tracking/manager.h>
 #include <tracking/context.h>
 #include <tracking/pointers.h>
+#include <tracking/task.h>
 #include <tracking/conditions/reg_conditions.h>
+#include <tracking/conditions/server_filter_condition.h>
 #include <tracking/actions/reg_actions.h>
+#include <tracking/actions/play_sound_action.h>
+#include <tracking/actions/connect_action.h>
+#include <tracking/actions/show_query_action.h>
 
 #include <filters/filter_factory.h>
 #include <filters/reg_filters.h>
 #include <filters/filter_edit_widget.h>
 #include <filters/filter_list.h>
+#include <filters/composite_filter.h>
+#include <filters/hide_full_filter.h>
 
 #include "config.h"
 #include "ui_main_window.h"
@@ -142,7 +150,7 @@ main_window::main_window(QWidget *parent)
     ui_->setupUi(this);
 
     ui_->server_info_browser->set_bookmarks( bookmarks_ );
-    
+
     tab_toolbar_ = addToolBar(tr("Current tab toolbar"));
     tab_toolbar_->setObjectName("tab_toolbar");
 
@@ -150,7 +158,7 @@ main_window::main_window(QWidget *parent)
 
     tab_widget_ = new main_tab_widget(this);
     setCentralWidget(tab_widget_);
-    
+
     server_info_updater_ = new QAccumulatingConnection(300, QAccumulatingConnection::Periodically, this);
     connect(server_info_updater_, SIGNAL(signal()), SLOT(update_server_info()));
     connect(all_sl_.get(), SIGNAL(changed()), server_info_updater_, SLOT(emitSignal()));
@@ -167,7 +175,7 @@ main_window::main_window(QWidget *parent)
                                     tr("Copy server info to clipboard"), this);
     copy_info_action_->setShortcut(QKeySequence::Copy);
     connect(copy_info_action_, SIGNAL(triggered()), SLOT(copy_info()));
-    
+
     QMenu* m = new QMenu(this);
 //    m->addAction(anticheat_open_action_);
     m->addAction(anticheat_configure_action_);
@@ -189,7 +197,7 @@ main_window::main_window(QWidget *parent)
     tray_menu_->addAction(ui_->actionShow);
     tray_menu_->addSeparator();
     tray_menu_->addAction(ui_->actionQuit);
-    
+
     tray_ = new QSystemTrayIcon(this);
     tray_->setIcon(QIcon("images:logo.png"));
     tray_->show();
@@ -204,10 +212,10 @@ main_window::main_window(QWidget *parent)
     using namespace tracking;
     update_dispatcher_ = new update_dispatcher(all_sl_, gi_, que_, this);
 
-    context_p track_ctx(new context_t(all_sl_, update_dispatcher_, tray_, this,
-                                      boost::bind(&main_window::select_server, this, _1)));
-    track_cond_factory_ = reg_conditions(track_ctx);
-    track_acts_factory_ = reg_actions(track_ctx);
+    track_ctx_.reset(new context_t(all_sl_, update_dispatcher_, tray_, this,
+                                   boost::bind(&main_window::select_server, this, _1)));
+    track_cond_factory_ = reg_conditions(track_ctx_);
+    track_acts_factory_ = reg_actions(track_ctx_);
 
     track_man_ = new manager(this);
     track_db_saver_ = new db_saver(track_man_, track_cond_factory_,
@@ -217,13 +225,13 @@ main_window::main_window(QWidget *parent)
     ui_->tasks_tracking_dock->setWidget(tp);
     ////////////////////////////////////////////////////////////////////////////
 
-    tab_context ctx(all_sl_, filter_factory_, bookmarks_, que_, &gi_, 
-                    ui_->actionConnect, track_man_, track_ctx);
+    tab_context ctx(all_sl_, filter_factory_, bookmarks_, que_, &gi_,
+                    ui_->actionConnect, track_man_, track_ctx_);
 
     fav_list_ = new bookmark_tab("bookmarks_list", ctx, this);
     tab_widget_->add_widget(fav_list_);
     connect(fav_list_, SIGNAL(selection_changed()), SLOT(selection_changed()));
-    
+
     all_list_ = new server_list_tab("full_list", ctx, this);
     tab_widget_->add_widget(all_list_);
     connect(all_list_, SIGNAL(selection_changed()), SLOT(selection_changed()));
@@ -272,7 +280,7 @@ main_window::main_window(QWidget *parent)
     setVisible( !(app_settings().start_hidden()) );
 
     current_tab_changed();
-    
+
     // launch tracking
     track_man_->start();
 }
@@ -286,7 +294,7 @@ void main_window::clipboard_info_obtained()
 {
     ui_->qlServerEdit->setText(clipper_->address());
     ui_->qlPasswordEdit->setText(clipper_->password());
-    tray_->showMessage(tr("Server info catched"), 
+    tray_->showMessage(tr("Server info catched"),
                        tr("Address: %1\nPassword: %2\n\n"
                        "Click this message to open UrTConnector.")
                        .arg(clipper_->address())
@@ -317,7 +325,7 @@ void main_window::show_options()
     d.add_item( new anticheat::settings_widget() );
 
     d.exec();
-    
+
     update_geoip_database();
     history_list_->set_group_mode(as.history_grouping());
 }
@@ -456,16 +464,33 @@ void main_window::connect_to_server(const server_id& id,
             max_slots = info->public_slots();
 
         if (info->players.size() >= max_slots)
-            msg = tr("Server is full.");
+        {
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Question);
+            msg.setWindowTitle(tr("Connecting to the server"));
+            msg.setText(tr("Server is full."));
+            msg.setInformativeText(tr("Would you like to wait until there will "
+                                      "be empty slots or to connect right now?"));
+            QPushButton* wait_btn = msg.addButton(tr("Wait for empty slots"), QMessageBox::AcceptRole);
+            QPushButton* connect_btn = msg.addButton(tr("Connect right now"), QMessageBox::AcceptRole);
+            QPushButton* cancel_btn = msg.addButton(QMessageBox::Cancel);
+            msg.setDefaultButton(wait_btn);
+            msg.exec();
+            if (msg.clickedButton() == wait_btn)
+            {
+                create_waiting_task(bm.id());
+                return;
+            }
+            if (msg.clickedButton() == cancel_btn || msg.clickedButton() == 0)
+                return;
+        }
 
         if (info->players.size() == 0)
-            msg = tr("Server is empty.");
-
-        if (!msg.isEmpty())
         {
+
             if (QMessageBox::warning(this
                 , tr("Connecting to the server")
-                , tr("%1\n\nDo you want to continue connecting?").arg(msg)
+                , tr("Server is empty.\n\nDo you want to continue connecting?").arg(msg)
                 , QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes
                 ) != QMessageBox::Yes)
                 return;
@@ -589,7 +614,7 @@ void main_window::save_geometry()
 void main_window::load_geometry()
 {
     qsettings_p s = base_settings::get_settings( state_settings::uid() );
-                
+
     state_settings state_s;
     restoreGeometry( state_s.geometry() );
 
@@ -674,7 +699,7 @@ void main_window::quit_action()
     tray_->hide();
     save_state_at_exit();
     qApp->quit();
-    
+
 }
 
 void main_window::tray_activated(QSystemTrayIcon::ActivationReason reason)
@@ -786,4 +811,56 @@ void main_window::select_server(const server_id& id)
 {
     tab_widget_->setCurrentIndex(1);
     all_list_->set_selected_server(id);
+}
+
+void main_window::create_waiting_task(const server_id& id)
+{
+    using namespace tracking;
+
+    server_info_p si = all_sl_->get(id);
+
+    // creating task
+    task_t* task = new task_t(this);
+    task->set_caption(tr("Connect to %1").arg(si->name));
+    task->set_operation_mode(task_t::om_destroy_after_trigger);
+    QUuid uid = QUuid::createUuid();
+    task->set_id(uid.toString());
+
+    // assign filter condition to the task
+    condition_class_p cc(new server_filter_condition_class(track_ctx_));
+    condition_p cond = cc->create();
+    server_filter_condition* sfc = dynamic_cast<server_filter_condition*>(cond.get());
+    task->set_condition(cond);
+    sfc->set_interval(5000);
+    sfc->set_servers(id.address());
+    sfc->set_use_auto_update(true);
+
+    // add free slots filter
+    composite_filter* cf = dynamic_cast<composite_filter*>(sfc->filters()->root_filter().get());
+
+    filter_class_p fc(new hide_full_filter_class);
+    filter_p flt = fc->create_filter();
+    flt->set_name(QUuid::createUuid().toString());
+    cf->add_filter(flt);
+
+    // add play sound action
+    action_class_p ac(new play_sound_action_class(track_ctx_));
+    action_p a = ac->create();
+    task->add_action(a);
+
+    // add query action
+    ac.reset(new show_query_action_class(track_ctx_));
+    a = ac->create();
+    show_query_action* qa = dynamic_cast<show_query_action*>(a.get());
+    qa->set_title(tr("Connect"));
+    qa->set_message(tr("On the server <b>%server</b> appeared empty slots.<br><br>Do you wish to connect?"));
+    task->add_action(a);
+
+    // add connect action
+    ac.reset(new connect_action_class(track_ctx_));
+    a = ac->create();
+    task->add_action(a);
+
+    track_man_->add_task(task);
+    task->condition()->start();
 }

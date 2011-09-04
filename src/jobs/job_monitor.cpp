@@ -159,7 +159,7 @@ void job_que_popup::setVisible(bool visible)
     {
         update_timer_->stop();
     }
-    
+
     QWidget::setVisible(visible);
 }
 
@@ -221,8 +221,9 @@ void job_que_popup::update_contents()
     else
     {
         correct_position();
-        if (job_added)
-            show_temporarily();
+        // commented because it
+//        if (job_added)
+//            show_temporarily();
     }
 }
 

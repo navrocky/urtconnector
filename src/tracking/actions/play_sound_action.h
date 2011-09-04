@@ -8,6 +8,11 @@
 
 class QButtonLineEdit;
 
+namespace Phonon
+{
+class MediaObject;
+}
+
 namespace tracking
 {
 
@@ -35,6 +40,7 @@ public:
 
 private:
     QString sound_file_;
+    QPointer<Phonon::MediaObject> player_;
 };
 
 class play_sound_option_widget : public QWidget

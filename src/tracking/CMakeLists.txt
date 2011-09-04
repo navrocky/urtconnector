@@ -1,6 +1,6 @@
 set(TARGET tracking)
 
-find_package(Qt4 REQUIRED QtCore QtGui)
+find_package(Qt4 REQUIRED QtCore QtGui Phonon)
 include(${QT_USE_FILE})
 
 set(HEADERS
@@ -82,7 +82,7 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
-target_link_libraries( ${TARGET} ${QT_LIBRARIES} 
+target_link_libraries( ${TARGET} ${QT_LIBRARIES}
     common
     updater
     tabs

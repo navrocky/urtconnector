@@ -7,9 +7,6 @@
 #include <QSystemTrayIcon>
 #include <QPointer>
 
-#include "pointers.h"
-
-#include "app_options.h"
 #include <launcher/launcher.h>
 #include <common/server_list.h>
 #include <common/server_bookmark.h>
@@ -23,6 +20,9 @@
 #include <friend_list/friend_list.h>
 #include <updater/update_dispatcher.h>
 #include <tracking/pointers.h>
+
+#include "pointers.h"
+#include "app_options.h"
 #include "clipper.h"
 
 class QTimer;
@@ -72,7 +72,7 @@ private slots:
     void copy_info();
 
     void open_remote_console();
-    
+
     void clear_all();
     void clear_selected();
     void about_qt();
@@ -82,6 +82,7 @@ private slots:
 
     void save_bookmarks();
     void add_to_friend( const player_info& player );
+
 private:
     void load_all_at_start();
     void save_state_at_exit();
@@ -99,6 +100,7 @@ private:
     server_id selected() const;
     main_tab* current_tab_widget() const;
     server_info_p selected_info() const;
+    void create_waiting_task(const server_id&);
 
     boost::shared_ptr<Ui_MainWindowClass> ui_;
     main_tab_widget* tab_widget_;
@@ -106,7 +108,7 @@ private:
     bookmark_tab* fav_list_;
     history_widget* history_list_;
     friend_list_widget* friends_list_;
-    
+
     server_list_p all_sl_;
     server_bookmark_list_p bookmarks_;
     friend_list friends_;
@@ -133,6 +135,7 @@ private:
     tracking::condition_factory_p track_cond_factory_;
     tracking::action_factory_p track_acts_factory_;
     tracking::db_saver* track_db_saver_;
+    tracking::context_p track_ctx_;
 };
 
 #endif

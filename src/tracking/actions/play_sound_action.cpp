@@ -6,6 +6,8 @@
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QToolButton>
+#include <QFileInfo>
+#include <phonon/MediaObject>
 
 #include <common/qbuttonlineedit.h>
 
@@ -44,7 +46,16 @@ action_t::result_t play_sound_action::execute()
     if (sound_file_.isEmpty())
         QApplication::beep();
     else
-        QSound::play(sound_file_);
+    {
+        using namespace Phonon;
+        if (!player_)
+        {
+            player_ = createPlayer(MusicCategory, MediaSource(sound_file_));
+            player_->setParent(this);
+        }
+        player_->seek(0);
+        player_->play();
+    }
     return r_continue;
 }
 
@@ -70,6 +81,7 @@ void play_sound_action::set_sound_file(const QString& val)
     if (sound_file_ == val)
         return;
     sound_file_ = val;
+    delete player_;
     emit changed();
 }
 
@@ -95,7 +107,7 @@ play_sound_option_widget::play_sound_option_widget(play_sound_action* action, QW
 
     file_edit_ = new QButtonLineEdit(this);
     file_edit_->addActionButton(select_file_action_);
-    file_edit_->setToolTip(tr("Sound file name. At this moment only WAV files can be played."));
+    file_edit_->setToolTip(tr("Sound file name."));
     connect(file_edit_, SIGNAL(textChanged(QString)), SLOT(text_changed()));
     l->addWidget(file_edit_);
     file_edit_->setText(action_->sound_file());
@@ -103,10 +115,7 @@ play_sound_option_widget::play_sound_option_widget(play_sound_action* action, QW
 
 void play_sound_option_widget::test_sound()
 {
-    if (file_edit_->text().isEmpty())
-        QApplication::beep();
-    else
-        QSound::play(file_edit_->text());
+    action_->execute();
 }
 
 void play_sound_option_widget::text_changed()
@@ -116,8 +125,10 @@ void play_sound_option_widget::text_changed()
 
 void play_sound_option_widget::select_file()
 {
-    QString  file = QFileDialog::getOpenFileName(this, tr("Select sound file"), QString(),
-                                 tr("Sounds (*.wav);;All files (*.*)"));
+    QFileInfo fi(file_edit_->text());
+    QString dir = fi.absolutePath();
+    QString file = QFileDialog::getOpenFileName(this, tr("Select sound file"), dir,
+                                 tr("Sounds (*.wav *.ogg *.mp3);;All files (*.*)"));
     if (!file.isEmpty())
         file_edit_->setText(file);
 }

@@ -24,12 +24,6 @@
 #include <tabs/common_item_tags.h>
 #include <tabs/visible_updater.h>
 #include <jobs/job_queue.h>
-#include "../job_update_selected.h"
-#include "../job_update_from_master.h"
-#include "friend_list.h"
-#include "friend_prop_dialog.h"
-#include "friend_list_db_saver.h"
-#include "common/qtreesearcher.h"
 #include <tabs/status_item_delegate.h>
 #include <tabs/common_item_tags.h>
 #include <tabs/tools.h>
@@ -39,9 +33,15 @@
 #include <tracking/actions/select_server_action.h>
 #include <tracking/actions/show_query_action.h>
 #include <tracking/actions/connect_action.h>
+#include <tracking/actions/play_sound_action.h>
 #include <filters/composite_filter.h>
 #include <filters/player_filter.h>
 #include <filters/filter_list.h>
+#include "../job_update_selected.h"
+#include "../job_update_from_master.h"
+#include "friend_list.h"
+#include "friend_prop_dialog.h"
+#include "friend_list_db_saver.h"
 
 Q_DECLARE_METATYPE(friend_record)
 Q_DECLARE_METATYPE(QAbstractItemDelegate*)
@@ -139,7 +139,7 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 , online_count_(0)
 {
     setWindowIcon(QIcon("icons:friends.png"));
-    
+
     add_action_ = new QAction(QIcon("icons:add.png"), tr("Add new friend"), this);
     connect(add_action_, SIGNAL(triggered()), SLOT(add()));
 
@@ -160,9 +160,9 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 
     wait_for_friend_action_ = new QAction(QIcon("icons:chronometer.png"), tr("Wait for the friend"), this);
     connect(wait_for_friend_action_, SIGNAL(triggered()), SLOT(wait_for_friend()));
-    
+
     QList<QAction*> acts;
-    
+
     acts << add_action_
         << edit_action_
         << remove_action_
@@ -174,7 +174,7 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
         << wait_for_friend_action_;
 
     addActions(acts);
-    
+
     tree_ = new QTreeWidget(this);
     setCentralWidget(tree_);
     tree_->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -189,12 +189,12 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
 
     status_delegate_ = new status_item_delegate(ctx.serv_list(), this);
     name_delegate_ = new name_delegate(this, tree_);
-    
+
     tree_->setContextMenuPolicy(Qt::ActionsContextMenu);
     tree_->addAction(ctx.connect_action());
 
     tree_->addActions( actions() );
-    
+
     new item_view_dblclick_action_link(this, tree_, ctx.connect_action());
 
     QTreeWidgetItem* it = tree_->headerItem();
@@ -214,14 +214,14 @@ friend_list_widget::friend_list_widget(friend_list* fl, const tab_context& ctx, 
     hdr->resizeSection(3, 50);
     hdr->resizeSection(4, 60);
     hdr->setSortIndicator(3, Qt::AscendingOrder);
-    
+
     connect(friends_, SIGNAL(changed()), SLOT(update_contents()));
     connect(tree_, SIGNAL(itemSelectionChanged()), SLOT(update_actions()));
     connect(tree_, SIGNAL(itemSelectionChanged()), SIGNAL(selection_changed()));
-    
+
     // create list saver
     new friend_list_db_saver(friends_, this);
-    
+
     new QAccumulatingConnection(context().serv_list().get(), SIGNAL(changed()),
                                 updater_, SLOT(update_contents()), 200,
                                 QAccumulatingConnection::Periodically,
@@ -255,12 +255,12 @@ void friend_list_widget::update_contents()
 {
     online_count_ = 0;
     const friend_list::friend_records_t& fl = friends_->list();
-    
+
     smart_update_tree_contents(fl, c_friend_role, tree_, 0,
         boost::bind(&friend_list_widget::update_friend_item, this, _1, _2), items_map_ );
 
 
-    
+
     caption_.set_visible_count(online_count_);
     caption_.set_total_count(tree_->topLevelItemCount());
 
@@ -315,25 +315,25 @@ void friend_list_widget::update_friend_item(QTreeWidgetItem* item, const friend_
 
     server_id_list ids = find_server_with_player(fr);
     online_count_ += ids.size();
-    
+
     int old_cnt = item->childCount();
-    
+
     // take old items list
     typedef updater_traits<server_id>::ItemsByElement srv_items_map_t;
-    
+
     srv_items_map_t items;
     for (int i = 0; i < item->childCount(); i++)
     {
         QTreeWidgetItem* it = item->child(i);
         items[it->data(0, c_id_role).value<server_id>()] = it;
     }
-    
+
     // update items
-    smart_update_tree_contents( ids, c_id_role, tree_, item, 
+    smart_update_tree_contents( ids, c_id_role, tree_, item,
         boost::bind(&friend_list_widget::update_server_item, this, _1, _2), items);
-    
+
     if (old_cnt == 0 && item->childCount() > 0)
-        item->setExpanded(true);        
+        item->setExpanded(true);
 }
 
 void friend_list_widget::update_server_item(QTreeWidgetItem* item, const server_id& id)
@@ -417,6 +417,11 @@ void friend_list_widget::wait_for_friend()
     // add select action
     action_class_p ac(new select_server_action_class(context().track_ctx()));
     action_p a = ac->create();
+    task->add_action(a);
+
+    // add play sound action
+    ac.reset(new play_sound_action_class(context().track_ctx()));
+    a = ac->create();
     task->add_action(a);
 
     // add query action
