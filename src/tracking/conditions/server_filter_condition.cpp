@@ -143,7 +143,7 @@ void server_filter_condition::do_start()
     srv_list_changed_conn_ = new QAccumulatingConnection(ctx->srv_list.get(),
         SIGNAL(changed()), this, SLOT(srv_list_changed()), 500,
         QAccumulatingConnection::Periodically, this);
-    
+
     skipped_servers_.clear();
 }
 
@@ -179,7 +179,7 @@ void server_filter_condition::srv_list_changed()
                 continue;
 
             server_info_p si = r.second;
-            if (si->status == server_info::s_up && !si->updating && filters_->filtrate(*si, ctx))
+            if (si && si->status == server_info::s_up && !si->updating && filters_->filtrate(*si, ctx))
             {
                 server_found(r.first);
                 if (!is_started())
@@ -195,7 +195,7 @@ void server_filter_condition::srv_list_changed()
                 continue;
 
             server_info_p si = srv_list->get(id);
-            if (si->status == server_info::s_up && !si->updating && filters_->filtrate(*si, ctx))
+            if (si && si->status == server_info::s_up && !si->updating && filters_->filtrate(*si, ctx))
             {
                 server_found(id);
                 if (!is_started())
@@ -281,7 +281,7 @@ void server_filter_condition_widget::spin_changed(double val)
 void server_filter_condition_widget::srv_list_edit_finished()
 {
     const QString& servers = servers_edit_->text();
-    
+
     // check list syntax
     server_id_list srv_list;
     QStringList sl = servers.split(QRegExp("[;,\\s]+"), QString::SkipEmptyParts);
