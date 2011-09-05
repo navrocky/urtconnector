@@ -126,6 +126,8 @@ src/common/main_tab_widget.cpp -text
 src/common/main_tab_widget.h -text
 src/common/notificator.cpp -text
 src/common/notificator.h -text
+src/common/play_sound.cpp -text
+src/common/play_sound.h -text
 src/common/player_info.cpp -text
 src/common/player_info.h -text
 src/common/qaccumulatingconnection.cpp -text
@@ -620,6 +622,7 @@ src/setting_forms/update_settings_form.ui -text
 src/settings/CMakeLists.txt -text
 src/settings/settings.cpp -text
 src/settings/settings.h -text
+src/sounds/notify1.wav -text
 src/sql/populate_sqlite.sql -text
 src/tabs/CMakeLists.txt -text
 src/tabs/bookmark_tab.cpp -text

@@ -1,6 +1,6 @@
 set(TARGET tracking)
 
-find_package(Qt4 REQUIRED QtCore QtGui Phonon)
+find_package(Qt4 REQUIRED QtCore QtGui)
 include(${QT_USE_FILE})
 
 set(HEADERS

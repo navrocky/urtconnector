@@ -468,11 +468,14 @@ void main_window::connect_to_server(const server_id& id,
             QMessageBox msg;
             msg.setIcon(QMessageBox::Question);
             msg.setWindowTitle(tr("Connecting to the server"));
+            msg.setWindowIcon(QIcon("icons:urtconnector.png"));
             msg.setText(tr("Server is full."));
             msg.setInformativeText(tr("Would you like to wait until there will "
                                       "be empty slots or to connect right now?"));
             QPushButton* wait_btn = msg.addButton(tr("Wait for empty slots"), QMessageBox::AcceptRole);
+            wait_btn->setIcon(QIcon("icons:chronometer.png"));
             QPushButton* connect_btn = msg.addButton(tr("Connect right now"), QMessageBox::AcceptRole);
+            connect_btn->setIcon(QIcon("icons:launch.png"));
             QPushButton* cancel_btn = msg.addButton(QMessageBox::Cancel);
             msg.setDefaultButton(wait_btn);
             msg.exec();

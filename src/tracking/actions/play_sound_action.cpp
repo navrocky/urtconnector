@@ -10,6 +10,7 @@
 #include <phonon/MediaObject>
 
 #include <common/qbuttonlineedit.h>
+#include <common/play_sound.h>
 
 #include "../context.h"
 #include "../tools.h"
@@ -46,16 +47,7 @@ action_t::result_t play_sound_action::execute()
     if (sound_file_.isEmpty())
         QApplication::beep();
     else
-    {
-        using namespace Phonon;
-        if (!player_)
-        {
-            player_ = createPlayer(MusicCategory, MediaSource(sound_file_));
-            player_->setParent(this);
-        }
-        player_->seek(0);
-        player_->play();
-    }
+        play_sound(sound_file_);
     return r_continue;
 }
 
@@ -81,7 +73,6 @@ void play_sound_action::set_sound_file(const QString& val)
     if (sound_file_ == val)
         return;
     sound_file_ = val;
-    delete player_;
     emit changed();
 }
 

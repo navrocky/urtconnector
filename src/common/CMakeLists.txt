@@ -1,6 +1,6 @@
 set(TARGET common)
 
-find_package(Qt4 REQUIRED QtCore )
+find_package(Qt4 REQUIRED QtCore Phonon)
 include(${QT_USE_FILE})
 
 set(HEADERS
@@ -25,6 +25,7 @@ set(HEADERS
     qtreesearcher.h
     class_list.h
     notificator.h
+    play_sound.h
 )
 
 set(MOC_HEADERS
@@ -56,6 +57,7 @@ set(SOURCES
     list_caption_updater.cpp
     qtreesearcher.cpp
     notificator.cpp
+    play_sound.cpp
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)
