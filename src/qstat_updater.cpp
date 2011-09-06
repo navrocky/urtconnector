@@ -109,7 +109,8 @@ void qstat_updater::refresh_all()
     proc_.start("/bin/bash", sl);
 #else
     qstat_settings qs;
-    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";// << "-retry" << "10";
+    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-maxsim" << "200" << "-mi" << "0.1" << "-retry" << "15";
+    //sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";
     sl << "-q3m" << qs.master_server();
     proc_->start(qs.qstat_path(), sl);
 #endif
