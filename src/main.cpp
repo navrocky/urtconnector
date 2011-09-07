@@ -21,6 +21,7 @@
 #include <common/exception.h>
 #include <common/str_convert.h>
 #include <common/tools.h>
+#include <common/qstat_options.h>
 #include <launcher/launcher.h>
 #include <anticheat/settings.h>
 #include <anticheat/tools.h>
@@ -94,7 +95,7 @@ void init_application(QApplication* a)
     QTextCodec::setCodecForTr( QTextCodec::codecForName("utf8") );
 
     set.register_group( clip_settings::uid(),  "clipboard",  "options.ini" );
-    set.register_group( qstat_settings::uid(), "qstat_opts", "options.ini" );
+    set.register_group( qstat_options::uid(), "qstat_opts", "options.ini" );
     
     //Registering state_settings in separate file
     set.register_file( state_settings::uid(), "state.ini" );

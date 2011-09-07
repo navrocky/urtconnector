@@ -75,7 +75,6 @@ set(HEADERS
     server_info_html.h
     config.h
     qstat_updater.h
-    qstat_options.h
     jobs/job.h
     jobs/job_queue.h
     jobs/job_monitor.h
@@ -119,7 +118,6 @@ set(SOURCES
     app_options_saver.cpp
     server_info_html.cpp
     qstat_updater.cpp
-    qstat_options.cpp
     jobs/job.cpp
     jobs/job_queue.cpp
     jobs/job_monitor.cpp

@@ -6,11 +6,10 @@
 #include <QPointer>
 #include <QXmlStreamReader>
 
-#include "qstat_options.h"
-#include "pointers.h"
 #include <common/server_info.h>
 #include <common/player_info.h>
 #include <geoip/geoip.h>
+#include "pointers.h"
 
 class qstat_updater : public QObject
 {

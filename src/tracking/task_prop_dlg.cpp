@@ -203,7 +203,7 @@ task_prop_dlg::task_prop_dlg(task_t* t,
     ui_->splitter->setStretchFactor(0, 250);
     ui_->splitter->setStretchFactor(1, 100);
 
-    base_settings::settings_ptr s = base_settings::get_settings(c_task_prop_dlg);
+    base_settings::qsettings_p s = base_settings::get_settings(c_task_prop_dlg);
     QVariant v = s->value(c_state);
     if (v.isValid())
         restoreGeometry(v.toByteArray());
@@ -412,7 +412,7 @@ void task_prop_dlg::move_down()
 
 void task_prop_dlg::closeEvent(QCloseEvent* e)
 {
-    base_settings::settings_ptr s = base_settings::get_settings(c_task_prop_dlg);
+    base_settings::qsettings_p s = base_settings::get_settings(c_task_prop_dlg);
     s->setValue(c_state, saveGeometry());
     s->setValue(c_splitter, ui_->splitter->saveState());
     QDialog::closeEvent(e);

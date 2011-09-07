@@ -5,6 +5,8 @@ include(${QT_USE_FILE})
 
 set(HEADERS
     settings.h
+    settings_generator.h
+    settings_generator_impl.h
 )
 
 set(MOC_HEADERS

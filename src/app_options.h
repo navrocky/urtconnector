@@ -3,10 +3,8 @@
 
 #include <QString>
 
-#include "settings/settings.h"
-
+#include <settings/settings.h>
 #include <common/server_bookmark.h>
-#include "qstat_options.h"
 
 class QTranslator;
 
@@ -35,9 +33,6 @@ public:
 
 //    /*! Servers options list. */
 //    server_fav_list servers;
-    
-    qstat_settings qstat_opts;
-
     /*! A path to GeoIP database file */
     QString geoip_database() const;
     void set_geoip_database( const QString& file );

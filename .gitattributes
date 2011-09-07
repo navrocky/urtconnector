@@ -134,6 +134,8 @@ src/common/qaccumulatingconnection.cpp -text
 src/common/qaccumulatingconnection.h -text
 src/common/qbuttonlineedit.cpp -text
 src/common/qbuttonlineedit.h -text
+src/common/qstat_options.cpp -text
+src/common/qstat_options.h -text
 src/common/qt_syslog.cpp -text
 src/common/qt_syslog.h -text
 src/common/qtreesearcher.cpp -text
@@ -573,8 +575,6 @@ src/preferences/tests/main.cpp -text
 src/push_button_action_link.cpp -text
 src/push_button_action_link.h -text
 src/q3proto/CMakeLists.txt -text
-src/qstat_options.cpp -text
-src/qstat_options.h -text
 src/qstat_updater.cpp -text
 src/qstat_updater.h -text
 src/qtsingleapplication/CMakeLists.txt -text
@@ -622,6 +622,8 @@ src/setting_forms/update_settings_form.ui -text
 src/settings/CMakeLists.txt -text
 src/settings/settings.cpp -text
 src/settings/settings.h -text
+src/settings/settings_generator.h -text
+src/settings/settings_generator_impl.h -text
 src/sounds/notify1.wav -text
 src/sql/populate_sqlite.sql -text
 src/tabs/CMakeLists.txt -text

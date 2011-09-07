@@ -3,8 +3,8 @@
 #include <QFileDialog>
 
 #include <common/scoped_tools.h>
+#include <common/qstat_options.h>
 #include "app_options.h"
-#include "qstat_options.h"
 
 #include "ui_update_settings_form.h"
 
@@ -45,7 +45,7 @@ void update_settings_form::update_preferences()
     scoped_value_change<bool> s(lock_change_, true, false);
 
     app_settings as;
-    qstat_settings qs;
+    qstat_options qs;
 
     p_->ui.center_current_row_check->setChecked(as.center_current_row());
     p_->ui.clear_offline_check->setChecked(as.clear_offline());
@@ -57,13 +57,13 @@ void update_settings_form::update_preferences()
 void update_settings_form::accept()
 {
     app_settings as;
-    qstat_settings qs;
+    qstat_options qs;
 
     as.set_center_current_row(p_->ui.center_current_row_check->isChecked());
     as.set_clear_offline(p_->ui.clear_offline_check->isChecked());
-    qs.set_qstat_path(p_->ui.qstat_binary_edit->text());
-    qs.set_master_server(p_->ui.qstat_master_edit->text());
     as.set_geoip_database(p_->ui.geoip_database_edit->text());
+    qs.qstat_path_set(p_->ui.qstat_binary_edit->text());
+    qs.master_server_set(p_->ui.qstat_master_edit->text());
 }
 
 void update_settings_form::reject()

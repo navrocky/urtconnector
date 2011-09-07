@@ -60,7 +60,7 @@ void history::save() const
 {
     history_list_t::const_iterator it = list_.begin();
 
-    base_settings::settings_ptr history_file = base_settings().get_settings( "history" );
+    base_settings::qsettings_p history_file = base_settings().get_settings( "history" );
     
     history_file->beginWriteArray("history");
 
@@ -82,7 +82,7 @@ void history::load()
     QDateTime timestamp;
     QString server_name, address, password, player_name;
     
-    base_settings::settings_ptr history_file = base_settings().get_settings( "history" );
+    base_settings::qsettings_p history_file = base_settings().get_settings( "history" );
     
     int size = history_file->beginReadArray("history");
     

@@ -26,6 +26,7 @@ set(HEADERS
     class_list.h
     notificator.h
     play_sound.h
+    qstat_options.h
 )
 
 set(MOC_HEADERS
@@ -58,6 +59,7 @@ set(SOURCES
     qtreesearcher.cpp
     notificator.cpp
     play_sound.cpp
+    qstat_options.cpp
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)

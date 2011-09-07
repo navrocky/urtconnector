@@ -32,10 +32,10 @@ public:
 
 private:
     QString uid_;
-    base_settings::settings_ptr fs;
+    base_settings::qsettings_p fs;
     
     //TODO backward config compatibility - remove on 0.8.0
-    base_settings::settings_ptr ts_; // - the main_tab settings
+    base_settings::qsettings_p ts_; // - the main_tab settings
 };
 
 class filtered_tab : public main_tab

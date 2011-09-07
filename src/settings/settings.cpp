@@ -12,7 +12,7 @@
 
 const QSettings::Format format_c = QSettings::IniFormat;
 
-typedef std::map<QString, base_settings::settings_ptr > settings_map;
+typedef std::map<QString, base_settings::qsettings_p > settings_map;
 
 class settings_holder: public QObject{
 private:
@@ -65,7 +65,7 @@ struct base_settings::pimpl
     }
 
     ///Get internal QSettings by \p uid. Group is created if no group found.
-    settings_ptr get_settings(const QString & uid)
+    qsettings_p get_settings(const QString & uid)
     {
         settings_map::const_iterator it = registered_.find(uid);
         if (it == registered_.end())
@@ -75,17 +75,17 @@ struct base_settings::pimpl
     }
 
     ///Create QSettings object from main object and enter to the \p uid group
-    settings_ptr create_group(const QString& uid, const QString group = QString())
+    qsettings_p create_group(const QString& uid, const QString group = QString())
     {
-        settings_ptr s(new QSettings(settings_->fileName(), format_c));
+        qsettings_p s(new QSettings(settings_->fileName(), format_c));
         s->beginGroup((group.isEmpty()) ? uid : group);
         return s;
     }
 
     ///Create QSettings object from main object and enter to the \p uid group
-    settings_ptr create_group( const QString& uid, const QString group, settings_ptr settings )
+    qsettings_p create_group( const QString& uid, const QString group, qsettings_p settings )
     {
-        settings_ptr s(new QSettings(settings->fileName(), format_c));
+        qsettings_p s(new QSettings(settings->fileName(), format_c));
         if( !settings->group().isEmpty() )
             s->beginGroup( settings->group() );
         s->beginGroup((group.isEmpty()) ? uid : group);
@@ -94,13 +94,13 @@ struct base_settings::pimpl
 
     ///Create QSettings object from \p filename file. If \p relative is \b false then \p filename counts as absolute path.
 
-    settings_ptr create_file(const QString& filename, bool relative)
+    qsettings_p create_file(const QString& filename, bool relative)
     {
         QString dir = (relative) ? dir_path() + "/" : QString();
-        return settings_ptr(new QSettings(dir + filename, format_c));
+        return qsettings_p(new QSettings(dir + filename, format_c));
     }
 
-    settings_ptr settings_;
+    qsettings_p settings_;
     settings_map& registered_;
 };
 
@@ -136,18 +136,18 @@ void base_settings::unregister(const QString& uid)
     p_->registered_.erase(uid);
 }
 
-base_settings::settings_ptr base_settings::main()
+base_settings::qsettings_p base_settings::main()
 {
     return p_->settings_;
 }
 
-base_settings::settings_ptr base_settings::get_settings(const QString& uid)
+base_settings::qsettings_p base_settings::get_settings(const QString& uid)
 {
     base_settings s;
     return s.p_->get_settings(uid);
 }
 
-void update_setting_value(base_settings::settings_ptr& old_s, base_settings::settings_ptr& new_s, const QString& old_key, const QString& new_key)
+void update_setting_value(base_settings::qsettings_p& old_s, base_settings::qsettings_p& new_s, const QString& old_key, const QString& new_key)
 {
     if( !old_s->childKeys().contains( old_key ) )
         return;
@@ -156,9 +156,9 @@ void update_setting_value(base_settings::settings_ptr& old_s, base_settings::set
     old_s->remove( old_key );
 }
 
-base_settings::settings_ptr clone_settings(base_settings::settings_ptr s, const QString& filename)
+base_settings::qsettings_p clone_settings(base_settings::qsettings_p s, const QString& filename)
 {
-    base_settings::settings_ptr dup( new QSettings( filename, s->format() ) );
+    base_settings::qsettings_p dup( new QSettings( filename, s->format() ) );
     
     BOOST_FOREACH( const QString& key, s->allKeys() )
         dup->setValue( key, s->value(key) );
@@ -168,7 +168,7 @@ base_settings::settings_ptr clone_settings(base_settings::settings_ptr s, const 
 }
 
 
-void copy_settings(base_settings::settings_ptr src, base_settings::settings_ptr dst)
+void copy_settings(base_settings::qsettings_p src, base_settings::qsettings_p dst)
 {
     //previously removing items from destination
     BOOST_FOREACH( const QString& key, dst->allKeys() )

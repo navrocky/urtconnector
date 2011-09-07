@@ -63,11 +63,11 @@ public:
     const QString& uid() const {return uid_;}
 
     //TODO backward config compatibility - remove on 0.8.0
-    const base_settings::settings_ptr& ts() const { return st; }
+    const base_settings::qsettings_p& ts() const { return st; }
 
 private:
     QString uid_;
-    base_settings::settings_ptr st;
+    base_settings::qsettings_p st;
 };
 
 #endif

@@ -1,7 +1,6 @@
 
 #include <common/server_list.h>
 #include "qstat_updater.h"
-#include "qstat_options.h"
 #include "app_options.h"
 
 #include "job_update_from_master.h"

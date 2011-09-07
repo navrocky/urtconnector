@@ -9,8 +9,8 @@
 #include <common/scoped_tools.h>
 #include <common/exception.h>
 #include <common/tools.h>
+#include <common/qstat_options.h>
 #include "app_options.h"
-#include "qstat_options.h"
 
 #include "ui_application_settings_form.h"
 #include "application_settings_form.h"

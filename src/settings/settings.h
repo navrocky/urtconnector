@@ -36,7 +36,7 @@ class base_settings
 {
 public:
 
-    typedef boost::shared_ptr<QSettings> settings_ptr;
+    typedef boost::shared_ptr<QSettings> qsettings_p;
 
     base_settings(bool use_organization = false);
 
@@ -56,11 +56,11 @@ public:
     void unregister(const QString& uid);
 
     ///Get main QSettings object
-    settings_ptr main();
+    qsettings_p main();
 
     ///Get QSettings object registered byt \p uid.
     /*! If no object registered register_group(uid, uid) is called and created object returned */
-    static settings_ptr get_settings(const QString& uid);
+    static qsettings_p get_settings(const QString& uid);
 
 private:
     struct pimpl;
@@ -69,11 +69,11 @@ private:
 
 
 ///Take value from \p old_settings by \p old_key and put it to \p new_settigns by \p new_key. Old entry completely removed from old_settings
-void update_setting_value( base_settings::settings_ptr& old_setings, base_settings::settings_ptr& new_setings, const QString& old_key, const QString& new_key );
+void update_setting_value( base_settings::qsettings_p& old_setings, base_settings::qsettings_p& new_setings, const QString& old_key, const QString& new_key );
 
-base_settings::settings_ptr clone_settings( base_settings::settings_ptr s, const QString& filename );
+base_settings::qsettings_p clone_settings( base_settings::qsettings_p s, const QString& filename );
 
-void copy_settings( base_settings::settings_ptr src, base_settings::settings_ptr dst );
+void copy_settings( base_settings::qsettings_p src, base_settings::qsettings_p dst );
 
 
 
@@ -89,7 +89,7 @@ public:
         , part_( s_.get_settings(uid()) )
     {}
 
-    base_settings::settings_ptr part() const
+    base_settings::qsettings_p part() const
     {
         return part_;
     }
@@ -130,7 +130,7 @@ private:
     static QString uid_;
     base_settings s_;
 
-    base_settings::settings_ptr part_;
+    base_settings::qsettings_p part_;
     boost::shared_ptr<QTemporaryFile> file_;
 };
 

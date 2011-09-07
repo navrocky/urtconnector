@@ -7,7 +7,7 @@
 #include <common/exception.h>
 #include <common/server_id.h>
 #include <common/server_list.h>
-
+#include <common/qstat_options.h>
 
 SYSLOG_MODULE(qstat_updater)
 
@@ -103,17 +103,15 @@ void qstat_updater::refresh_all()
 
     qprocess_needed();
 
+    qstat_options qs;
     QStringList sl;
-#ifdef QSTAT_FAKE
-    sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
-    proc_.start("/bin/bash", sl);
-#else
-    qstat_settings qs;
-    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-maxsim" << "200" << "-mi" << "0.1" << "-retry" << "15";
-    //sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml";
-    sl << "-q3m" << qs.master_server();
+    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml"
+            << "-q3m" << qs.master_server()
+            << "-maxsim" << QString::number(qs.max_sim_queries())
+            << "-interval" << QString::number(qs.retry_interval()) 
+            << "-mi" << QString::number(qs.retry_master_interval())
+            << "-retry" << QString::number(qs.retry_number());
     proc_->start(qs.qstat_path(), sl);
-#endif
 }
 
 void qstat_updater::refresh_selected(const server_id_list& list)
@@ -143,18 +141,17 @@ void qstat_updater::refresh_selected(const server_id_list& list)
 
     qprocess_needed();
 
-#ifdef QSTAT_FAKE
-    //sl << "-c" << "cat ../doc/ExampleData/qstat_out.xml | awk '{print $0; system(\"usleep 50000\");}'";
-    sl << "-c" << "sleep 1; cat ../doc/bug1.txt | awk '{print $0;}'";
-    proc_.start("/bin/bash", sl);
-#else
-    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml" << "-retry" << "10";
+    qstat_options qs;
+
+    sl << "-P" << "-R" << "-pa" << "-ts" << "-nh" << "-xml"
+            << "-maxsim" << QString::number(qs.max_sim_queries())
+            << "-interval" << QString::number(qs.retry_interval())
+            << "-retry" << QString::number(qs.retry_number());
 
     for (server_id_list::const_iterator it = list.begin(); it != list.end(); it++)
         sl << "-q3s" << it->address();
 
-    proc_->start(qstat_settings().qstat_path(), sl);
-#endif
+    proc_->start(qs.qstat_path(), sl);
 }
 
 void qstat_updater::refresh_stop(bool clear_offline)
