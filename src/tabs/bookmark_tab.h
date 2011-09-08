@@ -32,6 +32,9 @@ private slots:
     void remove_selected();
     void refresh_all();
 
+    void test_export();
+    void test_import();
+    
 private:
     void update_actions();
 

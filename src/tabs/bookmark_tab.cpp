@@ -58,6 +58,14 @@ bookmark_tab::bookmark_tab(const QString& object_name,
         << refresh_selected_
         << refresh_all_;
 
+        QAction* exp = new QAction(QIcon(), tr("export"), this);
+    connect(exp, SIGNAL(triggered()), SLOT(test_export()));
+    
+    QAction* import = new QAction(QIcon(), tr("import"), this);
+    connect(import, SIGNAL(triggered()), SLOT(test_import()));
+
+    acts << exp << import;
+        
     addActions(acts);
 
     tree()->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -206,5 +214,41 @@ void bookmark_tab::update_actions()
     remove_action_->setEnabled(!id.is_empty());
     refresh_selected_->setEnabled(!id.is_empty());
     refresh_all_->setEnabled(context().bookmarks()->list().size() > 0);
+}
+
+#include <remote/remote.h>
+
+void bookmark_tab::test_export(){
+    
+    remote::binary_file_storage fs("/tmp/bookmarks");
+    remote::object obj("bookmarks");
+
+    BOOST_FOREACH( const server_bookmark& bm, context().bookmarks()->list() ) {
+        obj << bm;
+    }
+    
+    fs.put(obj);
+}
+
+void bookmark_tab::test_import(){
+    remote::binary_file_storage fs("/tmp/bookmarks");
+    
+    
+    remote::object obj("bookmarks");
+    BOOST_FOREACH( const server_bookmark& bm, context().bookmarks()->list() ) {
+        obj << bm;
+    }
+    
+    remote::object remote = fs.get( obj.type() );
+    
+    remote::object::Entries merged = remote::merge( obj.entries(), remote.entries() );
+    
+ 
+    BOOST_FOREACH( const remote::intermediate& imd, merged ) {
+        server_bookmark bm;
+        bm.load( imd.save() );
+        context().bookmarks()->add(bm);
+    }
+    
 }
 

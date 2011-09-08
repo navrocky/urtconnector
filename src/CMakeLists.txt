@@ -61,6 +61,7 @@ add_subdirectory(tabs)
 add_subdirectory(setting_forms)
 add_subdirectory(updater)
 add_subdirectory(tracking)
+# add_subdirectory(remote)
 
 set(HEADERS
     about_dialog.h
@@ -83,6 +84,7 @@ set(HEADERS
     clipper.h
     launcher/tools.h
     server_info_manager.h
+    remote/remote.h
 )
 
 set(MOC_HEADERS
@@ -181,3 +183,4 @@ install(FILES icons/urtconnector.png DESTINATION share/pixmaps)
 install(FILES icons/urtconnector-48.png DESTINATION share/icons/hicolor/48x48/apps RENAME urtconnector.png)
 install(FILES urtconnector.desktop DESTINATION share/applications)
 install(FILES GeoIP.dat DESTINATION share/urtconnector)
+

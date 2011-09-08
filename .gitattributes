@@ -600,6 +600,8 @@ src/rcon/rcon_settings.h -text
 src/rcon/rcon_settings_form.cpp -text
 src/rcon/rcon_settings_form.h -text
 src/rcon/rcon_settings_form.ui -text
+src/remote/CMakeLists.txt -text
+src/remote/remote.h -text
 src/server_info_html.cpp -text
 src/server_info_html.h -text
 src/server_info_manager.cpp -text
