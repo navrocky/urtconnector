@@ -1,6 +1,20 @@
 set(TARGET common)
 
-find_package(Qt4 REQUIRED QtCore Phonon)
+
+
+find_library(PHONON phonon)
+
+if(NOT PHONON)
+    set(QT_USE_PHONON true)
+endif(NOT PHONON)
+
+find_package(Qt4 REQUIRED QtCore)
+
+if(NOT PHONON AND QT_PHONON_FOUND)
+    set(PHONON $(QT_PHONON_LIBRARY))
+endif(NOT PHONON AND QT_PHONON_FOUND)
+
+
 include(${QT_USE_FILE})
 
 set(HEADERS
@@ -85,7 +99,7 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
-target_link_libraries( ${TARGET} ${QT_LIBRARIES} )
+target_link_libraries( ${TARGET} ${QT_LIBRARIES} ${PHONON})
 
 
 
