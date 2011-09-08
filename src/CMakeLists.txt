@@ -172,6 +172,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     setting_forms
     updater
     tracking
+    phonon
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
