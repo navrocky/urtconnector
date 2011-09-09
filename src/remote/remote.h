@@ -15,11 +15,19 @@
 #include <qt4/QtCore/QVariant>
 
 #include <iostream>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace remote {
     
+    struct serializable {
+        /*! serialize object*/
+        virtual QVariantMap save() const = 0;
+        /*! deserialize object*/
+        virtual void load(const QVariantMap& data) = 0;        
+    };
+    
     /*! if you want object to allow sync, subclass from this */
-    class syncable {
+    class syncable: public serializable {
     public:
 
         const static QString deleted_key;
@@ -36,17 +44,12 @@ namespace remote {
         void set_deleted() { deleted_ = true; };
         
         /*! get timestamp of object */
-        const QDateTime& stamp() const { return stamp_; };
+        const QDateTime& sync_stamp() const { return stamp_; };
         /*! update object's timestamp */
-        void touch() { stamp_ = QDateTime::currentDateTime(); }
+        void sync_touch() { stamp_ = QDateTime::currentDateTime(); }
         
         /*! id must uniquely identify object within object collection*/
         virtual QString sync_id() const = 0;
-        
-        /*! serialize object*/
-        virtual QVariantMap save() const = 0;
-        /*! deserialize object*/
-        virtual void load(const QVariantMap& data) = 0;
         
     private:
         bool deleted_;
@@ -86,9 +89,9 @@ namespace remote {
         
         /// Construct from origal data
         intermediate(const syncable& s)
-            : syncable( s.is_deleted(), s.stamp() )
+            : syncable( s.is_deleted(), s.sync_stamp() )
             , id_( s.sync_id() )
-            , data_( create_data(s.save(), is_deleted(), stamp(), id_) )
+            , data_( create_data(s.save(), is_deleted(), sync_stamp(), id_) )
         {}
 
         virtual QString sync_id() const { return id_; };
@@ -112,14 +115,34 @@ namespace remote {
         
         
         object(const QString& t): type_(t) {}
+        object(const QVariantMap& data) { load(data); }
         
         const QString& type() const { return type_; }
-        
         const Entries& entries() const { return entries_; }
         
         object& operator<< ( const intermediate& imd) {
             entries_.insert( imd );
             return *this;
+        }
+        
+        QVariantMap save() const {
+            QVariantMap ret;
+            ret["type"] = type_;
+            QVariantList ls;
+            BOOST_FOREACH( const intermediate& imd, entries_ ) {
+                ls << imd.save();
+            }
+            ret["data"] = ls;
+            return ret;
+        }
+        
+        void load( const QVariantMap& data) {
+            type_ = data["type"].toString();
+            
+            BOOST_FOREACH( const QVariant& v, data["data"].toList() ) {
+                intermediate imd(v.toMap());
+                entries_.insert(imd);
+            }
         }
         
     private:
@@ -146,20 +169,11 @@ namespace remote {
             QFile f(filename_);
             if ( f.open(QFile::ReadOnly ) ) {
                 QDataStream stream(&f);
-                QString type;
-                object::Entries::size_type size;
                 QVariantMap data;
                 
-                stream >> type;
-                stream >> size;
-                
-                object ret(type);
+                stream >> data;
 
-                while( size-- > 0 ){
-                    stream >> data;
-                    ret << intermediate(data);
-                }
-                return ret;
+                return object(data);
             } else {
                 throw std::runtime_error("can't get object");
             }
@@ -169,12 +183,7 @@ namespace remote {
             QFile f(filename_);
             if ( f.open(QFile::WriteOnly | QFile::Truncate) ) {
                 QDataStream stream(&f);
-                stream << obj.type();
-                stream << obj.entries().size();
-                
-                BOOST_FOREACH( const object::Entries::value_type& e, obj.entries() ) {
-                    stream << e.save();
-                }
+                stream << obj.save();
             } else {
                 throw std::runtime_error("can't put object");
             }
@@ -184,8 +193,6 @@ namespace remote {
         QString filename_;
     };
     
-    
-    
     /*! merge two intermediate sets*/
     inline object::Entries merge(const object::Entries& e1, const object::Entries& e2 ) {
         object::Entries ret = e1;
@@ -194,7 +201,7 @@ namespace remote {
         object::Entries::iterator it;
         BOOST_FOREACH(const intermediate& imd, e2) {
             std::tr1::tie(it, inserted) = ret.insert(imd);
-            if( !inserted && it->stamp() < imd.stamp() ) {
+            if( !inserted && it->sync_stamp() < imd.sync_stamp() ) {
                 const intermediate& tmp = *it;
                 const_cast<intermediate&>(tmp) = imd; //it is guaranteed that order of items remains unchanged
             }

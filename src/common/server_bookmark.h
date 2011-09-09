@@ -24,22 +24,22 @@ public:
                     const QString& ref_password);
 
     const server_id& id() const { return d->id; }
-    void set_id(const server_id& val) { d->id = val; touch(); }
+    void set_id(const server_id& val) { d->id = val; sync_touch(); }
 
     const QString& name() const { return d->name; }
-    void set_name(const QString& val) { d->name = val; touch(); }
+    void set_name(const QString& val) { d->name = val; sync_touch(); }
 
     const QString& comment() const { return d->comment; }
-    void set_comment(const QString& val) { d->comment = val; touch(); }
+    void set_comment(const QString& val) { d->comment = val; sync_touch(); }
 
     const QString& password() const { return d->password; }
-    void set_password(const QString& val) { d->password = val; touch(); }
+    void set_password(const QString& val) { d->password = val; sync_touch(); }
 
     const QString& rcon_password() const { return d->rcon_password; }
-    void set_rcon_password(const QString& val) { d->rcon_password = val; touch(); }
+    void set_rcon_password(const QString& val) { d->rcon_password = val; sync_touch(); }
 
     const QString& ref_password() const { return d->ref_password; }
-    void set_ref_password(const QString& val) { d->ref_password = val; touch(); }
+    void set_ref_password(const QString& val) { d->ref_password = val; sync_touch(); }
 
     bool is_empty() const { return d->id.is_empty(); }
 
