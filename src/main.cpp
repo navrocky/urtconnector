@@ -38,13 +38,6 @@
 #include "pointers.h"
 #include "app_options_saver.h"
 
-#include <remote/remote.h>
-    //FIXME HACK
-    //TODO move to cpp 
-    const QString remote::syncable::deleted_key = "sync_deleted";
-    const QString remote::syncable::stamp_key   = "sync_stamp";
-    const QString remote::syncable::id_key      = "sync_id";
-
 using namespace cl::syslog;
 using namespace std;
 namespace po = boost::program_options;

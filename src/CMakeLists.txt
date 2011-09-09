@@ -61,7 +61,7 @@ add_subdirectory(tabs)
 add_subdirectory(setting_forms)
 add_subdirectory(updater)
 add_subdirectory(tracking)
-# add_subdirectory(remote)
+add_subdirectory(remote)
 
 set(HEADERS
     about_dialog.h
@@ -84,7 +84,6 @@ set(HEADERS
     clipper.h
     launcher/tools.h
     server_info_manager.h
-    remote/remote.h
 )
 
 set(MOC_HEADERS
@@ -175,6 +174,7 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
     updater
     tracking
     phonon
+    remote
 )
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
