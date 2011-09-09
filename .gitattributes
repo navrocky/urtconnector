@@ -58,6 +58,8 @@ doc/tracking_rus.odt -text
 /how_to_make_distrib.txt -text
 src/3rdparty/CMakeLists.txt -text
 src/3rdparty/qjson/CMakeLists.txt -text
+src/3rdparty/qjson/COPYING.lib -text
+src/3rdparty/qjson/README -text
 src/3rdparty/qjson/json_parser.cc -text
 src/3rdparty/qjson/json_parser.hh -text
 src/3rdparty/qjson/json_scanner.cpp -text
