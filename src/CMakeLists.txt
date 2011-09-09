@@ -45,6 +45,7 @@ add_definitions(-DUSE_SINGLE_APP)
 
 configure_file(config.h.in config.h)
 
+add_subdirectory(3rdparty)
 add_subdirectory(geoip)
 add_subdirectory(qtsingleapplication)
 add_subdirectory(cl)
