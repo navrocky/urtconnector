@@ -235,7 +235,7 @@ QString launcher::get_separate_x_launch_str(const QString& ls)
 
 QString launcher::launch_string()
 {
-    return launch_string( app_settings().separate_x() );
+    return launch_string( app_settings().separate_xsession() );
 }
 
 void launcher::stop()

@@ -29,7 +29,7 @@ about_dialog::about_dialog(QWidget *parent)
 {
     srand( std::time(NULL) );
 
-    if( app_settings().christmas_mode() )
+    if( is_christmas_mode() )
         new blizzard(this);
 
     ui_->setupUi(this);

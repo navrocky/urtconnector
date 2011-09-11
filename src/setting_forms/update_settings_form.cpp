@@ -64,9 +64,9 @@ void update_settings_form::update_preferences()
 void update_settings_form::accept()
 {
     app_settings as;
-    as.set_center_current_row(p_->ui.center_current_row_check->isChecked());
-    as.set_clear_offline(p_->ui.clear_offline_check->isChecked());
-    as.set_geoip_database(p_->ui.geoip_database_edit->text());
+    as.center_current_row_set(p_->ui.center_current_row_check->isChecked());
+    as.clear_offline_set(p_->ui.clear_offline_check->isChecked());
+    as.geoip_database_set(p_->ui.geoip_database_edit->text());
 
     qstat_options qs;
     qs.qstat_path_set(p_->ui.qstat_binary_edit->text());

@@ -481,7 +481,7 @@ void main_window::connect_to_server(const server_id& id,
             msg.exec();
             if (msg.clickedButton() == wait_btn)
             {
-                create_waiting_task(bm.id());
+                create_waiting_task(id);
                 return;
             }
             if (msg.clickedButton() == cancel_btn || msg.clickedButton() == 0)
@@ -519,7 +519,7 @@ void main_window::connect_to_server(const server_id& id,
     history_sl_->add(id, server_name, player_name, pass);
 
 #if defined(Q_OS_UNIX)
-    if ( anticheat_enabled_action_->isChecked() && as.separate_x() )
+    if ( anticheat_enabled_action_->isChecked() && as.separate_xsession() )
     {
         QStringList args;
         args << qApp->applicationFilePath();
@@ -824,7 +824,7 @@ void main_window::create_waiting_task(const server_id& id)
 
     // creating task
     task_t* task = new task_t(this);
-    task->set_caption(tr("Connect to %1").arg(si->name));
+    task->set_caption(tr("Connect to %1").arg(si ? si->name : id.address()));
     task->set_operation_mode(task_t::om_destroy_after_trigger);
     QUuid uid = QUuid::createUuid();
     task->set_id(uid.toString());

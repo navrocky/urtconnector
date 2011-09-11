@@ -33,11 +33,11 @@ QString country_name_from_code( const QString& code  ){
 Countries find_countries()
 {
     Countries ret;
-    
+
     ret << CountryId( "English", "" );
-    
+
     QDir dir( QLibraryInfo::location(QLibraryInfo::TranslationsPath) );
-    
+
     //find all translation files in qt standard path
     foreach( const QString& file, dir.entryList( QStringList("qt_[a-zA-Z0-9][a-zA-Z0-9].qm"), QDir::Files, QDir::Name ) ){
         ret << CountryId(
@@ -45,7 +45,7 @@ Countries find_countries()
             country_code_from_qm( file )
         );
     }
-    
+
     return ret;
 }
 
@@ -124,23 +124,23 @@ void application_settings_form::accept()
     app_settings as;
     clip_settings cs;
 
-    as.set_start_hidden(p_->ui.hide_mainwindow_check->isChecked());
-    as.set_holiday_mode(p_->ui.holiday_check->isChecked());
-    
+    as.start_hidden_set(p_->ui.hide_mainwindow_check->isChecked());
+    as.use_holiday_mode_set(p_->ui.holiday_check->isChecked());
+
     QString country_code =  p_->ui.language_box->itemData( p_->ui.language_box->currentIndex() ).toString();
-    
+
     if( country_code != as.country_name() )
-        QMessageBox::information(this, tr("Language preferences"), 
+        QMessageBox::information(this, tr("Language preferences"),
                                  tr("Selected language will be applied after restart"));
-    
-    as.set_country_name( country_code );
-    
+
+    as.country_name_set( country_code );
+
     cs.set_watching(p_->ui.group_clipboard_watch->isChecked());
     cs.set_regexp(p_->ui.clip_regexp_edit->text());
     cs.set_host(p_->ui.clip_host_spin->value());
     cs.set_port(p_->ui.clip_port_spin->value());
     cs.set_password(p_->ui.clip_password_spin->value());
-    as.set_style_sheet_file(p_->ui.style_sheet_file_edit->text());
+    as.style_sheet_file_set(p_->ui.style_sheet_file_edit->text());
     apply_style_sheet();
 }
 
@@ -153,7 +153,7 @@ void application_settings_form::reset_defaults()
 {
     app_settings as;
     clip_settings cs;
-    as.reset_style_sheet_file();
+    as.style_sheet_file_reset();
     cs.reset_regexp();
     update_preferences();
     apply_style_sheet();

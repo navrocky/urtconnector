@@ -92,7 +92,8 @@ void update_dispatcher::update_full_update_params()
     int interval = c_max;
     foreach (const task_rec& tr, tasks_)
     {
-        interval = qMin(tr.task->interval(), interval);
+        if (tr.task->servers().isEmpty())
+            interval = qMin(tr.task->interval(), interval);
     }
     if (interval != c_max)
     {

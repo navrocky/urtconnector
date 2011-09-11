@@ -37,6 +37,7 @@
 #include "config.h"
 #include "pointers.h"
 #include "app_options_saver.h"
+#include "app_options.h"
 
 using namespace cl::syslog;
 using namespace std;
@@ -57,11 +58,11 @@ void init_application(QApplication* a)
 
     //Initializing main settings
     base_settings set;
-    set.register_group( app_settings::uid(),   "app_opts",   "options.ini" );    
-    
+    set.register_group( app_settings::uid(),   "app_opts",   "options.ini" );
+
     // loading translations
     static boost::shared_ptr<QTranslator> qt_trans = system_translator( app_settings().country_name() );
-    
+
     if ( !qt_trans->isEmpty() )
     {
         LOG_DEBUG << "Translation \"%1\" loaded", app_settings().country_name();
@@ -69,7 +70,7 @@ void init_application(QApplication* a)
     else
     {
         LOG_DEBUG << "Failed to load system translation \"%1\". Trying \"%2\" instead...", app_settings().country_name(), QLocale::system().name();
-        
+
         qt_trans = system_translator( QLocale::system().name() );
         if( !qt_trans->isEmpty() )
             LOG_DEBUG << "Translation \"%1\" loaded", QLocale::system().name();
@@ -78,7 +79,7 @@ void init_application(QApplication* a)
     }
 
     a->installTranslator(qt_trans.get());
-    
+
     static boost::shared_ptr<QTranslator> urt_tr = local_translator( app_settings().country_name() );
 
     if ( !urt_tr->isEmpty()  )
@@ -96,28 +97,28 @@ void init_application(QApplication* a)
 
     set.register_group( clip_settings::uid(),  "clipboard",  "options.ini" );
     set.register_group( qstat_options::uid(), "qstat_opts", "options.ini" );
-    
+
     //Registering state_settings in separate file
     set.register_file( state_settings::uid(), "state.ini" );
     set.register_group( rcon_settings::uid(), "rcon", "options.ini" );
     set.register_group( anticheat::settings::uid(), "anticheat", "options.ini" );
-    
+
     set.register_file( "history", "history.ini" );
 
     //Initializing resource resolution
     // to use icons from resources you must use "icons:<name>" syntax
     // other resource syntax unchaged
-    
+
     // detect christmas and using icons from another iconset
-    if( app_settings().christmas_mode() )
+    if( is_christmas_mode() )
     {
         QDir::addSearchPath("icons", QString(":icons/icons/christmas"));
         QDir::addSearchPath("images", QString(":images/icons/christmas"));
     }
-    
+
     QDir::addSearchPath("icons", QString(":icons/icons/"));
     QDir::addSearchPath("images", QString(":images/icons/"));
-    
+
     a->translate("language", "Russian");
     a->translate("language", "English");
     a->translate("language", "kitaiskij");
@@ -172,7 +173,7 @@ int main(int argc, char *argv[])
             logman().level_set(debug);
         else
             logman().level_set(info);
-        
+
         if( vm.count("hard") )
             logman().level_set(harddebug);
 
@@ -274,9 +275,9 @@ int main(int argc, char *argv[])
         a.setActivationWindow(&w);
 #endif
         int res = a.exec();
-        
+
         LOG_DEBUG << "Application finished";
-        
+
         return res;
     }
     catch (const std::exception& e)
