@@ -22,7 +22,7 @@ public:
 
     int interval() const {return interval_;}
     void set_interval(int);
-
+    
 signals:
     void interval_changed();
 

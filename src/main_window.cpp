@@ -605,7 +605,7 @@ void main_window::current_tab_changed()
 void main_window::save_geometry()
 {
     state_settings state_s;
-    state_s.set_geometry( saveGeometry() );
+    state_s.geometry_set( saveGeometry() );
 
     qsettings_p s = base_settings::get_settings( state_settings::uid() );
     s->setValue("window_state", saveState());
@@ -849,6 +849,8 @@ void main_window::create_waiting_task(const server_id& id)
     // add play sound action
     action_class_p ac(new play_sound_action_class(track_ctx_));
     action_p a = ac->create();
+    play_sound_action* psa = static_cast<play_sound_action*>(a.get());
+    psa->set_sound_file(app_settings().notification_sound());
     task->add_action(a);
 
     // add query action

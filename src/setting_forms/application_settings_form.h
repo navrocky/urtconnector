@@ -19,6 +19,8 @@ private slots:
     virtual void reset_defaults();
     void apply_style_sheet();
     void select_css_file();
+    void select_sound_file();
+    void play_sound_file();
 
     void int_changed();
 
