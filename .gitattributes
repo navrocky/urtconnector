@@ -54,6 +54,7 @@ doc/style_sheets/urt-iface-6.jpg -text
 doc/style_sheets/urt-iface.jpg -text
 doc/task_edit_panel_concept.ui -text
 doc/tracking_rus.odt -text
+/gzip_sources -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text
 src/CMakeLists.txt -text
@@ -624,7 +625,9 @@ src/settings/settings.cpp -text
 src/settings/settings.h -text
 src/settings/settings_generator.h -text
 src/settings/settings_generator_impl.h -text
-src/sounds/notify1.wav -text
+src/sounds/notify1.ogg -text
+src/sounds/notify2.ogg -text
+src/sounds/notify3.ogg -text
 src/sql/populate_sqlite.sql -text
 src/tabs/CMakeLists.txt -text
 src/tabs/bookmark_tab.cpp -text

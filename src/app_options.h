@@ -26,7 +26,7 @@ class QTranslator;
         ((use_mumble_overlay, bool, false)) \
         ((mumble_overlay_bin, QString, QString("/usr/bin/mumble-overlay"))) \
         ((style_sheet_file, QString, QString())) \
-        ((notification_sound, QString, QString(URT_DATADIR"sounds/notify.ogg")))
+        ((notification_sound, QString, QString(URT_DATADIR"sounds/notify1.ogg")))
 SETTINGS_GENERATE_CLASS(app_settings, APP_SETTINGS)
 
 bool is_christmas_mode();

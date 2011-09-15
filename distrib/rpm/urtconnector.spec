@@ -1,5 +1,5 @@
 %define name urtconnector
-%define version 0.7.1
+%define version 0.7.9
 
 Summary: Advanced Urban Terror launcher
 Name: %{name}
@@ -12,13 +12,13 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 Release: 1
 #AutoReq: off
 License: GPL
-BuildRequires: cmake boost-devel libqt4-devel gcc gcc-c++
+BuildRequires: cmake boost-devel libqt4-devel gcc gcc-c++ phonon-devel
 %if %{defined fedora}
 BuildRequires: sqlite-devel
 %else
 BuildRequires: sqlite3-devel
 %endif
-Requires: libqt4 >= 4.3.0 qstat >= 2 sqlite3
+Requires: libqt4 >= 4.3.0 qstat >= 2 sqlite3 libphonon4
 %if %{defined fedora}
 Requires: sqlite
 %else
@@ -56,7 +56,6 @@ make install/strip
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(-, root, root) 
 /usr/bin/*
 /usr/share/icons/urtconnector.png
 /usr/share/icons/hicolor
