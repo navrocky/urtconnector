@@ -472,6 +472,7 @@ src/friend_list/friend_prop_dialog.h -text
 src/friend_list/friend_prop_dialog.ui -text
 src/friend_list/friend_record.cpp -text
 src/friend_list/friend_record.h -text
+src/gdoc.h -text
 src/geoip/CMakeLists.txt -text
 src/geoip/GeoIP_impl.c -text
 src/geoip/GeoIP_impl.h -text
@@ -627,6 +628,8 @@ src/rcon/rcon_settings_form.ui -text
 src/remote/CMakeLists.txt -text
 src/remote/backends/binary_file.cpp -text
 src/remote/backends/binary_file.h -text
+src/remote/backends/gdocs/gdocs.cpp -text
+src/remote/backends/gdocs/gdocs.h -text
 src/remote/backends/json_file.cpp -text
 src/remote/backends/json_file.h -text
 src/remote/remote.cpp -text

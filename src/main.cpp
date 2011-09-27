@@ -123,8 +123,24 @@ void init_application(QApplication* a)
     a->translate("language", "kitaiskij");
 }
 
+const string login_uri = "https://www.google.com/accounts/ClientLogin";
+
+const string kDocListScope = "http://docs.google.com/feeds";
+const string kDocListFeed = "/documents/private/full";
+
+#include "gdoc.h"
+#include "remote/backends/gdocs/gdocs.h"
+
 int main(int argc, char *argv[])
 {
+    QApplication ap(argc, argv);
+
+    std::cerr<<"-1"<<std::endl;
+    gdocs d("kinnalru@gmail.com", "malder11", "myapp");
+    std::cerr<<"-0"<<std::endl;
+    
+    return ap.exec();
+    
     bool gui_enabled = false;
     QString error_str;
     try

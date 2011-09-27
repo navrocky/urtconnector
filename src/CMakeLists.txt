@@ -105,6 +105,7 @@ set(MOC_HEADERS
     rcon/rcon_settings_form.h
     rcon/rcon_completer.h
     server_info_manager.h
+    gdoc.h
 )
 
 set(SOURCES
