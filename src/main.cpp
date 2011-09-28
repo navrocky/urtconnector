@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     std::cerr<<"-1"<<std::endl;
     gdocs d("kinnalru@gmail.com", "malder11", "myapp");
 
-    d.load("test.txt");
+    d.load("urtold");
     
     std::cerr<<"-0"<<std::endl;
     

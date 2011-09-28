@@ -23,14 +23,26 @@ SYSLOG_MODULE(gdocs);
 
 typedef qt_signal_wrapper qsw;
 
-const QUrl login_uri_c = QString("https://www.google.com/accounts/ClientLogin");
-const QUrl search_uri_c = QString("http://docs.google.com/feeds/documents/private/full");
-const QString download_uri_c = "http://docs.google.com/feeds/download/documents/Export";
+typedef QPair<QString, QString> QueryArg;
+typedef QList<QueryArg>         QueryList;
+
+static const char* property_c = "ctx_property";
+
+static const QUrl login_uri_c = QString("https://www.google.com/accounts/ClientLogin");
+
+//API2
+//const QUrl search_uri_c = QString("http://docs.google.com/feeds/documents/private/full");
+
+//API3
+static const QUrl base_uri_c       = QString("https://docs.google.com/feeds/default/private/full");
+static const QUrl download_uri_c   = QString("https://docs.google.com/feeds/download/documents/Export");
+
 
 
 struct request_context {
-    QString name;
-    gdocs::Action action;
+    QString         name;
+    gdocs::Action   action;
+    QString         url;
 };
 
 Q_DECLARE_METATYPE(request_context);
@@ -42,28 +54,35 @@ gdocs::gdocs(const QString& login, const QString& password, const QString& app_n
     , manager_(new QNetworkAccessManager(this))
 {
     generic_header_["User-Agent"]    = app_name.toUtf8();
-    generic_header_["GData-Version"] = "2.0";
+    generic_header_["GData-Version"] = "3.0";
  
     connect(manager_, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this, SLOT(ssl_errors(QNetworkReply*,QList<QSslError>)));
     connect(manager_, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
     
-    QStringList auth_data;
-    auth_data  << QString("Email=%1").arg(login)
-               << QString("Passwd=%1").arg(password)
-               << QString("accountType=%1").arg("HOSTED_OR_GOOGLE")
-               << QString("source=%1").arg(app_name)
-               << QString("service=%1").arg("writely");
+//     QStringList auth_data;
+//     auth_data  << QString("Email=%1").arg(login)
+//                << QString("Passwd=%1").arg(password)
+//                << QString("accountType=%1").arg("HOSTED_OR_GOOGLE")
+//                << QString("source=%1").arg(app_name)
+//                << QString("service=%1").arg("writely");
 
-    QNetworkRequest auth_request(login_uri_c);
+    QUrl url(login_uri_c);
+    url.addQueryItem("Email",       login);
+    url.addQueryItem("Passwd",      password);
+    url.addQueryItem("accountType", "HOSTED_OR_GOOGLE");
+    url.addQueryItem("source",      app_name);
+    url.addQueryItem("service",     "writely");
+    
+    QNetworkRequest auth_request(url);
     fill_header(auth_request);
     
-    QNetworkReply* auth_reply = manager_->post(auth_request, auth_data.join("&").toUtf8());
+    QNetworkReply* auth_reply = manager_->get(auth_request);
 
     request_context rc;
     rc.name = "Authentification";
     rc.action = Auth;
     
-    auth_reply->setProperty("test", qVariantFromValue(rc));
+    auth_reply->setProperty(property_c, qVariantFromValue(rc));
   
 }
 
@@ -96,11 +115,19 @@ void gdocs::ssl_errors(QNetworkReply* reply, const QList<QSslError>& errors)
 
 void gdocs::finished(QNetworkReply* reply)
 {
-    request_context request = reply->property("test").value<request_context>();
+    request_context request = reply->property(property_c).value<request_context>();
 
     QByteArray data = reply->readAll();
 
     std::cerr<<"Reply received:"<<request.name.toStdString()<<std::endl;
+    
+    std::cerr<<"Reply attr1:"<<reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt()<<std::endl;
+    std::cerr<<"Reply attr2:"<<reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString().toStdString()<<std::endl;
+    QString redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl().toString();
+    std::cerr<<"Reply attr3:"<<redirect.toStdString()<<std::endl;
+    std::cerr<<"Reply attr4:"<<reply->attribute(QNetworkRequest::CustomVerbAttribute).toString().toStdString()<<std::endl;
+    std::cerr<<"Reply attr5:"<<reply->attribute(QNetworkRequest::AuthenticationReuseAttribute).toInt()<<std::endl;
+    
     std::cerr<<"Reply data:"<<data.constData()<<std::endl;
     
     if (reply->error() != QNetworkReply::NoError) {
@@ -119,33 +146,25 @@ void gdocs::finished(QNetworkReply* reply)
                 foreach(const document& d, gdocs_documents(data).documents()) {
                     ddd = d;
                     std::cerr<<"Finded file:"<<d.filename.toStdString()<<std::endl;
+                    std::cerr<<"Finded id:"<<d.id.toStdString()<<std::endl;
+                    std::cerr<<"Finded src:"<<d.src.toStdString()<<std::endl;
                     break;
                 }
-
+//                 break;
                 request_context r;
                 r.name = QString("Downloading %1").arg(ddd.filename);
                 r.action = Download;
 
-                QString u = "http://docs.google.com/feeds/download/documents/Export?docID=" + ddd.id + "&exportFormat=txt";
-//                 QString u = "http://docs.google.com/feeds/download/documents/exports/Export?exportFormat=txt&amp;id=" + ddd.id;
-
-
-// "http://docs.google.com/feeds/download/documents/Export?docID=1h4len8THmVOfAhFtsVRoxBC9TifdxYsYjFgZ1NSudr4&exportFormat=txt"
-// "http://docs.google.com/feeds/download/documents/Export?exportFormat=txt&amp;id=1h4len8THmVOfAhFtsVRoxBC9TifdxYsYjFgZ1NSudr4">here</A>."
-
+                QUrl url(download_uri_c);
+                url.setQueryItems( QueryList()
+                    //by API 3.0 documentation we must do "docID", but it leads to redirect response. If it dosn't work use "id" key.
+                    //<< qMakePair("id", ddd.id)
+                    << QueryArg("docID",       ddd.id)
+                    << QueryArg("exportFormat","txt" )
+                    << QueryArg("formatormat", "txt" )
+                );
                 
-                QUrl url(u);
-
-                QNetworkRequest down_request(url);
-                fill_header(down_request);
-        //         docs_request.setRawHeader("q", downloads[i].toUtf8());
-        //         docs_request.setRawHeader("title-exact", "true");
-
-                    std::cerr<<"URL:="<<down_request.url().toString().toStdString()<<std::endl;
-                
-                QNetworkReply* down_reply = manager_->get(down_request);
-
-                down_reply->setProperty("test", qVariantFromValue(r));
+                get(url, r);
                 
             }
                         
@@ -154,6 +173,19 @@ void gdocs::finished(QNetworkReply* reply)
             
         case Download:;
 
+            std::cerr<<"HERE"<<std::endl;
+            if (!redirect.isEmpty()) {
+                QUrl url(redirect);
+
+                QNetworkRequest down_request(url);
+                fill_header(down_request);
+
+                std::cerr<<"Redirect:="<<down_request.url().toString().toStdString()<<std::endl;
+                
+                QNetworkReply* down_reply = manager_->get(down_request);
+
+                down_reply->setProperty(property_c, qVariantFromValue(request));
+            }
             
         default:
             ;
@@ -169,7 +201,7 @@ void gdocs::finished(QNetworkReply* reply)
         r.name = QString("Quering %1").arg(downloads[i]);
         r.action = Query;
 
-        QString u = search_uri_c.toString();
+        QString u = base_uri_c.toString();
 
         u += "?title="+downloads[i];
 
@@ -184,7 +216,7 @@ void gdocs::finished(QNetworkReply* reply)
 
         std::cerr<<"URL:="<<docs_request.url().toString().toStdString()<<std::endl;
         
-        docs_reply->setProperty("test", qVariantFromValue(r));
+        docs_reply->setProperty(property_c, qVariantFromValue(r));
     }
 
     downloads.clear();
@@ -193,6 +225,20 @@ void gdocs::finished(QNetworkReply* reply)
 void gdocs::load(const QString& filename)
 {
     downloads.push_back(filename);;
+}
+
+
+QNetworkReply* gdocs::get(const QUrl& url, const request_context& c)
+{
+    QNetworkRequest request(url);
+    fill_header(request);
+
+    request_context ctx(c);
+    ctx.url = request.url().toString();
+
+    QNetworkReply* reply = manager_->get(request);
+    reply->setProperty(property_c, qVariantFromValue(ctx));
+    return reply;
 }
 
 

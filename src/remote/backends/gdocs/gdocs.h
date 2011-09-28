@@ -15,9 +15,14 @@ class QNetworkReply;
 class QNetworkRequest;
 class QSslError;
 
+class QUrl;
+
+class request_context;
+
 class gdocs: public QObject{
 Q_OBJECT
 public:
+    
     explicit gdocs( const QString& login, const QString& password, const QString& app_name, QObject* parent = 0 );
     virtual ~gdocs();
     
@@ -33,6 +38,7 @@ private Q_SLOTS:
     
 private:
     void fill_header(QNetworkRequest& request);
+    QNetworkReply* get(const QUrl& url, const request_context& ctx);
     
 Q_SIGNALS:
     void error(const QString& str);
@@ -94,7 +100,11 @@ public:
         {
             document d;
 
-            QString tmp = "http://docs.google.com/feeds/documents/private/full/document%3A";
+            //api 2
+            //QString tmp = "http://docs.google.com/feeds/documents/private/full/document%3A";
+            
+            //api3
+            QString tmp = "https://docs.google.com/feeds/id/document%3A";
 
             d.id = entries.at(i).firstChildElement("id").firstChild().nodeValue();
             d.filename = entries.at(i).firstChildElement("title").firstChild().nodeValue();
