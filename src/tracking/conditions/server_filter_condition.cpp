@@ -166,9 +166,8 @@ void server_filter_condition::srv_list_changed()
 
     server_list_p srv_list = tr_ctx->srv_list;
 
-    filter_context ctx;
+    filter_context ctx(true, tr_ctx->friends);
     ctx.data = &(tr_ctx->data);
-    ctx.full_filter_process = true;
 
     if (srv_list_.isEmpty())
     {

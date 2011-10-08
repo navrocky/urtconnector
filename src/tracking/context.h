@@ -10,6 +10,7 @@ class update_dispatcher;
 class server_connect_iface;
 class QSystemTrayIcon;
 class server_id;
+class friend_list;
 
 namespace tracking
 {
@@ -24,7 +25,8 @@ public:
               update_dispatcher* update_dispatcher,
               QSystemTrayIcon* tray,
               server_connect_iface* connect_iface,
-              select_server_func_t select_server);
+              select_server_func_t select_server,
+              friend_list* friends);
 
     server_list_p srv_list;
     update_dispatcher* update_disp;
@@ -32,6 +34,7 @@ public:
     QSystemTrayIcon* tray;
     server_connect_iface* connect_iface;
     select_server_func_t select_server;
+    friend_list* friends;
 };
 
 }

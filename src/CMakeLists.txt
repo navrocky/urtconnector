@@ -12,6 +12,10 @@ else()
     set(Boost_USE_STATIC_LIBS OFF)
 endif()
 
+if (UNIX)
+    find_package(X11)
+endif()
+
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package( Boost 1.39.0 REQUIRED COMPONENTS
@@ -154,7 +158,7 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_executable(${TARGET} WIN32 ${HEADERS} ${SOURCES})
 
-target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES}
+target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES} ${X11_LIBRARIES}
     geoip
     qtsingleapplication
     clexcept

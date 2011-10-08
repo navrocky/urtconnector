@@ -12,18 +12,13 @@ BuildRoot: /var/tmp/%{name}-%{version}-buildroot
 Release: 1
 #AutoReq: off
 License: GPL
-BuildRequires: cmake boost-devel libqt4-devel gcc gcc-c++ phonon-devel
+BuildRequires: cmake gcc-c++ boost-devel phonon-devel
 %if %{defined fedora}
-BuildRequires: sqlite-devel
+BuildRequires: qt-devel sqlite-devel
 %else
-BuildRequires: sqlite3-devel
+BuildRequires: libqt4-devel sqlite3-devel
 %endif
-Requires: libqt4 >= 4.3.0 qstat >= 2 sqlite3 libphonon4
-%if %{defined fedora}
-Requires: sqlite
-%else
-Requires: sqlite3
-%endif
+Requires: qstat >= 2
 
 
 %description
@@ -56,6 +51,7 @@ make install/strip
 rm -rf $RPM_BUILD_ROOT
 
 %files
+%defattr(-, root, root)
 /usr/bin/*
 /usr/share/icons/urtconnector.png
 /usr/share/icons/hicolor

@@ -133,7 +133,7 @@ void filtered_tab::load_state()
     main_tab::load_state();
 
 //    restoreDockWidget(filter_widget_);
-    
+
 }
 
 void filtered_tab::save_filter()
@@ -249,7 +249,7 @@ void filtered_tab::filter_changed()
 
 bool filtered_tab::filtrate(const server_info& si) const
 {
-    filter_context ctx;
+    filter_context ctx(false, context().friends());
     return filters_->filtrate(si, ctx);
 }
 

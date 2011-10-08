@@ -9,6 +9,7 @@
 class job_queue;
 class geoip;
 class QAction;
+class friend_list;
 
 namespace tracking
 {
@@ -25,7 +26,8 @@ public:
                 geoip* geo,
                 QAction* connect_action,
                 tracking::manager* track_man,
-                tracking::context_p track_ctx);
+                tracking::context_p track_ctx,
+                friend_list* friends);
 
     server_list_p serv_list() const {return serv_list_;}
     filter_factory_p filter_factory() const {return filter_factory_;}
@@ -35,6 +37,7 @@ public:
     QAction* connect_action() const {return connect_action_;}
     tracking::manager* track_man() const {return track_man_;}
     const tracking::context_p& track_ctx() const {return track_ctx_;}
+    friend_list* friends() const {return friends_;}
 
 private:
     server_list_p serv_list_;
@@ -45,6 +48,7 @@ private:
     QAction* connect_action_;
     tracking::manager* track_man_;
     tracking::context_p track_ctx_;
+    friend_list* friends_;
 };
 
 #endif	/* TAB_CONTEXT_H */

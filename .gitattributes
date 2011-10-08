@@ -182,6 +182,8 @@ src/filters/filter_factory.cpp -text
 src/filters/filter_factory.h -text
 src/filters/filter_list.cpp -text
 src/filters/filter_list.h -text
+src/filters/friend_filter.cpp -text
+src/filters/friend_filter.h -text
 src/filters/game_type_filter.cpp -text
 src/filters/game_type_filter.h -text
 src/filters/hide_empty_filter.cpp -text

@@ -213,7 +213,8 @@ main_window::main_window(QWidget *parent)
     update_dispatcher_ = new update_dispatcher(all_sl_, gi_, que_, this);
 
     track_ctx_.reset(new context_t(all_sl_, update_dispatcher_, tray_, this,
-                                   boost::bind(&main_window::select_server, this, _1)));
+                                   boost::bind(&main_window::select_server, this, _1),
+                                   &friends_));
     track_cond_factory_ = reg_conditions(track_ctx_);
     track_acts_factory_ = reg_actions(track_ctx_);
 
@@ -226,7 +227,7 @@ main_window::main_window(QWidget *parent)
     ////////////////////////////////////////////////////////////////////////////
 
     tab_context ctx(all_sl_, filter_factory_, bookmarks_, que_, &gi_,
-                    ui_->actionConnect, track_man_, track_ctx_);
+                    ui_->actionConnect, track_man_, track_ctx_, &friends_);
 
     fav_list_ = new bookmark_tab("bookmarks_list", ctx, this);
     tab_widget_->add_widget(fav_list_);
