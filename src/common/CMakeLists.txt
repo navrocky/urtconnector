@@ -1,19 +1,11 @@
 set(TARGET common)
 
-
-
 find_library(PHONON phonon)
-
-if(NOT PHONON)
-    set(QT_USE_PHONON true)
-endif(NOT PHONON)
-
-find_package(Qt4 REQUIRED QtCore)
-
-if(NOT PHONON AND QT_PHONON_FOUND)
-    set(PHONON $(QT_PHONON_LIBRARY))
-endif(NOT PHONON AND QT_PHONON_FOUND)
-
+if (NOT PHONON)
+    find_package(Qt4 REQUIRED QtCore Phonon)
+else()
+    find_package(Qt4 REQUIRED QtCore)
+endif()
 
 include(${QT_USE_FILE})
 
