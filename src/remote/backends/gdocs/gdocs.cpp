@@ -10,23 +10,24 @@
 #include <QString>
 #include <QStringList>
 
+#include <iostream>
+
 #include <cl/syslog/syslog.h>
 
 #include "common/tools.h"
 
-#include <iostream>
-
 #include "gdocs.h"
-#include <boost/concept_check.hpp>
 
 SYSLOG_MODULE(gdocs);
 
-typedef qt_signal_wrapper qsw;
+typedef std::map<QByteArray, QByteArray> Headers;
 
 typedef QPair<QString, QString> QueryArg;
 typedef QList<QueryArg>         QueryList;
 
-static const char* property_c = "ctx_property";
+typedef qt_signal_wrapper qsw;
+
+static const char* action_property_c = "action_property";
 
 static const QUrl login_uri_c = QString("https://www.google.com/accounts/ClientLogin");
 
@@ -37,209 +38,343 @@ static const QUrl login_uri_c = QString("https://www.google.com/accounts/ClientL
 static const QUrl base_uri_c       = QString("https://docs.google.com/feeds/default/private/full");
 static const QUrl download_uri_c   = QString("https://docs.google.com/feeds/download/documents/Export");
 
+typedef boost::function<void (ActionPtr, const QByteArray&)> Processor;
 
-
-struct request_context {
-    QString         name;
-    gdocs::Action   action;
-    QString         url;
+struct action {
+    int id;
+    QString filename;
+    
+    QString auth;
+    document doc;
+    Headers http_headers;
+    QList<Processor> processors;
+    std::auto_ptr<pending_action> pending;
 };
 
-Q_DECLARE_METATYPE(request_context);
+Q_DECLARE_METATYPE(ActionPtr);
+
+namespace {
+template <typename T>
+void introspect(const T* r) {
+    LOG_HARD << "introspecting reply/request:";
+    LOG_HARD << "Reply HttpStatusCodeAttribute: "      << r->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    LOG_HARD << "Reply HttpReasonPhraseAttribute: "    << r->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString().toStdString();
+    LOG_HARD << "Reply RedirectionTargetAttribute: "   << r->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl().toString().toStdString();
+    LOG_HARD << "Reply ConnectionEncryptedAttribute: " << r->attribute(QNetworkRequest::ConnectionEncryptedAttribute).toBool();
+    LOG_HARD << "Request CacheLoadControlAttribute: "  << r->attribute(QNetworkRequest::CacheLoadControlAttribute).toInt();
+    LOG_HARD << "Request CacheSaveControlAttribute: "  << r->attribute(QNetworkRequest::CacheSaveControlAttribute).toBool();
+    LOG_HARD << "Reply SourceIsFromCacheAttribute: "   << r->attribute(QNetworkRequest::SourceIsFromCacheAttribute).toBool();
+    LOG_HARD << "Request DoNotBufferUploadDataAttribute: " << r->attribute(QNetworkRequest::DoNotBufferUploadDataAttribute).toBool();
+    LOG_HARD << "Request HttpPipeliningAllowedAttribute: " << r->attribute(QNetworkRequest::HttpPipeliningAllowedAttribute).toBool();
+    LOG_HARD << "Reply HttpPipeliningWasUsedAttribute: " << r->attribute(QNetworkRequest::HttpPipeliningWasUsedAttribute).toBool();
+    LOG_HARD << "Request CustomVerbAttribute:"         << r->attribute(QNetworkRequest::CustomVerbAttribute).toString().toStdString();
+    LOG_HARD << "Request CookieLoadControlAttribute: " << r->attribute(QNetworkRequest::CookieLoadControlAttribute).toInt();
+    LOG_HARD << "Request CookieSaveControlAttribute: " << r->attribute(QNetworkRequest::CookieSaveControlAttribute).toInt();
+    LOG_HARD << "Request AuthenticationReuseAttribute: " << r->attribute(QNetworkRequest::AuthenticationReuseAttribute).toInt();
+}
+
+void introspect(const document& doc) {
+    LOG_HARD << "introspecting document:";
+    LOG_HARD << "id: "      << doc.id.toStdString();
+    LOG_HARD << "src: "     << doc.src.toStdString();
+    LOG_HARD << "filename: "<< doc.filename.toStdString();
+}
+
+void introspect(const ActionPtr& act) {
+    LOG_HARD << "introspecting action:";
+    LOG_HARD << "id: "      << act->id;
+    LOG_HARD << "filename: "<< act->filename.toStdString();
+    LOG_HARD << "auth: "    << act->auth.toStdString();
+    LOG_HARD << "procs: "   << act->processors.size();
+    introspect(act->doc);
+}
+}
 
 gdocs::gdocs(const QString& login, const QString& password, const QString& app_name, QObject* parent)
     : QObject(parent)
-    , state_(None)
-    , auth_(false)
     , manager_(new QNetworkAccessManager(this))
+    , login_(login)
+    , password_(password)
+    , app_name_(app_name)
+    , id_(0)
 {
-    generic_header_["User-Agent"]    = app_name.toUtf8();
-    generic_header_["GData-Version"] = "3.0";
- 
+    connect(manager_, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
+            SLOT(authentication_required(QNetworkReply*, QAuthenticator*)));
+
+    connect(manager_, SIGNAL(finished(QNetworkReply*)),
+            SLOT(finished(QNetworkReply*)));
+
+    //I dislike to pass QNetworkAccessManager::NetworkAccessibility declaration to outer header
+    //this hack translates QNetworkAccessManager::NetworkAccessibility into simple int
+    connect(manager_, SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)),
+            new qsw(manager_, boost::bind(&gdocs::network_accessible_changed, this, boost::bind(&QNetworkAccessManager::networkAccessible, manager_))),
+            SLOT(activate()));
+
+    connect(manager_, SIGNAL(proxyAuthenticationRequired(const QNetworkProxy&, QAuthenticator*)),
+            SLOT(proxy_authentication_required(const QNetworkProxy&, QAuthenticator*)));
+    
     connect(manager_, SIGNAL(sslErrors(QNetworkReply*,QList<QSslError>)), this, SLOT(ssl_errors(QNetworkReply*,QList<QSslError>)));
-    connect(manager_, SIGNAL(finished(QNetworkReply*)), this, SLOT(finished(QNetworkReply*)));
-    
-//     QStringList auth_data;
-//     auth_data  << QString("Email=%1").arg(login)
-//                << QString("Passwd=%1").arg(password)
-//                << QString("accountType=%1").arg("HOSTED_OR_GOOGLE")
-//                << QString("source=%1").arg(app_name)
-//                << QString("service=%1").arg("writely");
-
-    QUrl url(login_uri_c);
-    url.addQueryItem("Email",       login);
-    url.addQueryItem("Passwd",      password);
-    url.addQueryItem("accountType", "HOSTED_OR_GOOGLE");
-    url.addQueryItem("source",      app_name);
-    url.addQueryItem("service",     "writely");
-    
-    QNetworkRequest auth_request(url);
-    fill_header(auth_request);
-    
-    QNetworkReply* auth_reply = manager_->get(auth_request);
-
-    request_context rc;
-    rc.name = "Authentification";
-    rc.action = Auth;
-    
-    auth_reply->setProperty(property_c, qVariantFromValue(rc));
-  
 }
 
 gdocs::~gdocs()
 {}
 
-bool gdocs::parse_auth( const QString& data)
+pending_action* gdocs::load(const QString& filename)
 {
-    QString auth= data.section("Auth=", 1).trimmed();
-    generic_header_["Authorization"] = QString("GoogleLogin auth=%1").arg(auth).toUtf8();
+    LOG_DEBUG << "load request: " << filename.toStdString();
 
-    return !auth.isEmpty();
+    ActionPtr act = new_action(filename);
+
+    act->processors
+        << boost::bind(&gdocs::process_auth, this, _1, _2)
+        << boost::bind(&gdocs::process_query, this, _1, _2)
+        << boost::bind(&gdocs::download_impl, this, _1, _2)
+        << boost::bind(&gdocs::process_download, this, _1, _2);
+
+    QUrl url(login_uri_c);
+    url.addQueryItem("Email",       login_);
+    url.addQueryItem("Passwd",      password_);
+    url.addQueryItem("accountType", "HOSTED_OR_GOOGLE");
+    url.addQueryItem("source",      app_name_);
+    url.addQueryItem("service",     "writely");
+        
+    QNetworkReply* auth_reply = get(act, url);
+    Q_UNUSED(auth_reply);
 }
 
-void gdocs::fill_header(QNetworkRequest& request)
+pending_action* gdocs::save(const QString& filename, const QByteArray& data)
 {
-    BOOST_FOREACH(const Headers::value_type& h, generic_header_) {
-        request.setRawHeader(h.first, h.second);
-    }
-}
-
-void gdocs::ssl_errors(QNetworkReply* reply, const QList<QSslError>& errors)
-{
-    LOG_DEBUG << "ssl_errors encountered:";
-    BOOST_FOREACH(const QSslError& err, errors) {
-        LOG_DEBUG << err.errorString().toStdString();
-    }
+    LOG_DEBUG << "save request: " << filename.toStdString();
+    ActionPtr act = new_action(filename);
     
+    act->processors
+        << boost::bind(&gdocs::process_auth, this, _1, _2)
+        << boost::bind(&gdocs::process_query, this, _1, _2)
+        << boost::bind(&gdocs::upload_impl, this, _1, _2)
+        << boost::bind(&gdocs::process_upload, this, _1, _2);
+
+    QUrl url(login_uri_c);
+    url.addQueryItem("Email",       login_);
+    url.addQueryItem("Passwd",      password_);
+    url.addQueryItem("accountType", "HOSTED_OR_GOOGLE");
+    url.addQueryItem("source",      app_name_);
+    url.addQueryItem("service",     "writely");
+
+    QNetworkReply* auth_reply = get(act, url);
+    Q_UNUSED(auth_reply);
+}
+
+pending_action* gdocs::check(const QString& filename)
+{
+    LOG_DEBUG << "check request: " << filename.toStdString();
+    ActionPtr act = new_action(filename);
+
+    act->processors
+        << boost::bind(&gdocs::process_auth, this, _1, _2)
+        << boost::bind(&gdocs::process_query, this, _1, _2);
+
+    QUrl url(login_uri_c);
+    url.addQueryItem("Email",       login_);
+    url.addQueryItem("Passwd",      password_);
+    url.addQueryItem("accountType", "HOSTED_OR_GOOGLE");
+    url.addQueryItem("source",      app_name_);
+    url.addQueryItem("service",     "writely");
+
+    QNetworkReply* auth_reply = get(act, url);
+    Q_UNUSED(auth_reply);    
+}
+
+void gdocs::authentication_required(QNetworkReply* reply, QAuthenticator* authenticator) const
+{
+    LOG_DEBUG << "authentication_required encountered:";
+    ActionPtr act = reply->property(action_property_c).value<ActionPtr>();
+    introspect(reply);
+    introspect(act);
 }
 
 void gdocs::finished(QNetworkReply* reply)
 {
-    request_context request = reply->property(property_c).value<request_context>();
-
+    ActionPtr act = reply->property(action_property_c).value<ActionPtr>();
+    LOG_DEBUG << "Reply reply: " << act->id;
+    introspect(act);
+    introspect(reply);
+    
+    if ((reply->error() != QNetworkReply::NoError) || !reply->isReadable())
+    {
+        LOG_ERR << reply->error();
+        LOG_ERR << reply->errorString().toStdString();
+        //TODO handle error string
+        act->pending->error(QString());
+        return;
+    }
+    
     QByteArray data = reply->readAll();
 
-    std::cerr<<"Reply received:"<<request.name.toStdString()<<std::endl;
-    
-    std::cerr<<"Reply attr1:"<<reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt()<<std::endl;
-    std::cerr<<"Reply attr2:"<<reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString().toStdString()<<std::endl;
-    QString redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl().toString();
-    std::cerr<<"Reply attr3:"<<redirect.toStdString()<<std::endl;
-    std::cerr<<"Reply attr4:"<<reply->attribute(QNetworkRequest::CustomVerbAttribute).toString().toStdString()<<std::endl;
-    std::cerr<<"Reply attr5:"<<reply->attribute(QNetworkRequest::AuthenticationReuseAttribute).toInt()<<std::endl;
-    
-    std::cerr<<"Reply data:"<<data.constData()<<std::endl;
-    
-    if (reply->error() != QNetworkReply::NoError) {
-        std::cerr<<"Error: "<<request.name.toStdString() << " Action:" << request.action<<std::endl;
-    }
+    LOG_DEBUG << "Reply data:" << QString(data).toStdString();
 
-    switch (request.action) {
-        case Auth:
-            if ( parse_auth(data) ) {
-                state_ |= Auth;
-            }
-            break;
-        case Query:
-            {
-                document ddd;
-                foreach(const document& d, gdocs_documents(data).documents()) {
-                    ddd = d;
-                    std::cerr<<"Finded file:"<<d.filename.toStdString()<<std::endl;
-                    std::cerr<<"Finded id:"<<d.id.toStdString()<<std::endl;
-                    std::cerr<<"Finded src:"<<d.src.toStdString()<<std::endl;
-                    break;
-                }
-//                 break;
-                request_context r;
-                r.name = QString("Downloading %1").arg(ddd.filename);
-                r.action = Download;
+    QUrl redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
 
-                QUrl url(download_uri_c);
-                url.setQueryItems( QueryList()
-                    //by API 3.0 documentation we must do "docID", but it leads to redirect response. If it dosn't work use "id" key.
-                    //<< qMakePair("id", ddd.id)
-                    << QueryArg("docID",       ddd.id)
-                    << QueryArg("exportFormat","txt" )
-                    << QueryArg("formatormat", "txt" )
-                );
-                
-                get(url, r);
-                
-            }
-                        
-            
-            break;
-            
-        case Download:;
-
-            std::cerr<<"HERE"<<std::endl;
-            if (!redirect.isEmpty()) {
-                QUrl url(redirect);
-
-                QNetworkRequest down_request(url);
-                fill_header(down_request);
-
-                std::cerr<<"Redirect:="<<down_request.url().toString().toStdString()<<std::endl;
-                
-                QNetworkReply* down_reply = manager_->get(down_request);
-
-                down_reply->setProperty(property_c, qVariantFromValue(request));
-            }
-            
-        default:
-            ;
-    }
-
-    if ( !(state_ & Auth) )
-    {
+    if (!redirect.isEmpty()) {
+        QNetworkReply* redirected_reply = get(act, redirect);
+        Q_UNUSED(redirected_reply);
         return;
     }
 
-    for ( int i = 0; i < downloads.size(); ++i) {
-        request_context r;
-        r.name = QString("Quering %1").arg(downloads[i]);
-        r.action = Query;
+    try {
+        Q_ASSERT(act->processors.empty());
+        Processor proc = act->processors.front();
+        act->processors.pop_front();
+        proc(act, data);
+    }
+    catch (std::exception& e) {
+        LOG_ERR << "action %1 has error %2", act->id, e.what();
+        act->pending->error(e.what());
+    }
+}
 
-        QString u = base_uri_c.toString();
+void gdocs::network_accessible_changed(int accessible) const
+{
+    LOG_DEBUG << "network_accessible_changed encountered:" << accessible;
+}
 
-        u += "?title="+downloads[i];
+void gdocs::proxy_authentication_required(const QNetworkProxy& proxy, QAuthenticator* authenticator) const
+{
+    Q_UNUSED(proxy);
+    Q_UNUSED(authenticator);
+    LOG_DEBUG << "proxy_authentication_required encountered:";
+}
 
-        QUrl url(u);
+void gdocs::ssl_errors(QNetworkReply* reply, const QList<QSslError>& errors) const
+{
+    LOG_ERR << "ssl_errors encountered:";
+    BOOST_FOREACH(const QSslError& err, errors) {
+        LOG_ERR << err.errorString().toStdString();
+    }
+    ActionPtr act = reply->property(action_property_c).value<ActionPtr>();
+    introspect(reply);
+    introspect(act);
+}
+
+void gdocs::process_auth(ActionPtr act, const QByteArray& data)
+{
+    LOG_DEBUG << "process_auth: " << act->id;
+    introspect(act);
         
-        QNetworkRequest docs_request(url);
-        fill_header(docs_request);
-//         docs_request.setRawHeader("q", downloads[i].toUtf8());
-//         docs_request.setRawHeader("title-exact", "true");
+    QString auth= QString(data).section("Auth=", 1).trimmed();
+    act->http_headers["Authorization"] = QString("GoogleLogin auth=%1").arg(auth).toUtf8();
 
-        QNetworkReply* docs_reply = manager_->get(docs_request);
+    //TODO handle error better
+    if (auth.isEmpty())
+        throw std::runtime_error("Auth is empty!");
 
-        std::cerr<<"URL:="<<docs_request.url().toString().toStdString()<<std::endl;
+    //using search by title
+    QUrl url(base_uri_c.toString() + "?title="+act->filename);
+
+    QNetworkReply* docs_reply = get(act, url);
+    Q_UNUSED(docs_reply);
+}
+
+void gdocs::process_query(ActionPtr act, const QByteArray& data)
+{
+    LOG_DEBUG << "process_query: " << act->id;
+    introspect(act);
+    
+    foreach(const document& d, gdocs_documents(data).documents()) {
+        if (d.filename != act->filename) continue;
         
-        docs_reply->setProperty(property_c, qVariantFromValue(r));
+        act->doc = d;
+        break;
     }
 
-    downloads.clear();
+    if (!act->doc.id.isEmpty())
+    {
+        LOG_DEBUG << "Finded file: "<< act->doc.filename.toStdString();
+        LOG_DEBUG << "Finded id: "  << act->doc.id.toStdString();
+        LOG_DEBUG << "Finded src: " << act->doc.src.toStdString();
+        act->pending->exists();
+    }
+    else
+    {
+        LOG_DEBUG << "Document not founded: " << act->filename.toStdString();
+    }
+
+    if (!act->processors.empty()){
+        Processor proc = act->processors.front();
+        act->processors.pop_front();
+        proc(act, QByteArray());
+    }
 }
 
-void gdocs::load(const QString& filename)
+void gdocs::download_impl(ActionPtr act, const QByteArray& data)
 {
-    downloads.push_back(filename);;
+    Q_UNUSED(data);
+    LOG_DEBUG << "download_impl: " << act->id;
+    introspect(act);
+
+    if (act->doc.id.isEmpty())
+        throw std::runtime_error("file not found");
+    
+    QUrl url(download_uri_c);
+    url.setQueryItems( QueryList()
+        //by API 3.0 documentation we must do "docID", but it leads to redirect response. If it doesn't work use "id" key.
+        //<< QueryArg("id",          act->doc.id)
+        << QueryArg("docID",       act->doc.id)
+        << QueryArg("exportFormat","txt" )
+        << QueryArg("formatormat", "txt" )
+    );
+
+    QNetworkReply* download_reply = get(act, url);
+    Q_UNUSED(download_reply);
+}
+
+void gdocs::upload_impl(ActionPtr act, const QByteArray& data)
+{
+    LOG_DEBUG << "create_impl: " << act->id;
+    introspect(act);
+
+    //TODO implement
+}
+
+void gdocs::process_download(ActionPtr act, const QByteArray& data)
+{
+    LOG_DEBUG << "process_download: " << act->id;
+    introspect(act);
+    act->pending->loaded(data);
+}
+
+void gdocs::process_upload(ActionPtr act, const QByteArray& data)
+{
+    LOG_DEBUG << "process_upload: " << act->id;
+    introspect(act);
+    act->pending->saved();
 }
 
 
-QNetworkReply* gdocs::get(const QUrl& url, const request_context& c)
+ActionPtr gdocs::new_action(const QString& filename)
+{
+    ActionPtr act(new action);
+    act->id = id_++;
+    act->filename = filename;
+    act->http_headers["User-Agent"] = app_name_.toUtf8();
+    act->http_headers["GData-Version"] = "3.0";
+    act->pending.reset(new pending_action(0));
+   
+    return act;
+}
+
+QNetworkReply* gdocs::get(ActionPtr act, const QUrl& url)
 {
     QNetworkRequest request(url);
-    fill_header(request);
 
-    request_context ctx(c);
-    ctx.url = request.url().toString();
+    BOOST_FOREACH(const Headers::value_type& h, act->http_headers) {
+        request.setRawHeader(h.first, h.second);
+    }
 
     QNetworkReply* reply = manager_->get(request);
-    reply->setProperty(property_c, qVariantFromValue(ctx));
+    reply->setProperty(action_property_c, qVariantFromValue(act));
     return reply;
 }
+
 
 
 
