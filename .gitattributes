@@ -32,7 +32,6 @@ distrib/gentoo/urtconnector-9999.ebuild -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
 distrib/windows/CMakeLists.txt -text
-distrib/windows/urtconnector.nsi -text
 distrib/windows/urtconnector.nsi.in -text
 doc/ExampleData/appdata.xml -text
 doc/ExampleData/qstat_out.xml -text
@@ -706,4 +705,3 @@ translations/CMakeLists.txt -text
 translations/urtconnector_ru.ts -text
 /update_translations -text
 /version -text
-/versionfix.sh -text
