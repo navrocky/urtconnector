@@ -1,2 +1,2 @@
-set(URT_VERSION "0.7.9 build 1")
+set(URT_VERSION "0.7.9")
 set(URT_CODENAME "Hilarious Headshot")

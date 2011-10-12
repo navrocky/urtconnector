@@ -19,6 +19,7 @@ artwork/urtconnector.ico -text
 /build_msys_release.bat -text
 cmake/FindSQLite3.cmake -text
 /distclean -text
+distrib/CMakeLists.txt -text
 distrib/arch/stable/PKGBUILD -text
 distrib/arch/svn/PKGBUILD -text
 distrib/deb/build_deb.sh -text
@@ -30,7 +31,9 @@ distrib/gentoo/urtconnector-0.6.0.ebuild -text
 distrib/gentoo/urtconnector-9999.ebuild -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
+distrib/windows/CMakeLists.txt -text
 distrib/windows/urtconnector.nsi -text
+distrib/windows/urtconnector.nsi.in -text
 doc/ExampleData/appdata.xml -text
 doc/ExampleData/qstat_out.xml -text
 doc/ExampleData/servers.xml -text

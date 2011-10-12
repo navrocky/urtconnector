@@ -10,4 +10,5 @@ include(version)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 add_subdirectory(src)
+add_subdirectory(distrib)
 add_subdirectory(translations)
