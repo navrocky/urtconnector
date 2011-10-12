@@ -94,6 +94,11 @@ Section "UrT Connector"
   !endif
   SetOutPath "$INSTDIR\imageformats"
   File "qjpeg4.dll"
+  File "qsvg4.dll"
+  SetOutPath "$INSTDIR\sounds"
+  File "${DIR_SRC}\sounds\notify1.ogg"
+  File "${DIR_SRC}\sounds\notify2.ogg"
+  File "${DIR_SRC}\sounds\notify3.ogg"
   CreateDirectory "$SMPROGRAMS\${START_MENU_ENTRY}"
   
   !ifdef ICON_FILE
