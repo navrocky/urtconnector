@@ -5,4 +5,4 @@ else()
     set(NSIS_PRODUCT_VERSION "${NSIS_VERSION_PREFIX} \"${URT_VERSION}\"")
 endif()
 
-configure_file(urtconnector.nsi.in urtconnector.nsi)
+configure_file(urtconnector.nsi.in urtconnector.nsi @ONLY)
