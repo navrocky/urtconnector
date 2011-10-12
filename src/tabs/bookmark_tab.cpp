@@ -239,16 +239,16 @@ void bookmark_tab::test_import(){
         obj << bm;
     }
     
-    remote::object remote = fs.get( obj.type() );
+//     remote::object remote = fs.get( obj.type() );
     
-    remote::object::Entries merged = remote::merge( obj.entries(), remote.entries() );
+//     remote::object::Entries merged = remote::merge( obj.entries(), remote.entries() );
     
  
-    BOOST_FOREACH( const remote::intermediate& imd, merged ) {
-        server_bookmark bm;
-        bm.load( imd.save() );
-        context().bookmarks()->add(bm);
-    }
+//     BOOST_FOREACH( const remote::intermediate& imd, merged ) {
+//         server_bookmark bm;
+//         bm.load( imd.save() );
+//         context().bookmarks()->add(bm);
+//     }
     
 }
 

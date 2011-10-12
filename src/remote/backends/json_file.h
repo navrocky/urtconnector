@@ -12,8 +12,9 @@ namespace remote {
 
         json_file_storage(const QString& filename): filename_(filename) {}
 
-        virtual object get( const QString& type );
-        virtual void put( const object& obj );
+        virtual action* get( const QString& type );
+        virtual action* put( const object& obj );
+        virtual action* check( const QString& type ){return 0;};
 
     private:
         QString filename_;

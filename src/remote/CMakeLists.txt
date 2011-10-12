@@ -12,6 +12,7 @@ set(HEADERS
 )
 
 set(MOC_HEADERS
+    storage.h
     backends/gdocs/gdocs.h
 )
 

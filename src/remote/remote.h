@@ -110,7 +110,7 @@ public:
 
     virtual QVariantMap save() const;
 
-    virtual void load( const QVariantMap& data);
+    virtual void load(const QVariantMap& data);
 
 private:
     QString type_;

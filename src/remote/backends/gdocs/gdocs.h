@@ -9,7 +9,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <QObject>
+#include "../../storage.h"
 
 
 class QAuthenticator;
@@ -23,24 +23,9 @@ class QUrl;
 
 class request_context;
 
-class action;
-typedef boost::shared_ptr<action> ActionPtr;
-
-class pending_action: public QObject {
-    Q_OBJECT
-public:
-    virtual ~pending_action(){};
-
-Q_SIGNALS:
-    void loaded(const QByteArray& data);
-    void saved();
-    void exists();
-    void error(const QString& err);
-    
-private:
-    friend class gdocs;
-    pending_action(QObject* parent){};    
-};
+class context;
+class gdocs_action;
+typedef boost::shared_ptr<context> ContextPtr;
 
 struct document {
     QString id;
@@ -48,7 +33,7 @@ struct document {
     QString filename;
 };
 
-class gdocs: public QObject{
+class gdocs: public QObject, remote::storage {
 Q_OBJECT
 public:
     
@@ -56,11 +41,10 @@ public:
     virtual ~gdocs();
 
 
-public Q_SLOTS:
-    pending_action* load(const QString& filename);
-    pending_action* save(const QString& filename, const QByteArray& data);
-    pending_action* check(const QString& filename);
-    
+    virtual remote::action* get(const QString& type);
+    virtual remote::action* put(const remote::object& obj);
+    virtual remote::action* check(const QString& type);
+
 private Q_SLOTS:
     void authentication_required(QNetworkReply * reply, QAuthenticator * authenticator) const;
     void finished(QNetworkReply * reply);
@@ -69,17 +53,19 @@ private Q_SLOTS:
     void ssl_errors(QNetworkReply * reply, const QList<QSslError> & errors) const;
     
 private:
-    ActionPtr new_action(const QString& filename);
-    QNetworkReply* get(ActionPtr action, const QUrl& url);
+    friend class gdocs_action;
+    std::auto_ptr<gdocs_action> create_action(const remote::object& obj);
+    void start(std::auto_ptr<context> ctx, std::auto_ptr<gdocs_action> act);
+    QNetworkReply* get(ContextPtr ctx, const QUrl& url);
 
-    void process_auth(ActionPtr action, const QByteArray& data);
-    void process_query(ActionPtr action, const QByteArray& data);
-    void process_download(ActionPtr action, const QByteArray& data);
-    void process_upload(ActionPtr action, const QByteArray& data);
+    void process_auth(ContextPtr ctx, const QByteArray& data);
+    void process_query(ContextPtr ctx, const QByteArray& data);
+    void process_download(ContextPtr ctx, const QByteArray& data);
+    void process_upload(ContextPtr ctx, const QByteArray& data);
 
-    void download_impl(ActionPtr action, const QByteArray& data);
-    void upload_impl(ActionPtr action, const QByteArray& data);
-
+    void download_impl(ContextPtr ctx, const QByteArray& data);
+    void upload_impl(ContextPtr ctx, const QByteArray& data);
+   
 private:
     QNetworkAccessManager* manager_;
 

@@ -6,6 +6,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QSslError>
+#include <QPointer>
 
 #include <QString>
 #include <QStringList>
@@ -17,6 +18,7 @@
 #include "common/tools.h"
 
 #include "gdocs.h"
+#include <remote.h>
 
 SYSLOG_MODULE(gdocs);
 
@@ -38,20 +40,43 @@ static const QUrl login_uri_c = QString("https://www.google.com/accounts/ClientL
 static const QUrl base_uri_c       = QString("https://docs.google.com/feeds/default/private/full");
 static const QUrl download_uri_c   = QString("https://docs.google.com/feeds/download/documents/Export");
 
-typedef boost::function<void (ActionPtr, const QByteArray&)> Processor;
 
-struct action {
-    int id;
+class gdocs_action: public remote::action {
+public:
+    gdocs_action(std::auto_ptr<context> ctx, gdocs* manager) : ctx(ctx), manager(manager){};
+    virtual ~gdocs_action(){};
+
+    virtual void start() {
+        Q_ASSERT(!manager.isNull());
+        
+        manager->start(ctx, std::auto_ptr<gdocs_action>(this)); //dropping ownership
+    };
+    
+    friend class gdocs;
+    std::auto_ptr<context> ctx;
+    QPointer<gdocs> manager;
+};
+
+
+
+
+typedef boost::function<void (ContextPtr, const QByteArray&)> Processor;
+
+struct context {
+    context(int id, const remote::object& ojb): id(id), obj(ojb) {};
+    
+    const int id;
+    remote::object obj;
     QString filename;
     
     QString auth;
     document doc;
     Headers http_headers;
     QList<Processor> processors;
-    std::auto_ptr<pending_action> pending;
+    std::auto_ptr<gdocs_action> pending;
 };
 
-Q_DECLARE_METATYPE(ActionPtr);
+Q_DECLARE_METATYPE(ContextPtr);
 
 namespace {
 template <typename T>
@@ -80,7 +105,7 @@ void introspect(const document& doc) {
     LOG_HARD << "filename: "<< doc.filename.toStdString();
 }
 
-void introspect(const ActionPtr& act) {
+void introspect(const ContextPtr& act) {
     LOG_HARD << "introspecting action:";
     LOG_HARD << "id: "      << act->id;
     LOG_HARD << "filename: "<< act->filename.toStdString();
@@ -119,84 +144,62 @@ gdocs::gdocs(const QString& login, const QString& password, const QString& app_n
 gdocs::~gdocs()
 {}
 
-pending_action* gdocs::load(const QString& filename)
+remote::action* gdocs::get(const QString& type)
 {
-    LOG_DEBUG << "load request: " << filename.toStdString();
+    LOG_DEBUG << "load request: " << type.toStdString();
 
-    ActionPtr act = new_action(filename);
+    std::auto_ptr<gdocs_action> act = create_action(remote::object(type));
 
-    act->processors
+    act->ctx->processors
         << boost::bind(&gdocs::process_auth, this, _1, _2)
         << boost::bind(&gdocs::process_query, this, _1, _2)
         << boost::bind(&gdocs::download_impl, this, _1, _2)
         << boost::bind(&gdocs::process_download, this, _1, _2);
 
-    QUrl url(login_uri_c);
-    url.addQueryItem("Email",       login_);
-    url.addQueryItem("Passwd",      password_);
-    url.addQueryItem("accountType", "HOSTED_OR_GOOGLE");
-    url.addQueryItem("source",      app_name_);
-    url.addQueryItem("service",     "writely");
-        
-    QNetworkReply* auth_reply = get(act, url);
-    Q_UNUSED(auth_reply);
+    return act.release();
 }
 
-pending_action* gdocs::save(const QString& filename, const QByteArray& data)
+remote::action* gdocs::put(const remote::object& obj)
 {
-    LOG_DEBUG << "save request: " << filename.toStdString();
-    ActionPtr act = new_action(filename);
+    LOG_DEBUG << "save request: " << obj.type().toStdString();
     
-    act->processors
+    std::auto_ptr<gdocs_action> act = create_action(obj);
+    
+    act->ctx->processors
         << boost::bind(&gdocs::process_auth, this, _1, _2)
         << boost::bind(&gdocs::process_query, this, _1, _2)
         << boost::bind(&gdocs::upload_impl, this, _1, _2)
         << boost::bind(&gdocs::process_upload, this, _1, _2);
 
-    QUrl url(login_uri_c);
-    url.addQueryItem("Email",       login_);
-    url.addQueryItem("Passwd",      password_);
-    url.addQueryItem("accountType", "HOSTED_OR_GOOGLE");
-    url.addQueryItem("source",      app_name_);
-    url.addQueryItem("service",     "writely");
-
-    QNetworkReply* auth_reply = get(act, url);
-    Q_UNUSED(auth_reply);
+    return act.release();
 }
 
-pending_action* gdocs::check(const QString& filename)
+remote::action* gdocs::check(const QString& type)
 {
-    LOG_DEBUG << "check request: " << filename.toStdString();
-    ActionPtr act = new_action(filename);
-
-    act->processors
+    LOG_DEBUG << "check request: " << type.toStdString();
+    
+    std::auto_ptr<gdocs_action> act = create_action(remote::object(type));
+    
+    act->ctx->processors
         << boost::bind(&gdocs::process_auth, this, _1, _2)
         << boost::bind(&gdocs::process_query, this, _1, _2);
 
-    QUrl url(login_uri_c);
-    url.addQueryItem("Email",       login_);
-    url.addQueryItem("Passwd",      password_);
-    url.addQueryItem("accountType", "HOSTED_OR_GOOGLE");
-    url.addQueryItem("source",      app_name_);
-    url.addQueryItem("service",     "writely");
-
-    QNetworkReply* auth_reply = get(act, url);
-    Q_UNUSED(auth_reply);    
+    return act.release();
 }
 
 void gdocs::authentication_required(QNetworkReply* reply, QAuthenticator* authenticator) const
 {
     LOG_DEBUG << "authentication_required encountered:";
-    ActionPtr act = reply->property(action_property_c).value<ActionPtr>();
+    ContextPtr act = reply->property(action_property_c).value<ContextPtr>();
     introspect(reply);
     introspect(act);
 }
 
 void gdocs::finished(QNetworkReply* reply)
 {
-    ActionPtr act = reply->property(action_property_c).value<ActionPtr>();
-    LOG_DEBUG << "Reply reply: " << act->id;
-    introspect(act);
+    ContextPtr ctx = reply->property(action_property_c).value<ContextPtr>();
+    LOG_DEBUG << "Reply reply: " << ctx->id;
+    introspect(ctx);
     introspect(reply);
     
     if ((reply->error() != QNetworkReply::NoError) || !reply->isReadable())
@@ -204,7 +207,7 @@ void gdocs::finished(QNetworkReply* reply)
         LOG_ERR << reply->error();
         LOG_ERR << reply->errorString().toStdString();
         //TODO handle error string
-        act->pending->error(QString());
+        ctx->pending->error(QString());
         return;
     }
     
@@ -215,20 +218,20 @@ void gdocs::finished(QNetworkReply* reply)
     QUrl redirect = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
 
     if (!redirect.isEmpty()) {
-        QNetworkReply* redirected_reply = get(act, redirect);
+        QNetworkReply* redirected_reply = get(ctx, redirect);
         Q_UNUSED(redirected_reply);
         return;
     }
 
     try {
-        Q_ASSERT(act->processors.empty());
-        Processor proc = act->processors.front();
-        act->processors.pop_front();
-        proc(act, data);
+        Q_ASSERT(ctx->processors.empty());
+        Processor proc = ctx->processors.front();
+        ctx->processors.pop_front();
+        proc(ctx, data);
     }
     catch (std::exception& e) {
-        LOG_ERR << "action %1 has error %2", act->id, e.what();
-        act->pending->error(e.what());
+        LOG_ERR << "action %1 has error %2", ctx->id, e.what();
+        ctx->pending->error(e.what());
     }
 }
 
@@ -250,133 +253,144 @@ void gdocs::ssl_errors(QNetworkReply* reply, const QList<QSslError>& errors) con
     BOOST_FOREACH(const QSslError& err, errors) {
         LOG_ERR << err.errorString().toStdString();
     }
-    ActionPtr act = reply->property(action_property_c).value<ActionPtr>();
+    ContextPtr ctx = reply->property(action_property_c).value<ContextPtr>();
     introspect(reply);
-    introspect(act);
+    introspect(ctx);
 }
 
-void gdocs::process_auth(ActionPtr act, const QByteArray& data)
+
+std::auto_ptr<gdocs_action> gdocs::create_action(const remote::object& obj)
 {
-    LOG_DEBUG << "process_auth: " << act->id;
-    introspect(act);
+    std::auto_ptr<context> ctx(new context(id_++, obj));
+    ctx->filename = obj.type() + ".txt";
+    ctx->http_headers["User-Agent"] = app_name_.toUtf8();
+    ctx->http_headers["GData-Version"] = "3.0";
+
+    return std::auto_ptr<gdocs_action>(new gdocs_action(ctx, this));
+}
+
+void gdocs::start(std::auto_ptr<context> ctx, std::auto_ptr<gdocs_action> act)
+{
+    QUrl url(login_uri_c);
+    url.addQueryItem("Email",       login_);
+    url.addQueryItem("Passwd",      password_);
+    url.addQueryItem("accountType", "HOSTED_OR_GOOGLE");
+    url.addQueryItem("source",      app_name_);
+    url.addQueryItem("service",     "writely");
+        
+    ctx->pending = act; //context owns action
+    //QNetworkAccessManager owns context
+    QNetworkReply* auth_reply = get(ContextPtr(ctx.release()), url);
+    Q_UNUSED(auth_reply);
+}
+
+
+QNetworkReply* gdocs::get(ContextPtr ctx, const QUrl& url)
+{
+    QNetworkRequest request(url);
+
+    BOOST_FOREACH(const Headers::value_type& h, ctx->http_headers) {
+        request.setRawHeader(h.first, h.second);
+    }
+
+    QNetworkReply* reply = manager_->get(request);
+    reply->setProperty(action_property_c, qVariantFromValue(ctx));
+    return reply;
+}
+
+void gdocs::process_auth(ContextPtr ctx, const QByteArray& data)
+{
+    LOG_DEBUG << "process_auth: " << ctx->id;
+    introspect(ctx);
         
     QString auth= QString(data).section("Auth=", 1).trimmed();
-    act->http_headers["Authorization"] = QString("GoogleLogin auth=%1").arg(auth).toUtf8();
+    ctx->http_headers["Authorization"] = QString("GoogleLogin auth=%1").arg(auth).toUtf8();
 
     //TODO handle error better
     if (auth.isEmpty())
         throw std::runtime_error("Auth is empty!");
 
     //using search by title
-    QUrl url(base_uri_c.toString() + "?title="+act->filename);
+    QUrl url(base_uri_c.toString() + "?title="+ctx->filename);
 
-    QNetworkReply* docs_reply = get(act, url);
+    QNetworkReply* docs_reply = get(ctx, url);
     Q_UNUSED(docs_reply);
 }
 
-void gdocs::process_query(ActionPtr act, const QByteArray& data)
+void gdocs::process_query(ContextPtr ctx, const QByteArray& data)
 {
-    LOG_DEBUG << "process_query: " << act->id;
-    introspect(act);
+    LOG_DEBUG << "process_query: " << ctx->id;
+    introspect(ctx);
     
     foreach(const document& d, gdocs_documents(data).documents()) {
-        if (d.filename != act->filename) continue;
+        if (d.filename != ctx->filename) continue;
         
-        act->doc = d;
+        ctx->doc = d;
         break;
     }
 
-    if (!act->doc.id.isEmpty())
+    if (!ctx->doc.id.isEmpty())
     {
-        LOG_DEBUG << "Finded file: "<< act->doc.filename.toStdString();
-        LOG_DEBUG << "Finded id: "  << act->doc.id.toStdString();
-        LOG_DEBUG << "Finded src: " << act->doc.src.toStdString();
-        act->pending->exists();
+        LOG_DEBUG << "Finded file: "<< ctx->doc.filename.toStdString();
+        LOG_DEBUG << "Finded id: "  << ctx->doc.id.toStdString();
+        LOG_DEBUG << "Finded src: " << ctx->doc.src.toStdString();
+        ctx->pending->exists();
     }
     else
     {
-        LOG_DEBUG << "Document not founded: " << act->filename.toStdString();
+        LOG_DEBUG << "Document not founded: " << ctx->filename.toStdString();
     }
 
-    if (!act->processors.empty()){
-        Processor proc = act->processors.front();
-        act->processors.pop_front();
-        proc(act, QByteArray());
+    if (!ctx->processors.empty()){
+        Processor proc = ctx->processors.front();
+        ctx->processors.pop_front();
+        proc(ctx, QByteArray());
     }
 }
 
-void gdocs::download_impl(ActionPtr act, const QByteArray& data)
+void gdocs::download_impl(ContextPtr ctx, const QByteArray& data)
 {
     Q_UNUSED(data);
-    LOG_DEBUG << "download_impl: " << act->id;
-    introspect(act);
+    LOG_DEBUG << "download_impl: " << ctx->id;
+    introspect(ctx);
 
-    if (act->doc.id.isEmpty())
+    if (ctx->doc.id.isEmpty())
         throw std::runtime_error("file not found");
     
     QUrl url(download_uri_c);
     url.setQueryItems( QueryList()
         //by API 3.0 documentation we must do "docID", but it leads to redirect response. If it doesn't work use "id" key.
-        //<< QueryArg("id",          act->doc.id)
-        << QueryArg("docID",       act->doc.id)
+        //<< QueryArg("id",          ctx->doc.id)
+        << QueryArg("docID",       ctx->doc.id)
         << QueryArg("exportFormat","txt" )
         << QueryArg("formatormat", "txt" )
     );
 
-    QNetworkReply* download_reply = get(act, url);
+    QNetworkReply* download_reply = get(ctx, url);
     Q_UNUSED(download_reply);
 }
 
-void gdocs::upload_impl(ActionPtr act, const QByteArray& data)
+void gdocs::upload_impl(ContextPtr ctx, const QByteArray& data)
 {
-    LOG_DEBUG << "create_impl: " << act->id;
-    introspect(act);
+    LOG_DEBUG << "create_impl: " << ctx->id;
+    introspect(ctx);
 
     //TODO implement
 }
 
-void gdocs::process_download(ActionPtr act, const QByteArray& data)
+void gdocs::process_download(ContextPtr ctx, const QByteArray& data)
 {
-    LOG_DEBUG << "process_download: " << act->id;
-    introspect(act);
-    act->pending->loaded(data);
+    LOG_DEBUG << "process_download: " << ctx->id;
+    introspect(ctx);
+//     ctx->pending->loaded(data);
 }
 
-void gdocs::process_upload(ActionPtr act, const QByteArray& data)
+void gdocs::process_upload(ContextPtr ctx, const QByteArray& data)
 {
-    LOG_DEBUG << "process_upload: " << act->id;
-    introspect(act);
-    act->pending->saved();
+    LOG_DEBUG << "process_upload: " << ctx->id;
+    introspect(ctx);
+    ctx->pending->saved();
 }
-
-
-ActionPtr gdocs::new_action(const QString& filename)
-{
-    ActionPtr act(new action);
-    act->id = id_++;
-    act->filename = filename;
-    act->http_headers["User-Agent"] = app_name_.toUtf8();
-    act->http_headers["GData-Version"] = "3.0";
-    act->pending.reset(new pending_action(0));
-   
-    return act;
-}
-
-QNetworkReply* gdocs::get(ActionPtr act, const QUrl& url)
-{
-    QNetworkRequest request(url);
-
-    BOOST_FOREACH(const Headers::value_type& h, act->http_headers) {
-        request.setRawHeader(h.first, h.second);
-    }
-
-    QNetworkReply* reply = manager_->get(request);
-    reply->setProperty(action_property_c, qVariantFromValue(act));
-    return reply;
-}
-
-
-
 
 
 
