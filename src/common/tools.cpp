@@ -264,12 +264,12 @@ QString gear(Gear g)
 QString icon(Gear g)
 {
     static const std::map<Gear, QString> icons = boost::assign::map_list_of
-        ( Grenades, "icons:weapons/grenade.svg" )
-        ( Snipers,  "icons:weapons/snipe.svg"   )
-        ( Spas,     "icons:weapons/spas.svg"    )
-        ( Pistols,  "icons:weapons/pistol.svg"  )
-        ( Automatic,"icons:weapons/autos.svg"   )
-        ( Negev,    "icons:weapons/negev.svg"   );
+        ( Grenades, "icons:weapons/grenade.png" )
+        ( Snipers,  "icons:weapons/snipe.png"   )
+        ( Spas,     "icons:weapons/spas.png"    )
+        ( Pistols,  "icons:weapons/pistol.png"  )
+        ( Automatic,"icons:weapons/autos.png"   )
+        ( Negev,    "icons:weapons/negev.png"   );
         
     return ( icons.find(g) != icons.end() )
         ? icons.find(g)->second
