@@ -96,6 +96,18 @@ public:
         }
     }
 
+    QString upload_url() const {
+        QDomNodeList links = dom_.elementsByTagName("link");
+        
+        for (uint i = 0; i < links.size(); ++ i)
+        {
+            if (links.at(i).toElement().attribute("rel") != "http://schemas.google.com/g/2005#resumable-create-media") continue;
+
+            return links.at(i).toElement().attribute("href");
+        }
+        return QString();
+    }
+    
     std::list<document> documents() const {
         std::list<document> ret;
         QDomNodeList entries = dom_.elementsByTagName("entry");

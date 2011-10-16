@@ -134,11 +134,18 @@ const string kDocListFeed = "/documents/private/full";
 int main(int argc, char *argv[])
 {
     QApplication ap(argc, argv);
-
+    logman().level_set(harddebug);
+    
+    
+    output_p cerr_out;
+    cerr_out.reset(new output_stream(std::cerr));
+    logman().output_add(cerr_out);
+    
     std::cerr<<"-1"<<std::endl;
     gdocs d("kinnalru@gmail.com", "malder11", "myapp");
 
-    d.load("urtold");
+    remote::action* act = d.put(remote::object("secondupload"));
+    act->start();
     
     std::cerr<<"-0"<<std::endl;
     

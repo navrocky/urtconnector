@@ -156,6 +156,8 @@ remote::action* gdocs::get(const QString& type)
         << boost::bind(&gdocs::download_impl, this, _1, _2)
         << boost::bind(&gdocs::process_download, this, _1, _2);
 
+    LOG_DEBUG << "Processors size: " << act->ctx->processors.size();
+        
     return act.release();
 }
 
@@ -198,7 +200,7 @@ void gdocs::authentication_required(QNetworkReply* reply, QAuthenticator* authen
 void gdocs::finished(QNetworkReply* reply)
 {
     ContextPtr ctx = reply->property(action_property_c).value<ContextPtr>();
-    LOG_DEBUG << "Reply reply: " << ctx->id;
+    LOG_DEBUG << "Reply id: %1, is finished: ", ctx->id, reply->isFinished();
     introspect(ctx);
     introspect(reply);
     
@@ -224,7 +226,7 @@ void gdocs::finished(QNetworkReply* reply)
     }
 
     try {
-        Q_ASSERT(ctx->processors.empty());
+        Q_ASSERT(!ctx->processors.empty());
         Processor proc = ctx->processors.front();
         ctx->processors.pop_front();
         proc(ctx, data);
@@ -287,12 +289,19 @@ void gdocs::start(std::auto_ptr<context> ctx, std::auto_ptr<gdocs_action> act)
 
 QNetworkReply* gdocs::get(ContextPtr ctx, const QUrl& url)
 {
+    LOG_DEBUG << "http GET: " << url.toString().toStdString();
     QNetworkRequest request(url);
 
     BOOST_FOREACH(const Headers::value_type& h, ctx->http_headers) {
         request.setRawHeader(h.first, h.second);
     }
 
+    QList<QByteArray> l = request.rawHeaderList();
+    QStringList sl;
+    std::copy(l.begin(), l.end(), std::back_inserter(sl));
+    
+    LOG_DEBUG << sl.join("\n").toStdString();
+    
     QNetworkReply* reply = manager_->get(request);
     reply->setProperty(action_property_c, qVariantFromValue(ctx));
     return reply;
@@ -328,7 +337,7 @@ void gdocs::process_query(ContextPtr ctx, const QByteArray& data)
         ctx->doc = d;
         break;
     }
-
+    
     if (!ctx->doc.id.isEmpty())
     {
         LOG_DEBUG << "Finded file: "<< ctx->doc.filename.toStdString();
@@ -344,7 +353,7 @@ void gdocs::process_query(ContextPtr ctx, const QByteArray& data)
     if (!ctx->processors.empty()){
         Processor proc = ctx->processors.front();
         ctx->processors.pop_front();
-        proc(ctx, QByteArray());
+        proc(ctx, data);
     }
 }
 
@@ -375,6 +384,35 @@ void gdocs::upload_impl(ContextPtr ctx, const QByteArray& data)
     LOG_DEBUG << "create_impl: " << ctx->id;
     introspect(ctx);
 
+    QString upload = gdocs_documents(data).upload_url();
+    LOG_DEBUG << "UPLOAD:"<<upload.toStdString();
+    
+    QUrl url(upload);
+    url.addQueryItem("convert", "false");
+    
+    LOG_DEBUG << "http POST: " << url.toString().toStdString();
+    QNetworkRequest request(url);
+
+    BOOST_FOREACH(const Headers::value_type& h, ctx->http_headers) {
+        request.setRawHeader(h.first, h.second);
+    }
+    
+    request.setRawHeader("Content-Length", "0");
+//     request.setRawHeader("Content-Type", "application/atom+xml");
+    request.setRawHeader("X-Upload-Content-Type", "plain/text");
+    request.setRawHeader("X-Upload-Content-Length", "10");
+    
+    QList<QByteArray> l = request.rawHeaderList();
+    QStringList sl;
+    std::copy(l.begin(), l.end(), std::back_inserter(sl));
+    
+    LOG_DEBUG << sl.join("\n").toStdString();
+
+//     QNetworkReply* reply = manager_->post(request, "<entry><title>Legal Contract</title></entry>123456");
+    QNetworkReply* reply = manager_->post(request, QByteArray("<entry><title>Legal Contract</title></entry>123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
+    reply->setProperty(action_property_c, qVariantFromValue(ctx));
+//     return reply;
+    
     //TODO implement
 }
 
@@ -390,6 +428,8 @@ void gdocs::process_upload(ContextPtr ctx, const QByteArray& data)
     LOG_DEBUG << "process_upload: " << ctx->id;
     introspect(ctx);
     ctx->pending->saved();
+    
+     ctx->processors << boost::bind(&gdocs::process_upload, this, _1, _2);
 }
 
 
