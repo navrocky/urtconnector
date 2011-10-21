@@ -31,7 +31,31 @@ public:
     virtual action* get(const QString& type) = 0;
     virtual action* put(const object& obj) = 0;
     virtual action* check(const QString& type) = 0;
+};
 
+
+class service {
+
+    service(const QString& caption, const QString& desc, const qsettings)
+    
+    const QString& caption() const;
+    const QString& description() const;
+};
+
+class storage_manager {
+
+    boost::shared_ptr<storage> create(boost::shared_ptr<const service>);
+    
+    void destroy(boost::shared_ptr<storage>);
+    
+    std::list<boost::shared_ptr<storage> > list() const;
+
+    QWidget* config(boost::shared_ptr<storage>);
+
+    boost::shared_ptr<const service> service(boost::shared_ptr<storage>) const;
+
+    std::list<boost::shared_ptr<const service> > services() const;
+    
 };
 
 } // namespace remote
