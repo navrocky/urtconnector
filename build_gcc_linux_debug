@@ -1,6 +1,6 @@
 #!/bin/bash
 mkdir debug
 pushd debug
-cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake -DCMAKE_BUILD_TYPE=Debug -DURT_BUILD=1234 ..
 make
 popd

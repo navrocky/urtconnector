@@ -3,6 +3,7 @@
 
 #define URT_VERSION "@URT_VERSION@"
 #define URT_CODENAME "@URT_CODENAME@"
+#define URT_BUILD "@URT_BUILD@"
 
 #define URT_DATADIR "@URT_DATADIR@"
 
