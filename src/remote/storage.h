@@ -43,14 +43,17 @@ public:
 
 class service {
 public:
+    
+    typedef boost::shared_ptr<storage> Storage;
+    
     const QString& caption() const {};
     const QString& description() const {};
 
-    boost::shared_ptr<storage> create() {
+    Storage create() {
         return *storages_.insert(storages_.end(), do_create());
     }
 
-    void remove(boost::shared_ptr<storage> storage) {
+    void remove(Storage storage) {
         if (std::find(storages_.begin(), storages_.end(), storage) == storages_.end()) {
             throw std::runtime_error( "invalid storage" );
         }
@@ -58,33 +61,35 @@ public:
         storages_.remove(storage);
     }
 
-    const std::list< boost::shared_ptr<storage> >& storages() const {
+    const std::list<Storage>& storages() const {
         return storages_;
     }
     
 protected:
-    virtual boost::shared_ptr<storage> do_create() const = 0;
-
-    std::list< boost::shared_ptr<storage> > storages_;
+    virtual Storage do_create() const = 0;
+    
+private:
+    std::list<Storage> storages_;
 };
 
 typedef boost::shared_ptr<service> Service;
+typedef boost::shared_ptr<const service> ConstService;
 
-class storage_manager {
-
-    boost::shared_ptr<storage> create(boost::shared_ptr<const service>);
-    
-    void destroy(boost::shared_ptr<storage>);
-    
-    std::list<boost::shared_ptr<storage> > list() const;
-
-    QWidget* config(boost::shared_ptr<storage>);
-
-    boost::shared_ptr<const service> get_service(boost::shared_ptr<storage>) const;
-
-    std::list<boost::shared_ptr<const service> > services() const;
-    
-};
+// class storage_manager {
+// 
+//     boost::shared_ptr<storage> create(boost::shared_ptr<const service>);
+//     
+//     void destroy(boost::shared_ptr<storage>);
+//     
+//     std::list<boost::shared_ptr<storage> > list() const;
+// 
+//     QWidget* config(boost::shared_ptr<storage>);
+// 
+//     boost::shared_ptr<const service> get_service(boost::shared_ptr<storage>) const;
+// 
+//     std::list<boost::shared_ptr<const service> > services() const;
+//     
+// };
 
 } // namespace remote
 

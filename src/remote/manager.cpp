@@ -12,9 +12,9 @@ using namespace boost;
  
 namespace remote {
 
-const manager::ObjectCompare c_compare = boost::bind(&manager::object::name, _1) < boost::bind(&manager::object::name, _2);
+// const manager::ObjectCompare c_compare = boost::bind(&manager::subject::name, _1) < boost::bind(&manager::subject::name, _2);
     
-manager::object::object(const Getter& g, const Setter& s, const QString& name, const QString& desc)
+manager::subject::subject(const Getter& g, const Setter& s, const QString& name, const QString& desc)
     : getter_(g), setter_(s), name_(name), description_(desc)
 {}
 
@@ -22,8 +22,8 @@ manager::object::object(const Getter& g, const Setter& s, const QString& name, c
 struct gdocs_service: remote::service {
 
     
-    boost::shared_ptr<storage> do_create() const {
-        manager::Storage(new gdocs( QString(), QString(), QString() ));
+    service::Storage do_create() const {
+        service::Storage(new gdocs( QString(), QString(), QString() ));
     }
 };
 
@@ -33,20 +33,26 @@ manager::manager()
     services_.push_back( Service(new gdocs_service) );
 }
 
-const std::list< Service >& manager::services() const
-{ return services_; }
+const std::list<Service>& manager::services() const
+{
+    Service ss;
+    ConstService s = ss;
+    
+    return services_;
+    
+}
 
-shared_ptr< storage > manager::create(Service service)
+service::Storage manager::create(const Service& service)
 {
    service->create();
 }
 
-void manager::bind(const Object& obj, const boost::shared_ptr<storage>& storage)
+void manager::bind(const Subject& obj, const service::Storage& storage)
 {
-    objects_[obj].push_back(storage);
+    subjects_[obj].push_back(storage);
 }
 
-
+/*
 struct merger: public QObject {
 
     merger(const remote::object& initial, const manager::Object& sg)
@@ -87,36 +93,27 @@ private:
     remote::object::Entries merged_;
 
     std::list<remote::action*> actions_;
-};
+};*/
 
-void manager::sync(const Object& obj)
+void manager::sync(const Subject& subject)
 {
+    queued q(subject, subjects_[subject], subject->get());
 
-    sync_queue_[obj]
+    sync_queue_.push_back(q);
+  
+}
+
+void manager::sync_impl()
+{
+    queued& q = sync_queue_.front();
+    service::Storage& storage = q.storages.front();
     
-    remote::object o = obj->get();
-
-    merger m(o, obj);
+    remote::action* action = storage->get(q.object.type());
+    action->start();
     
-    BOOST_FOREACH( const Storage& storage, objects_[obj] ) {
-        remote::action* action = storage->get(o.type());
-        m.insert(action);
-    }
-
-    m.start();
-    
-//     remote::object remote = fs.get( obj.type() );
-
-//     remote::object::Entries merged = remote::merge( obj.entries(), remote.entries() );
-
-
-//     BOOST_FOREACH( const remote::intermediate& imd, merged ) {
-//         server_bookmark bm;
-//         bm.load( imd.save() );
-//         context().bookmarks()->add(bm);
-//     }
     
 }
+
 
 void manager::loaded(const remote::object& obj)
 {
@@ -124,14 +121,14 @@ void manager::loaded(const remote::object& obj)
 }
 
 
-boost::shared_ptr< manager::registrator > manager::reg(const remote::manager::object& o)
-{
-    std::pair<Objects::iterator, bool> res = objects_.insert(make_pair(new object(o), Storages()));
-    assert(res.second);
- 
-    boost::function<void()> eraser = boost::bind<void>(&Objects::erase, boost::ref(objects_), res.first);
-    return boost::shared_ptr<manager::registrator>(new registrator(eraser));
-}
+// boost::shared_ptr< manager::registrator > manager::reg(const remote::manager::object& o)
+// {
+//     std::pair<Objects::iterator, bool> res = objects_.insert(make_pair(new object(o), Storages()));
+//     assert(res.second);
+//  
+//     boost::function<void()> eraser = boost::bind<void>(&Objects::erase, boost::ref(objects_), res.first);
+//     return boost::shared_ptr<manager::registrator>(new registrator(eraser));
+// }
 
 
 };

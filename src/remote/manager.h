@@ -12,20 +12,20 @@ namespace remote {
 
 class manager: public QObject {
 public:
-    struct object;
-    class registrator;
+    struct subject;
+//     class registrator;
     
     typedef boost::function<remote::object ()> Getter;
     typedef boost::function<void(const remote::object&)> Setter;
     
     typedef boost::function<bool (const object&, const object&)> ObjectCompare;
     
-    typedef boost::shared_ptr<storage> Storage;
-    typedef std::list<Storage> Storages;
+   
+    typedef boost::shared_ptr<const subject> Subject;
     
-    typedef boost::shared_ptr<object> Object;
     
-    typedef std::map<Object, Storages> Objects;
+    
+    typedef std::map<Subject, std::list<service::Storage> > Subjects;
 
     
     manager();
@@ -33,46 +33,60 @@ public:
 
     const std::list<Service>& services() const;
 
+    service::Storage create(const Service&);
 
-    boost::shared_ptr<storage> create(Service);
-
-
-    
+  
     
 
-    shared_ptr<object> attach(const QString& name, const Getter& g, const Setter& s, const QString& desc) {}
-    void detach(shared_ptr<object>){}
+    Subject attach(const QString& name, const Getter& g, const Setter& s, const QString& desc) {}
+    void detach(const Subject&){}
 
 
     //TODO убрать
-    boost::shared_ptr<registrator> reg(const object& obj);
+//     boost::shared_ptr<registrator> reg(const object& obj);
 
-    inline const Objects& objects() const {return objects_;}
+//     inline const Objects& objects() const {return objects_;}
 
-    void bind(const Object& obj, const boost::shared_ptr<storage>& );
+    void bind(const Subject& subject, const service::Storage& storage);
 
-    void sync(const Object& obj);
+    void sync(const Subject& obj);
+    
+    void sync_impl();
 
 
 public Q_SLOTS:
     void loaded(const remote::object& obj);
     
 private:
-    Objects objects_;
+    Subjects subjects_;
 
     std::list<Service> services_;
 
-    std::map<Object, Storages> sync_queue_;
+    struct queued {
+        queued(
+            const Subject& subj,
+            const std::list<service::Storage>& st,
+            const remote::object& obj)
+        : subject(subj), storages(st), object(obj), entries(object.entries())
+        {}
+        
+        Subject subject;
+        std::list<service::Storage> storages;
+        remote::object object;
+        remote::object::Entries entries;
+    };
+    
+    std::list<queued> sync_queue_;
     
 /*    
     std::map<boost::sha, boost::function<Storage()> > factory_;*/
 };
 
-struct manager::object {
+struct manager::subject {
    
-    object(){}
+    subject(){}
     
-    object(const Getter& g, const Setter& s, const QString& name, const QString& desc);
+    subject(const Getter& g, const Setter& s, const QString& name, const QString& desc);
         
     inline const QString& name() const { return name_; }
     inline const QString& description() const { return description_; }
@@ -89,17 +103,17 @@ private:
 };
 
 
-struct manager::registrator {
-    
-    template<typename Eraser>
-    registrator(const Eraser& eraser) : eraser_(eraser) {}
-   
-    ~registrator() {eraser_();}
-    
-private:
-    boost::function<void()> eraser_;
-};
-    
+// struct manager::registrator {
+//     
+//     template<typename Eraser>
+//     registrator(const Eraser& eraser) : eraser_(eraser) {}
+//    
+//     ~registrator() {eraser_();}
+//     
+// private:
+//     boost::function<void()> eraser_;
+// };
+//     
 
 
 
