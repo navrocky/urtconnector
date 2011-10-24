@@ -26,8 +26,9 @@ QVariantMap remote::to_variantmap(const QVariant& v)
 
 
 
-object::object(const QString& type)
+object::object(const QString& type, const Entries& entries /*= Entries()*/)
     : type_(type)
+    , entries_(entries)
 {}
 
 object::object(const QVariantMap& data)

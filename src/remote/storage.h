@@ -2,6 +2,8 @@
 #ifndef URT_STORAGE_H
 #define URT_STORAGE_H
 
+#include <stdexcept>
+
 #include <boost/shared_ptr.hpp>
 
 #include <QObject>
@@ -39,12 +41,33 @@ public:
 
 
 class service {
+public:
+    const QString& caption() const {};
+    const QString& description() const {};
 
-//     service(const QString& caption, const QString& desc, const qsettings)
+    boost::shared_ptr<storage> create() {
+        return *storages_.insert(storages_.end(), do_create());
+    }
+
+    void remove(boost::shared_ptr<storage> storage) {
+        if (std::find(storages_.begin(), storages_.end(), storage) == storages_.end()) {
+            throw std::runtime_error( "invalid storage" );
+        }
+
+        storages_.remove(storage);
+    }
+
+    const std::list< boost::shared_ptr<storage> >& storages() const {
+        return storages_;
+    }
     
-    const QString& caption() const;
-    const QString& description() const;
+protected:
+    virtual boost::shared_ptr<storage> do_create() const = 0;
+
+    std::list< boost::shared_ptr<storage> > storages_;
 };
+
+typedef boost::shared_ptr<service> Service;
 
 class storage_manager {
 

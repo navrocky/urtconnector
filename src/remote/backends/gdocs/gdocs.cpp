@@ -303,6 +303,7 @@ QNetworkReply* gdocs::get(ContextPtr ctx, const QUrl& url)
     LOG_DEBUG << sl.join("\n").toStdString();
     
     QNetworkReply* reply = manager_->get(request);
+    //reply is now owning context
     reply->setProperty(action_property_c, qVariantFromValue(ctx));
     return reply;
 }

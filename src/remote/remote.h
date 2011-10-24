@@ -96,7 +96,7 @@ class object {
 public:
     typedef std::set<intermediate> Entries;
 
-    object(const QString& type);
+    object(const QString& type, const Entries& entries = Entries());
     object(const QVariantMap& data);
 
     inline const QString& type() const { return type_; }
