@@ -6,9 +6,10 @@ include(${QT_USE_FILE})
 set(HEADERS
     remote.h
     storage.h
+    manager.h
     backends/binary_file.h
     backends/json_file.h
-    backends/gdocs/gdocs.h
+    backends/gdocs/gdocs.h 
 )
 
 set(MOC_HEADERS
@@ -18,6 +19,7 @@ set(MOC_HEADERS
 
 set(SOURCES
     remote.cpp
+    manager.cpp
     backends/binary_file.cpp
     backends/json_file.cpp
     backends/gdocs/gdocs.cpp

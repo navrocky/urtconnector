@@ -632,6 +632,8 @@ src/remote/backends/gdocs/gdocs.cpp -text
 src/remote/backends/gdocs/gdocs.h -text
 src/remote/backends/json_file.cpp -text
 src/remote/backends/json_file.h -text
+src/remote/manager.cpp -text
+src/remote/manager.h -text
 src/remote/remote.cpp -text
 src/remote/remote.h -text
 src/remote/storage.h -text

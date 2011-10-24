@@ -2,6 +2,8 @@
 #ifndef URT_STORAGE_H
 #define URT_STORAGE_H
 
+#include <boost/shared_ptr.hpp>
+
 #include <QObject>
 
 
@@ -34,9 +36,11 @@ public:
 };
 
 
+
+
 class service {
 
-    service(const QString& caption, const QString& desc, const qsettings)
+//     service(const QString& caption, const QString& desc, const qsettings)
     
     const QString& caption() const;
     const QString& description() const;
@@ -52,7 +56,7 @@ class storage_manager {
 
     QWidget* config(boost::shared_ptr<storage>);
 
-    boost::shared_ptr<const service> service(boost::shared_ptr<storage>) const;
+    boost::shared_ptr<const service> get_service(boost::shared_ptr<storage>) const;
 
     std::list<boost::shared_ptr<const service> > services() const;
     

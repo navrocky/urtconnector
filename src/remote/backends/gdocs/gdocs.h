@@ -33,7 +33,7 @@ struct document {
     QString filename;
 };
 
-class gdocs: public QObject, remote::storage {
+class gdocs: public QObject, public remote::storage {
 Q_OBJECT
 public:
     
