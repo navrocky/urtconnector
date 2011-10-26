@@ -25,7 +25,7 @@ action* binary_file_storage::get(const QString& type)
     }
 }
 
-action* binary_file_storage::put(const remote::object& obj)
+action* binary_file_storage::put(const remote::group& obj)
 {
     QFile f(filename_);
     if ( f.open(QFile::WriteOnly | QFile::Truncate) ) {

@@ -18,6 +18,7 @@
 #include "common/tools.h"
 
 #include "gdocs.h"
+#include "../json_file.h"
 #include <remote.h>
 
 SYSLOG_MODULE(gdocs);
@@ -63,10 +64,10 @@ public:
 typedef boost::function<void (ContextPtr, const QByteArray&)> Processor;
 
 struct context {
-    context(int id, const remote::object& ojb): id(id), obj(ojb) {};
+    context(int id, const remote::group& ojb): id(id), obj(ojb) {};
     
     const int id;
-    remote::object obj;
+    remote::group obj;
     QString filename;
     
     QString auth;
@@ -148,7 +149,7 @@ remote::action* gdocs::get(const QString& type)
 {
     LOG_DEBUG << "load request: " << type.toStdString();
 
-    std::auto_ptr<gdocs_action> act = create_action(remote::object(type));
+    std::auto_ptr<gdocs_action> act = create_action(remote::group(type));
 
     act->ctx->processors
         << boost::bind(&gdocs::process_auth, this, _1, _2)
@@ -161,7 +162,7 @@ remote::action* gdocs::get(const QString& type)
     return act.release();
 }
 
-remote::action* gdocs::put(const remote::object& obj)
+remote::action* gdocs::put(const remote::group& obj)
 {
     LOG_DEBUG << "save request: " << obj.type().toStdString();
     
@@ -180,7 +181,7 @@ remote::action* gdocs::check(const QString& type)
 {
     LOG_DEBUG << "check request: " << type.toStdString();
     
-    std::auto_ptr<gdocs_action> act = create_action(remote::object(type));
+    std::auto_ptr<gdocs_action> act = create_action(remote::group(type));
     
     act->ctx->processors
         << boost::bind(&gdocs::process_auth, this, _1, _2)
@@ -209,7 +210,7 @@ void gdocs::finished(QNetworkReply* reply)
         LOG_ERR << reply->error();
         LOG_ERR << reply->errorString().toStdString();
         //TODO handle error string
-        ctx->pending->error(QString());
+        emit ctx->pending->error(QString());
         return;
     }
     
@@ -233,8 +234,11 @@ void gdocs::finished(QNetworkReply* reply)
     }
     catch (std::exception& e) {
         LOG_ERR << "action %1 has error %2", ctx->id, e.what();
-        ctx->pending->error(e.what());
+        emit ctx->pending->error(e.what());
     }
+
+    if (ctx->processors.empty())
+        emit ctx->pending->finished();
 }
 
 void gdocs::network_accessible_changed(int accessible) const
@@ -261,7 +265,7 @@ void gdocs::ssl_errors(QNetworkReply* reply, const QList<QSslError>& errors) con
 }
 
 
-std::auto_ptr<gdocs_action> gdocs::create_action(const remote::object& obj)
+std::auto_ptr<gdocs_action> gdocs::create_action(const remote::group& obj)
 {
     std::auto_ptr<context> ctx(new context(id_++, obj));
     ctx->filename = obj.type() + ".txt";
@@ -344,7 +348,7 @@ void gdocs::process_query(ContextPtr ctx, const QByteArray& data)
         LOG_DEBUG << "Finded file: "<< ctx->doc.filename.toStdString();
         LOG_DEBUG << "Finded id: "  << ctx->doc.id.toStdString();
         LOG_DEBUG << "Finded src: " << ctx->doc.src.toStdString();
-        ctx->pending->exists();
+        emit ctx->pending->exists();
     }
     else
     {
@@ -421,14 +425,14 @@ void gdocs::process_download(ContextPtr ctx, const QByteArray& data)
 {
     LOG_DEBUG << "process_download: " << ctx->id;
     introspect(ctx);
-//     ctx->pending->loaded(data);
+    emit ctx->pending->loaded(remote::from_json(data));
 }
 
 void gdocs::process_upload(ContextPtr ctx, const QByteArray& data)
 {
     LOG_DEBUG << "process_upload: " << ctx->id;
     introspect(ctx);
-    ctx->pending->saved();
+    emit ctx->pending->saved();
     
      ctx->processors << boost::bind(&gdocs::process_upload, this, _1, _2);
 }

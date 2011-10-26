@@ -42,7 +42,7 @@ public:
 
 
     virtual remote::action* get(const QString& type);
-    virtual remote::action* put(const remote::object& obj);
+    virtual remote::action* put(const remote::group& obj);
     virtual remote::action* check(const QString& type);
 
 private Q_SLOTS:
@@ -54,7 +54,7 @@ private Q_SLOTS:
     
 private:
     friend class gdocs_action;
-    std::auto_ptr<gdocs_action> create_action(const remote::object& obj);
+    std::auto_ptr<gdocs_action> create_action(const remote::group& obj);
     void start(std::auto_ptr<context> ctx, std::auto_ptr<gdocs_action> act);
     QNetworkReply* get(ContextPtr ctx, const QUrl& url);
 

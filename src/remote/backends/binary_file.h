@@ -13,7 +13,7 @@ namespace remote {
         binary_file_storage(const QString& filename): filename_(filename) {}
 
         virtual action* get( const QString& type );
-        virtual action* put( const object& obj );
+        virtual action* put( const group& obj );
         virtual action* check(const QString& type){return 0;};
 
     private:

@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
     std::cerr<<"-1"<<std::endl;
     gdocs d("kinnalru@gmail.com", "malder11", "myapp");
 
-    remote::action* act = d.put(remote::object("secondupload"));
+    remote::action* act = d.put(remote::group("secondupload"));
     act->start();
     
     std::cerr<<"-0"<<std::endl;

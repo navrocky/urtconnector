@@ -26,16 +26,16 @@ QVariantMap remote::to_variantmap(const QVariant& v)
 
 
 
-object::object(const QString& type, const Entries& entries /*= Entries()*/)
+group::group(const QString& type, const Entries& entries /*= Entries()*/)
     : type_(type)
     , entries_(entries)
 {}
 
-object::object(const QVariantMap& data)
+group::group(const QVariantMap& data)
 { load(data); }
 
 
-QVariantMap remote::object::save() const
+QVariantMap remote::group::save() const
 {
     QVariantMap ret;
 
@@ -49,7 +49,7 @@ QVariantMap remote::object::save() const
     return ret;
 }
 
-void object::load(const QVariantMap& data)
+void group::load(const QVariantMap& data)
 {
     type_ = data["type"].toString();
 

@@ -92,18 +92,18 @@ QVariantMap to_variantmap(const syncable& s);
 QVariantMap to_variantmap(const QVariant& v);
 
 /*! this class represents logic object to communicate with remote storage */
-class object {
+class group {
 public:
     typedef std::set<intermediate> Entries;
 
-    object(const QString& type, const Entries& entries = Entries());
-    object(const QVariantMap& data);
+    group(const QString& type, const Entries& entries = Entries());
+    group(const QVariantMap& data);
 
     inline const QString& type() const { return type_; }
     inline const Entries& entries() const { return entries_; }
 
     template<typename T>
-    object& operator<< ( const T& t) {
+    group& operator<< ( const T& t) {
         entries_.insert( to_variantmap(t) );
         return *this;
     }
@@ -119,11 +119,11 @@ private:
 
 
 /*! merge two intermediate sets*/
-inline object::Entries merge(const object::Entries& e1, const object::Entries& e2 ) {
-    object::Entries ret = e1;
+inline group::Entries merge(const group::Entries& e1, const group::Entries& e2 ) {
+    group::Entries ret = e1;
 
     bool inserted;
-    object::Entries::iterator it;
+    group::Entries::iterator it;
     BOOST_FOREACH(const intermediate& imd, e2) {
         std::tr1::tie(it, inserted) = ret.insert(imd);
         if( !inserted && it->sync_stamp() < imd.sync_stamp() ) {

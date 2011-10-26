@@ -221,7 +221,7 @@ void bookmark_tab::update_actions()
 void bookmark_tab::test_export(){
     
     remote::json_file_storage fs("/tmp/bookmarks");
-    remote::object obj("bookmarks");
+    remote::group obj("bookmarks");
 
     BOOST_FOREACH( const server_bookmark& bm, context().bookmarks()->list() ) {
         obj << bm;
@@ -234,7 +234,7 @@ void bookmark_tab::test_import(){
     remote::json_file_storage fs("/tmp/bookmarks");
     
     
-    remote::object obj("bookmarks");
+    remote::group obj("bookmarks");
     BOOST_FOREACH( const server_bookmark& bm, context().bookmarks()->list() ) {
         obj << bm;
     }

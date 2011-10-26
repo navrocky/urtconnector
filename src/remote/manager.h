@@ -8,38 +8,39 @@
 
 namespace remote {
 
-
-
-class manager: public QObject {
-public:
-    struct subject;
-//     class registrator;
-    
-    typedef boost::function<remote::object ()> Getter;
-    typedef boost::function<void(const remote::object&)> Setter;
-    
-    typedef boost::function<bool (const object&, const object&)> ObjectCompare;
-    
+/*! \brief Manager for all services and storages */
+class syncro_manager: public QObject {
+    Q_OBJECT
    
-    typedef boost::shared_ptr<const subject> Subject;
+public:
+    /*! Object for syncing: "bookmarks", "config", etc. */
+    struct object;
+    /*! Type of get-group callback */
+    typedef boost::function<remote::group ()> Getter;
+    /*! Type of set-group callback */
+    typedef boost::function<void(const remote::group&)> Setter;
     
+//     typedef boost::function<bool (const group&, const group&)> ObjectCompare;
     
-    
-    typedef std::map<Subject, std::list<service::Storage> > Subjects;
+    /*! Access key to attached object */
+    typedef boost::shared_ptr<object> Object;
 
-    
-    manager();
+    syncro_manager();
 
 
+    /*! List of registered services */
     const std::list<Service>& services() const;
+
+    /*! list of attached objects */
+    std::list<Object> objects() const;
 
     service::Storage create(const Service&);
 
   
     
 
-    Subject attach(const QString& name, const Getter& g, const Setter& s, const QString& desc) {}
-    void detach(const Subject&){}
+    Object attach(const QString& name, const Getter& g, const Setter& s, const QString& desc) {}
+    void detach(const Object&){}
 
 
     //TODO убрать
@@ -47,52 +48,66 @@ public:
 
 //     inline const Objects& objects() const {return objects_;}
 
-    void bind(const Subject& subject, const service::Storage& storage);
+    void bind(const Object& subject, const service::Storage& storage);
 
-    void sync(const Subject& obj);
+    void sync(const Object& obj);
     
     void sync_impl();
 
 
 public Q_SLOTS:
-    void loaded(const remote::object& obj);
-    
+    void loaded(const remote::group& obj);
+    void error(const QString& err);
+    void finished();
+
+   
 private:
-    Subjects subjects_;
+    typedef std::map<Object, std::list<service::Storage> > Objects;
+    Objects objects_;
 
     std::list<Service> services_;
 
-    struct queued {
-        queued(
-            const Subject& subj,
+    struct task {
+        task(
+            const Object& obj,
             const std::list<service::Storage>& st,
-            const remote::object& obj)
-        : subject(subj), storages(st), object(obj), entries(object.entries())
+            const remote::group& gr)
+        : object(obj), storages(st), group(gr), entries(gr.entries())
         {}
+
+        bool operator<(const task& other) const { return object < other.object; }
         
-        Subject subject;
+        Object object;
         std::list<service::Storage> storages;
-        remote::object object;
-        remote::object::Entries entries;
+        remote::group group;
+        remote::group::Entries entries;
     };
     
-    std::list<queued> sync_queue_;
+    std::set<task> tasks_;
     
 /*    
     std::map<boost::sha, boost::function<Storage()> > factory_;*/
 };
 
-struct manager::subject {
-   
-    subject(){}
-    
-    subject(const Getter& g, const Setter& s, const QString& name, const QString& desc);
+/*! \brief This object represents one element of syncronization
+ * For example: "bookmarks" or "profile"
+ */
+struct syncro_manager::object {
+    object(){}
+
+    /*! Construct complete subject for registering at manager
+     * \p getter - callback to get data when synchronize needed
+     * \p setter - callback to set data after synchronization
+     * \p name - name must be uniqe within one manager \example "bookmarks"
+     * \p desc - description
+     */
+    object(const Getter& getter, const Setter& setter, const QString& name, const QString& desc);
         
     inline const QString& name() const { return name_; }
     inline const QString& description() const { return description_; }
 
-    remote::object get() const { return getter_(); }
-    void put(const remote::object& obj) { setter_(obj); }
+    remote::group get() const { return getter_(); }
+    void put(const remote::group& obj) { setter_(obj); }
     
 private:
     Getter getter_;

@@ -12,42 +12,62 @@
 
 namespace remote {
 
-class object;
+class group;
 
-
+/*! \brief Pending action interface */
 class action: public QObject {
     Q_OBJECT
 public:
+    /*! \brief Starts execution of the action.
+     * \warning action can be synchronous, therefor don't use this object directly
+     * after calling this method, because of it can be even deleted.
+     * While this methos call all signals(including finished) may emiting
+    */
     virtual void start() = 0;
 
 Q_SIGNALS:
-    void loaded(const object& obj);
+    /*! \brief Group successfuly downloaded from storoge */
+    void loaded(const group& gr);
+
+    /*! \brief Group successfuly uploaded to storage */
     void saved();
+
+    /*! \brief Group exists on storage */
     void exists();
+
+    /*! \brief Error occured while action executing */
     void error(const QString& err);
+
+    /*! \brief Action compleated. May be error were occured */
+    void finished();
 };
 
 
-/*! backend interface */
-
+/*! \brief Storage interface
+ * Represents instance of any service(account)
+ */
 class storage {
 
 public:
     virtual action* get(const QString& type) = 0;
-    virtual action* put(const object& obj) = 0;
+    virtual action* put(const group& gr) = 0;
     virtual action* check(const QString& type) = 0;
 };
 
-
-
-
+/*! \brief base class for any service(Google docs, DropBox, etc)
+ * 
+ */
 class service {
 public:
     
     typedef boost::shared_ptr<storage> Storage;
+
+    service(const QString& c, const QString& d)
+        : caption_(c), desc_(d)
+    {}
     
-    const QString& caption() const {};
-    const QString& description() const {};
+    const QString& caption() const { return caption_; };
+    const QString& description() const {  return desc_; };
 
     Storage create() {
         return *storages_.insert(storages_.end(), do_create());
@@ -55,7 +75,7 @@ public:
 
     void remove(Storage storage) {
         if (std::find(storages_.begin(), storages_.end(), storage) == storages_.end()) {
-            throw std::runtime_error( "invalid storage" );
+            throw std::runtime_error( "such storage does not exist" );
         }
 
         storages_.remove(storage);
@@ -69,11 +89,12 @@ protected:
     virtual Storage do_create() const = 0;
     
 private:
+    QString caption_;
+    QString desc_;
     std::list<Storage> storages_;
 };
 
 typedef boost::shared_ptr<service> Service;
-typedef boost::shared_ptr<const service> ConstService;
 
 // class storage_manager {
 // 

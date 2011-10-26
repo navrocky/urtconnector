@@ -1,6 +1,7 @@
 
 
 #include <boost/bind.hpp>
+#include <boost/iterator/transform_iterator.hpp>
 
 #include <backends/gdocs/gdocs.h>
 #include <manager.h>
@@ -14,111 +15,100 @@ namespace remote {
 
 // const manager::ObjectCompare c_compare = boost::bind(&manager::subject::name, _1) < boost::bind(&manager::subject::name, _2);
     
-manager::subject::subject(const Getter& g, const Setter& s, const QString& name, const QString& desc)
+syncro_manager::object::object(const Getter& g, const Setter& s, const QString& name, const QString& desc)
     : getter_(g), setter_(s), name_(name), description_(desc)
 {}
 
 
-struct gdocs_service: remote::service {
+struct gdocs_service: public service {
 
+    gdocs_service()
+        : service("gdocs", "gdocs service")
+    {}
     
     service::Storage do_create() const {
         service::Storage(new gdocs( QString(), QString(), QString() ));
     }
 };
 
-manager::manager()
-//     : objects_(c_compare)
+
+
+
+syncro_manager::syncro_manager()
 {
     services_.push_back( Service(new gdocs_service) );
 }
 
-const std::list<Service>& manager::services() const
+const std::list<Service>& syncro_manager::services() const
 {
-    Service ss;
-    ConstService s = ss;
-    
-    return services_;
-    
+    return services_;   
 }
 
-service::Storage manager::create(const Service& service)
+// typedef boost::transform_iterator<typeof()UnaryFunc, Iterator>(it, fun)
+
+std::list<syncro_manager::Object> syncro_manager::objects() const
+{
+    return std::list<syncro_manager::Object>(
+        boost::make_transform_iterator(objects_.begin(), boost::bind(&Objects::value_type::first, _1)),
+        boost::make_transform_iterator(objects_.end(), boost::bind(&Objects::value_type::first, _1))
+    );
+}
+
+
+service::Storage syncro_manager::create(const Service& service)
 {
    service->create();
 }
 
-void manager::bind(const Subject& obj, const service::Storage& storage)
+void syncro_manager::bind(const Object& obj, const service::Storage& storage)
 {
-    subjects_[obj].push_back(storage);
+    objects_[obj].push_back(storage);
 }
 
-/*
-struct merger: public QObject {
 
-    merger(const remote::object& initial, const manager::Object& sg)
-         : obj_(initial)
-         , merged_(initial.entries())
-         , setter_getter(sg)
-        {}
-
-void insert(remote::action* action) {
-        actions_.push_back(action);
-        connect(action, SIGNAL(loaded(const object&)), this, SLOT(loaded(const object&)));
-        connect(action, SIGNAL(finished()), this, SLOT(finished()));
+void syncro_manager::sync(const Object& obj)
+{
+    task t(obj, objects_[obj], obj->get());
+    tasks_.insert(t);
 }
 
-void start() {
-        BOOST_FOREACH(remote::action* action, std::list<remote::action*>(actions_)) {
-                action->start();
-        }
-}
-
-public Q_SLOTS:
-    void loaded(const remote::object& obj) {
-        merged_ = remote::merge( obj.entries(), merged_ );
-    }
-
-    void finished() {
-        actions_.remove( static_cast<action*>(sender()) );
-
-        if (actions_.empty())
-        {
-                setter_getter->put(remote::object(obj_.type(), merged_));
-        }
-    }
+void syncro_manager::sync_impl()
+{
+    task& t = const_cast<task&>(*tasks_.begin());
+    service::Storage& storage = t.storages.front();
     
-private:
-    remote::object obj_;
-    const manager::Object& setter_getter;
-    remote::object::Entries merged_;
-
-    std::list<remote::action*> actions_;
-};*/
-
-void manager::sync(const Subject& subject)
-{
-    queued q(subject, subjects_[subject], subject->get());
-
-    sync_queue_.push_back(q);
-  
-}
-
-void manager::sync_impl()
-{
-    queued& q = sync_queue_.front();
-    service::Storage& storage = q.storages.front();
-    
-    remote::action* action = storage->get(q.object.type());
+    remote::action* action = storage->get(t.group.type());
+    assert(connect(action, SIGNAL(loaded(const remote::object&)), SLOT(loaded(const remote::object&))));
+    assert(connect(action, SIGNAL(error(const QString&)), SLOT(error(const QString&))));
+    assert(connect(action, SIGNAL(finished()), SLOT(finished())));
     action->start();
-    
-    
 }
 
 
-void manager::loaded(const remote::object& obj)
+void syncro_manager::loaded(const remote::group& obj)
 {
-    
+    task& t = const_cast<task&>(*tasks_.begin());
+    t.entries = remote::merge( obj.entries(), t.entries );
 }
+
+void syncro_manager::error(const QString& err)
+{
+    task& t = const_cast<task&>(*tasks_.begin());
+    t.storages.pop_front();
+}
+
+void syncro_manager::finished()
+{
+    task& t = const_cast<task&>(*tasks_.begin());
+    t.storages.pop_front();
+
+    if (t.storages.empty())
+    {
+        t.object->put(remote::group(t.group.type(), t.entries));
+        tasks_.erase(tasks_.begin());
+    }
+}
+
 
 
 // boost::shared_ptr< manager::registrator > manager::reg(const remote::manager::object& o)

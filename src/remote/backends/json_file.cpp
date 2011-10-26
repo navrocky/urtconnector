@@ -32,7 +32,7 @@ action* json_file_storage::get(const QString& type)
     }
 }
 
-action* json_file_storage::put(const remote::object& obj)
+action* json_file_storage::put(const remote::group& obj)
 {
     QFile f(filename_);
     if ( f.open(QFile::WriteOnly | QFile::Truncate) ) {
@@ -54,3 +54,16 @@ action* json_file_storage::put(const remote::object& obj)
         throw std::runtime_error("can't put object");
     }
 }
+
+QVariantMap remote::from_json(const QByteArray& data)
+{
+    bool ok;
+    
+    QVariantMap json = QJson::Parser().parse(data, &ok).toMap();
+
+    if(!ok)
+        throw std::runtime_error("can't parse json object");
+
+    return json;    
+}
+

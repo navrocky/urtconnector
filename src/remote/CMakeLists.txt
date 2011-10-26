@@ -14,6 +14,7 @@ set(HEADERS
 
 set(MOC_HEADERS
     storage.h
+    manager.h
     backends/gdocs/gdocs.h
 )
 
