@@ -26,6 +26,8 @@ public:
     */
     virtual void start() = 0;
 
+    virtual void abort() = 0;
+    
 Q_SIGNALS:
     /*! \brief Group successfuly downloaded from storoge */
     void loaded(const group& gr);
@@ -60,7 +62,7 @@ public:
  */
 class service {
 public:
-    
+
     typedef boost::shared_ptr<storage> Storage;
 
     service(const QString& c, const QString& d)
@@ -71,35 +73,16 @@ public:
     const QString& description() const {  return desc_; };
 
     Storage create(boost::shared_ptr<QSettings> settings) {
-        Storage s = do_create(settings);
-        std::cerr<<"inserting..........."<<std::endl;
-        storages_.insert(storages_.end(), s);
-        std::cerr<<"..........ok"<<std::endl;
-        return s;
+        return do_create(settings);
     }
 
-    void remove(Storage storage) {
-        if (std::find(storages_.begin(), storages_.end(), storage) == storages_.end()) {
-            throw std::runtime_error( "such storage does not exist" );
-        }
-
-        storages_.remove(storage);
-    }
-
-    const std::list<Storage>& storages() const {
-        return storages_;
-    }
-    
 protected:
     virtual Storage do_create(boost::shared_ptr<QSettings> settings) const = 0;
     
 private:
     QString caption_;
     QString desc_;
-    std::list<Storage> storages_;
 };
-
-typedef boost::shared_ptr<service> Service;
 
 // class storage_manager {
 // 

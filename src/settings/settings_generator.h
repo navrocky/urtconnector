@@ -37,7 +37,8 @@ class class_name \
 { \
 public: \
     class_name(); \
-    static const char* uid() {return BOOST_PP_STRINGIZE(class_name);}\
+    template <typename T> class_name(const T& s): s_(s) {} \
+    static const char* uid() {return BOOST_PP_STRINGIZE(class_name);} \
     __GENERATE_ALL_METHODS_DECL(__opts_list) \
 private: \
     boost::shared_ptr<QSettings> s_; \

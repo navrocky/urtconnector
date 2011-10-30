@@ -3,6 +3,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/iterator/transform_iterator.hpp>
+#include <boost/range/algorithm/find.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 
 #include <QFileInfo>
@@ -22,34 +23,11 @@ using namespace boost;
  
 namespace remote {
 
-// const manager::ObjectCompare c_compare = boost::bind(&manager::subject::name, _1) < boost::bind(&manager::subject::name, _2);
     
-// syncro_manager::object::object(const Getter& g, const Setter& s, const QString& name, const QString& desc)
-//     : getter_(g), setter_(s), name_(name), description_(desc)
-// {}
-
-
-struct syncro_manager::complete_object: object {
-   
-    complete_object(const Getter& getter, const Setter& setter, const QString& name, const QString& desc)
-        : getter_(getter), setter_(setter), name_(name), description_(desc)
-    {}
-
-    virtual inline const QString& name() const { return name_; }
-    virtual inline const QString& description() const { return description_; }
-
-    virtual remote::group get() const { return getter_(); };
-    virtual void put(const remote::group& gr) { setter_(gr); };
-    
-private:
-    Getter getter_;
-    Setter setter_;
-    
-    QString name_;
-    QString description_;
-};
-
-
+template <typename T>
+inline T& cast(const boost::shared_ptr<const T>& ptr) {
+    return *const_cast<T*>(ptr.get());
+}
 
 struct gdocs_service: public service {
 
@@ -66,14 +44,12 @@ struct gdocs_service: public service {
 };
 
 
-
-
 syncro_manager::syncro_manager()
 {
     services_.push_back( Service(new gdocs_service) );
 }
 
-const std::list<Service>& syncro_manager::services() const
+const std::list<syncro_manager::Service>& syncro_manager::services() const
 {
     return services_;   
 }
@@ -86,105 +62,115 @@ std::list<syncro_manager::Object> syncro_manager::objects() const
     );
 }
 
-
-service::Storage syncro_manager::create(const Service& service)
+list<syncro_manager::Storage> syncro_manager::storages() const
 {
-   base_settings main;
-
-   base_settings::qsettings_p manager_settings = main.get_settings(manager_options::uid());
-
-   QString dir = QFileInfo(manager_settings->fileName()).dir().path();
-   
-   main.register_file("plugin_uid", dir + "/services/" + service->caption() + "/plugin1", false);
-
-   base_settings::qsettings_p p = main.get_settings("plugin_uid");
-
-   p->setValue("123123", "!!!!!!!!!");
-   p->sync();
-
-   std::cerr<<"synced"<<std::endl;
-   
-   return service->create( main.get_settings("plugin_uid") );
-
-   std::cerr<<"service created"<<std::endl;
-   
+    return list<syncro_manager::Storage>(storages_.begin(), storages_.end());
 }
 
-syncro_manager::CompleteObject syncro_manager::promote(const remote::syncro_manager::Object& obj) const
+
+service::Storage syncro_manager::create(const Service& srv)
 {
-    return CompleteObject(obj, static_cast<complete_object*>(obj.get()));
+    std::list<Service>::iterator it = boost::find(services_, srv);
+    
+    if (it == services_.end())
+        throw std::logic_error("so such service registered");
+    
+    remote::service& service = cast(srv);
+    
+    base_settings main;
+    base_settings::qsettings_p self_options = main.get_settings(manager_options::uid());
+
+    const QString options_dir = QFileInfo(self_options->fileName()).dir().path();
+    const QString services_path = options_dir + "/services/" + service.caption();
+    const QString storage_path = services_path + "/plugin1";
+   
+    
+    manager_options mo;
+    
+    mo.storages_set( mo.storages() << storage_path );
+    
+    main.register_file("gdocs_uuid", storage_path, false);
+
+    return service.create( main.get_settings("gdocs_uuid") );
 }
 
-void syncro_manager::bind(const Object& obj, const service::Storage& storage)
+void syncro_manager::bind(const Object& obj, const Storage& storage)
 {
-    objects_[promote(obj)].push_back(storage);
+    objects_[obj].insert(storage);
 }
 
 
 void syncro_manager::sync(const Object& obj)
 {
-    task t(obj, objects_[promote(obj)], obj->get());
-    tasks_.insert(t);
-}
-
-void syncro_manager::sync_impl()
-{
-    task& t = const_cast<task&>(*tasks_.begin());
-    service::Storage& storage = t.storages.front();
+    if (boost::find_if(tasks_, boost::bind(&sync_task::object, _1) == obj) != tasks_.end())
+    {
+        return;        
+    }
+ 
     
-    remote::action* action = storage->get(t.group.type());
-    assert(connect(action, SIGNAL(loaded(const remote::object&)), SLOT(loaded(const remote::object&))));
-    assert(connect(action, SIGNAL(error(const QString&)), SLOT(error(const QString&))));
-    assert(connect(action, SIGNAL(finished()), SLOT(finished())));
-    action->start();
+    sync_task& task = *tasks_.insert(tasks_.end(), sync_task(obj, objects_[obj], obj->get()));
+    
+    storage& storage = cast(*task.current_storage());
+    
+    task.action = storage.get(task.group.type());
+    assert(connect(task.action, SIGNAL(loaded(const remote::object&)), SLOT(loaded(const remote::object&))));
+    assert(connect(task.action, SIGNAL(error(const QString&)), SLOT(error(const QString&))));
+    assert(connect(task.action, SIGNAL(finished()), SLOT(finished())));
+    
+    task.action->start();    
 }
-
 
 void syncro_manager::loaded(const remote::group& obj)
 {
-    task& t = const_cast<task&>(*tasks_.begin());
-    t.entries = remote::merge( obj.entries(), t.entries );
+    remote::action* action = qobject_cast<remote::action*>(sender());
+    sync_task& task = get_task(boost::bind(&sync_task::action, _1) == action);
+    
+    task.entries = remote::merge(obj.entries(), task.entries);
 }
 
 void syncro_manager::error(const QString& err)
 {
-    task& t = const_cast<task&>(*tasks_.begin());
-    t.storages.pop_front();
+    remote::action* action = qobject_cast<remote::action*>(sender());
+    sync_task& task = get_task(boost::bind(&sync_task::action, _1) == action);
 }
 
 void syncro_manager::finished()
 {
-    task& t = const_cast<task&>(*tasks_.begin());
-    t.storages.pop_front();
+    remote::action* action = qobject_cast<remote::action*>(sender());
+    sync_task& task = get_task(boost::bind(&sync_task::action, _1) == action);    
+    
+    task.storages.erase(task.current_storage());
 
-    if (t.storages.empty())
+    if (task.storages.empty())
     {
-        t.object->put(remote::group(t.group.type(), t.entries));
-        tasks_.erase(tasks_.begin());
+        cast(task.object).put(group(task.group.type(), task.entries));
+        tasks_.remove(task);
     }
 }
 
 struct equal_name {
-    typedef bool result_type;
+    const QString& name;
+    equal_name(const QString& name): name(name) {}
+    
     template <typename Pair>
-    bool operator()(const Pair& pair, const QString& name)
+    bool operator()(const Pair& pair)
     { return pair.first->name() == name; }
 };
 
 syncro_manager::Object syncro_manager::attach(const QString& name, const Getter& g, const Setter& s, const QString& desc)
 {
-    if (boost::find_if(objects_, boost::bind(equal_name(), _1, name)) == objects_.end() )
+    if (boost::find_if(objects_, equal_name(name)) == objects_.end())
         throw std::runtime_error("Object with such name already attached!");
 
-    CompleteObject object(new complete_object(g, s, name, desc));
-    objects_.insert(std::make_pair(object, Storages()));
+    Object obj(new object(g, s, name, desc));
+    objects_.insert(std::make_pair(obj, Storages()));
     
-    return object;
+    return obj;
 }
 
-void syncro_manager::detach(const remote::syncro_manager::Object& obj)
+void syncro_manager::detach(const syncro_manager::Object& obj)
 {
-    if (objects_.erase(promote(obj)) == 0)
+    if (objects_.erase(obj) == 0)
         throw std::runtime_error("No object with such name attached!");
 }
 

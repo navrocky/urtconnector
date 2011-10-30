@@ -53,6 +53,10 @@ public:
         manager->start(ctx, std::auto_ptr<gdocs_action>(this)); //dropping ownership
     };
     
+    virtual void abort() {
+        
+    };
+    
     friend class gdocs;
     std::auto_ptr<context> ctx;
     QPointer<gdocs> manager;

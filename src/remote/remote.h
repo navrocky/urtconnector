@@ -69,8 +69,8 @@ public:
     /// Construct from serialized data
     intermediate(const QVariantMap& data)
         : syncable( data[deleted_key].toBool(), data[stamp_key].toDateTime() )
-        , id_( data[id_key].toString() )
         , data_( check_data(data) )
+        , id_( data[id_key].toString() )        
     {}
 
     virtual QString sync_id() const { return id_; };
@@ -82,8 +82,8 @@ private:
     virtual void load(const QVariantMap& data){};
 
 private:
-    QString id_;
     QVariantMap data_;
+    QString id_;
 };
 
 // you can provide your own convert functions
