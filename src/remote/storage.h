@@ -3,12 +3,13 @@
 #define URT_STORAGE_H
 
 #include <stdexcept>
-
+#include <iostream>
 
 #include <boost/shared_ptr.hpp>
 
 #include <QObject>
 
+class QSettings;
 
 namespace remote {
 
@@ -69,8 +70,12 @@ public:
     const QString& caption() const { return caption_; };
     const QString& description() const {  return desc_; };
 
-    Storage create() {
-        return *storages_.insert(storages_.end(), do_create());
+    Storage create(boost::shared_ptr<QSettings> settings) {
+        Storage s = do_create(settings);
+        std::cerr<<"inserting..........."<<std::endl;
+        storages_.insert(storages_.end(), s);
+        std::cerr<<"..........ok"<<std::endl;
+        return s;
     }
 
     void remove(Storage storage) {
@@ -86,7 +91,7 @@ public:
     }
     
 protected:
-    virtual Storage do_create() const = 0;
+    virtual Storage do_create(boost::shared_ptr<QSettings> settings) const = 0;
     
 private:
     QString caption_;

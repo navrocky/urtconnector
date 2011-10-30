@@ -1,10 +1,18 @@
 
+#include <iostream>
 
 #include <boost/bind.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 
+#include <QFileInfo>
+#include <QDir>
+#include <QSettings>
+
 #include <backends/gdocs/gdocs.h>
-#include <manager.h>
+#include "manager.h"
+
+#include "settings/settings.h"
+#include "settings.h"
 
 #include "storage.h"
 
@@ -26,8 +34,11 @@ struct gdocs_service: public service {
         : service("gdocs", "gdocs service")
     {}
     
-    service::Storage do_create() const {
-        service::Storage(new gdocs( QString(), QString(), QString() ));
+    service::Storage do_create(boost::shared_ptr<QSettings> settings) const {
+        std::cerr<<"do_create"<<std::endl;
+        service::Storage s = service::Storage(new gdocs( QString(), QString(), QString() ));
+        std::cerr<<"do_create ok"<<std::endl;
+        return s;
     }
 };
 
@@ -57,7 +68,25 @@ std::list<syncro_manager::Object> syncro_manager::objects() const
 
 service::Storage syncro_manager::create(const Service& service)
 {
-   service->create();
+   base_settings main;
+
+   base_settings::qsettings_p manager_settings = main.get_settings(manager_options::uid());
+
+   QString dir = QFileInfo(manager_settings->fileName()).dir().path();
+   
+   main.register_file("plugin_uid", dir + "/services/" + service->caption() + "/plugin1", false);
+
+   base_settings::qsettings_p p = main.get_settings("plugin_uid");
+
+   p->setValue("123123", "!!!!!!!!!");
+   p->sync();
+
+   std::cerr<<"synced"<<std::endl;
+   
+   return service->create( main.get_settings("plugin_uid") );
+
+   std::cerr<<"service created"<<std::endl;
+   
 }
 
 void syncro_manager::bind(const Object& obj, const service::Storage& storage)

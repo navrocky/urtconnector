@@ -636,6 +636,8 @@ src/remote/manager.cpp -text
 src/remote/manager.h -text
 src/remote/remote.cpp -text
 src/remote/remote.h -text
+src/remote/settings.cpp -text
+src/remote/settings.h -text
 src/remote/storage.h -text
 src/server_info_html.cpp -text
 src/server_info_html.h -text

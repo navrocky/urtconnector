@@ -37,6 +37,7 @@
 #include "config.h"
 #include "pointers.h"
 #include "app_options_saver.h"
+#include "remote/manager.h"
 
 using namespace cl::syslog;
 using namespace std;
@@ -50,6 +51,8 @@ void show_help(const po::options_description& desc)
     cout << desc << "\n";
 }
 
+#include <remote/settings.h>
+
 void init_application(QApplication* a)
 {
     a->setOrganizationName("urtcommunity");
@@ -58,6 +61,31 @@ void init_application(QApplication* a)
     //Initializing main settings
     base_settings set;
     set.register_group( app_settings::uid(),   "app_opts",   "options.ini" );    
+
+
+   set.register_file( manager_options::uid(),   "sync/sync.ini" );
+    
+    manager_options mo;
+
+    std::cerr<< mo.uid()<<std::endl;
+
+    mo.storages_set( QStringList() << "s1" << "s2" );
+    
+    std::cerr<< mo.storages().join(":").toStdString() << std::endl;
+
+
+    
+    set.get_settings( manager_options::uid() )->sync();
+
+    remote::syncro_manager manager;
+
+    manager.create(manager.services().front());
+    
+    exit(0);
+
+    
+
+
     
     // loading translations
     static boost::shared_ptr<QTranslator> qt_trans = system_translator( app_settings().country_name() );
@@ -137,19 +165,19 @@ int main(int argc, char *argv[])
     logman().level_set(harddebug);
     
     
-    output_p cerr_out;
-    cerr_out.reset(new output_stream(std::cerr));
-    logman().output_add(cerr_out);
-    
-    std::cerr<<"-1"<<std::endl;
-    gdocs d("kinnalru@gmail.com", "malder11", "myapp");
-
-    remote::action* act = d.put(remote::group("secondupload"));
-    act->start();
-    
-    std::cerr<<"-0"<<std::endl;
-    
-    return ap.exec();
+//     output_p cerr_out;
+//     cerr_out.reset(new output_stream(std::cerr));
+//     logman().output_add(cerr_out);
+//     
+//     std::cerr<<"-1"<<std::endl;
+//     gdocs d("kinnalru@gmail.com", "malder11", "myapp");
+// 
+//     remote::action* act = d.put(remote::group("secondupload"));
+//     act->start();
+//     
+//     std::cerr<<"-0"<<std::endl;
+//     
+//     return ap.exec();
     
     bool gui_enabled = false;
     QString error_str;
