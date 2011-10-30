@@ -15,6 +15,7 @@ class syncro_manager: public QObject {
 public:
     /*! Object for syncing: "bookmarks", "config", etc. */
     struct object;
+    
     /*! Type of get-group callback */
     typedef boost::function<remote::group ()> Getter;
     /*! Type of set-group callback */
@@ -25,6 +26,7 @@ public:
     /*! Access key to attached object */
     typedef boost::shared_ptr<object> Object;
 
+
     syncro_manager();
 
 
@@ -34,19 +36,14 @@ public:
     /*! list of attached objects */
     std::list<Object> objects() const;
 
+    /*! create new instance of storage provided by service */
     service::Storage create(const Service&);
 
-  
+    /*! attach callbacks to manager, and get object to interact */
+    Object attach(const QString& name, const Getter& g, const Setter& s, const QString& desc);
     
-
-    Object attach(const QString& name, const Getter& g, const Setter& s, const QString& desc) {}
-    void detach(const Object&){}
-
-
-    //TODO убрать
-//     boost::shared_ptr<registrator> reg(const object& obj);
-
-//     inline const Objects& objects() const {return objects_;}
+    /*! detacj object from manager */
+    void detach(const Object&);
 
     void bind(const Object& subject, const service::Storage& storage);
 
@@ -62,7 +59,21 @@ public Q_SLOTS:
 
    
 private:
-    typedef std::map<Object, std::list<service::Storage> > Objects;
+    
+    /*! Object for syncing: "bookmarks", "config", etc. */
+    struct complete_object;
+    typedef boost::shared_ptr<complete_object> CompleteObject;
+    typedef std::list<service::Storage> Storages;
+    
+    typedef std::map<CompleteObject, Storages> Objects;
+    
+    
+    
+private:
+    
+    inline CompleteObject promote(const Object& obj) const;
+    
+    
     Objects objects_;
 
     std::list<Service> services_;
@@ -103,19 +114,18 @@ struct syncro_manager::object {
      */
     object(const Getter& getter, const Setter& setter, const QString& name, const QString& desc);
         
-    inline const QString& name() const { return name_; }
-    inline const QString& description() const { return description_; }
+    virtual inline const QString& name() const = 0;
+    virtual inline const QString& description() const = 0;
 
-    remote::group get() const { return getter_(); }
-    void put(const remote::group& obj) { setter_(obj); }
+    virtual remote::group get() const = 0;
+    virtual void put(const remote::group& gr) = 0;
     
-private:
-    Getter getter_;
-    Setter setter_;
-    
-    QString name_;
-    QString description_;
+
 };
+
+
+
+
 
 
 // struct manager::registrator {
