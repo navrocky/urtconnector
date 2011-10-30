@@ -636,6 +636,7 @@ src/settings/settings.h -text
 src/settings/settings_generator.h -text
 src/settings/settings_generator_impl.h -text
 src/sounds/notify1.ogg -text
+src/sounds/notify1.wav -text
 src/sounds/notify2.ogg -text
 src/sounds/notify3.ogg -text
 src/sql/populate_sqlite.sql -text

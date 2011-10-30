@@ -2,10 +2,17 @@
 #define APPOPTIONS_H
 
 #include <QString>
+#include <QtGlobal>
 
 #include <settings/settings_generator.h>
 
 class QTranslator;
+
+#ifdef Q_OS_WIN32
+#define SOUND_FILE URT_DATADIR"sounds/notify1.wav"
+#else
+#define SOUND_FILE URT_DATADIR"sounds/notify1.ogg"
+#endif
 
 #define APP_SETTINGS \
         ((start_hidden, bool, false)) \
@@ -26,7 +33,7 @@ class QTranslator;
         ((use_mumble_overlay, bool, false)) \
         ((mumble_overlay_bin, QString, QString("/usr/bin/mumble-overlay"))) \
         ((style_sheet_file, QString, QString())) \
-        ((notification_sound, QString, QString(URT_DATADIR"sounds/notify1.ogg")))
+        ((notification_sound, QString, QString(SOUND_FILE)))
 SETTINGS_GENERATE_CLASS(app_settings, APP_SETTINGS)
 
 bool is_christmas_mode();

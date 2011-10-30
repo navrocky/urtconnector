@@ -224,6 +224,7 @@ main_window::main_window(QWidget *parent)
 
     tasks_panel* tp = new tasks_panel(track_man_, track_cond_factory_, track_acts_factory_, this);
     ui_->tasks_tracking_dock->setWidget(tp);
+    connect(track_man_, SIGNAL(task_added(task_t*)), ui_->tasks_tracking_dock, SLOT(raise()));
     ////////////////////////////////////////////////////////////////////////////
 
     tab_context ctx(all_sl_, filter_factory_, bookmarks_, que_, &gi_,
@@ -295,6 +296,7 @@ void main_window::clipboard_info_obtained()
 {
     ui_->qlServerEdit->setText(clipper_->address());
     ui_->qlPasswordEdit->setText(clipper_->password());
+    ui_->quick_connect_dock->raise();
     tray_->showMessage(tr("Server info catched"),
                        tr("Address: %1\nPassword: %2\n\n"
                        "Click this message to open UrTConnector.")
@@ -869,4 +871,5 @@ void main_window::create_waiting_task(const server_id& id)
 
     track_man_->add_task(task);
     task->condition()->start();
+    
 }
