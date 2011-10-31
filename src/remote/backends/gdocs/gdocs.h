@@ -61,7 +61,7 @@ private:
     void process_auth(ContextPtr ctx, const QByteArray& data);
     void process_query(ContextPtr ctx, const QByteArray& data);
     void process_download(ContextPtr ctx, const QByteArray& data);
-    void process_upload(ContextPtr ctx, const QByteArray& data);
+    void process_upload(ContextPtr ctx, const QUrl& url, const QByteArray& data);
 
     void download_impl(ContextPtr ctx, const QByteArray& data);
     void upload_impl(ContextPtr ctx, const QByteArray& data);

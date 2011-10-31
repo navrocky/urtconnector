@@ -67,3 +67,9 @@ QVariantMap remote::from_json(const QByteArray& data)
     return json;    
 }
 
+
+QByteArray remote::to_json(const QVariantMap& map)
+{
+    return QJson::Serializer().serialize(map);  
+}
+

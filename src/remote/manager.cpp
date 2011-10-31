@@ -64,11 +64,11 @@ std::list<syncro_manager::Object> syncro_manager::objects() const
 
 list<syncro_manager::Storage> syncro_manager::storages() const
 {
-    return list<syncro_manager::Storage>(storages_.begin(), storages_.end());
+    return storages_;
 }
 
 
-service::Storage syncro_manager::create(const Service& srv)
+syncro_manager::Storage syncro_manager::create(const Service& srv)
 {
     std::list<Service>::iterator it = boost::find(services_, srv);
     
@@ -88,10 +88,13 @@ service::Storage syncro_manager::create(const Service& srv)
     manager_options mo;
     
     mo.storages_set( mo.storages() << storage_path );
-    
-    main.register_file("gdocs_uuid", storage_path, false);
 
-    return service.create( main.get_settings("gdocs_uuid") );
+    main.register_file("gdocs_uuid", storage_path, false);
+    
+    Storage storage = *storages_.insert(storages_.end(),service.create(main.get_settings("gdocs_uuid")));
+    
+
+    return storage;
 }
 
 void syncro_manager::bind(const Object& obj, const Storage& storage)

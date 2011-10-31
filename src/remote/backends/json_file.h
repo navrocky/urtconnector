@@ -21,6 +21,7 @@ namespace remote {
     };
 
     QVariantMap from_json(const QByteArray& data);
+    QByteArray to_json(const QVariantMap& map);
     
 } // namespace remote
 

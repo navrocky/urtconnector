@@ -46,7 +46,7 @@ public:
     std::list<Storage> storages() const;
     
     /*! create new instance of storage provided by service */
-    service::Storage create(const Service&);
+    Storage create(const Service&);
 
     /*! attach callbacks to manager, and get object to interact
      * \p getter - callback to get data when synchronize needed
@@ -78,7 +78,7 @@ private:
     
 private:
     std::list<Service> services_;
-    Storages storages_;
+    std::list<Storage> storages_;
     Objects objects_;
 
     
