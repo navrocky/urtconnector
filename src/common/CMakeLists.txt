@@ -1,6 +1,6 @@
 set(TARGET common)
 
-find_package(Qt4 COMPONENTS Phonon REQUIRED QtCore)
+find_package(Qt4 COMPONENTS Phonon QtCore)
 include(${QT_USE_FILE})
 
 if (NOT QT_PHONON_FOUND)
