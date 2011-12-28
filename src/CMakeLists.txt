@@ -1,4 +1,4 @@
-set(TARGET urtconnector)
+define_target(urtconnector)
 
 project(${TARGET})
 

@@ -18,6 +18,7 @@ artwork/urtconnector.ico -text
 /build_mingw_release.bat -text
 /build_msys_release.bat -text
 cmake/FindSQLite3.cmake -text
+cmake/macro.cmake -text
 /distclean -text
 distrib/CMakeLists.txt -text
 distrib/arch/stable/PKGBUILD -text
@@ -541,6 +542,7 @@ src/job_update_from_master.cpp -text
 src/job_update_from_master.h -text
 src/job_update_selected.cpp -text
 src/job_update_selected.h -text
+src/jobs/CMakeLists.txt -text
 src/jobs/job.cpp -text
 src/jobs/job.h -text
 src/jobs/job_item.ui -text
@@ -600,6 +602,7 @@ src/qtsingleapplication/qtsingleapplication.h -text
 src/qtsingleapplication/qtsingleapplication.pri -text
 src/qtsingleapplication/qtsinglecoreapplication.cpp -text
 src/qtsingleapplication/qtsinglecoreapplication.h -text
+src/rcon/CMakeLists.txt -text
 src/rcon/rcon.cpp -text
 src/rcon/rcon.h -text
 src/rcon/rcon.ui -text
