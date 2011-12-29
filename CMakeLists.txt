@@ -6,6 +6,7 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 include(version)
+include(cmake/macro.cmake)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
