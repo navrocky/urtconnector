@@ -22,4 +22,5 @@ export_files(SOURCES
 
 export_files(IFACES
     rcon_settings_form.ui
+    rcon.ui
 )

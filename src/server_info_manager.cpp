@@ -142,7 +142,7 @@ void server_info_manager::set_server_info( server_info_p si )
     }
     else
     {
-        widgets.clear();
+        widgets_.clear();
         browser_->setHtml( QString() );
     }
 }
@@ -165,25 +165,29 @@ QRect visible_rect( const QAbstractScrollArea* a ){
 
 bool server_info_manager::eventFilter(QObject* obj, QEvent* e)
 {
-    LOG_HARD << "event:"<<e->type();
+//    LOG_HARD << "event:"<<e->type();
     bool ret = QObject::eventFilter(obj, e);
     if( obj == browser_ && ( e->type() == QEvent::Paint || e->type() == QEvent::Resize ) )
     {
-        LOG_HARD << "handling widgets visibility, Paint Event";
+//        LOG_HARD << "handling widgets visibility, Paint Event";
 
         QRect viewport_rect = visible_rect( browser_ );
         
         //QTextBrowser engine does not updates block thats are hidden away from QAbstractScrollArea visible surface
         //So we mannually hide widget when associated block is not in visible area
-        BOOST_FOREACH( const WidgetsByBlock::value_type& p, widgets ) {
-            LOG_HARD << "handling widget favorites. Block:%1 Widget: %2", p.first.blockNumber(), p.second.front();
-            QRect block_rect = browser_->document()->documentLayout()->blockBoundingRect( p.first ).toRect();
-            LOG_HARD << "block_rect: %1-%2 %3-%4" ,  block_rect.left(), block_rect.top(), block_rect.width(), block_rect.height();
-            LOG_HARD << "viewport: %1-%2 %3-%4" ,  viewport_rect.left(), viewport_rect.top(), viewport_rect.width(), viewport_rect.height();
-            std::for_each( p.second.begin(), p.second.end(), bind( &QWidget::setVisible, _1, viewport_rect.intersects(block_rect) ) );
-            LOG_HARD << "visibility:"<< viewport_rect.intersects(block_rect);
-            QRect intersected = viewport_rect.intersected( block_rect );
-            LOG_HARD << "intersected: %1-%2 %3-%4" ,  intersected.left(), intersected.top(), intersected.width(), intersected.height();
+        QAbstractTextDocumentLayout* tl = browser_->document()->documentLayout();
+        BOOST_FOREACH( const widgets_by_block_t::value_type& p, widgets_ )
+        {
+            const QTextBlock& text_block = p.first;
+            const widget_list_t& w = p.second;
+//            LOG_HARD << "handling widget favorites. Block:%1 Widget: %2", text_block.blockNumber(), w.front();
+            QRect block_rect = tl->blockBoundingRect( text_block ).toRect();
+//            LOG_HARD << "block_rect: %1-%2 %3-%4" ,  block_rect.left(), block_rect.top(), block_rect.width(), block_rect.height();
+//            LOG_HARD << "viewport: %1-%2 %3-%4" ,  viewport_rect.left(), viewport_rect.top(), viewport_rect.width(), viewport_rect.height();
+            std::for_each( w.begin(), w.end(), bind( &QWidget::setVisible, _1, viewport_rect.intersects(block_rect) ) );
+//            LOG_HARD << "visibility:"<< viewport_rect.intersects(block_rect);
+//            QRect intersected = viewport_rect.intersected( block_rect );
+//            LOG_HARD << "intersected: %1-%2 %3-%4" ,  intersected.left(), intersected.top(), intersected.width(), intersected.height();
         }
     }
     return ret;
@@ -210,6 +214,7 @@ void server_info_manager::bookmark_changed( const server_bookmark& old_bm, const
 
 void server_info_manager::update()
 {
+    widgets_.clear();
     browser_->setHtml( create_html_template(*si_) );
     regenerate_widgets(*si_);
 }
@@ -391,7 +396,7 @@ void server_info_manager::regenerate_widgets( const server_info& si )
 {
     LOG_DEBUG << "regenerating widgets";
     LOG_EXIT_DEBUG << "widget regenerating completed";
-    widgets.clear();
+    widgets_.clear();
     regenerate_friends(si);
     regenerate_maps(si);
 }
@@ -505,7 +510,7 @@ QWidget* server_info_manager::wrap_widget( QWidget* widget, QTextCursor& cursor 
     cursor.insertText( QString(QChar::ObjectReplacementCharacter), format );
 
     QObject::connect( cursor.currentFrame(), SIGNAL( destroyed(QObject *) ), widget, SLOT( deleteLater() ) );
-    widgets[ cursor.block() ].push_back( widget );
+    widgets_[ cursor.block() ].push_back( widget );
     return widget;
 }
 

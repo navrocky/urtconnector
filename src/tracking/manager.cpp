@@ -48,7 +48,7 @@ void manager::task_destroyed(QObject* o)
     task_map_t::iterator it = task_map_.find(t);
     tasks_.removeAll(t);
     assert(it != task_map_.end());
-    const QString& task_id = it.value();
+    QString task_id = it.value();
     task_map_.erase(it);
     emit task_removed(task_id);
     emit changed();
