@@ -21,6 +21,11 @@ cmake/FindSQLite3.cmake -text
 cmake/macro.cmake -text
 /distclean -text
 distrib/CMakeLists.txt -text
+distrib/OBS/debian.changelog -text
+distrib/OBS/debian.control -text
+distrib/OBS/debian.rules -text
+distrib/OBS/urtconnector.dsc -text
+distrib/OBS/urtconnector.spec -text
 distrib/arch/stable/PKGBUILD -text
 distrib/arch/svn/PKGBUILD -text
 distrib/deb/build_deb.sh -text
