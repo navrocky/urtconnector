@@ -83,7 +83,6 @@ template<typename T>
 class settings_uid_provider
 {
 public:
-
     settings_uid_provider(const base_settings& s = base_settings())
         : s_(s)
         , part_( s_.get_settings(uid()) )
@@ -99,15 +98,18 @@ public:
         return uid_;
     }
 
-    void restore(){
+    void restore()
+    {
         copy_settings( s_.get_settings(uid()), part_ );
     }
 
-    void commit(){
+    void commit()
+    {
         if( file_ ) copy_settings( part_, s_.get_settings(uid()) );
     }
 
-    void switch_to_tmp(){
+    void switch_to_tmp()
+    {
         if( !file_ )
         {
             file_.reset( new QTemporaryFile() );
@@ -116,15 +118,14 @@ public:
         }
     }
 
-    void switch_from_tmp(){
+    void switch_from_tmp()
+    {
         if( file_ )
         {
             part_ = s_.get_settings(uid());
             file_.reset();
         }
     }
-
-
 
 private:
     static QString uid_;
@@ -135,22 +136,20 @@ private:
 };
 
 template <typename T>
-    QString settings_uid_provider<T>::uid_ = typeid (T).name();
-
+QString settings_uid_provider<T>::uid_ = typeid (T).name();
 
 //this object created with first instnace of base_settings, and destroyed with QCoreApplication,
 // its managed registerd settigns, and flushes them at the end
 // this is hack-around about strange bug... 
-class qsettings_deleter: public QObject{
+class qsettings_deleter: public QObject
+{
     Q_OBJECT
 public:
-    qsettings_deleter(){};
-    ~qsettings_deleter(){};
+    qsettings_deleter(QObject* parent) : QObject(parent) {}
+    ~qsettings_deleter(){}
 
-public Q_SLOTS:
+public slots:
     void aboutToQuit();
-
 };
-  
 
 #endif

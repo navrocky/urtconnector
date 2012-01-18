@@ -90,6 +90,7 @@ server_info_manager::server_info_manager( QWidget* parent )
 {
     //Registering our-handler to make QTextBrowser widget-embeddable
     QObject *wInterface = new widget_object;
+    wInterface->setParent(this);
     browser_->document()->documentLayout()->registerHandler(widget_object::WidgetFormat, wInterface);
 
     QVBoxLayout* lay = new QVBoxLayout(this);

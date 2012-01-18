@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <stdexcept>
 
 #include <boost/foreach.hpp>
@@ -14,40 +15,43 @@ const QSettings::Format format_c = QSettings::IniFormat;
 
 typedef std::map<QString, base_settings::qsettings_p > settings_map;
 
-class settings_holder: public QObject{
-private:
-    settings_holder(QObject* parent): QObject(parent){}
-    static settings_holder* instance_;
-    settings_map registered_;
-    
+class settings_holder: public QObject
+{
 public:
-
-    static void delete_holder(){
+    static void delete_holder()
+    {
         delete instance_;
         instance_ = reinterpret_cast<settings_holder*>(-1);
     }
     
-    static settings_map& registered(){
-        if( instance_ == reinterpret_cast<settings_holder*>(0) ){
+    static settings_map& registered()
+    {
+        if( instance_ == reinterpret_cast<settings_holder*>(0) )
+        {
             instance_ = new settings_holder(qApp);
-            connect( qApp, SIGNAL(aboutToQuit()), new qsettings_deleter(), SLOT(aboutToQuit()) );
+            connect( qApp, SIGNAL(aboutToQuit()), new qsettings_deleter(qApp), SLOT(aboutToQuit()) );
         }
-        else if ( instance_ == reinterpret_cast<settings_holder*>(-1) ){
+        else if ( instance_ == reinterpret_cast<settings_holder*>(-1) )
+        {
             throw std::logic_error("Using settings after QCoreApplication quits!");
         }
         
         return instance_->registered_;
     }
+
+private:
+    settings_holder(QObject* parent): QObject(parent){}
+    static settings_holder* instance_;
+    settings_map registered_;
 };
 
 settings_holder* settings_holder::instance_ = 0;
 
 void qsettings_deleter::aboutToQuit()
 {
+//    std::cerr << "aboutToQuit" << std::endl;
     settings_holder::delete_holder();
 }
-
-
 
 struct base_settings::pimpl
 {

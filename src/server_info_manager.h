@@ -40,7 +40,6 @@ class server_info_manager: public QWidget {
     Q_OBJECT
 public:
     server_info_manager( QWidget* parent );
-
     virtual ~server_info_manager();
 
     void set_bookmarks( server_bookmark_list_p bookmarks );
