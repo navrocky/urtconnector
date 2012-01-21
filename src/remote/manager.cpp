@@ -91,7 +91,7 @@ syncro_manager::Storage syncro_manager::create(const Service& srv)
 
     main.register_file("gdocs_uuid", storage_path, false);
     
-    Storage storage = *storages_.insert(storages_.end(),service.create(main.get_settings("gdocs_uuid")));
+    Storage storage = *storages_.insert(storages_.end(), service.create(main.get_settings("gdocs_uuid")));
     
 
     return storage;

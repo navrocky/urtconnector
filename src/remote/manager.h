@@ -59,8 +59,10 @@ public:
     /*! detacj object from manager */
     void detach(const Object&);
 
+    /*! Bind \p subject to be synced with \p storage*/
     void bind(const Object& subject, const Storage& storage);
 
+    /*! start syncronization */
     void sync(const Object& obj);
 
 public Q_SLOTS:
@@ -73,8 +75,6 @@ private:
 
     typedef std::set<Storage> Storages;
     typedef std::map<Object, Storages> Objects;
-    
-    
     
 private:
     std::list<Service> services_;

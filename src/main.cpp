@@ -145,15 +145,15 @@ int main(int argc, char *argv[])
     cerr_out.reset(new output_stream(std::cerr));
     logman().output_add(cerr_out);
     
-    std::cerr<<"-1"<<std::endl;
-    gdocs d("kinnalru@gmail.com", "malder11", "myapp");
-
-    remote::action* act = d.put(remote::group("secondupload"));
-    act->start();
-    
-    std::cerr<<"-0"<<std::endl;
-    
-    return ap.exec();
+//     std::cerr<<"-1"<<std::endl;
+//     gdocs d("kinnalru@gmail.com", "malder11", "myapp");
+// 
+//     remote::action* act = d.put(remote::group("secondupload"));
+//     act->start();
+//     
+//     std::cerr<<"-0"<<std::endl;
+//     
+//     return ap.exec();
     
     bool gui_enabled = false;
     QString error_str;
