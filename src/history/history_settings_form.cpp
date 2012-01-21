@@ -42,9 +42,9 @@ void history_settings_form::update_preferences()
 void history_settings_form::accept()
 {
     app_settings as;
-    as.set_number_in_history(ui_->number_in_history_spin->value());
-    as.set_days_in_history(ui_->days_history_spin->value());
-    as.set_history_grouping(ui_->group_by_server_radio->isChecked());
+    as.number_in_history_set(ui_->number_in_history_spin->value());
+    as.days_in_history_set(ui_->days_history_spin->value());
+    as.history_grouping_set(ui_->group_by_server_radio->isChecked());
     update_preferences();
 }
 

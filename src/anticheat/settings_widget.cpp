@@ -87,18 +87,18 @@ void settings_widget::accept()
 {
     settings s;
         
-    s.set_interval(p_->ui.interval_spin->value());
-    s.set_quality(p_->ui.quality_spin->value());
+    s.interval_set(p_->ui.interval_spin->value());
+    s.quality_set(p_->ui.quality_spin->value());
     
-    s.set_use_ftp(p_->ui.ftp_gb->isChecked());
-    s.set_ftp_address(server_id(p_->ui.ftp_addr_edit->text(), 21));
-    s.set_ftp_login(p_->ui.login_edit->text());
-    s.set_ftp_password(p_->ui.password_edit->text());
-    s.set_ftp_folder(p_->ui.ftp_folder_edit->text());
-    s.set_send_only_md5(p_->ui.only_md5_check->isChecked());
+    s.use_ftp_set(p_->ui.ftp_gb->isChecked());
+    s.ftp_address_set(server_id(p_->ui.ftp_addr_edit->text(), 21));
+    s.ftp_login_set(p_->ui.login_edit->text());
+    s.ftp_password_set(p_->ui.password_edit->text());
+    s.ftp_folder_set(p_->ui.ftp_folder_edit->text());
+    s.send_only_md5_set(p_->ui.only_md5_check->isChecked());
     
-    s.set_use_local_folder(p_->ui.local_file_gb->isChecked());
-    s.set_local_folder(p_->ui.local_folder_edit->text());
+    s.use_local_folder_set(p_->ui.local_file_gb->isChecked());
+    s.local_folder_set(p_->ui.local_folder_edit->text());
 
     update_preferences();
 }

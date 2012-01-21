@@ -75,7 +75,7 @@ void launch_settings_form::update_preferences()
     p_->ui.advCmdBox->setChecked( as.use_adv_cmd_line() );
     p_->ui.update_server_check->setChecked( as.update_before_connect() );
 #if defined(Q_OS_UNIX)
-    p_->ui.separate_x_check->setChecked( as.separate_x() );
+    p_->ui.separate_x_check->setChecked( as.separate_xsession() );
     p_->ui.mumble_overlay_group->setChecked( as.use_mumble_overlay() );
     p_->ui.mumble_bin_edit->setText( as.mumble_overlay_bin() );
 #endif
@@ -85,14 +85,14 @@ void launch_settings_form::update_preferences()
 void launch_settings_form::accept()
 {
     app_settings as;
-    as.set_binary_path( p_->ui.binary_edit->text() );
-    as.set_use_adv_cmd_line( p_->ui.advCmdBox->isChecked() );
-    as.set_adv_cmd_line( p_->ui.advCmdEdit->text() );
-    as.set_update_before_connect(p_->ui.update_server_check->isChecked());
+    as.binary_path_set( p_->ui.binary_edit->text() );
+    as.use_adv_cmd_line_set( p_->ui.advCmdBox->isChecked() );
+    as.adv_cmd_line_set( p_->ui.advCmdEdit->text() );
+    as.update_before_connect_set(p_->ui.update_server_check->isChecked());
 #if defined(Q_OS_UNIX)
-    as.set_separate_x( p_->ui.separate_x_check->isChecked() );
-    as.set_use_mumble_overlay(p_->ui.mumble_overlay_group->isChecked());
-    as.set_mumble_overlay_bin( p_->ui.mumble_bin_edit->text() );
+    as.separate_xsession_set( p_->ui.separate_x_check->isChecked() );
+    as.use_mumble_overlay_set(p_->ui.mumble_overlay_group->isChecked());
+    as.mumble_overlay_bin_set( p_->ui.mumble_bin_edit->text() );
 #endif
     update_preferences();
 }

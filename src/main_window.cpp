@@ -213,7 +213,8 @@ main_window::main_window(QWidget *parent)
     update_dispatcher_ = new update_dispatcher(all_sl_, gi_, que_, this);
 
     track_ctx_.reset(new context_t(all_sl_, update_dispatcher_, tray_, this,
-                                   boost::bind(&main_window::select_server, this, _1)));
+                                   boost::bind(&main_window::select_server, this, _1),
+                                   &friends_));
     track_cond_factory_ = reg_conditions(track_ctx_);
     track_acts_factory_ = reg_actions(track_ctx_);
 
@@ -223,10 +224,11 @@ main_window::main_window(QWidget *parent)
 
     tasks_panel* tp = new tasks_panel(track_man_, track_cond_factory_, track_acts_factory_, this);
     ui_->tasks_tracking_dock->setWidget(tp);
+    connect(track_man_, SIGNAL(task_added(task_t*)), ui_->tasks_tracking_dock, SLOT(raise()));
     ////////////////////////////////////////////////////////////////////////////
 
     tab_context ctx(all_sl_, filter_factory_, bookmarks_, que_, &gi_,
-                    ui_->actionConnect, track_man_, track_ctx_);
+                    ui_->actionConnect, track_man_, track_ctx_, &friends_);
 
     fav_list_ = new bookmark_tab("bookmarks_list", ctx, this);
     tab_widget_->add_widget(fav_list_);
@@ -294,6 +296,7 @@ void main_window::clipboard_info_obtained()
 {
     ui_->qlServerEdit->setText(clipper_->address());
     ui_->qlPasswordEdit->setText(clipper_->password());
+    ui_->quick_connect_dock->raise();
     tray_->showMessage(tr("Server info catched"),
                        tr("Address: %1\nPassword: %2\n\n"
                        "Click this message to open UrTConnector.")
@@ -481,7 +484,7 @@ void main_window::connect_to_server(const server_id& id,
             msg.exec();
             if (msg.clickedButton() == wait_btn)
             {
-                create_waiting_task(bm.id());
+                create_waiting_task(id);
                 return;
             }
             if (msg.clickedButton() == cancel_btn || msg.clickedButton() == 0)
@@ -519,7 +522,7 @@ void main_window::connect_to_server(const server_id& id,
     history_sl_->add(id, server_name, player_name, pass);
 
 #if defined(Q_OS_UNIX)
-    if ( anticheat_enabled_action_->isChecked() && as.separate_x() )
+    if ( anticheat_enabled_action_->isChecked() && as.separate_xsession() )
     {
         QStringList args;
         args << qApp->applicationFilePath();
@@ -605,7 +608,7 @@ void main_window::current_tab_changed()
 void main_window::save_geometry()
 {
     state_settings state_s;
-    state_s.set_geometry( saveGeometry() );
+    state_s.geometry_set( saveGeometry() );
 
     qsettings_p s = base_settings::get_settings( state_settings::uid() );
     s->setValue("window_state", saveState());
@@ -824,7 +827,7 @@ void main_window::create_waiting_task(const server_id& id)
 
     // creating task
     task_t* task = new task_t(this);
-    task->set_caption(tr("Connect to %1").arg(si->name));
+    task->set_caption(tr("Connect to %1").arg(si ? si->name : id.address()));
     task->set_operation_mode(task_t::om_destroy_after_trigger);
     QUuid uid = QUuid::createUuid();
     task->set_id(uid.toString());
@@ -849,6 +852,8 @@ void main_window::create_waiting_task(const server_id& id)
     // add play sound action
     action_class_p ac(new play_sound_action_class(track_ctx_));
     action_p a = ac->create();
+    play_sound_action* psa = static_cast<play_sound_action*>(a.get());
+    psa->set_sound_file(app_settings().notification_sound());
     task->add_action(a);
 
     // add query action
@@ -866,4 +871,5 @@ void main_window::create_waiting_task(const server_id& id)
 
     track_man_->add_task(task);
     task->condition()->start();
+    
 }

@@ -39,6 +39,7 @@
 #include <filters/filter_list.h>
 #include "../job_update_selected.h"
 #include "../job_update_from_master.h"
+#include "../app_options.h"
 #include "friend_list.h"
 #include "friend_prop_dialog.h"
 #include "friend_list_db_saver.h"
@@ -422,6 +423,8 @@ void friend_list_widget::wait_for_friend()
     // add play sound action
     ac.reset(new play_sound_action_class(context().track_ctx()));
     a = ac->create();
+    play_sound_action* psa = static_cast<play_sound_action*>(a.get());
+    psa->set_sound_file(app_settings().notification_sound());
     task->add_action(a);
 
     // add query action

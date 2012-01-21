@@ -1,4 +1,3 @@
-#include <boost/pool/detail/singleton.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -12,7 +11,8 @@ namespace syslog
 
 manager& logman()
 {
-    return boost::details::pool::singleton_default<manager>::instance();
+    static manager man;
+    return man;
 }
 
 template<>

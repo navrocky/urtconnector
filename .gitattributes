@@ -18,7 +18,14 @@ artwork/urtconnector.ico -text
 /build_mingw_release.bat -text
 /build_msys_release.bat -text
 cmake/FindSQLite3.cmake -text
+cmake/macro.cmake -text
 /distclean -text
+distrib/CMakeLists.txt -text
+distrib/OBS/debian.changelog -text
+distrib/OBS/debian.control -text
+distrib/OBS/debian.rules -text
+distrib/OBS/urtconnector.dsc -text
+distrib/OBS/urtconnector.spec -text
 distrib/arch/stable/PKGBUILD -text
 distrib/arch/svn/PKGBUILD -text
 distrib/deb/build_deb.sh -text
@@ -30,7 +37,8 @@ distrib/gentoo/urtconnector-0.6.0.ebuild -text
 distrib/gentoo/urtconnector-9999.ebuild -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
-distrib/windows/urtconnector.nsi -text
+distrib/windows/CMakeLists.txt -text
+distrib/windows/urtconnector.nsi.in -text
 doc/ExampleData/appdata.xml -text
 doc/ExampleData/qstat_out.xml -text
 doc/ExampleData/servers.xml -text
@@ -54,6 +62,7 @@ doc/style_sheets/urt-iface-6.jpg -text
 doc/style_sheets/urt-iface.jpg -text
 doc/task_edit_panel_concept.ui -text
 doc/tracking_rus.odt -text
+/gzip_sources -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text
 src/3rdparty/CMakeLists.txt -text
@@ -205,6 +214,8 @@ src/filters/filter_factory.cpp -text
 src/filters/filter_factory.h -text
 src/filters/filter_list.cpp -text
 src/filters/filter_list.h -text
+src/filters/friend_filter.cpp -text
+src/filters/friend_filter.h -text
 src/filters/game_type_filter.cpp -text
 src/filters/game_type_filter.h -text
 src/filters/hide_empty_filter.cpp -text
@@ -543,11 +554,17 @@ src/icons/utilities-terminal.png -text
 src/icons/view-filter.png -text
 src/icons/view-refresh.png -text
 src/icons/visible-on.png -text
+src/icons/weapons/autos.png -text
 src/icons/weapons/autos.svg -text
+src/icons/weapons/grenade.png -text
 src/icons/weapons/grenade.svg -text
+src/icons/weapons/negev.png -text
 src/icons/weapons/negev.svg -text
+src/icons/weapons/pistol.png -text
 src/icons/weapons/pistol.svg -text
+src/icons/weapons/snipe.png -text
 src/icons/weapons/snipe.svg -text
+src/icons/weapons/spas.png -text
 src/icons/weapons/spas.svg -text
 src/icons/zoom.png -text
 src/images.qrc -text
@@ -555,6 +572,7 @@ src/job_update_from_master.cpp -text
 src/job_update_from_master.h -text
 src/job_update_selected.cpp -text
 src/job_update_selected.h -text
+src/jobs/CMakeLists.txt -text
 src/jobs/job.cpp -text
 src/jobs/job.h -text
 src/jobs/job_item.ui -text
@@ -614,6 +632,7 @@ src/qtsingleapplication/qtsingleapplication.h -text
 src/qtsingleapplication/qtsingleapplication.pri -text
 src/qtsingleapplication/qtsinglecoreapplication.cpp -text
 src/qtsingleapplication/qtsinglecoreapplication.h -text
+src/rcon/CMakeLists.txt -text
 src/rcon/rcon.cpp -text
 src/rcon/rcon.h -text
 src/rcon/rcon.ui -text
@@ -663,7 +682,10 @@ src/settings/settings.cpp -text
 src/settings/settings.h -text
 src/settings/settings_generator.h -text
 src/settings/settings_generator_impl.h -text
+src/sounds/notify1.ogg -text
 src/sounds/notify1.wav -text
+src/sounds/notify2.ogg -text
+src/sounds/notify3.ogg -text
 src/sql/populate_sqlite.sql -text
 src/tabs/CMakeLists.txt -text
 src/tabs/bookmark_tab.cpp -text
@@ -737,4 +759,3 @@ translations/CMakeLists.txt -text
 translations/urtconnector_ru.ts -text
 /update_translations -text
 /version -text
-/versionfix.sh -text

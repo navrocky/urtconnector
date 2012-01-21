@@ -22,6 +22,7 @@ set(HEADERS
     ping_filter.h
     custom_filter.h
     player_filter.h
+    friend_filter.h
 )
 
 set(MOC_HEADERS
@@ -39,6 +40,7 @@ set(MOC_HEADERS
     ping_filter.h
     custom_filter.h
     player_filter.h
+    friend_filter.h
 )
 
 set(SOURCES
@@ -59,6 +61,7 @@ set(SOURCES
     ping_filter.cpp
     custom_filter.cpp
     player_filter.cpp
+    friend_filter.cpp
 )
 
 set(IFACES

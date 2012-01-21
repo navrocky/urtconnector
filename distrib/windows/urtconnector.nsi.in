@@ -1,6 +1,6 @@
 !define APP_SHORT_NAME "urtconnector"
 !define PRODUCT_NAME "UrTConnector"
-!define PRODUCT_VERSION "0.7.1 build 477"
+@NSIS_PRODUCT_VERSION@
 !define ICON_FILE "urtconnector.ico"
 !define USE_COMPRESS
 
@@ -10,10 +10,10 @@
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}-${PRODUCT_VERSION}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define START_MENU_ENTRY "${PRODUCT_NAME}"
-!define DIR_BIN "..\..\release\src"
-!define DIR_TRANS "..\..\release\translations"
-!define DIR_IMAGES "..\..\artwork"
-!define DIR_SRC "..\..\src"
+!define DIR_BIN "..\..\src"
+!define DIR_TRANS "..\..\translations"
+!define DIR_IMAGES "..\..\..\artwork"
+!define DIR_SRC "..\..\..\src"
 !define APP_EXE_NAME "${APP_SHORT_NAME}.exe"
 !define DESKTOP_LOCAL_LNK "${PRODUCT_NAME}.lnk"
 
@@ -85,14 +85,13 @@ Section "UrT Connector"
   File "QtGui4.dll"
   File "QtXml4.dll"
   File "QtNetwork4.dll"
+  File "phonon4.dll"
   File "mingwm10.dll"
   File "libgcc_s_dw2-1.dll"
   File "sqlite3.dll"
   !ifdef ICON_FILE
     File "${DIR_IMAGES}\${ICON_FILE}"
   !endif
-  SetOutPath "$INSTDIR\imageformats"
-  File "qjpeg4.dll"
   CreateDirectory "$SMPROGRAMS\${START_MENU_ENTRY}"
   
   !ifdef ICON_FILE
@@ -102,6 +101,13 @@ Section "UrT Connector"
     CreateShortCut "$SMPROGRAMS\${START_MENU_ENTRY}\${DESKTOP_LOCAL_LNK}" "$INSTDIR\${APP_EXE_NAME}"
     CreateShortCut  "$DESKTOP\${DESKTOP_LOCAL_LNK}" "$INSTDIR\${APP_EXE_NAME}"
   !endif
+  SetOutPath "$INSTDIR\imageformats"
+  File "qjpeg4.dll"
+  File "qsvg4.dll"
+  SetOutPath "$INSTDIR\sounds"
+  File "${DIR_SRC}\sounds\notify1.wav"
+  ;File "${DIR_SRC}\sounds\notify2.wav"
+  ;File "${DIR_SRC}\sounds\notify3.wav"
 
 SectionEnd
 

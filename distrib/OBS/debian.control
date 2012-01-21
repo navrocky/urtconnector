@@ -1,0 +1,12 @@
+Source: urtconnector
+Section: unknown
+Priority: extra
+Maintainer: unknown <kinnalru@gmail.com>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: urtconnector
+Architecture: any
+Depends:qstat,libqt4-gui (>=4.4.3),libqt4-core (>=4.4.3)
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>

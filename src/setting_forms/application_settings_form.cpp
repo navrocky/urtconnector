@@ -10,7 +10,9 @@
 #include <common/exception.h>
 #include <common/tools.h>
 #include <common/qstat_options.h>
+#include <common/play_sound.h>
 #include "app_options.h"
+#include "../config.h"
 
 #include "ui_application_settings_form.h"
 #include "application_settings_form.h"
@@ -33,11 +35,11 @@ QString country_name_from_code( const QString& code  ){
 Countries find_countries()
 {
     Countries ret;
-    
+
     ret << CountryId( "English", "" );
-    
+
     QDir dir( QLibraryInfo::location(QLibraryInfo::TranslationsPath) );
-    
+
     //find all translation files in qt standard path
     foreach( const QString& file, dir.entryList( QStringList("qt_[a-zA-Z0-9][a-zA-Z0-9].qm"), QDir::Files, QDir::Name ) ){
         ret << CountryId(
@@ -45,7 +47,7 @@ Countries find_countries()
             country_code_from_qm( file )
         );
     }
-    
+
     return ret;
 }
 
@@ -70,8 +72,14 @@ application_settings_form::application_settings_form(QWidget* parent)
     connect(p_->ui.style_sheet_refresh_button, SIGNAL(clicked()), SLOT(apply_style_sheet()));
     QToolButton* tb = p_->ui.style_sheet_file_edit->addButton();
     tb->setIcon(QIcon("icons:choose-file.png"));
-    tb->setToolTip(tr("Choose a style sheet file name"));
+    tb->setToolTip(tr("Select a style sheet file name"));
     connect(tb, SIGNAL(clicked()), SLOT(select_css_file()));
+
+    tb = p_->ui.notify_sound_edit->addButton();
+    tb->setIcon(QIcon("icons:choose-file.png"));
+    tb->setToolTip(tr("Select notification sound file name"));
+    connect(tb, SIGNAL(clicked()), SLOT(select_sound_file()));
+    connect(p_->ui.play_btn, SIGNAL(clicked()), SLOT(play_sound_file()));
 
     connect(p_->ui.hide_mainwindow_check, SIGNAL(stateChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.holiday_check, SIGNAL(stateChanged(int)), this, SLOT(int_changed()));
@@ -82,6 +90,7 @@ application_settings_form::application_settings_form(QWidget* parent)
     connect(p_->ui.clip_port_spin, SIGNAL(valueChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.clip_password_spin, SIGNAL(valueChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.style_sheet_file_edit, SIGNAL(textChanged(const QString&)), this, SLOT(int_changed()));
+    connect(p_->ui.notify_sound_edit, SIGNAL(textChanged(const QString&)), this, SLOT(int_changed()));
 }
 
 void application_settings_form::int_changed()
@@ -92,7 +101,7 @@ void application_settings_form::int_changed()
 
 void application_settings_form::update_preferences()
 {
-    scoped_value_change<bool> s(lock_change_, true, false);
+    SCOPE_COCK_FLAG(lock_change_);
 
     app_settings as;
     clip_settings cs;
@@ -117,30 +126,33 @@ void application_settings_form::update_preferences()
     p_->ui.clip_port_spin->setValue(cs.port());
     p_->ui.clip_password_spin->setValue(cs.password());
     p_->ui.style_sheet_file_edit->setText(as.style_sheet_file());
+    p_->ui.notify_sound_edit->setText(as.notification_sound());
 }
 
 void application_settings_form::accept()
 {
     app_settings as;
-    clip_settings cs;
 
-    as.set_start_hidden(p_->ui.hide_mainwindow_check->isChecked());
-    as.set_holiday_mode(p_->ui.holiday_check->isChecked());
-    
+    as.start_hidden_set(p_->ui.hide_mainwindow_check->isChecked());
+    as.use_holiday_mode_set(p_->ui.holiday_check->isChecked());
+
     QString country_code =  p_->ui.language_box->itemData( p_->ui.language_box->currentIndex() ).toString();
-    
+
     if( country_code != as.country_name() )
-        QMessageBox::information(this, tr("Language preferences"), 
+        QMessageBox::information(this, tr("Language preferences"),
                                  tr("Selected language will be applied after restart"));
-    
-    as.set_country_name( country_code );
-    
-    cs.set_watching(p_->ui.group_clipboard_watch->isChecked());
-    cs.set_regexp(p_->ui.clip_regexp_edit->text());
-    cs.set_host(p_->ui.clip_host_spin->value());
-    cs.set_port(p_->ui.clip_port_spin->value());
-    cs.set_password(p_->ui.clip_password_spin->value());
-    as.set_style_sheet_file(p_->ui.style_sheet_file_edit->text());
+
+    as.country_name_set( country_code );
+    as.style_sheet_file_set(p_->ui.style_sheet_file_edit->text());
+    as.notification_sound_set(p_->ui.notify_sound_edit->text());
+
+    clip_settings cs;
+    cs.watching_set(p_->ui.group_clipboard_watch->isChecked());
+    cs.regexp_set(p_->ui.clip_regexp_edit->text());
+    cs.host_set(p_->ui.clip_host_spin->value());
+    cs.port_set(p_->ui.clip_port_spin->value());
+    cs.password_set(p_->ui.clip_password_spin->value());
+
     apply_style_sheet();
 }
 
@@ -152,9 +164,19 @@ void application_settings_form::reject()
 void application_settings_form::reset_defaults()
 {
     app_settings as;
+    as.start_hidden_reset();
+    as.use_holiday_mode_reset();
+    as.country_name_reset();
+    as.style_sheet_file_reset();
+    as.notification_sound_reset();
+
     clip_settings cs;
-    as.reset_style_sheet_file();
-    cs.reset_regexp();
+    cs.watching_reset();
+    cs.regexp_reset();
+    cs.host_reset();
+    cs.password_reset();
+    cs.port_reset();
+
     update_preferences();
     apply_style_sheet();
 }
@@ -167,8 +189,21 @@ void application_settings_form::apply_style_sheet()
 
 void application_settings_form::select_css_file()
 {
-    QString fn = QFileDialog::getOpenFileName(this, tr("Choose a style sheet file"),
+    QString fn = QFileDialog::getOpenFileName(this, tr("Select a style sheet file"),
                                               QString(), tr("CSS Files (*.css)(*.css);;All files(*)"));
     if (!fn.isEmpty())
         p_->ui.style_sheet_file_edit->setText(fn);
+}
+
+void application_settings_form::select_sound_file()
+{
+    QString fn = QFileDialog::getOpenFileName(this, tr("Select a notification sound"),
+                                              QString(), tr("Sounds (*.ogg *.wav)(*.ogg *.wav);;All files(*)"));
+    if (!fn.isEmpty())
+        p_->ui.notify_sound_edit->setText(fn);
+}
+
+void application_settings_form::play_sound_file()
+{
+    play_sound(p_->ui.notify_sound_edit->text());
 }

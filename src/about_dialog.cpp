@@ -29,11 +29,19 @@ about_dialog::about_dialog(QWidget *parent)
 {
     srand( std::time(NULL) );
 
-    if( app_settings().christmas_mode() )
+    if( is_christmas_mode() )
         new blizzard(this);
 
     ui_->setupUi(this);
-    ui_->label_version->setText(tr("version %1 \"%2\"").arg(URT_VERSION).arg(URT_CODENAME));
+    
+    QString build = URT_BUILD;
+    QString version;
+    if (!build.isEmpty())
+        version = tr("version %1 \"%2\" rev. %3").arg(URT_VERSION).arg(URT_CODENAME).arg(URT_BUILD);
+    else
+        version = tr("version %1 \"%2\"").arg(URT_VERSION).arg(URT_CODENAME);
+    
+    ui_->label_version->setText(version);
     ui_->logo_label->setPixmap(QPixmap("images:logo.png"));
 
     QPalette transp_palette;

@@ -2,15 +2,12 @@
 #define STATE_SETTINGS_H
 
 #include <QByteArray>
-
-#include <settings/settings.h>
+#include <settings/settings_generator.h>
 
 /// Application state settings
-class state_settings: public settings_uid_provider<state_settings>
-{
-public:
-    QByteArray geometry() const;
-    void set_geometry(const QByteArray& g);
-};
+#define STATE_SETTINGS \
+    (( geometry, QByteArray, QByteArray() ))
+    
+SETTINGS_GENERATE_CLASS(state_settings, STATE_SETTINGS)
 
 #endif

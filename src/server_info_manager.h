@@ -40,7 +40,6 @@ class server_info_manager: public QWidget {
     Q_OBJECT
 public:
     server_info_manager( QWidget* parent );
-
     virtual ~server_info_manager();
 
     void set_bookmarks( server_bookmark_list_p bookmarks );
@@ -104,9 +103,9 @@ private:
     //When widgets are layouted above QTextBrowser we associate them with textblock where they are.
     //We need it to hide widgets when they move out from QAbstractScrollArea visible surface.
     //List used because of multimple widgets can be associated with one QTextBlock
-    typedef std::list<QWidget*> Widgets;
-    typedef std::map<QTextBlock, Widgets> WidgetsByBlock;
-    WidgetsByBlock widgets;
+    typedef std::list<QWidget*> widget_list_t;
+    typedef std::map<QTextBlock, widget_list_t> widgets_by_block_t;
+    widgets_by_block_t widgets_;
 
     Q3ColorMap html_colors_;
     

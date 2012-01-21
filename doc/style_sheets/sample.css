@@ -1,32 +1,47 @@
-QWidget{
-/*     background-color: rgb(0, 75, 130); */
-    alternate-background-color: rgba(0, 90, 200, 60);
+QWidget
+{
+/*     background-color: hsv(206, 230, 80); */
+    alternate-background-color: hsva(206, 230, 0, 40);
     color: white;
 }
-QToolButton{
-/*  border: 2px solid #8f8f91; */
-/*     border-radius: 10px; */
-}
-QMainWindow#MainWindowClass{
+
+QMainWindow#MainWindowClass, QDialog
+{
 /*   border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch; */
     border-image: url(skin:background.png) stretch stretch;
 }
 
-QDialog{
-/*     border-image: url(/home/vlad/projects/urtconnector/doc/style_sheets/background.png) stretch stretch; */
-    border-image: url(skin:background.png) stretch stretch;
+QMainWindow
+{
+  border-width: 0px;
 }
 
-QListView, QLineEdit, QTreeView, QTextEdit, QGroupBox, QPushButton, QMenu, QSpinBox, QComboBox {
-    background-color: rgba(0, 0, 0, 150);
+/* common frame */
+QListView, QLineEdit, QSpinBox, QDoubleSpinBox, QTreeView, QTextEdit, QGroupBox, QPushButton, 
+QToolButton[autoRaise="false"], QMenu, QSpinBox, QComboBox, QScrollBar, QScrollBar::handle,
+QTabBar::tab, QTabBar/*, QTabWidget/* QTabWidget::pane*/
+{
     border-width: 1px;
     border-style: solid;
-    border-color: white;
+    border-color: rgb(200, 200, 200);
+}
+
+
+QListView, QLineEdit, QSpinBox, QDoubleSpinBox, QTreeView, QTextEdit, QGroupBox, QPushButton, QToolButton[autoRaise="false"], QMenu, QSpinBox, QComboBox, QScrollBar 
+{
+    background-color: rgba(0, 0, 0, 150);
     border-radius: 3px;
     padding: 2 2;
 }
 
-QGroupBox{
+/* highlight */
+QPushButton:hover, QScrollBar::handle, QToolButton[autoRaise="false"]:hover, QTabBar::tab:hover
+{
+    background-color: hsva(240, 250, 200, 100);
+}
+
+QGroupBox
+{
     padding-top: 20%;
     
     border-image: url(skin:tab.png) 0 0 0 0 repeat;
@@ -34,7 +49,8 @@ QGroupBox{
     
 }
 
-QGroupBox::title {
+QGroupBox::title 
+{
     subcontrol-origin: margin;
     subcontrol-position: top center; /* position at the top center */
     border-width: 1px;
@@ -43,26 +59,53 @@ QGroupBox::title {
     padding: 0 0;
     
 }
+
+QToolBar
+{
+  border-width: 0px;
+}
+
  
-QPushButton {
-    background-color: rgba(0, 0, 0, 100);
+QPushButton, QToolButton[autoRaise="false"] {
+/*     background-color: rgba(0, 0, 0, 100); */
     padding: 5 5;
 }
 
-QPushButton:hover {
-    background-color: rgba(0, 0, 255, 100);
+/*QPushButton:hover, QToolButton[autoRaise="false"] {
+    background-color: rgba(50, 100, 255, 100);
+}*/
+
+
+QTabBar::tab 
+{
+    border-top-right-radius: 20px;
+    padding: 4 10;
+    border-bottom-width: 0px;
+    
+/*     background-color: rgba(0, 0, 0, 100); */
 }
 
+QTabBar::tab:selected 
+{
+    background-color: hsva(240, 250, 100, 100);
+}
+
+/*QTabWidget::pane {
+   top: -1;
+}*/
 
 
 
 /* Scroll bar */
 
 QScrollBar {
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
-    background-color: rgba(0, 0, 0, 100);
+  min-width: 20px;
+  border-radius: 0px;
+/*     border-width: 1px; */
+/*     border-style: solid; */
+/*     border-color: white; */
+/*     background-color: rgba(0, 0, 0, 100); */
+    padding: 1 1;
 }
 
 QScrollBar::add-page, QScrollBar::sub-page {
@@ -85,14 +128,6 @@ QScrollBar:horizontal {
     border-width: 0px;
     border-top-width: 1px;
     border-bottom-width: 1px;
-}
-
-QScrollBar::handle {
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
-    
-    background-color: rgba(0, 0, 255, 150);
 }
 
 
@@ -166,33 +201,20 @@ QScrollBar::right-arrow { image: url(skin:rightarrow.png); }
 
 
  
-QTabWidget::pane {
-   top: -1;
-}
 
 
-QTabBar::tab {
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
-
-    padding: 2 2;
-    
-    background-color: rgba(0, 0, 0, 100);
-}
-
-QTabBar::tab:selected, QTabBar::tab:hover {
-    background-color: rgba(0, 0, 255, 100);
-}
 
 
-QMenu {
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
+QMenu 
+{
+    background-color: hsv(216, 230, 30);
+/*    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;*/
 }
 
 QMenu::item:selected { 
-    background-color: rgba(0, 90, 255, 100);
+  border-radius: 4px;
+    background-color: hsv(240, 250, 200);
 }
 
 QMenuBar {
@@ -207,9 +229,9 @@ QMenuBar::item:selected, QMenuBar::item:pressed {
     background-color: rgba(0, 90, 255, 100);
 } 
 
-server_info_manager{
+/*server_info_manager{
     background-color: rgba(0, 0, 0, 150);
-}
+}*/
 
 
 
