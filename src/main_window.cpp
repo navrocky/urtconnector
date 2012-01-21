@@ -94,6 +94,9 @@
 #include "main_window.h"
 #include "updater/update_task.h"
 
+#include "remote/sync_settings_form.h"
+#include "remote/manager.h"
+
 SYSLOG_MODULE(main_window)
 
 using namespace std;
@@ -225,10 +228,15 @@ main_window::main_window(QWidget *parent)
     tasks_panel* tp = new tasks_panel(track_man_, track_cond_factory_, track_acts_factory_, this);
     ui_->tasks_tracking_dock->setWidget(tp);
     connect(track_man_, SIGNAL(task_added(task_t*)), ui_->tasks_tracking_dock, SLOT(raise()));
+    
+    
+    sync_man_.reset(new remote::syncro_manager());
+    
+    
     ////////////////////////////////////////////////////////////////////////////
 
     tab_context ctx(all_sl_, filter_factory_, bookmarks_, que_, &gi_,
-                    ui_->actionConnect, track_man_, track_ctx_, &friends_);
+                    ui_->actionConnect, track_man_, track_ctx_, &friends_, sync_man_);
 
     fav_list_ = new bookmark_tab("bookmarks_list", ctx, this);
     tab_widget_->add_widget(fav_list_);
@@ -326,6 +334,7 @@ void main_window::show_options()
     d.add_item( new history_settings_form() );
     d.add_item( new rcon_settings_form() );
     d.add_item( new anticheat::settings_widget() );
+    d.add_item( new sync_settings_form() );
 
     d.exec();
 

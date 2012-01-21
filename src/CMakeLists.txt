@@ -132,6 +132,7 @@ add_subdirectory(friend_list)
 add_subdirectory(tabs)
 add_subdirectory(setting_forms)
 add_subdirectory(tracking)
+add_subdirectory(remote)
 
 qt4_add_resources(SOURCES ${RESOURCES})
 qt4_wrap_cpp(SOURCES ${MOC_HEADERS})

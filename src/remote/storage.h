@@ -30,7 +30,7 @@ public:
     
 Q_SIGNALS:
     /*! \brief Group successfuly downloaded from storoge */
-    void loaded(const group& gr);
+    void loaded(const remote::group& gr);
 
     /*! \brief Group successfuly uploaded to storage */
     void saved();

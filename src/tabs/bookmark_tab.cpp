@@ -1,3 +1,6 @@
+
+#include <boost/bind.hpp>
+
 #include <QTreeWidget>
 #include <QHeaderView>
 #include <QAction>
@@ -19,6 +22,8 @@
 #include "bookmark_tab.h"
 #include "main_window.h"
 #include "tools.h"
+
+#include "common/qt_syslog.h"
 
 SYSLOG_MODULE(bookmark_tab)
 
@@ -217,38 +222,112 @@ void bookmark_tab::update_actions()
 }
 
 #include <remote/remote.h>
+#include <remote/manager.h>
 
-void bookmark_tab::test_export(){
+using namespace remote;
+
+
+#define SYNC_DEBUG LOG_DEBUG << " >> " << __PRETTY_FUNCTION__ << ": "
+
+remote::group get_group(const tab_context& ctx){
     
-    remote::json_file_storage fs("/tmp/bookmarks");
+    SYNC_DEBUG;
+    
     remote::group obj("bookmarks");
 
-    BOOST_FOREACH( const server_bookmark& bm, context().bookmarks()->list() ) {
+    BOOST_FOREACH( const server_bookmark& bm, ctx.bookmarks()->list() ) {
         obj << bm;
-    }
+        SYNC_DEBUG << bm.sync_stamp().toString();
+    }  
+    return obj;
+}
+
+void set_group(const tab_context& ctx, const remote::group& remote){
+    remote::group obj("bookmarks");
+
+    SYNC_DEBUG;
     
-    fs.put(obj);
+    BOOST_FOREACH( const server_bookmark& bm, ctx.bookmarks()->list() ) {
+        obj << bm;
+        SYNC_DEBUG << bm.sync_stamp().toString();
+    }  
+
+    remote::group::Entries merged = remote::merge( obj.entries(), remote.entries() );
+    
+    BOOST_FOREACH( const remote::intermediate& imd, merged ) {
+        server_bookmark bm;
+        bm.load( imd.save() );
+        SYNC_DEBUG << "adding bookmark:"<<bm.id().address();
+        ctx.bookmarks()->add(bm);
+    }
 }
 
 void bookmark_tab::test_import(){
-    remote::json_file_storage fs("/tmp/bookmarks");
+   
+
+    SYNC_DEBUG << "1";
+    remote::syncro_manager& syncro = context().syncro();
+
+    SYNC_DEBUG << "2";
+    
+    syncro_manager::Service gdocs_service = *syncro.services().begin();
+    
+    SYNC_DEBUG << "3";
+    syncro_manager::Storage storage = syncro.create(gdocs_service);
     
     
-    remote::group obj("bookmarks");
-    BOOST_FOREACH( const server_bookmark& bm, context().bookmarks()->list() ) {
-        obj << bm;
-    }
+    SYNC_DEBUG << "4";
+    syncro_manager::Getter g = boost::bind(get_group, boost::ref(context()));
     
-//     remote::object remote = fs.get( obj.type() );
+    syncro_manager::Setter s = boost::bind(set_group, boost::ref(context()), _1);
     
-//     remote::object::Entries merged = remote::merge( obj.entries(), remote.entries() );
     
- 
-//     BOOST_FOREACH( const remote::intermediate& imd, merged ) {
-//         server_bookmark bm;
-//         bm.load( imd.save() );
-//         context().bookmarks()->add(bm);
-//     }
+    SYNC_DEBUG << "5";
+    syncro_manager::Object syncer = syncro.attach("bookmarks", g, s, "bookmarks");
+    
+    SYNC_DEBUG << "6";
+    
+    syncro.bind(syncer, storage);
+    
+    SYNC_DEBUG << "7";
+    
+    syncro.sync(syncer);
+    
+    SYNC_DEBUG << "8";
     
 }
 
+
+
+void bookmark_tab::test_export(){
+
+    SYNC_DEBUG << "1";
+    remote::syncro_manager& syncro = context().syncro();
+
+    SYNC_DEBUG << "2";
+    
+    syncro_manager::Service gdocs_service = *syncro.services().begin();
+    
+    SYNC_DEBUG << "3";
+    syncro_manager::Storage storage = syncro.create(gdocs_service);
+    
+    
+    SYNC_DEBUG << "4";
+    syncro_manager::Getter g = boost::bind(get_group, boost::ref(context()));
+    
+    syncro_manager::Setter s = boost::bind(set_group, boost::ref(context()), _1);
+    
+    
+    SYNC_DEBUG << "5";
+    syncro_manager::Object syncer = syncro.attach("bookmarks", g, s, "bookmarks");
+    
+    SYNC_DEBUG << "6";
+    
+    syncro.bind(syncer, storage);
+    
+    SYNC_DEBUG << "7";
+    
+    syncro.put(syncer);
+    
+    SYNC_DEBUG << "8";
+}

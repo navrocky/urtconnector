@@ -55,11 +55,22 @@ action* json_file_storage::put(const remote::group& obj)
     }
 }
 
-QVariantMap remote::from_json(const QByteArray& data)
+QVariantMap remote::from_json(const QByteArray& d)
 {
-    bool ok;
+    bool ok = false;
+    
+    int i = d.indexOf("{");
+    
+    QByteArray data = d.mid(i, -1);
+    
+    std::cerr<<"real Code:"<<'{'<<std::endl;
+    std::cerr<<"Code:"<<data[0]<<std::endl;
+    
+    std::cerr<<"DATA:["<<data.constData()<<"]"<<std::endl;
     
     QVariantMap json = QJson::Parser().parse(data, &ok).toMap();
+    
+    std::cerr<<"size:"<<json.size()<<std::endl;
 
     if(!ok)
         throw std::runtime_error("can't parse json object");
@@ -70,6 +81,14 @@ QVariantMap remote::from_json(const QByteArray& data)
 
 QByteArray remote::to_json(const QVariantMap& map)
 {
-    return QJson::Serializer().serialize(map);  
+    QByteArray data = QJson::Serializer().serialize(map);  
+    std::stringstream ss;
+    ss.str(data.constData());
+
+    boost::property_tree::ptree ptree;
+    boost::property_tree::read_json( ss, ptree );
+    boost::property_tree::write_json( ss, ptree );
+
+    return QByteArray(ss.str().c_str());
 }
 

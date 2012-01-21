@@ -64,9 +64,12 @@ public:
 
     /*! start syncronization */
     void sync(const Object& obj);
+    
+    void put(const Object& obj);
 
 public Q_SLOTS:
     void loaded(const remote::group& obj);
+    void saved();
     void error(const QString& err);
     void finished();
 
@@ -95,7 +98,10 @@ private:
         bool operator<(const sync_task& other) const { return object < other.object; }
         bool operator==(const sync_task& other) const { return object == other.object; }
         
-        Storages::iterator current_storage() { return storages.begin(); }
+        Storage current_storage() { 
+            if (storages.empty()) throw std::runtime_error("no storages binded with this object");
+            return *storages.begin();
+        }
         
         Object object;
         Storages storages;

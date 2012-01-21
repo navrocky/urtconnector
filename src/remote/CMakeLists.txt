@@ -11,12 +11,14 @@ set(HEADERS
     backends/binary_file.h
     backends/json_file.h
     backends/gdocs/gdocs.h 
+    sync_settings_form.h
 )
 
 set(MOC_HEADERS
     storage.h
     manager.h
     backends/gdocs/gdocs.h
+    sync_settings_form.h
 )
 
 set(SOURCES
@@ -26,9 +28,15 @@ set(SOURCES
     backends/binary_file.cpp
     backends/json_file.cpp
     backends/gdocs/gdocs.cpp
+    sync_settings_form.cpp
+)
+
+set(IFACES
+    sync_settings_form.ui
 )
 
 qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
+qt4_wrap_ui(SOURCES ${IFACES})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 

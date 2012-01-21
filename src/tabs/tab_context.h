@@ -11,9 +11,12 @@ class geoip;
 class QAction;
 class friend_list;
 
-namespace tracking
-{
-class manager;
+namespace tracking {
+    class manager;
+}
+
+namespace remote {
+    class syncro_manager;
 }
 
 class tab_context
@@ -27,7 +30,9 @@ public:
                 QAction* connect_action,
                 tracking::manager* track_man,
                 tracking::context_p track_ctx,
-                friend_list* friends);
+                friend_list* friends,
+                boost::shared_ptr<remote::syncro_manager> sync
+               );
 
     server_list_p serv_list() const {return serv_list_;}
     filter_factory_p filter_factory() const {return filter_factory_;}
@@ -38,6 +43,7 @@ public:
     tracking::manager* track_man() const {return track_man_;}
     const tracking::context_p& track_ctx() const {return track_ctx_;}
     friend_list* friends() const {return friends_;}
+    remote::syncro_manager& syncro() const {return *sync_man_.get();}
 
 private:
     server_list_p serv_list_;
@@ -49,6 +55,7 @@ private:
     tracking::manager* track_man_;
     tracking::context_p track_ctx_;
     friend_list* friends_;
+    boost::shared_ptr<remote::syncro_manager> sync_man_;
 };
 
 #endif	/* TAB_CONTEXT_H */

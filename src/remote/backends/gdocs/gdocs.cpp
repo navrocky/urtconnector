@@ -212,7 +212,7 @@ void gdocs::authentication_required(QNetworkReply* reply, QAuthenticator* authen
 void gdocs::finished(QNetworkReply* reply)
 {
     ContextPtr ctx = reply->property(action_property_c).value<ContextPtr>();
-    LOG_DEBUG << "Reply id: %1, is finished: ", ctx->id, reply->isFinished();
+    LOG_DEBUG << "Reply id: %1, is finished: %2", ctx->id, reply->isFinished();
     introspect(ctx);
     introspect(reply);
     
@@ -221,7 +221,7 @@ void gdocs::finished(QNetworkReply* reply)
         LOG_ERR << reply->error();
         LOG_ERR << reply->errorString().toStdString();
         //TODO handle error string
-        emit ctx->pending->error(QString());
+        emit ctx->pending->error(reply->errorString());
         return;
     }
     

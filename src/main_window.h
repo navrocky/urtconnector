@@ -38,10 +38,13 @@ class bookmark_tab;
 
 class QAccumulatingConnection;
 
-namespace tracking
-{
-class manager;
-class db_saver;
+namespace tracking {
+    class manager;
+    class db_saver;
+}
+
+namespace remote{
+    class syncro_manager;
 }
 
 class main_window : public QMainWindow, public server_connect_iface
@@ -136,6 +139,7 @@ private:
     tracking::action_factory_p track_acts_factory_;
     tracking::db_saver* track_db_saver_;
     tracking::context_p track_ctx_;
+    boost::shared_ptr<remote::syncro_manager> sync_man_;
 };
 
 #endif

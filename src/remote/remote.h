@@ -126,7 +126,12 @@ inline group::Entries merge(const group::Entries& e1, const group::Entries& e2 )
     group::Entries::iterator it;
     BOOST_FOREACH(const intermediate& imd, e2) {
         std::tr1::tie(it, inserted) = ret.insert(imd);
+        
+        std::cerr << "left time:" << it->sync_stamp().toString().toStdString() << std::endl;
+        std::cerr << "rigth time:" << imd.sync_stamp().toString().toStdString() << std::endl;
+        
         if( !inserted && it->sync_stamp() < imd.sync_stamp() ) {
+            std::cerr << "updated!" << std::endl;
             const intermediate& tmp = *it;
             const_cast<intermediate&>(tmp) = imd; //it is guaranteed that order of items remains unchanged
         }
