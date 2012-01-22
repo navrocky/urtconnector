@@ -18,6 +18,7 @@ set(MOC_HEADERS
     storage.h
     manager.h
     backends/gdocs/gdocs.h
+    backends/gdocs/gdocs_widget.h
     sync_settings_form.h
 )
 
@@ -33,6 +34,7 @@ set(SOURCES
 
 set(IFACES
     sync_settings_form.ui
+    backends/gdocs/gdocs_widget.ui
 )
 
 qt4_wrap_cpp(SOURCES ${MOC_HEADERS})

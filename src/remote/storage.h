@@ -75,7 +75,7 @@ public:
     Storage create(boost::shared_ptr<QSettings> settings) {
         return do_create(settings);
     }
-
+    
 protected:
     virtual Storage do_create(boost::shared_ptr<QSettings> settings) const = 0;
     
