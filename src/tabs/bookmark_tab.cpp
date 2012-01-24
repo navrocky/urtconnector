@@ -227,7 +227,7 @@ void bookmark_tab::update_actions()
 using namespace remote;
 
 
-#define SYNC_DEBUG LOG_DEBUG << " >> " << __PRETTY_FUNCTION__ << ": "
+#define SYNC_DEBUG LOG_DEBUG << " >> " << __FUNCTION__ << ": "
 
 remote::group get_group(const tab_context& ctx){
     

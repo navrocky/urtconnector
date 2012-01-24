@@ -5,10 +5,14 @@
 #include <memory>
 
 #include <QObject>
+#include <QStringList>
+
+#include "common/server_id.h"
+#include "common/player_info.h"
 
 
-struct server_id;
-struct player_info;
+//struct server_id;
+//struct player_info;
 
 class rcon_connection: public QObject{
     Q_OBJECT

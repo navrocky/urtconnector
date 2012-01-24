@@ -13,7 +13,7 @@
 
 using namespace std;
 using namespace remote;
-
+/*
 action* json_file_storage::get(const QString& type)
 {
     QFile f(filename_);
@@ -54,6 +54,8 @@ action* json_file_storage::put(const remote::group& obj)
         throw std::runtime_error("can't put object");
     }
 }
+
+*/
 
 QVariantMap remote::from_json(const QByteArray& d)
 {

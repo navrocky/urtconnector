@@ -5,6 +5,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkProxy>
 #include <QSslError>
 #include <QPointer>
 
@@ -43,7 +44,7 @@ static const QUrl login_uri_c = QString("https://www.google.com/accounts/ClientL
 static const QUrl base_uri_c       = QString("https://docs.google.com/feeds/default/private/full");
 static const QUrl download_uri_c   = QString("https://docs.google.com/feeds/download/documents/Export");
 
-#define GDOCS_DEBUG LOG_DEBUG << " >> " << __PRETTY_FUNCTION__ << ": "
+#define GDOCS_DEBUG LOG_DEBUG << " >> " << __FUNCTION__ << ": "
 
 class gdocs_action: public remote::action {
 public:

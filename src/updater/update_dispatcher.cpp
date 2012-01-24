@@ -1,6 +1,5 @@
 #include "update_dispatcher.h"
 
-#include <stdint.h>
 #include <QTimerEvent>
 #include <boost/foreach.hpp>
 #include <geoip/geoip.h>

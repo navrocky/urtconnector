@@ -8,8 +8,8 @@
 #include <set>
 #include <stdexcept>
 
-#include <qt4/QtCore/QDateTime>
-#include <qt4/QtCore/QVariant>
+#include <QDateTime>
+#include <QVariant>
 
 #include "remote/backends/binary_file.h"
 #include "remote/backends/json_file.h"

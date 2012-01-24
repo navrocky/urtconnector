@@ -20,6 +20,7 @@ else(SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARIES)
             /usr/include
             /usr/local/include
         else
+            $ENV{SQLITE3_ROOT}
             $ENV{ProgramFiles}/SQLite/include
             $ENV{SystemDrive}/SQLite/include
             $ENV{ProgramFiles}/SQLite
@@ -37,6 +38,7 @@ else(SQLITE3_INCLUDE_DIR AND SQLITE3_LIBRARIES)
             /usr/lib
             /usr/local/lib
         else
+            $ENV{SQLITE3_ROOT}
             $ENV{ProgramFiles}/SQLite/lib
             $ENV{SystemDrive}/SQLite/lib
             $ENV{ProgramFiles}/SQLite

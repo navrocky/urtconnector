@@ -114,6 +114,7 @@ set(RESOURCES
     images.qrc
 )
 
+add_subdirectory(3rdparty)
 add_subdirectory(updater)
 add_subdirectory(rcon)
 add_subdirectory(jobs)
@@ -138,7 +139,7 @@ qt4_add_resources(SOURCES ${RESOURCES})
 qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
 qt4_wrap_ui(SOURCES ${IFACES})
 
-add_executable(${TARGET} WIN32 ${HEADERS} ${SOURCES})
+add_executable(${TARGET} ${HEADERS} ${SOURCES})
 
 target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES} ${X11_LIBRARIES}
     geoip
@@ -157,7 +158,6 @@ target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES} ${X11_LIBRARI
     friend_list
     setting_forms
     tracking
-    phonon
     remote
 )
 

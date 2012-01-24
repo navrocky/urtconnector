@@ -3,6 +3,8 @@ set(TARGET qjson)
 find_package(Qt4 REQUIRED QtCore )
 include(${QT_USE_FILE})
 
+add_definitions(-DQJSON_MAKEDLL)
+
 set(HEADERS
     json_parser.hh
     json_scanner.h

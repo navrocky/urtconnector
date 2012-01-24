@@ -13,7 +13,7 @@ namespace detail {
 
         virtual void insert_item(  preferences_item item, preferences_item parent  ){};
         virtual void insert_widget( preferences_item item ){};
-        virtual preferences_widget* current_widget() const{};
+        virtual preferences_widget* current_widget() const{ return 0;};
         virtual void set_current_widget( preferences_item item ){};
         virtual void set_current_item( preferences_item item ){};
 

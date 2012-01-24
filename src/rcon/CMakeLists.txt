@@ -10,6 +10,7 @@ export_files(MOC_HEADERS
     rcon.h
     rcon_completer.h
     rcon_connection.h
+    rcon_settings.h
     rcon_settings_form.h
 )
 

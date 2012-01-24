@@ -312,7 +312,7 @@ QString server_info_manager::make_status(const server_info& si) const
 
     assert( st != Illegal );//FIXME replace on exception on developing completiion ?
 
-    QString status_str = tr( qPrintable(status.at(st) ) );
+    QString status_str = tr( qPrintable(status.find(st)->second ) );
 
     if ( si.is_full() && ( st & (Password | Online) ) )
         status_str += tr("Full");

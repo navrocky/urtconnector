@@ -26,7 +26,7 @@ using namespace boost;
 
 SYSLOG_MODULE(syncro_manager);
 
-#define SYNC_DEBUG LOG_DEBUG << " >> " << __PRETTY_FUNCTION__ << ": "
+#define SYNC_DEBUG LOG_DEBUG << " >> " << __FUNCTION__ << ": "
 
 namespace remote {
 
