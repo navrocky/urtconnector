@@ -1,5 +1,5 @@
 %define name urtconnector
-%define version 0.7.9
+%define version 0.8.0
 
 Summary: Advanced Urban Terror launcher
 Name: %{name}
@@ -18,13 +18,12 @@ BuildRequires: qt-devel sqlite-devel
 %else
 BuildRequires: libqt4-devel sqlite3-devel
 %endif
-Requires: qstat >= 2
+Requires: qstat >= 2.12
 
 
 %description
 
-Advanced UrbanTerror launcher program. Developed by members of russian clans =Xaoc=, Red*Army and Rus Devils Team.
-This program uses Qt4 and is written in C++.
+Advanced UrbanTerror launcher and server browser program. Developed by members of russian clans =Xaoc=, Red*Army and Rus Devils Team.
 
 %prep
 

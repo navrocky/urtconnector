@@ -2,6 +2,7 @@
 /.kdev4
 /.project
 cmake/.macro.cmake.kate-swp
+distrib/rpm/.urtconnector.spec.kate-swp
 distrib/windows/.urtconnector.nsi.kate-swp
 src/.cproject
 src/.project
