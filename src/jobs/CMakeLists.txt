@@ -1,23 +1,23 @@
-export_files(HEADERS
+cl_define_headers(
     job.h
     job_monitor.h
     job_queue.h
     pointers.h
 )
 
-export_files(MOC_HEADERS
+cl_define_moc(
     job.h
     job_monitor.h
     job_queue.h
 )
 
-export_files(SOURCES
+cl_define_sources(
     job.cpp
     job_monitor.cpp
     job_queue.cpp
 )
 
-export_files(IFACES
+cl_define_interfaces(
     job_item.ui
     job_monitor.ui
 )

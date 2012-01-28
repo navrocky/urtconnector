@@ -1,30 +1,13 @@
-set(TARGET settings)
-
-find_package(Qt4 REQUIRED QtCore)
-include(${QT_USE_FILE})
-
-set(HEADERS
+cl_define_headers(
     settings.h
     settings_generator.h
     settings_generator_impl.h
 )
 
-set(MOC_HEADERS
+cl_define_moc(
     settings.h
 )
 
-set(SOURCES
+cl_define_sources(
     settings.cpp
 )
-
-set(IFACES
-)
-
-set(RESOURCES
-)
-
-qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
-
-add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
-
-target_link_libraries( ${TARGET} ${QT_LIBRARIES} )

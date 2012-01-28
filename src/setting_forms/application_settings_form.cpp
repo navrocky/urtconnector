@@ -12,7 +12,7 @@
 #include <common/qstat_options.h>
 #include <common/play_sound.h>
 #include "app_options.h"
-#include "../config.h"
+#include <config.h>
 
 #include "ui_application_settings_form.h"
 #include "application_settings_form.h"

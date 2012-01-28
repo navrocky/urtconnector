@@ -1,9 +1,4 @@
-set(TARGET filters)
-
-find_package(Qt4 REQUIRED QtCore )
-include(${QT_USE_FILE})
-
-set(HEADERS
+cl_define_headers(
     pointers.h
     filter.h
     filter_factory.h
@@ -25,7 +20,7 @@ set(HEADERS
     friend_filter.h
 )
 
-set(MOC_HEADERS
+cl_define_moc(
     filter.h
     filter_list.h
     composite_filter.h
@@ -43,7 +38,7 @@ set(MOC_HEADERS
     friend_filter.h
 )
 
-set(SOURCES
+cl_define_sources(
     filter.cpp
     filter_factory.cpp
     filter_list.cpp
@@ -63,20 +58,3 @@ set(SOURCES
     player_filter.cpp
     friend_filter.cpp
 )
-
-set(IFACES
-)
-
-set(RESOURCES
-)
-
-qt4_add_resources(SOURCES ${RESOURCES})
-qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
-qt4_wrap_ui(SOURCES ${IFACES})
-
-add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
-
-target_link_libraries( ${TARGET} ${QT_LIBRARIES} clexcept clsyslog)
-
-
-

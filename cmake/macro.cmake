@@ -99,7 +99,7 @@ macro(cl_qt_required)
     set(CL_QT_REQUIRED_LIBS ${ARGN})
 endmacro()
 
-macro(__cl_source_group)
+macro(cl_source_group)
     foreach(CUR_FILE ${ARGN})
         string(REGEX MATCH "^(.+)/.+$" TMP ${CUR_FILE})
         if(CMAKE_MATCH_1)
@@ -115,13 +115,18 @@ macro(__cl_source_group)
     endforeach()
 endmacro()
 
+macro(cl_define_source_groups)
+
+    cl_source_group(${CL_HEADERS})
+    cl_source_group(${CL_MOC})
+    cl_source_group(${CL_SOURCES})
+    cl_source_group(${CL_IFACES})
+    cl_source_group(${CL_RESOURCES})
+endmacro()
+
 macro(cl_implement_common)
 
-    __cl_source_group(${CL_HEADERS})
-    __cl_source_group(${CL_MOC})
-    __cl_source_group(${CL_SOURCES})
-    __cl_source_group(${CL_IFACES})
-    __cl_source_group(${CL_RESOURCES})
+    cl_define_source_groups()
 
     unset(__QT_LIBRARIES)
     if(CL_QT_REQUIRED_LIBS)
@@ -139,7 +144,6 @@ macro(cl_implement_common)
         endif()
         set(__QT_LIBRARIES ${QT_LIBRARIES})
     endif()
-#    target_link_libraries(${TARGET} ${__QT_LIBRARIES} ${CL_DEPS})
 endmacro()
 
 
@@ -150,7 +154,6 @@ macro(cl_implement_library KIND)
 endmacro()
 
 macro(cl_implement_executable KIND)
-
     set(PARAM WIN32)
     cl_implement_common()
     add_executable(${TARGET} ${PARAM} ${CL_HEADERS} ${CL_SOURCES})

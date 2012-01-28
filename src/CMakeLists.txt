@@ -27,11 +27,11 @@ find_package( Boost 1.39.0 REQUIRED COMPONENTS
 )
 include_directories(${Boost_INCLUDE_DIRS})
 
-cl_qt_required(QtCore QtGui QtXml QtNetwork)
-#find_package(Qt4)
-#set(QT_USE_QTXML true)
-#set(QT_USE_QTNETWORK true)
-#include(${QT_USE_FILE})
+#cl_qt_required(QtCore QtGui QtXml QtNetwork)
+find_package(Qt4)
+set(QT_USE_QTXML true)
+set(QT_USE_QTNETWORK true)
+include(${QT_USE_FILE})
 
 if (WIN32)
     set(URT_DATADIR "")
@@ -46,6 +46,25 @@ endif()
 add_definitions(-DUSE_SINGLE_APP)
 
 configure_file(config.h.in config.h)
+
+cl_add_subdirectory(updater)
+cl_add_subdirectory(rcon)
+cl_add_subdirectory(jobs)
+cl_add_subdirectory(geoip)
+cl_add_subdirectory(qtsingleapplication)
+cl_add_subdirectory(cl)
+cl_add_subdirectory(filters)
+cl_add_subdirectory(settings)
+cl_add_subdirectory(preferences)
+cl_add_subdirectory(common)
+cl_add_subdirectory(history)
+cl_add_subdirectory(anticheat)
+cl_add_subdirectory(database)
+cl_add_subdirectory(launcher)
+cl_add_subdirectory(friend_list)
+cl_add_subdirectory(tabs)
+cl_add_subdirectory(setting_forms)
+cl_add_subdirectory(tracking)
 
 cl_define_headers(
     about_dialog.h
@@ -63,7 +82,6 @@ cl_define_headers(
     job_update_selected.h
     job_update_from_master.h
     clipper.h
-    launcher/tools.h
     server_info_manager.h
 )
 
@@ -103,8 +121,6 @@ cl_define_interfaces(
     about_dialog.ui
     main_window.ui
     server_options_dialog.ui
-    setting_forms/launch_settings_form.ui
-    setting_forms/application_settings_form.ui
 )
 
 cl_define_resources(
@@ -112,69 +128,21 @@ cl_define_resources(
 )
 
 cl_define_deps(
-    ${Boost_LIBRARIES}
-    ${X11_LIBRARIES}
     geoip
     qtsingleapplication
     clexcept
     clsyslog
-    filters
-    settings
     preferences
     common
-    history
-    anticheat
     database
-    launcher
-    tabs
-    friend_list
-    setting_forms
-    tracking
 )
 
-cl_add_subdirectory(updater)
-cl_add_subdirectory(rcon)
-cl_add_subdirectory(jobs)
-cl_add_subdirectory(geoip)
-cl_add_subdirectory(qtsingleapplication)
-cl_add_subdirectory(cl)
-cl_add_subdirectory(filters)
-cl_add_subdirectory(settings)
-cl_add_subdirectory(preferences)
-cl_add_subdirectory(common)
-cl_add_subdirectory(history)
-cl_add_subdirectory(anticheat)
-cl_add_subdirectory(database)
-cl_add_subdirectory(launcher)
-cl_add_subdirectory(friend_list)
-cl_add_subdirectory(tabs)
-cl_add_subdirectory(setting_forms)
-cl_add_subdirectory(tracking)
+qt4_wrap_cpp(CL_SOURCES ${CL_MOC})
+qt4_wrap_ui(CL_SOURCES ${CL_IFACES})
+qt4_add_resources(CL_SOURCES ${CL_RESOURCES})
 
-#qt4_add_resources(SOURCES ${RESOURCES})
-#qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
-#qt4_wrap_ui(SOURCES ${IFACES})
-
-cl_implement_executable(GUI)
-
-#target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES} ${X11_LIBRARIES}
-#    geoip
-#    qtsingleapplication
-#    clexcept
-#    clsyslog
-#    filters
-#    settings
-#    preferences
-#    common
-#    history
-#    anticheat
-#    database
-#    launcher
-#    tabs
-#    friend_list
-#    setting_forms
-#    tracking
-#)
+add_executable(${TARGET} WIN32 ${CL_HEADERS} ${CL_SOURCES})
+target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES} ${X11_LIBRARIES} ${CL_DEPS})
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 install(FILES icons/urtconnector.png DESTINATION share/icons)
