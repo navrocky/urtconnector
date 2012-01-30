@@ -24,7 +24,7 @@ public:
             delete player_;
         }
         if (!player_)
-            player_ = createPlayer(MusicCategory, MediaSource(file_));
+            player_ = createPlayer(NotificationCategory, MediaSource(file_));
         player_->seek(0);
         player_->play();
     }

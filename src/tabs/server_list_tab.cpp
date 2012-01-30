@@ -100,7 +100,7 @@ void server_list_tab::update_contents()
     // ===
 
     smart_update_tree_contents(l, c_id_role, tree(), NULL,
-        boost::bind(&server_list_tab::update_item, this, _1, _2), items_);
+        boost::bind(&server_list_tab::update_item, this, _1, _2), items_, false, server_info_item_adapter());
 
     if (tree()->topLevelItemCount() > 0 && !cur_item_id.is_empty() && app_settings().center_current_row())
     {

@@ -1,8 +1,35 @@
 #ifndef TABS_TOOLS_H
 #define	TABS_TOOLS_H
 
-class QTreeWidgetItem;
+#include <QTreeWidgetItem>
+
 class tab_context;
+
+// override sorting by ping
+class server_info_item : public QTreeWidgetItem
+{
+public:
+    server_info_item(QTreeWidget* view);
+    server_info_item(QTreeWidgetItem* parent);
+
+    virtual bool operator<(const QTreeWidgetItem &other) const;
+};
+
+// adapter for smart_update_tree_contents() algorithm
+struct server_info_item_adapter
+{
+    QTreeWidgetItem * create_item(QTreeWidget* tree, QTreeWidgetItem * parent_item) const
+    {
+        return ( parent_item)
+                ? new server_info_item(parent_item)
+                : new server_info_item(tree);
+    }
+
+    void remove_item(QTreeWidgetItem * item) const
+    {
+        delete item;
+    }
+};
 
 // server_id in data(c_id_role)
 

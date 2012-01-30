@@ -14,6 +14,35 @@
 
 #include "tools.h"
 
+const int c_ping_column = 3;
+
+////////////////////////////////////////////////////////////////////////////////
+// server_info_item
+
+server_info_item::server_info_item(QTreeWidget* view)
+    : QTreeWidgetItem(view)
+{
+}
+
+server_info_item::server_info_item(QTreeWidgetItem* parent)
+    : QTreeWidgetItem(parent)
+{
+}
+
+bool server_info_item::operator<(const QTreeWidgetItem &other) const
+{
+    if (treeWidget()->sortColumn() == c_ping_column)
+    {
+        int i1 = text(c_ping_column).toInt();
+        int i2 = other.text(c_ping_column).toInt();
+        return i1 < i2;
+    }
+    else
+        return QTreeWidgetItem::operator<(other);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 void update_server_info_item(const tab_context& ctx, QTreeWidgetItem* item)
 {
     const server_id& id = item->data(0, c_id_role).value<server_id>();
@@ -65,7 +94,7 @@ void update_server_info_item(const tab_context& ctx, QTreeWidgetItem* item)
         item->setText(1, name);
         item->setIcon(2, geoip::get_flag_by_country(si->country_code));
         item->setToolTip(2, si->country);
-        item->setText(3, QString("%1").arg(si->ping, 5));
+        item->setText(c_ping_column, QString("%1").arg(si->ping, 5));
         item->setText(4, si->mode_name());
         item->setText(5, si->map);
 
