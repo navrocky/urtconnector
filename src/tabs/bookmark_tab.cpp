@@ -174,7 +174,7 @@ void bookmark_tab::update_contents()
 
         if (it2 == items_.end())
         {
-            item = new QTreeWidgetItem( tree() );
+            item = new server_info_item( tree() );
             item->setData( 0, c_id_role, QVariant::fromValue(id) );
             items_[id] = item;
         }

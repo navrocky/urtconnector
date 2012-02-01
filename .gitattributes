@@ -34,6 +34,7 @@ distrib/gentoo/qstat-9999.ebuild -text
 distrib/gentoo/urtconnector-0.4.0.ebuild -text
 distrib/gentoo/urtconnector-0.5.0.ebuild -text
 distrib/gentoo/urtconnector-0.6.0.ebuild -text
+distrib/gentoo/urtconnector-0.8.0.ebuild -text
 distrib/gentoo/urtconnector-9999.ebuild -text
 distrib/rpm/build_rpm -text
 distrib/rpm/urtconnector.spec -text
@@ -710,6 +711,7 @@ src/tabs/visible_updater.h -text
 src/tracking/CMakeLists.txt -text
 src/tracking/action.cpp -text
 src/tracking/action.h -text
+src/tracking/actions/CMakeLists.txt -text
 src/tracking/actions/connect_action.cpp -text
 src/tracking/actions/connect_action.h -text
 src/tracking/actions/play_sound_action.cpp -text
@@ -725,6 +727,7 @@ src/tracking/actions/show_query_action.h -text
 src/tracking/common.h -text
 src/tracking/condition.cpp -text
 src/tracking/condition.h -text
+src/tracking/conditions/CMakeLists.txt -text
 src/tracking/conditions/reg_conditions.cpp -text
 src/tracking/conditions/reg_conditions.h -text
 src/tracking/conditions/server_filter_condition.cpp -text

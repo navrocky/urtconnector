@@ -1,39 +1,23 @@
-set(TARGET history)
-
-find_package(Qt4 REQUIRED QtCore QtGui)
-include(${QT_USE_FILE})
-
-set(HEADERS
+cl_define_headers(
     history.h
     history_item.h
     history_widget.h
     history_settings_form.h
 )
 
-set(MOC_HEADERS
+cl_define_moc(
     history_widget.h
     history.h
     history_settings_form.h
 )
 
-set(SOURCES
+cl_define_sources(
     history.cpp
     history_item.cpp
     history_widget.cpp
     history_settings_form.cpp
 )
 
-set(IFACES
+cl_define_interfaces(
     history_settings_form.ui
 )
-
-set(RESOURCES
-)
-
-qt4_add_resources(SOURCES ${RESOURCES})
-qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
-qt4_wrap_ui(SOURCES ${IFACES})
-
-add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
-
-target_link_libraries(${TARGET} ${QT_LIBRARIES} tabs)

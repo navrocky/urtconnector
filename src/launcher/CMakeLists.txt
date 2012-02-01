@@ -1,34 +1,13 @@
-set(TARGET launcher)
-
-find_package(Qt4 REQUIRED QtGui)
-include(${QT_USE_FILE})
-
-set(HEADERS
+cl_define_headers(
     tools.h
     launcher.h
 )
 
-set(MOC_HEADERS
+cl_define_moc(
     launcher.h
 )
 
-set(SOURCES
+cl_define_sources(
     tools.cpp
     launcher.cpp
-)
-
-set(IFACES
-)
-
-set(RESOURCES
-)
-
-qt4_add_resources(SOURCES ${RESOURCES})
-qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
-qt4_wrap_ui(SOURCES ${IFACES})
-
-add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
-
-target_link_libraries( ${TARGET} ${QT_LIBRARIES} 
-    common
 )

@@ -285,8 +285,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/main_window.ui" line="176"/>
-        <location filename="../src/main_window.ui" line="245"/>
-        <location filename="../src/main_window.ui" line="257"/>
+        <location filename="../src/main_window.ui" line="254"/>
+        <location filename="../src/main_window.ui" line="266"/>
         <source>Connect</source>
         <translation>Соединение</translation>
     </message>
@@ -312,7 +312,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Все</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="248"/>
+        <location filename="../src/main_window.ui" line="257"/>
         <source>Connect to selected server</source>
         <translation>Соединиться с выбранным сервером</translation>
     </message>
@@ -326,7 +326,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/main_window.ui" line="56"/>
-        <location filename="../src/main_window.ui" line="224"/>
+        <location filename="../src/main_window.ui" line="233"/>
         <source>Help</source>
         <translation>Помощь</translation>
     </message>
@@ -377,7 +377,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/main_window.ui" line="86"/>
-        <location filename="../src/main_window.ui" line="260"/>
+        <location filename="../src/main_window.ui" line="269"/>
         <source>Quick connect</source>
         <translation>Быстрое соединение</translation>
     </message>
@@ -406,17 +406,22 @@ p, li { white-space: pre-wrap; }
         <translation>Добавить сервер в закладки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="206"/>
+        <location filename="../src/main_window.ui" line="202"/>
+        <source>Tasks tracking</source>
+        <translation>Задачи слежения</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.ui" line="215"/>
         <source>Quit</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="215"/>
+        <location filename="../src/main_window.ui" line="224"/>
         <source>About UrTConnector</source>
         <translation>О программе UrTConnector</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="236"/>
+        <location filename="../src/main_window.ui" line="245"/>
         <source>Options</source>
         <translation>Настройки</translation>
     </message>
@@ -453,12 +458,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Обновить выделенный сервер</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="269"/>
+        <location filename="../src/main_window.ui" line="278"/>
         <source>Show/hide urtconnector</source>
         <translation>Показать/скрыть UrTConnector</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="274"/>
+        <location filename="../src/main_window.ui" line="283"/>
         <source>About Qt</source>
         <translation>О Qt</translation>
     </message>
@@ -479,7 +484,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Удалить выделенные</translation>
     </message>
     <message>
-        <location filename="../src/main_window.ui" line="283"/>
+        <location filename="../src/main_window.ui" line="292"/>
         <source>Open Remote Console</source>
         <translation>Открыть RCON</translation>
     </message>
@@ -672,7 +677,7 @@ p, li { white-space: pre-wrap; }
     <name>QObject</name>
     <message>
         <location filename="../src/application.cpp" line="36"/>
-        <location filename="../src/main.cpp" line="273"/>
+        <location filename="../src/main.cpp" line="289"/>
         <source>Unknown error</source>
         <translation>Неизвестная ошибка</translation>
     </message>
@@ -763,22 +768,22 @@ p, li { white-space: pre-wrap; }
         <translation>Не возможно открыть базу данных GeoIP: %1</translation>
     </message>
     <message>
-        <location filename="../src/filters/composite_filter.cpp" line="16"/>
+        <location filename="../src/filters/composite_filter.cpp" line="17"/>
         <source>Composite filter</source>
         <translation>Композитный фильтр</translation>
     </message>
     <message>
-        <location filename="../src/filters/composite_filter.cpp" line="17"/>
+        <location filename="../src/filters/composite_filter.cpp" line="18"/>
         <source>Composite child filters using logical operations.</source>
         <translation>Объединяет дочерние фильтры используя логические операции.</translation>
     </message>
     <message>
-        <location filename="../src/filters/game_type_filter.cpp" line="15"/>
+        <location filename="../src/filters/game_type_filter.cpp" line="16"/>
         <source>Game mode filter</source>
         <translation>Режим игры</translation>
     </message>
     <message>
-        <location filename="../src/filters/game_type_filter.cpp" line="16"/>
+        <location filename="../src/filters/game_type_filter.cpp" line="17"/>
         <source>Hides all servers thats don&apos;s match selected game mode.</source>
         <translation>Скрывает сервера, которые не соответствуют указанному режиму игры.</translation>
     </message>
@@ -813,12 +818,12 @@ p, li { white-space: pre-wrap; }
         <translation>Скрывает все приватные сервера (под паролем).</translation>
     </message>
     <message>
-        <location filename="../src/filters/online_clans_filter.cpp" line="20"/>
+        <location filename="../src/filters/online_clans_filter.cpp" line="21"/>
         <source>Online clans</source>
         <translation>Кланы в онлайн</translation>
     </message>
     <message>
-        <location filename="../src/filters/online_clans_filter.cpp" line="21"/>
+        <location filename="../src/filters/online_clans_filter.cpp" line="22"/>
         <source>Shows servers on which present a some number of players with the same tag.</source>
         <translation>Показывает сервера, на которые присутствуют несколько игроков с одинаковым тэгом.</translation>
     </message>
@@ -853,64 +858,75 @@ p, li { white-space: pre-wrap; }
         <translation>Не удалось завершить запрос: %1</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="197"/>
+        <location filename="../src/main.cpp" line="203"/>
         <source>Unnamed</source>
         <translation>Безымянный</translation>
     </message>
     <message>
-        <location filename="../src/tabs/filtered_tab.cpp" line="64"/>
+        <location filename="../src/tabs/filtered_tab.cpp" line="77"/>
         <source>Filter toolbar</source>
         <translation>Инструменты фильтрации</translation>
     </message>
     <message>
-        <location filename="../src/tabs/filtered_tab.cpp" line="77"/>
+        <location filename="../src/tabs/filtered_tab.cpp" line="90"/>
+        <location filename="../src/tracking/conditions/server_filter_condition.cpp" line="34"/>
         <source>Filter</source>
         <translation>Фильтр</translation>
     </message>
     <message>
-        <location filename="../src/tabs/tools.cpp" line="49"/>
+        <location filename="../src/tabs/tools.cpp" line="78"/>
         <source>Private</source>
         <translation>Частный</translation>
     </message>
     <message>
-        <location filename="../src/tabs/tools.cpp" line="51"/>
+        <location filename="../src/tabs/tools.cpp" line="80"/>
         <source>Not pure</source>
         <translation>Не выделенный сервер</translation>
     </message>
     <message>
-        <location filename="../src/tabs/tools.cpp" line="78"/>
+        <location filename="../src/tabs/tools.cpp" line="107"/>
         <source>Current %1 / Public slots %2 / Total %3</source>
         <translation>Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="220"/>
+        <location filename="../src/common/tools.cpp" line="251"/>
         <source>Grenades</source>
         <translation>Гранаты</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="221"/>
+        <location filename="../src/common/tools.cpp" line="252"/>
         <source>Snipers</source>
         <translation>Снайперские винтовки</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="222"/>
+        <location filename="../src/common/tools.cpp" line="253"/>
         <source>Spas</source>
         <translation>Дробовики</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="223"/>
+        <location filename="../src/common/tools.cpp" line="254"/>
         <source>Pistols</source>
         <translation>Пистолеты</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="224"/>
+        <location filename="../src/common/tools.cpp" line="255"/>
         <source>Automatic</source>
         <translation>Автоматы</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="225"/>
+        <location filename="../src/common/tools.cpp" line="256"/>
         <source>Negev</source>
         <translation>Пулеметы</translation>
+    </message>
+    <message>
+        <location filename="../src/common/tools.cpp" line="288"/>
+        <source>File &quot;%1&quot; does not exists</source>
+        <translation>Файл &quot;%1&quot; не существует</translation>
+    </message>
+    <message>
+        <location filename="../src/common/tools.cpp" line="291"/>
+        <source>Cannot open file &quot;%1&quot; to read</source>
+        <translation>Ошибка открытия файлф &quot;%1&quot; на чтение</translation>
     </message>
     <message>
         <source>Weapon filter</source>
@@ -932,14 +948,18 @@ p, li { white-space: pre-wrap; }
         <translation>Скрыват сервера не допускающие выбранное оружие.</translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="106"/>
+        <location filename="../src/filters/ping_filter.cpp" line="122"/>
         <source>Ping filter</source>
         <translation>Фильтр по пингу</translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="107"/>
+        <location filename="../src/filters/ping_filter.cpp" line="123"/>
+        <source>Hides all servers that don&apos;t match selected ping</source>
+        <translation>Скрывает все серверы, которые не соответствуют указанному пингу</translation>
+    </message>
+    <message>
         <source>Hides all servers that don&apos;s match selected ping</source>
-        <translation>Скрывает сервера не удовлетворяющие условиям по пингу</translation>
+        <translation type="obsolete">Скрывает сервера не удовлетворяющие условиям по пингу</translation>
     </message>
     <message>
         <location filename="../src/filters/custom_filter.cpp" line="44"/>
@@ -950,6 +970,101 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/filters/custom_filter.cpp" line="45"/>
         <source>Combine multiple filters into one entry</source>
         <translation>Связывает несколько фильтров в один</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/friend_filter.cpp" line="16"/>
+        <source>Find friends</source>
+        <translation>Найти друзей</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/friend_filter.cpp" line="17"/>
+        <source>Finds the server with you friends.</source>
+        <translation>Ищет сервер с вашими друзьями на нём</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/player_filter.cpp" line="22"/>
+        <source>Player nickname</source>
+        <translation>Ник игрока</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/player_filter.cpp" line="23"/>
+        <source>Finds the server with a specified player.</source>
+        <translation>Ищет сервер с указанным ником игрока</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/connect_action.cpp" line="21"/>
+        <source>Connect to server</source>
+        <translation>Подключение к серверу</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/connect_action.cpp" line="22"/>
+        <source>Connects to the specified server or to the server provided by condition.</source>
+        <translation>Подключение к указанному серверу или к серверу, который выдает условие срабатывания</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/play_sound_action.cpp" line="25"/>
+        <source>Play sound</source>
+        <translation>Проиграть звук</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/play_sound_action.cpp" line="26"/>
+        <source>Play system or specified sound</source>
+        <translation>Проигрывание системного нотификационого звука или указанный звуковой файл</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/select_server_action.cpp" line="14"/>
+        <source>Select founded server</source>
+        <translation>Выделить найденный сервер</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/select_server_action.cpp" line="15"/>
+        <source>Selects a founded server in the full server list.</source>
+        <translation>Выделяет найденный сервер в полном списке серверов</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/show_message_action.cpp" line="17"/>
+        <source>Show message</source>
+        <translation>Показать сообщение</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/show_message_action.cpp" line="18"/>
+        <source>Show message to the user if an action triggered</source>
+        <translation>Показывает сообщение пользователю</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/show_query_action.cpp" line="20"/>
+        <source>Show question</source>
+        <translation>Диалог запроса</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/show_query_action.cpp" line="21"/>
+        <source>Show question to the user if an action triggered.
+If the user selects &quot;No&quot; then processing of following actions stops.</source>
+        <translation>Показывает диалог запроса пользователю при срабатывании условия.
+Если пользователь выбрал &quot;Нет&quot; отработка последующих действий прерывается.</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/conditions/server_filter_condition.cpp" line="35"/>
+        <source>Finds server using filter</source>
+        <translation>Поиск сервера по фильтру</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/conditions/timer_condition.cpp" line="16"/>
+        <source>Timer</source>
+        <translation>Таймер</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/conditions/timer_condition.cpp" line="17"/>
+        <source>Actions activates by timer</source>
+        <translation>Действия активируются по срабатыванию таймера</translation>
+    </message>
+</context>
+<context>
+    <name>QTreeSearcher</name>
+    <message>
+        <location filename="../src/common/qtreesearcher.cpp" line="22"/>
+        <source>Find</source>
+        <translation>Найти</translation>
     </message>
 </context>
 <context>
@@ -1127,27 +1242,32 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">О программе UrTConnector</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="36"/>
+        <location filename="../src/about_dialog.cpp" line="39"/>
+        <source>version %1 &quot;%2&quot; rev. %3</source>
+        <translation>версия %1 &quot;%2&quot; ревизия %3</translation>
+    </message>
+    <message>
+        <location filename="../src/about_dialog.cpp" line="41"/>
         <source>version %1 &quot;%2&quot;</source>
         <translation>версия %1 &quot;%2&quot;</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="44"/>
+        <location filename="../src/about_dialog.cpp" line="51"/>
         <source>&lt;p&gt;UrTConnector intended for help in everyday life of professional &lt;a href=&quot;http://www.urbanterror.net&quot;&gt;UrbanTerror&lt;/a&gt; player.&lt;/p&gt;&lt;p&gt;Search for game servers, players, online clans, bookmarks, miscellaneous information about servers, quick connect to server and many other features you will find in this application.&lt;/p&gt;&lt;p&gt;Project page &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;http://code.google.com/p/urtconnector&lt;/a&gt;&lt;/p&gt;&lt;p&gt;License: &lt;a href=&quot;http://www.gnu.org/licenses/gpl.html&quot;&gt;GNU General Public License Version 3&lt;/a&gt;&lt;/p&gt;</source>
         <translation>&lt;p&gt;UrTConnector предназначен для помощи в ежедневной жизни профессионального игрока &lt;a href=&quot;http://www.urbanterror.net&quot;&gt;UrbanTerror&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;В этой программе вы найдете: поиск по игровым серверам, поиск игроков, закладки на сервера, расширенную информацию о сервере, функции быстрого соединения и еще много других полезных функций.&lt;/p&gt;&lt;p&gt;Страница проекта &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;http://code.google.com/p/urtconnector&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Лицензия: &lt;a href=&quot;http://www.gnu.org/licenses/gpl.html&quot;&gt;GNU General Public License Version 3&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="56"/>
+        <location filename="../src/about_dialog.cpp" line="63"/>
         <source>&lt;p&gt;Developed by members of the best russian clan &lt;a href=&quot;http://www.urt-xaoc.ru&quot;&gt;=XaoC=&lt;/a&gt;.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Navrocky Vladislav (=XaoC=vlad.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:navrocky@visualdata.ru&quot;&gt;navrocky@visualdata.ru&lt;/a&gt;&lt;br&gt;Project leader, maintainer, architecture, windows and rpm packager.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;EnD3n1s&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:endenis@mail.ru&quot;&gt;endenis@mail.ru&lt;/a&gt;&lt;br&gt;Founder, base concept, first release, tester.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Samoilenko Yuri (jerry.gkb.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:kinallru@gmail.com&quot;&gt;kinallru@gmail.com&lt;/a&gt;&lt;br&gt;Code, ideas, Gentoo packager.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Konstantin J. Chernov&lt;p&gt;&lt;p class=&quot;info&quot;&gt;Fast SQLite code.&lt;/p&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="73"/>
-        <source>&lt;p class=&quot;name&quot;&gt;Tsyss Dmitry (=XaoC=Dmitro)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:dtsyss@gmail.com&quot;&gt;dtsyss@gmail.com&lt;/a&gt;&lt;br&gt;Clan leader, help on project, tester.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Stanislav Nikitin (LA|p0z1tr0n)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:pozitpoh@gmail.com&quot;&gt;pozitpoh@gmail.com&lt;/a&gt;&lt;br&gt;Contributor, help on project, tester, ideas generator.&lt;/p&gt;</source>
+        <location filename="../src/about_dialog.cpp" line="80"/>
+        <source>&lt;p class=&quot;name&quot;&gt;Tsyss Dmitry (Dmitro)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:dtsyss@gmail.com&quot;&gt;dtsyss@gmail.com&lt;/a&gt;&lt;br&gt;Clan leader, help on project, tester.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Stanislav Nikitin (p0z1tr0n)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:pozitpoh@gmail.com&quot;&gt;pozitpoh@gmail.com&lt;/a&gt;&lt;br&gt;Contributor, help on project, tester, ideas generator.&lt;/p&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/about_dialog.cpp" line="82"/>
+        <location filename="../src/about_dialog.cpp" line="89"/>
         <source>&lt;p&gt;UrTConnector translated to many languages. Thanks to people who helped with translation.&lt;/p&gt;&lt;p&gt;If you want to help with translation UrTConnector to your language - &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;join&lt;/a&gt; us!&lt;/p&gt;</source>
         <translation></translation>
     </message>
@@ -1233,24 +1353,98 @@ p, li { white-space: pre-wrap; }
         <translation>Номер совпадения для пароля</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="55"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="127"/>
+        <source>Style sheet</source>
+        <translation>Стиль CSS</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="135"/>
+        <source>File</source>
+        <translation>Файл</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="145"/>
+        <source>Reread and apply style sheet from selected file</source>
+        <translation>Перечитать и применить стиль из выбранного файла</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="148"/>
+        <source>Refresh</source>
+        <translation>Обновить</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="157"/>
+        <source>You can learn more about the style sheets &lt;a href=&quot;http://doc.qt.nokia.com/latest/stylesheet.html&quot;&gt;here&lt;/a&gt;</source>
+        <translation>Вы можете узнать больше о CSS &lt;a href=&quot;http://doc.crossplatform.ru/qt/4.7.x/stylesheet.html&quot;&gt;здесь&lt;/a&gt; </translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="170"/>
+        <source>Notification sound</source>
+        <translation>Звук оповещения по умолчанию</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="176"/>
+        <source>Play sound</source>
+        <translation>Проиграть звук</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="190"/>
+        <source>Notification sound file</source>
+        <translation>Звуковой файл оповещения</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="63"/>
         <source>Application</source>
         <translation>Приложение</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="62"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="70"/>
         <source>Application settings</source>
         <translation>Настройки приложения</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="119"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="75"/>
+        <source>Select a style sheet file name</source>
+        <translation>Выбрать CSS файл</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="80"/>
+        <source>Select notification sound file name</source>
+        <translation>Выбрать файл звукового оповещения</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="142"/>
         <source>Language preferences</source>
         <translation>Настройки языка</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="119"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="143"/>
+        <source>Selected language will be applied after restart</source>
+        <translation>Выбрать язык интерфейса (активируется при старте программы)</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="192"/>
+        <source>Select a style sheet file</source>
+        <translation>Укажите CSS файл</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="193"/>
+        <source>CSS Files (*.css)(*.css);;All files(*)</source>
+        <translation>CSS файлы (*.css)(*.css);;Все файлы(*)</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="200"/>
+        <source>Select a notification sound</source>
+        <translation>Укажите звуковой файл</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="201"/>
+        <source>Sounds (*.ogg *.wav)(*.ogg *.wav);;All files(*)</source>
+        <translation>Звуки (*.ogg *.wav)(*.ogg *.wav);;Все файлы(*)</translation>
+    </message>
+    <message>
         <source>Selected language will applyed after restart</source>
-        <translation>Выбраный язык будет применен после перезапуска</translation>
+        <translation type="obsolete">Выбраный язык будет применен после перезапуска</translation>
     </message>
 </context>
 <context>
@@ -1299,12 +1493,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>composite_filter_quick_opt_widget</name>
     <message>
-        <location filename="../src/filters/composite_filter.cpp" line="158"/>
+        <location filename="../src/filters/composite_filter.cpp" line="178"/>
+        <source>Logical operation</source>
+        <translation>Логическая операция</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/composite_filter.cpp" line="180"/>
         <source>AND</source>
         <translation>И</translation>
     </message>
     <message>
-        <location filename="../src/filters/composite_filter.cpp" line="159"/>
+        <location filename="../src/filters/composite_filter.cpp" line="181"/>
         <source>OR</source>
         <translation>ИЛИ</translation>
     </message>
@@ -1312,28 +1511,28 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>filter_edit_widget</name>
     <message>
-        <location filename="../src/filters/filter_edit_widget.cpp" line="182"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="194"/>
         <source>Filter options</source>
         <translation>Настройки фильтра</translation>
     </message>
     <message>
-        <location filename="../src/filters/filter_edit_widget.cpp" line="186"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="198"/>
         <source>Add new child filter</source>
         <translation>Добавить дочерний фильтр</translation>
     </message>
     <message>
-        <location filename="../src/filters/filter_edit_widget.cpp" line="188"/>
-        <location filename="../src/filters/filter_edit_widget.cpp" line="331"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="200"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="374"/>
         <source>Delete filter</source>
         <translation>Удалить фильтр</translation>
     </message>
     <message>
-        <location filename="../src/filters/filter_edit_widget.cpp" line="190"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="202"/>
         <source>Select filter for toolbar</source>
         <translation>Разместить фильтр на панели инструментов</translation>
     </message>
     <message>
-        <location filename="../src/filters/filter_edit_widget.cpp" line="331"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="374"/>
         <source>Continue with delete selected filter?</source>
         <translation>Удалить фильтр?</translation>
     </message>
@@ -1346,7 +1545,7 @@ p, li { white-space: pre-wrap; }
         <translation>Включить фильтр</translation>
     </message>
     <message>
-        <location filename="../src/filters/filter_edit_widget.cpp" line="116"/>
+        <location filename="../src/filters/filter_edit_widget.cpp" line="130"/>
         <source>Configure filter</source>
         <translation>Настроить фильтр</translation>
     </message>
@@ -1354,12 +1553,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>filtered_tab</name>
     <message>
-        <location filename="../src/tabs/filtered_tab.cpp" line="60"/>
+        <location filename="../src/tabs/filtered_tab.cpp" line="73"/>
         <source>View and edit filter</source>
         <translation>Просмотр и редактирование фильтра</translation>
     </message>
     <message>
-        <location filename="../src/tabs/filtered_tab.cpp" line="106"/>
+        <location filename="../src/tabs/filtered_tab.cpp" line="122"/>
         <source>No filter</source>
         <translation>Без фильтра</translation>
     </message>
@@ -1367,79 +1566,99 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>friend_list_widget</name>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="125"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="138"/>
         <source>Friends</source>
         <translation>Друзья</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="131"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="144"/>
         <source>Add new friend</source>
         <translation>Добавить друга</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="134"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="147"/>
         <source>Edit selected friend</source>
         <translation>Редактировать друга</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="137"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="150"/>
         <source>Remove selected</source>
         <translation>Удалить выбранное</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="140"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="153"/>
         <source>Update selected server</source>
         <translation>Обновить выбранный сервер</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="143"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="156"/>
         <source>Update bookmarks</source>
         <translation>Обновить закладки</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="146"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="159"/>
         <source>Update all servers</source>
         <translation>Обновить все сервера</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="185"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="162"/>
+        <source>Wait for the friend</source>
+        <translation>Подождать появление друга</translation>
+    </message>
+    <message>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="202"/>
         <source>Address</source>
         <translation>Адрес</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="186"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="203"/>
         <source>Players</source>
         <translation>Игроки</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="187"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="204"/>
         <source>Map</source>
         <translation>Карта</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="188"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="205"/>
         <source>Game mode</source>
         <translation>Тип игры</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="189"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="206"/>
         <source>Ping</source>
         <translation>Пинг</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="190"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="207"/>
         <source>Country</source>
         <translation>Страна</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="191"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="208"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../src/friend_list/friend_list_widget.cpp" line="192"/>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="209"/>
         <source>Friend / Status</source>
         <translation>Друг / Статус</translation>
+    </message>
+    <message>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="397"/>
+        <source>Wait for a friend %1</source>
+        <translation>Ждать появление друга %1</translation>
+    </message>
+    <message>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="434"/>
+        <source>Friend found</source>
+        <translation>Друг найден</translation>
+    </message>
+    <message>
+        <location filename="../src/friend_list/friend_list_widget.cpp" line="435"/>
+        <source>Your friend &lt;b&gt;%nickname&lt;/b&gt; found on the server:&lt;br&gt;&lt;b&gt;%server&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Do you want to join him?</source>
+        <translation>Ваш друг&lt;b&gt;%nickname&lt;/b&gt; найден на сервере:&lt;br&gt;&lt;b&gt;%server&lt;/b&gt;.&lt;br&gt;&lt;br&gt;Желаете присоединиться к нему?</translation>
     </message>
 </context>
 <context>
@@ -1521,67 +1740,67 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>history_widget</name>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="72"/>
+        <location filename="../src/history/history_widget.cpp" line="73"/>
         <source>History</source>
         <translation>История</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="77"/>
+        <location filename="../src/history/history_widget.cpp" line="78"/>
         <source>Add to favorites</source>
         <translation>Добавить в закладки</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="78"/>
+        <location filename="../src/history/history_widget.cpp" line="79"/>
         <source>Add selected server to favorites list</source>
         <translation>Добавить выбранный сервер в закладки</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="81"/>
+        <location filename="../src/history/history_widget.cpp" line="82"/>
         <source>Remove selected record</source>
         <translation>Удалить выбранное</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="84"/>
+        <location filename="../src/history/history_widget.cpp" line="85"/>
         <source>Clear history</source>
         <translation>Очистить историю</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="87"/>
+        <location filename="../src/history/history_widget.cpp" line="88"/>
         <source>Refresh selected</source>
         <translation>Обновить выделенный</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="90"/>
+        <location filename="../src/history/history_widget.cpp" line="91"/>
         <source>Refresh all</source>
         <translation>Обновить все</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="97"/>
+        <location filename="../src/history/history_widget.cpp" line="98"/>
         <source>Server name</source>
         <translation>Имя сервера</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="98"/>
+        <location filename="../src/history/history_widget.cpp" line="99"/>
         <source>Status</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="99"/>
+        <location filename="../src/history/history_widget.cpp" line="100"/>
         <source>Date and time</source>
         <translation>Дата и время</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="100"/>
+        <location filename="../src/history/history_widget.cpp" line="101"/>
         <source>Address</source>
         <translation>Адрес</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="101"/>
+        <location filename="../src/history/history_widget.cpp" line="102"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="../src/history/history_widget.cpp" line="102"/>
+        <location filename="../src/history/history_widget.cpp" line="103"/>
         <source>Player name</source>
         <translation>Ник игрока</translation>
     </message>
@@ -1599,7 +1818,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/jobs/job_item.ui" line="27"/>
+        <location filename="../src/jobs/job_item.ui" line="34"/>
         <source>Cancel this job</source>
         <translation>Отменить это задание</translation>
     </message>
@@ -1643,7 +1862,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>job_update_from_master</name>
     <message>
-        <location filename="../src/job_update_from_master.cpp" line="10"/>
+        <location filename="../src/job_update_from_master.cpp" line="9"/>
         <source>Update from master server</source>
         <translation>Обновление списка с мастер-сервера</translation>
     </message>
@@ -1651,7 +1870,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>job_update_selected</name>
     <message>
-        <location filename="../src/job_update_selected.cpp" line="12"/>
+        <location filename="../src/job_update_selected.cpp" line="10"/>
         <source>Update selected servers</source>
         <translation>Обновление выделенных серверов</translation>
     </message>
@@ -1659,17 +1878,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>language</name>
     <message>
-        <location filename="../src/main.cpp" line="121"/>
+        <location filename="../src/main.cpp" line="123"/>
         <source>English</source>
         <translation>Английский</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="122"/>
+        <location filename="../src/main.cpp" line="124"/>
         <source>kitaiskij</source>
         <translation>Китайский</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="120"/>
+        <location filename="../src/main.cpp" line="122"/>
         <source>Russian</source>
         <translation>Русский</translation>
     </message>
@@ -1728,6 +1947,21 @@ p, li { white-space: pre-wrap; }
         <translation>Проверять статус перед подключением</translation>
     </message>
     <message>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="183"/>
+        <source>Use mumble overlay</source>
+        <translation>Использовать mumble оверлей</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="192"/>
+        <source>Binary</source>
+        <translation>Бинарный файл</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="204"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
         <location filename="../src/setting_forms/launch_settings_form.cpp" line="23"/>
         <source>Launch</source>
         <translation>Запуск</translation>
@@ -1738,47 +1972,53 @@ p, li { white-space: pre-wrap; }
         <translation>Настройки запуска UrbanTerror</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="42"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="45"/>
         <source>&lt;b&gt;%bin%&lt;/b&gt; - UrbanTerror binary path&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - player name&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - password&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - hostname or ip and port&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - RCON password</source>
         <translation>&lt;b&gt;%bin%&lt;/b&gt; - бинарник UrbanTerror&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - имя игрока&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - пароль&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - имя хоста или ip и порт&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - пароль RCON</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="108"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="120"/>
         <source>Urban Terror executable</source>
         <translation>Исполняемый файл UrbanTerror</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="109"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="121"/>
         <source>Executables (*.i386 *.x86_64 *.exe);;All Files (*)</source>
         <translation>Бинарники (*.i386 *.x86_64 *.exe);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="118"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="130"/>
+        <source>mumble-overlay binary</source>
+        <translation>Бинарный файл mumble-overlay</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="140"/>
         <source>Select file to insert</source>
         <translation>Выберите файл для вставки</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="119"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="131"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="141"/>
         <source>All Files (*)</source>
         <translation>Все файлы</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="159"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="186"/>
         <source>This may take about 30 seconds</source>
         <translation>Эта проверка может занять примерно 30 секунд</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="168"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="195"/>
         <source>X session autodetection</source>
         <translation>Автоопределение X-сессии</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="170"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="197"/>
         <source>Another X session started succesfully</source>
         <translation>Дополнительная X-сессия запущена успешно</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="171"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="198"/>
         <source>Another X session failed</source>
         <translation>Не удалось запустить дополнительную X-сессию</translation>
     </message>
@@ -1794,17 +2034,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">ошибка при запуске. Проверьте установленные параметры запуска</translation>
     </message>
     <message>
-        <location filename="../src/launcher/launcher.cpp" line="136"/>
+        <location filename="../src/launcher/launcher.cpp" line="147"/>
         <source>Failed to start UrbanTerror. Check launch parameters in options dialog.</source>
         <translation>Ошибка при запуске UrbanTerror. Проверьте настройки запуска игры в диалоге настройки программы.</translation>
     </message>
     <message>
-        <location filename="../src/launcher/launcher.cpp" line="140"/>
+        <location filename="../src/launcher/launcher.cpp" line="151"/>
         <source>Game already started. Close it if you want and try again.</source>
         <translation>Игра уже запущена. Завершите её и повторите попытку.</translation>
     </message>
     <message>
-        <location filename="../src/launcher/launcher.cpp" line="163"/>
+        <location filename="../src/launcher/launcher.cpp" line="174"/>
         <source>Game launch error &quot;%1&quot;.</source>
         <translation>Ошибка запуска игры &quot;%1&quot;.</translation>
     </message>
@@ -1812,32 +2052,37 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main_window.cpp" line="137"/>
+        <location filename="../src/main_window.cpp" line="154"/>
         <source>Current tab toolbar</source>
         <translation>Панель инструментов текущей закладки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="149"/>
+        <location filename="../src/main_window.cpp" line="167"/>
         <source>Enable anticheat</source>
         <translation>Включить Интичит</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="153"/>
+        <location filename="../src/main_window.cpp" line="171"/>
         <source>Configure anticheat</source>
         <translation>Настроить Античит</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="181"/>
+        <location filename="../src/main_window.cpp" line="175"/>
+        <source>Copy server info to clipboard</source>
+        <translation>Копировать информацию о сервере в буфер обмена</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="205"/>
         <source>Click to show/hide UrTConnector or middle click to quick launch</source>
         <translation>Щелкните левой кнопкой для открытия окна UrTConnector или средней кнопкой для быстрого запуска</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="244"/>
+        <location filename="../src/main_window.cpp" line="300"/>
         <source>Server info catched</source>
         <translation>Информация о сервере получена</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="245"/>
+        <location filename="../src/main_window.cpp" line="301"/>
         <source>Address: %1
 Password: %2
 
@@ -1848,76 +2093,114 @@ Click this message to open UrTConnector.</source>
 Щелкните по этому сообщению чтобы открыть UrTConnector.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="265"/>
+        <location filename="../src/main_window.cpp" line="321"/>
         <source>Options</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="371"/>
+        <location filename="../src/main_window.cpp" line="437"/>
         <source>Game is launched already</source>
         <translation>Игра уже запущена</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="382"/>
+        <location filename="../src/main_window.cpp" line="448"/>
         <source>Update server info and launch a game</source>
         <translation>Обновить информацию о сервере и запустить игру</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="404"/>
+        <location filename="../src/main_window.cpp" line="475"/>
         <source>Server is full.</source>
         <translation>Сервер полон</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="407"/>
-        <source>Server is empty.</source>
-        <translation>Сервер пуст.</translation>
+        <location filename="../src/main_window.cpp" line="476"/>
+        <source>Would you like to wait until there will be empty slots or to connect right now?</source>
+        <translation>Желаете ли вы подождать когда на сервере появятся свободные места или подключиться прямо сейчас?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="412"/>
+        <location filename="../src/main_window.cpp" line="478"/>
+        <source>Wait for empty slots</source>
+        <translation>Ожидать появление свободного места</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="480"/>
+        <source>Connect right now</source>
+        <translation>Подключиться прямо сейчас</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="499"/>
+        <source>Server is empty.
+
+Do you want to continue connecting?</source>
+        <translation>Сервер пуст.
+
+Все равно подключиться?</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="830"/>
+        <source>Connect to %1</source>
+        <translation>Подключиться к %1</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="863"/>
+        <source>Connect</source>
+        <translation>Соединение</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="864"/>
+        <source>On the server &lt;b&gt;%server&lt;/b&gt; appeared empty slots.&lt;br&gt;&lt;br&gt;Do you wish to connect?</source>
+        <translation>На сервере &lt;b&gt;%server&lt;/b&gt; появились свободные места.&lt;br&gt;&lt;br&gt;Желаете подключиться?</translation>
+    </message>
+    <message>
+        <source>Server is empty.</source>
+        <translation type="obsolete">Сервер пуст.</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="473"/>
+        <location filename="../src/main_window.cpp" line="498"/>
         <source>Connecting to the server</source>
         <translation>Соединяемся с сервером</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="413"/>
         <source>%1
 
 Do you want to continue connecting?</source>
-        <translation>%1\n\nЖелаете продолджить присоединение?</translation>
+        <translation type="obsolete">%1\n\nЖелаете продолджить присоединение?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="428"/>
+        <location filename="../src/main_window.cpp" line="514"/>
         <source>This server require the password</source>
         <translation>Сервер требует пароль</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="429"/>
+        <location filename="../src/main_window.cpp" line="515"/>
         <source>Enter the password</source>
         <translation>Введите пароль</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="608"/>
+        <location filename="../src/main_window.cpp" line="697"/>
         <source>Quit</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="608"/>
+        <location filename="../src/main_window.cpp" line="697"/>
         <source>The game is started at this moment.
 
 Kill the game and quit now?</source>
         <translation>Игра запущена.\n\nЗавершить и выйти?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="654"/>
+        <location filename="../src/main_window.cpp" line="743"/>
         <source>RCon : %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="686"/>
+        <location filename="../src/main_window.cpp" line="779"/>
         <source>The player&apos;s name must be defined in the quick launch window for the anti-cheat!</source>
         <translation>Античиту требуется заданное имя игрока в окне быстрого запуска!</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="692"/>
+        <location filename="../src/main_window.cpp" line="785"/>
         <source>Anticheat options</source>
         <translation>Параметры Античита</translation>
     </message>
@@ -1965,12 +2248,22 @@ Kill the game and quit now?</source>
 <context>
     <name>online_clans_filter_quick_opt_widget</name>
     <message>
-        <location filename="../src/filters/online_clans_filter.cpp" line="155"/>
+        <location filename="../src/filters/online_clans_filter.cpp" line="157"/>
+        <source>Tag size</source>
+        <translation>Размер тэга клана</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/online_clans_filter.cpp" line="161"/>
         <source>Minimal tag length in chars</source>
         <translation>Минимальная длина тэга в символах</translation>
     </message>
     <message>
-        <location filename="../src/filters/online_clans_filter.cpp" line="159"/>
+        <location filename="../src/filters/online_clans_filter.cpp" line="165"/>
+        <source>Players</source>
+        <translation>Игроки</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/online_clans_filter.cpp" line="169"/>
         <source>Minimal players number</source>
         <translation>Минимальное количество игроков с одинаковым тэгом</translation>
     </message>
@@ -2037,34 +2330,57 @@ Kill the game and quit now?</source>
 <context>
     <name>ping_filter_quick_opt_widget</name>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="53"/>
+        <location filename="../src/filters/ping_filter.cpp" line="72"/>
         <source>more</source>
         <translation>больше</translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="57"/>
+        <location filename="../src/filters/ping_filter.cpp" line="76"/>
         <source>&lt;= Ping</source>
         <translation>&lt;= Пинг</translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="60"/>
+        <location filename="../src/filters/ping_filter.cpp" line="79"/>
         <source>less</source>
         <translation>меньше</translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="64"/>
+        <location filename="../src/filters/ping_filter.cpp" line="83"/>
         <source>Ping &lt;=</source>
         <translation>Пинг &lt;=</translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="67"/>
+        <location filename="../src/filters/ping_filter.cpp" line="86"/>
         <source>between</source>
         <translation>между</translation>
     </message>
     <message>
-        <location filename="../src/filters/ping_filter.cpp" line="71"/>
+        <location filename="../src/filters/ping_filter.cpp" line="90"/>
         <source>&lt;= Ping &lt;=</source>
         <translation>&lt;= Пинг &lt;=</translation>
+    </message>
+</context>
+<context>
+    <name>player_filter_quick_opt_widget</name>
+    <message>
+        <location filename="../src/filters/player_filter.cpp" line="145"/>
+        <source>Nick name pattern</source>
+        <translation>Шаблон имени</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/player_filter.cpp" line="149"/>
+        <source>Clear expression</source>
+        <translation>Очистить условие</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/player_filter.cpp" line="154"/>
+        <source>RegExp</source>
+        <translation>Регулярные выражения</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/player_filter.cpp" line="155"/>
+        <source>Pattern used as regular expression</source>
+        <translation>Шаблон используется в качестве регулярного выражения</translation>
     </message>
 </context>
 <context>
@@ -2102,33 +2418,33 @@ Apply this changes?</source>
 <context>
     <name>qstat_updater</name>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="169"/>
+        <location filename="../src/qstat_updater.cpp" line="204"/>
         <source>QStat failed to start. Check QStat binary path in options dialog.</source>
         <translation>Не удалось запустить QStat. Проверьте корректность пути к файлу в диалоге настройки программы.</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="171"/>
+        <location filename="../src/qstat_updater.cpp" line="206"/>
         <source>QStat crashed</source>
         <translation>Сбой QStat</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="173"/>
+        <location filename="../src/qstat_updater.cpp" line="208"/>
         <source>QStat timed out</source>
         <translation>QStat время вышло</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="175"/>
+        <location filename="../src/qstat_updater.cpp" line="210"/>
         <source>QStat read error</source>
         <translation>QStat ошибка чтения</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="177"/>
+        <location filename="../src/qstat_updater.cpp" line="212"/>
         <source>QStat write error</source>
         <translation>QStat ошибка записи</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="179"/>
-        <location filename="../src/qstat_updater.cpp" line="181"/>
+        <location filename="../src/qstat_updater.cpp" line="214"/>
+        <location filename="../src/qstat_updater.cpp" line="216"/>
         <source>QStat unknown error</source>
         <translation>QStat неизвестная ошибка</translation>
     </message>
@@ -2299,62 +2615,62 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>server_info_manager</name>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="217"/>
+        <location filename="../src/server_info_manager.cpp" line="231"/>
         <source>* Unnamed *</source>
         <translation>* Без названия *</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="254"/>
+        <location filename="../src/server_info_manager.cpp" line="268"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Статус&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="255"/>
+        <location filename="../src/server_info_manager.cpp" line="269"/>
         <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Тип игры&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="256"/>
+        <location filename="../src/server_info_manager.cpp" line="270"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Карта&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="257"/>
+        <location filename="../src/server_info_manager.cpp" line="271"/>
         <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="258"/>
+        <location filename="../src/server_info_manager.cpp" line="272"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Country&lt;/td&gt;&lt;td&gt;%1 %2&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Страна&lt;/td&gt;&lt;td&gt;%1 %2&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="259"/>
+        <location filename="../src/server_info_manager.cpp" line="273"/>
         <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Public slots&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Публичные слоты&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="260"/>
+        <location filename="../src/server_info_manager.cpp" line="274"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Total slots&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Всего слотов&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="269"/>
+        <location filename="../src/server_info_manager.cpp" line="283"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Forbidden weapons&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Запрещенное оружие&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="304"/>
+        <location filename="../src/server_info_manager.cpp" line="318"/>
         <source>Full</source>
         <translation>Полный</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="317"/>
+        <location filename="../src/server_info_manager.cpp" line="333"/>
         <source>&lt;hr&gt;%1 players:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Nick&lt;/td&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;Score&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;hr&gt;%1 игрок(а,ов):&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Имя&lt;/td&gt;&lt;td&gt;Пинг&lt;/td&gt;&lt;td&gt;Счет&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="358"/>
+        <location filename="../src/server_info_manager.cpp" line="379"/>
         <source>&lt;hr&gt;Extended info:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Key&lt;/td&gt;&lt;td&gt;Value&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;hr&gt;Дополнительная информация:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Ключ&lt;/td&gt;&lt;td&gt;Значение&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
@@ -2362,57 +2678,57 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>server_list_common_tab</name>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="48"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="49"/>
         <source>Address</source>
         <translation>Адрес</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="49"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="50"/>
         <source>Players</source>
         <translation>Игроки</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="50"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="51"/>
         <source>Map</source>
         <translation>Карта</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="51"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="52"/>
         <source>Game mode</source>
         <translation>Тип игры</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="52"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="53"/>
         <source>Ping</source>
         <translation>Пинг</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="53"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="54"/>
         <source>Country</source>
         <translation>Страна</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="54"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="55"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="55"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="56"/>
         <source>Status</source>
         <translation>Состояние</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="56"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="57"/>
         <source>Server address (ip:port)</source>
         <translation>Адрес сервера (ip:port)</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="57"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="58"/>
         <source>Server name</source>
         <translation>Имя сервера</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_common_tab.cpp" line="58"/>
+        <location filename="../src/tabs/server_list_common_tab.cpp" line="59"/>
         <source>Server status</source>
         <translation>Состояние сервера</translation>
     </message>
@@ -2476,32 +2792,32 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_tab.cpp" line="33"/>
+        <location filename="../src/tabs/server_list_tab.cpp" line="36"/>
         <source>All servers</source>
         <translation>Все сервера</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_tab.cpp" line="38"/>
+        <location filename="../src/tabs/server_list_tab.cpp" line="41"/>
         <source>Add to favorites</source>
         <translation>Добавить в закладки</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_tab.cpp" line="39"/>
+        <location filename="../src/tabs/server_list_tab.cpp" line="42"/>
         <source>Add selected server to favorites list</source>
         <translation>Добавить выбранный сервер в закладки</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_tab.cpp" line="42"/>
+        <location filename="../src/tabs/server_list_tab.cpp" line="45"/>
         <source>Refresh selected</source>
         <translation>Обновить выделенный</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_tab.cpp" line="46"/>
+        <location filename="../src/tabs/server_list_tab.cpp" line="49"/>
         <source>Update from master server</source>
         <translation>Обновление списка с мастер-сервера</translation>
     </message>
     <message>
-        <location filename="../src/tabs/server_list_tab.cpp" line="49"/>
+        <location filename="../src/tabs/server_list_tab.cpp" line="52"/>
         <source>Clear all</source>
         <translation>Очистить все</translation>
     </message>
@@ -2686,6 +3002,271 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>task_prop_dlg</name>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="14"/>
+        <source>Task options</source>
+        <translation>Настройки задания</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="22"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="47"/>
+        <source>Condition</source>
+        <translation>Условие</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="61"/>
+        <source>Mode</source>
+        <translation>Режим</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="84"/>
+        <source>Actions</source>
+        <translation>Действия</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="116"/>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="130"/>
+        <source>...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="215"/>
+        <source>Create new action</source>
+        <translation>Создать новое действие</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="224"/>
+        <source>Delete selected action</source>
+        <translation>Удалить выделенное действие</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="233"/>
+        <source>Move up</source>
+        <translation>Переместить вверх</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.ui" line="242"/>
+        <source>Move down</source>
+        <translation>Переместить вниз</translation>
+    </message>
+</context>
+<context>
+    <name>tasks_panel</name>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="14"/>
+        <source>Tasks tracking</source>
+        <translation>Задачи слежения</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="30"/>
+        <source>Task tracking</source>
+        <translation>Задача слежения</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="40"/>
+        <location filename="../src/tracking/tasks_panel.ui" line="89"/>
+        <source>...</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="109"/>
+        <source>Create task</source>
+        <translation>Создать задачу</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="112"/>
+        <source>Create the new task</source>
+        <translation>Создание новой задачи слежения</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="121"/>
+        <source>Delete task</source>
+        <translation>Удалить задачу</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="124"/>
+        <source>Delete selected task</source>
+        <translation>Удаление выделенной задачи слежения</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="136"/>
+        <location filename="../src/tracking/tasks_panel.ui" line="139"/>
+        <source>Execute selected task</source>
+        <translation>Запустить задачу слежения</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="148"/>
+        <source>Edit current task</source>
+        <translation>Редактировать выделенную задачу слежения</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.ui" line="151"/>
+        <source>Return</source>
+        <translation>Возврат</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::action_widget</name>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.cpp" line="55"/>
+        <source>Select new action</source>
+        <translation>Выберите новое действие</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.cpp" line="70"/>
+        <source>Cancel new action creation</source>
+        <translation>Отмена создания нового действия</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.cpp" line="90"/>
+        <source>Delete this action</source>
+        <translation>Удалить это действие</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.cpp" line="130"/>
+        <source>... Select new action ...</source>
+        <translation>... Выберите новое действие ...</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::connect_option_widget</name>
+    <message>
+        <location filename="../src/tracking/actions/connect_action.cpp" line="105"/>
+        <source>Server address to connect. If the field is empty connects to the server from the condition.</source>
+        <translation>Адрес сервера для подключения. Если поле пустое, то подключается к серверу по которому сработало условие.</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::play_sound_option_widget</name>
+    <message>
+        <location filename="../src/tracking/actions/play_sound_action.cpp" line="86"/>
+        <location filename="../src/tracking/actions/play_sound_action.cpp" line="121"/>
+        <source>Select sound file</source>
+        <translation>Выбор звукового файла</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/play_sound_action.cpp" line="95"/>
+        <source>Test selected sound</source>
+        <translation>Проверить выбранный звук</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/play_sound_action.cpp" line="101"/>
+        <source>Sound file name.</source>
+        <translation>Имя звукового файла</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/play_sound_action.cpp" line="122"/>
+        <source>Sounds (*.wav *.ogg *.mp3);;All files (*.*)</source>
+        <translation>Звуки (*.wav *.ogg *.mp3);;Все файлы (*.*)</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::server_filter_condition_widget</name>
+    <message>
+        <location filename="../src/tracking/conditions/server_filter_condition.cpp" line="249"/>
+        <source>Use auto update</source>
+        <translation>Использовать авто-обновление</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/conditions/server_filter_condition.cpp" line="257"/>
+        <source> sec</source>
+        <translation> сек</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/conditions/server_filter_condition.cpp" line="260"/>
+        <source>Update interval</source>
+        <translation>Интервал обновления</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/conditions/server_filter_condition.cpp" line="264"/>
+        <source>Server address list delimited by &quot; &quot;, &quot;,&quot; or &quot;:&quot;</source>
+        <translation>Список адресов серверов разделяется пробелом, &quot;,&quot; или &quot;:&quot;</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/conditions/server_filter_condition.cpp" line="265"/>
+        <source>Servers</source>
+        <translation>Сервера</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::show_message_action</name>
+    <message>
+        <location filename="../src/tracking/actions/show_message_action.cpp" line="41"/>
+        <source>Information</source>
+        <translation>Информация</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::show_query_action</name>
+    <message>
+        <location filename="../src/tracking/actions/show_query_action.cpp" line="45"/>
+        <source>Question</source>
+        <translation>Вопрос</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/actions/show_query_action.cpp" line="56"/>
+        <source>Skip</source>
+        <translation>Пропустить</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::show_query_option_widget</name>
+    <message>
+        <location filename="../src/tracking/actions/show_query_action.cpp" line="119"/>
+        <source>Title</source>
+        <translation>Заголовок</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::task_prop_dlg</name>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.cpp" line="177"/>
+        <source>Multi trigger</source>
+        <translation>Бесконечное срабатывание</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.cpp" line="178"/>
+        <source>Single trigger</source>
+        <translation>Одиночное срабатывание</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/task_prop_dlg.cpp" line="179"/>
+        <source>Destroy after trigger</source>
+        <translation>Удаление после срабатывания</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::tasks_panel</name>
+    <message>
+        <location filename="../src/tracking/tasks_panel.cpp" line="107"/>
+        <source>New task</source>
+        <translation>Новая задача</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/tasks_panel.cpp" line="110"/>
+        <source>Create new task</source>
+        <translation>Создание нового задания</translation>
+    </message>
+</context>
+<context>
+    <name>tracking::timer_condition_widget</name>
+    <message>
+        <location filename="../src/tracking/conditions/timer_condition.cpp" line="95"/>
+        <source> msec</source>
+        <translation> мсек</translation>
+    </message>
+    <message>
+        <location filename="../src/tracking/conditions/timer_condition.cpp" line="97"/>
+        <source>Interval</source>
+        <translation>Интервал</translation>
+    </message>
+</context>
+<context>
     <name>update_settings_form</name>
     <message>
         <location filename="../src/setting_forms/update_settings_form.ui" line="14"/>
@@ -2693,43 +3274,63 @@ p, li { white-space: pre-wrap; }
         <translation>Форма</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="20"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="22"/>
         <source>Centering on current server row during update</source>
         <translation>Центрировать на текущей строке при обновлении списка серверов</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="27"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="29"/>
         <source>Clear offline servers after full refresh</source>
         <translation>Удалять offline-сервера после полного обновления</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="34"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="36"/>
+        <source>Maximum simultaneous queries</source>
+        <translation>Максимальное количество параллельных запросов</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="59"/>
+        <source>Number of retries</source>
+        <translation>Количество повторов</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="66"/>
+        <source>Interval between retries</source>
+        <translation>Интервал между повторами</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="73"/>
+        <source>Interval between master server retries</source>
+        <translation>Интервал между повторами к мастер-серверу</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="102"/>
         <source>QStat binary path</source>
         <translation>Путь к утилите QStat</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="43"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="111"/>
         <source>Choose QStat binary file</source>
         <translation>Укажите бинарник QStat</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="46"/>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="87"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="114"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="155"/>
         <source>Choose</source>
         <translation>Указать</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="60"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="128"/>
         <source>UrbanTerror master server</source>
         <translation>Мастер сервер UrbanTerror</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="72"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="140"/>
         <source>GeoIP database file</source>
         <translation>Файл базы данных GeoIP</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="84"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="152"/>
         <source>Choose GeoIP database file</source>
         <translation>Укажите файл базы GeoIP</translation>
     </message>
@@ -2744,22 +3345,22 @@ p, li { white-space: pre-wrap; }
         <translation>Настройки обновления списка серверов</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.cpp" line="82"/>
+        <location filename="../src/setting_forms/update_settings_form.cpp" line="101"/>
         <source>QStat binary</source>
         <translation>Бинарник QStat</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.cpp" line="83"/>
+        <location filename="../src/setting_forms/update_settings_form.cpp" line="102"/>
         <source>Executables (*);;All Files (*)</source>
         <translation>Бинарники (*);;Все файлы (*)</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.cpp" line="92"/>
+        <location filename="../src/setting_forms/update_settings_form.cpp" line="111"/>
         <source>GeoIP database</source>
         <translation>База данных GeoIP</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.cpp" line="93"/>
+        <location filename="../src/setting_forms/update_settings_form.cpp" line="112"/>
         <source>DataBase (*.dat);;All Files (*)</source>
         <translation>Базы данных GeoIP (*.dat);;Все файлы (*)</translation>
     </message>
