@@ -8,6 +8,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <QObject>
+#include <QVariantMap>
 
 class QSettings;
 
@@ -72,12 +73,12 @@ public:
     const QString& caption() const { return caption_; };
     const QString& description() const {  return desc_; };
 
-    Storage create(boost::shared_ptr<QSettings> settings) {
+    Storage create(const boost::shared_ptr<QSettings>& settings) {
         return do_create(settings);
     }
     
 protected:
-    virtual Storage do_create(boost::shared_ptr<QSettings> settings) const = 0;
+    virtual Storage do_create(const boost::shared_ptr<QSettings>& settings) const = 0;
     
 private:
     QString caption_;

@@ -262,6 +262,8 @@ void set_group(const tab_context& ctx, const remote::group& remote){
     }
 }
 
+syncro_manager::Object s_obj;
+
 void bookmark_tab::test_import(){
    
 
@@ -272,8 +274,18 @@ void bookmark_tab::test_import(){
     
     syncro_manager::Service gdocs_service = *syncro.services().begin();
     
+    QVariantMap set;
+    
+    set["mail"] = "kinnalru@gmail.com";
+    set["password"] = "malder22";
+    
     SYNC_DEBUG << "3";
-    syncro_manager::Storage storage = syncro.create(gdocs_service);
+    if (syncro.storages().empty())
+    {
+        syncro.create(gdocs_service, "sec_plugin", set);
+    }
+    
+    syncro_manager::Storage storage = syncro.storages().front();
     
     
     SYNC_DEBUG << "4";
@@ -282,16 +294,19 @@ void bookmark_tab::test_import(){
     syncro_manager::Setter s = boost::bind(set_group, boost::ref(context()), _1);
     
     
-    SYNC_DEBUG << "5";
-    syncro_manager::Object syncer = syncro.attach("bookmarks", g, s, "bookmarks");
+    if (!s_obj)
+    {
+        SYNC_DEBUG << "5";
+        s_obj = syncro.attach("bookmarks", g, s, "bookmarks");
+    }
     
     SYNC_DEBUG << "6";
     
-    syncro.bind(syncer, storage);
+    syncro.bind(s_obj, storage);
     
     SYNC_DEBUG << "7";
     
-    syncro.sync(syncer);
+    syncro.sync(s_obj);
     
     SYNC_DEBUG << "8";
     
@@ -308,8 +323,21 @@ void bookmark_tab::test_export(){
     
     syncro_manager::Service gdocs_service = *syncro.services().begin();
     
+    QVariantMap set;
+    
+    set["mail"] = "kinnalru@gmail.com";
+    set["password"] = "malder22";
+    
+    
     SYNC_DEBUG << "3";
-    syncro_manager::Storage storage = syncro.create(gdocs_service);
+
+    if (syncro.storages().empty())
+    {
+        syncro.create(gdocs_service, "sec_plugin", set);
+    }
+    
+    syncro_manager::Storage storage = syncro.storages().front();
+    
     
     
     SYNC_DEBUG << "4";
@@ -318,16 +346,19 @@ void bookmark_tab::test_export(){
     syncro_manager::Setter s = boost::bind(set_group, boost::ref(context()), _1);
     
     
-    SYNC_DEBUG << "5";
-    syncro_manager::Object syncer = syncro.attach("bookmarks", g, s, "bookmarks");
+    if (!s_obj)
+    {
+        SYNC_DEBUG << "5";
+        s_obj = syncro.attach("bookmarks", g, s, "bookmarks");
+    }
     
     SYNC_DEBUG << "6";
     
-    syncro.bind(syncer, storage);
+    syncro.bind(s_obj, storage);
     
     SYNC_DEBUG << "7";
     
-    syncro.put(syncer);
+    syncro.put(s_obj);
     
     SYNC_DEBUG << "8";
 }

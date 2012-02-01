@@ -44,10 +44,10 @@ public:
 
     /*! list of created storages */
     std::list<Storage> storages() const;
-    
-    /*! create new instance of storage provided by service */
-    Storage create(const Service&);
 
+    /*! create new instance of storage provided by service */
+    Storage create(const Service&, const QString& name, const QVariantMap& settings);
+   
     /*! attach callbacks to manager, and get object to interact
      * \p getter - callback to get data when synchronize needed
      * \p setter - callback to set data after synchronization
@@ -67,6 +67,8 @@ public:
     
     void put(const Object& obj);
 
+    void load();
+    
 public Q_SLOTS:
     void loaded(const remote::group& obj);
     void saved();
@@ -79,7 +81,11 @@ private:
     typedef std::set<Storage> Storages;
     typedef std::map<Object, Storages> Objects;
     
+    
+    remote::service& find_service(const QString& caption);
+    
 private:
+    QString services_uid_;
     std::list<Service> services_;
     std::list<Storage> storages_;
     Objects objects_;
@@ -163,7 +169,6 @@ private:
 //     boost::function<void()> eraser_;
 // };
 //     
-
 
 
 

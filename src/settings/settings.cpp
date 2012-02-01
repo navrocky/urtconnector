@@ -129,9 +129,10 @@ void base_settings::register_group(const QString& uid, const QString& group, con
     p_->registered_[uid]->beginGroup(group);
 }
 
-void base_settings::register_sub_group(const QString& uid, const QString& group, const QString& parent_uid)
+base_settings::qsettings_p base_settings::register_sub_group(const QString& uid, const QString& group, const QString& parent_uid)
 {
     p_->registered_[uid] = p_->create_group(uid, group, get_settings(parent_uid) );
+    return p_->registered_[uid];
 }
 
 
@@ -183,5 +184,13 @@ void copy_settings(base_settings::qsettings_p src, base_settings::qsettings_p ds
         dst->setValue( key, src->value(key) );
 
     dst->sync();
+}
+
+base_settings::qsettings_p fill_settings(base_settings::qsettings_p dst, const QVariantMap& settings)
+{
+    BOOST_FOREACH( const QString& key, settings.keys() )
+        dst->setValue(key, settings.value(key));
+    
+    return dst;
 }
 

@@ -95,6 +95,7 @@
 #include "updater/update_task.h"
 
 #include "remote/sync_settings_form.h"
+#include "remote/settings.h"
 #include "remote/manager.h"
 
 SYSLOG_MODULE(main_window)
@@ -230,7 +231,9 @@ main_window::main_window(QWidget *parent)
     connect(track_man_, SIGNAL(task_added(task_t*)), ui_->tasks_tracking_dock, SLOT(raise()));
     
     
+    base_settings().register_file(manager_options::uid(), "remote/manager", true);
     sync_man_.reset(new remote::syncro_manager());
+    sync_man_->load();
     
     
     ////////////////////////////////////////////////////////////////////////////

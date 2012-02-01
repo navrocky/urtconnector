@@ -8,6 +8,7 @@
 
 #include <QFileInfo>
 #include <QDir>
+#include <QSet>
 #include <QSettings>
 
 #include <backends/gdocs/gdocs.h>
@@ -23,6 +24,8 @@
 
 using namespace std;
 using namespace boost;
+
+static const QString s_caption = "service_caption";
 
 SYSLOG_MODULE(syncro_manager);
 
@@ -44,10 +47,11 @@ struct gdocs_service: public service {
         : service("gdocs", "gdocs service")
     {}
     
-    service::Storage do_create(boost::shared_ptr<QSettings> settings) const {
-        std::cerr<<"do_create"<<std::endl;
-        service::Storage s = service::Storage(new gdocs( "kinnalru@gmail.com", "malder11", "urt" ));
-        std::cerr<<"do_create ok"<<std::endl;
+    service::Storage do_create(const boost::shared_ptr<QSettings>& settings) const {
+        if (!settings->contains("mail") || !settings->contains("password"))
+            throw std::runtime_error("settings not valid");
+            
+        service::Storage s = service::Storage(new gdocs( settings->value("main").toString(), settings->value("password").toString(), "urt" ));
         return s;
     }
 };
@@ -55,6 +59,9 @@ struct gdocs_service: public service {
 
 syncro_manager::syncro_manager()
 {
+    services_uid_ = base_settings().get_settings(manager_options::uid())->fileName() + "services";
+    base_settings().register_sub_group(services_uid_, "services", manager_options::uid());
+    
     services_.push_back( Service(new gdocs_service) );
 }
 
@@ -76,8 +83,7 @@ list<syncro_manager::Storage> syncro_manager::storages() const
     return storages_;
 }
 
-
-syncro_manager::Storage syncro_manager::create(const Service& srv)
+syncro_manager::Storage syncro_manager::create(const Service& srv, const QString& name, const QVariantMap& settings)
 {
     std::list<Service>::iterator it = boost::find(services_, srv);
     
@@ -85,22 +91,17 @@ syncro_manager::Storage syncro_manager::create(const Service& srv)
         throw std::logic_error("so such service registered");
     
     remote::service& service = cast(srv);
+
+    manager_options().storages_set((manager_options().storages().toSet() << name).toList());
     
     base_settings main;
-    base_settings::qsettings_p self_options = main.get_settings(manager_options::uid());
-
-    const QString options_dir = QFileInfo(self_options->fileName()).dir().path();
-    const QString services_path = options_dir + "/services/" + service.caption();
-    const QString storage_path = services_path + "/plugin1";
-   
+    main.register_sub_group(services_uid_ + name, name, services_uid_);
     
-    manager_options mo;
+    LOG_DEBUG << "NEW GUID:" << services_uid_ + name;
     
-    mo.storages_set( mo.storages() << storage_path );
-
-    main.register_file("gdocs_uuid", storage_path, false);
-    
-    Storage storage = *storages_.insert(storages_.end(), service.create(main.get_settings("gdocs_uuid")));
+    base_settings::qsettings_p s = fill_settings(main.get_settings(services_uid_ + name), settings);
+    s->setValue(s_caption, service.caption());
+    Storage storage = *storages_.insert(storages_.end(), service.create(s));
 
     SYNC_DEBUG << "storage created";
 
@@ -111,6 +112,33 @@ void syncro_manager::bind(const Object& obj, const Storage& storage)
 {
     objects_[obj].insert(storage);
 }
+
+void syncro_manager::load()
+{
+    QStringList valid_storages;
+    manager_options mo;
+    
+    BOOST_FOREACH(const QString& storage, mo.storages()) {
+        base_settings::qsettings_p storage_cfg = base_settings().register_sub_group(services_uid_ + storage, storage, services_uid_);
+        if (!storage_cfg->allKeys().contains(s_caption)) continue;
+
+        try {
+            remote::service& service = find_service(storage_cfg->value(s_caption).toString());
+            LOG_DEBUG << "loading storage " << storage_cfg->value(s_caption).toString();
+            storages_.insert(storages_.end(), service.create(storage_cfg));
+            valid_storages << storage;
+        }
+        catch (std::runtime_error& e) {
+            LOG_ERR << "can't restore service %1: %2", storage_cfg->value(s_caption).toString(), e.what();
+        }
+    }
+    
+    if (valid_storages.isEmpty())
+        mo.storages_reset();
+    else
+        mo.storages_set(valid_storages);
+}
+
 
 
 void syncro_manager::sync(const Object& obj)
@@ -235,6 +263,18 @@ void syncro_manager::detach(const syncro_manager::Object& obj)
     if (objects_.erase(obj) == 0)
         throw std::runtime_error("No object with such name attached!");
 }
+
+remote::service& syncro_manager::find_service(const QString& caption)
+{
+    LOG_ERR << "caption:" << caption;
+    std::list<Service>::iterator srv = boost::find_if(services_, boost::bind(&service::caption, _1) == caption);
+    LOG_DEBUG << caption;
+    if (srv == services_.end())
+        throw std::runtime_error("No service with such caption");
+    
+    return cast(*srv);
+}
+
 
 
 };

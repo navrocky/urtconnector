@@ -50,7 +50,7 @@ public:
     void register_group(const QString& uid, const QString& group, const QString& filename, bool relative = true);
 
     ///Register QSettings from \p group to be accessible by \p uid in settings \b parent_uid
-    void register_sub_group(const QString& uid, const QString& group, const QString& parent_uid);
+    qsettings_p register_sub_group(const QString& uid, const QString& group, const QString& parent_uid);
 
     
     void unregister(const QString& uid);
@@ -75,7 +75,7 @@ base_settings::qsettings_p clone_settings( base_settings::qsettings_p s, const Q
 
 void copy_settings( base_settings::qsettings_p src, base_settings::qsettings_p dst );
 
-
+base_settings::qsettings_p fill_settings( base_settings::qsettings_p dst, const QVariantMap& settings );
 
 ///Base class tu provide uid to any settings objects
 
