@@ -285,7 +285,7 @@ void bookmark_tab::test_import(){
         syncro.create(gdocs_service, "sec_plugin", set);
     }
     
-    syncro_manager::Storage storage = syncro.storages().front();
+    syncro_manager::Storage storage = *syncro.storages().begin();
     
     
     SYNC_DEBUG << "4";
@@ -336,7 +336,7 @@ void bookmark_tab::test_export(){
         syncro.create(gdocs_service, "sec_plugin", set);
     }
     
-    syncro_manager::Storage storage = syncro.storages().front();
+    syncro_manager::Storage storage = *syncro.storages().begin();
     
     
     

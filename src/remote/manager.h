@@ -37,13 +37,15 @@ public:
 
 
     /*! List of registered services */
-    const std::list<Service>& services() const;
+    std::set<Service> services() const;
 
+        /*! list of created storages */
+    std::set<Storage> storages() const;
+    
     /*! list of attached objects */
     std::list<Object> objects() const;
 
-    /*! list of created storages */
-    std::list<Storage> storages() const;
+
 
     /*! create new instance of storage provided by service */
     Storage create(const Service&, const QString& name, const QVariantMap& settings);
@@ -82,13 +84,18 @@ private:
     typedef std::map<Object, Storages> Objects;
     
     
-    remote::service& find_service(const QString& caption);
+//     remote::service& find_service(const QString& caption);
     
 private:
-    QString services_uid_;
-    std::list<Service> services_;
-    std::list<Storage> storages_;
-    Objects objects_;
+    
+    
+    struct Pimpl;
+    std::auto_ptr<Pimpl> p_;
+    
+//     QString services_uid_;
+//     std::list<Service> services_;
+//     std::list<Storage> storages_;
+//     Objects objects_;
 
     
 

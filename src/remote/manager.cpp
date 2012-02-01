@@ -1,8 +1,16 @@
 
 #include <iostream>
 
+
 #include <boost/bind.hpp>
+#include <boost/fusion/container/map.hpp>
+#include <boost/fusion/include/at_key.hpp>
 #include <boost/iterator/transform_iterator.hpp>
+#include <boost/multi_index/global_fun.hpp>
+#include <boost/multi_index/mem_fun.hpp>
+#include <boost/multi_index/member.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index_container.hpp>
 #include <boost/range/algorithm/find.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 
@@ -25,17 +33,227 @@
 using namespace std;
 using namespace boost;
 
+using namespace boost::multi_index;
+
 static const QString s_caption = "service_caption";
 
 SYSLOG_MODULE(syncro_manager);
 
 #define SYNC_DEBUG LOG_DEBUG << " >> " << __FUNCTION__ << ": "
 
+#define CHECK_ITERATOR(it, end, msg) if ((it) == (end)) throw std::runtime_error(#msg);
+
+struct caption {};
+
 namespace remote {
 
+template<class KeyExtractor1,class KeyExtractor2>
+struct key_from_key
+{
+public:
+    typedef typename KeyExtractor1::result_type result_type;
+
+    key_from_key(
+        const KeyExtractor1& key1_=KeyExtractor1(),
+        const KeyExtractor2& key2_=KeyExtractor2()):
+        key1(key1_),key2(key2_)
+    {}
+
+    template<typename Arg>
+    result_type operator()(Arg& arg)const
+    {
+        return key1(key2(arg));
+    }
+
+private:
+    KeyExtractor1 key1;
+    KeyExtractor2 key2;
+};
+
+
+struct syncro_manager::Pimpl {
+    
+    typedef std::set<Service> Services;
+    typedef std::set<Storage> Storages;
+    
+    struct service_data {
+        Service service;
+        Storage storage;
+        
+        service_data(Service se, Storage st) : service(se), storage(st) {}
+    };    
+    
+    struct objects_data {
+        Object object;
+        Storage storage;
+        
+        objects_data(Object o, Storage st) : object(o), storage(st) {}
+    };   
+
+    typedef multi_index_container<
+        service_data,
+        indexed_by<
+            ordered_non_unique<
+                tag<Service>,
+                BOOST_MULTI_INDEX_MEMBER(service_data, Service, service)
+            >,
+            ordered_unique<
+                tag<Storage>,
+                BOOST_MULTI_INDEX_MEMBER(service_data, Storage, storage)
+            >,
+            ordered_unique<
+                tag<caption>,
+                key_from_key<
+                    BOOST_MULTI_INDEX_CONST_MEM_FUN(remote::service, const QString&, caption),
+                    BOOST_MULTI_INDEX_MEMBER(service_data, Service, service)
+                >
+            >
+        
+        >
+    > ServiceData;
+    
+    typedef multi_index_container<
+        objects_data,
+        indexed_by<
+            ordered_non_unique<
+                tag<Object>, BOOST_MULTI_INDEX_MEMBER(objects_data, Object, object)
+            >,
+            ordered_non_unique<
+                tag<Storage>, BOOST_MULTI_INDEX_MEMBER(objects_data, Storage, storage)
+            >,
+            ordered_non_unique<
+                tag<caption>,
+                key_from_key<
+                    BOOST_MULTI_INDEX_CONST_MEM_FUN(syncro_manager::object, const QString&, name),
+                    BOOST_MULTI_INDEX_MEMBER(objects_data, Object, object)
+                >
+            >            
+        >
+    > ObjectsData;
+
+    ServiceData srv_data;     
+    ObjectsData obj_data;
+    
+//     boost::fusion::map<
+//         boost::fusion::pair<ServiceData, ServiceData>,
+//         boost::fusion::pair<ObjectsData, ObjectsData> >
+//     multi_data_;
+//     
+//     template <typename MultiType>
+//     MultiType& data() { return boost::fusion::at_key<MultiType>(multi_data_); }
+//     
+//     template <typename MultiType>
+//     const MultiType& data() const { return boost::fusion::at_key<MultiType>(multi_data_); }
+    
+    
+    template <typename Tag>
+    struct srv_iterator {
+        typedef typename ServiceData::index<Tag>::type::iterator type;
+    };
+    
+    template <typename Tag>
+    struct obj_iterator {
+        typedef typename ObjectsData::index<Tag>::type::iterator type;
+    };
+    
+    template <typename Tag>
+    typename srv_iterator<Tag>::type srv_begin() { return srv_data.get<Tag>().begin(); }
+    
+    template <typename Tag>
+    typename srv_iterator<Tag>::type srv_end() { return srv_data.get<Tag>().end(); }
+    
+    template <typename Tag, typename Value>
+    typename srv_iterator<Tag>::type srv_find(const Value& v) { return srv_data.get<Tag>().find(v); }
+    
+    template <typename Tag>
+    typename obj_iterator<Tag>::type obj_begin() { return obj_data.get<Tag>().begin(); }
+    
+    template <typename Tag>
+    typename obj_iterator<Tag>::type obj_end() { return obj_data.get<Tag>().end(); }
+    
+    template <typename Tag, typename Value>
+    typename obj_iterator<Tag>::type obj_find(const Value& v) { return obj_data.get<Tag>().find(v); }
 
     
+    QString services_uid;
+    Services registered_services_;
     
+    
+    const Services& services() const {
+        return registered_services_;
+    }
+    
+    Storages storages() const {
+        return Storages(
+            make_transform_iterator(srv_data.begin(), boost::bind(&service_data::storage, _1)),
+            make_transform_iterator(srv_data.end(), boost::bind(&service_data::storage, _1))
+        );
+    }
+    
+    Storages storages(const Object& obj) const {
+        return Storages(
+            make_transform_iterator(obj_data.lower_bound<Object>(obj), boost::bind(&objects_data::storage, _1)),
+            make_transform_iterator(obj_data.upper_bound<Object>(obj), boost::bind(&objects_data::storage, _1))
+        );
+    }
+    
+    std::list<Object> objects() const {
+        return std::list<Object>(
+            boost::make_transform_iterator(obj_data.begin(), boost::bind(&objects_data::object, _1)),
+            boost::make_transform_iterator(obj_data.end(), boost::bind(&objects_data::object, _1))
+        );
+    }
+    
+};
+
+
+
+
+
+
+
+
+    
+
+    
+
+// struct test{
+//     typedef std::map<syncro_manager::Service, std::list<syncro_manager::Storage> > StoragesByService;
+//     typedef std::map<syncro_manager::Storage, syncro_manager::Service > ServiceByStorage;
+//     typedef std::map<std::string, syncro_manager::Service> ServiceByName;
+//     
+//     StoragesByService stse_;
+//     ServiceByStorage sest_;
+//     ServiceByName sen_;
+//     
+//     void insert(const std::string& name, syncro_manager::Service se, syncro_manager::Storage st){
+//         stse_[se].push_back(st);
+//         sest_[st] = se;
+//         sen_[name] = se;
+//     }
+//     
+//     const syncro_manager::Service& service(const std::string& name) const {
+//         const ServiceByName::const_iterator it = sen_.find(name);
+//         if (it == sen_.end()) throw std::runtime_error("no service for such name");
+//         return it->second;
+//     }
+//     
+//     const syncro_manager::Service& service(const syncro_manager::Storage& storage) const {
+//         const ServiceByStorage::const_iterator it = sest_.find(storage);
+//         if (it == sest_.end()) throw std::runtime_error("no service for such storage");
+//         return it->second;
+//     }
+//     
+//     const std::list<syncro_manager::Storage>& storages(const syncro_manager::Service& service) const {
+//         const ServiceByStorage::const_iterator it = sest_.find(storage);
+//         if (it == sest_.end()) throw std::runtime_error("no service for such storage");
+//         return it->second;
+//     }
+//     
+//    
+//     
+// };
+
 template <typename T>
 inline T& cast(const boost::shared_ptr<const T>& ptr) {
     return *const_cast<T*>(ptr.get());
@@ -56,53 +274,73 @@ struct gdocs_service: public service {
     }
 };
 
+struct gdocs_service2: public service {
+
+    gdocs_service2()
+        : service("gdocs2", "gdocs service2")
+    {}
+    
+    service::Storage do_create(const boost::shared_ptr<QSettings>& settings) const {
+        if (!settings->contains("mail") || !settings->contains("password"))
+            throw std::runtime_error("settings not valid");
+            
+        service::Storage s = service::Storage(new gdocs( settings->value("main").toString(), settings->value("password").toString(), "urt" ));
+        return s;
+    }
+};
+
 
 syncro_manager::syncro_manager()
+    : p_(new Pimpl)
 {
-    services_uid_ = base_settings().get_settings(manager_options::uid())->fileName() + "services";
-    base_settings().register_sub_group(services_uid_, "services", manager_options::uid());
+    p_->services_uid = base_settings().get_settings(manager_options::uid())->fileName() + "services";
+    base_settings().register_sub_group(p_->services_uid, "services", manager_options::uid());
     
-    services_.push_back( Service(new gdocs_service) );
+    p_->registered_services_.insert(Service(new gdocs_service));
 }
 
-const std::list<syncro_manager::Service>& syncro_manager::services() const
+syncro_manager::Pimpl::Services syncro_manager::services() const
 {
-    return services_;   
+    return p_->services();
+}
+
+syncro_manager::Pimpl::Storages syncro_manager::storages() const
+{
+    return p_->storages();
 }
 
 std::list<syncro_manager::Object> syncro_manager::objects() const
 {
-    return std::list<syncro_manager::Object>(
-        boost::make_transform_iterator(objects_.begin(), boost::bind(&Objects::value_type::first, _1)),
-        boost::make_transform_iterator(objects_.end(), boost::bind(&Objects::value_type::first, _1))
-    );
+    return p_->objects();
 }
 
-list<syncro_manager::Storage> syncro_manager::storages() const
-{
-    return storages_;
-}
+
 
 syncro_manager::Storage syncro_manager::create(const Service& srv, const QString& name, const QVariantMap& settings)
 {
-    std::list<Service>::iterator it = boost::find(services_, srv);
-    
-    if (it == services_.end())
-        throw std::logic_error("so such service registered");
+    CHECK_ITERATOR(p_->services().find(srv), p_->services().end(), "so such service registered");
     
     remote::service& service = cast(srv);
 
     manager_options().storages_set((manager_options().storages().toSet() << name).toList());
     
     base_settings main;
-    main.register_sub_group(services_uid_ + name, name, services_uid_);
+    main.register_sub_group(p_->services_uid + name, name, p_->services_uid);
     
-    LOG_DEBUG << "NEW GUID:" << services_uid_ + name;
+    LOG_DEBUG << "NEW GUID:" << p_->services_uid + name;
     
-    base_settings::qsettings_p s = fill_settings(main.get_settings(services_uid_ + name), settings);
+    base_settings::qsettings_p s = fill_settings(main.get_settings(p_->services_uid + name), settings);
     s->setValue(s_caption, service.caption());
-    Storage storage = *storages_.insert(storages_.end(), service.create(s));
+    
+    Storage storage = p_->srv_data.insert(Pimpl::service_data(srv, service.create(s))).first->storage;
 
+
+//FIXME ============ remove ==============
+    Pimpl::srv_iterator<Storage>::type it1, it2;
+    tr1::tie(it1, it2) = get<Storage>(p_->srv_data).equal_range(storage);
+    assert(std::distance(it1, it2) == 1);
+//FIXME ==================================
+    
     SYNC_DEBUG << "storage created";
 
     return storage;
@@ -110,7 +348,25 @@ syncro_manager::Storage syncro_manager::create(const Service& srv, const QString
 
 void syncro_manager::bind(const Object& obj, const Storage& storage)
 {
-    objects_[obj].insert(storage);
+    SYNC_DEBUG << p_->obj_data.size();
+    p_->obj_data.insert(Pimpl::objects_data(obj, storage));
+    SYNC_DEBUG << p_->obj_data.size();
+    
+//FIXME ============ remove ==============
+    Pimpl::obj_iterator<Object>::type it1, it2;
+    tr1::tie(it1, it2) = get<Object>(p_->obj_data).equal_range(obj);
+    
+    SYNC_DEBUG << "distance: " << std::distance(it1, it2);
+    
+    assert(std::distance(it1, it2) == 1);
+    
+    Pimpl::obj_iterator<Storage>::type it11, it22;
+    tr1::tie(it11, it22) = get<Storage>(p_->obj_data).equal_range(storage);
+    assert(std::distance(it11, it22) == 1);
+    
+//FIXME ==================================
+    
+    SYNC_DEBUG << "object binded, name=" << obj->name();    
 }
 
 void syncro_manager::load()
@@ -119,13 +375,15 @@ void syncro_manager::load()
     manager_options mo;
     
     BOOST_FOREACH(const QString& storage, mo.storages()) {
-        base_settings::qsettings_p storage_cfg = base_settings().register_sub_group(services_uid_ + storage, storage, services_uid_);
+        base_settings::qsettings_p storage_cfg = base_settings().register_sub_group(p_->services_uid + storage, storage, p_->services_uid);
         if (!storage_cfg->allKeys().contains(s_caption)) continue;
 
         try {
-            remote::service& service = find_service(storage_cfg->value(s_caption).toString());
+            Pimpl::srv_iterator<caption>::type srv = p_->srv_find<caption>(storage_cfg->value(s_caption).toString());
+            if (srv == p_->srv_end<caption>()) throw std::runtime_error("no such service registered");
+            
             LOG_DEBUG << "loading storage " << storage_cfg->value(s_caption).toString();
-            storages_.insert(storages_.end(), service.create(storage_cfg));
+            p_->srv_data.insert(Pimpl::service_data(srv->service, cast(srv->service).create(storage_cfg)));
             valid_storages << storage;
         }
         catch (std::runtime_error& e) {
@@ -151,7 +409,7 @@ void syncro_manager::sync(const Object& obj)
     }
  
     SYNC_DEBUG << "s3";
-    sync_task& task = *tasks_.insert(tasks_.end(), sync_task(obj, objects_[obj], obj->get()));
+    sync_task& task = *tasks_.insert(tasks_.end(), sync_task(obj, p_->storages(obj), obj->get()));
     SYNC_DEBUG << "s4";
     storage& storage = cast(task.current_storage());
     
@@ -176,7 +434,7 @@ void syncro_manager::put(const remote::syncro_manager::Object& obj)
     }
  
     SYNC_DEBUG << "p3";
-    sync_task& task = *tasks_.insert(tasks_.end(), sync_task(obj, objects_[obj], obj->get()));
+    sync_task& task = *tasks_.insert(tasks_.end(), sync_task(obj, p_->storages(obj), obj->get()));
     SYNC_DEBUG << "p4";
     storage& storage = cast(task.current_storage());
     
@@ -249,31 +507,33 @@ struct equal_name {
 
 syncro_manager::Object syncro_manager::attach(const QString& name, const Getter& g, const Setter& s, const QString& desc)
 {
-    if (boost::find_if(objects_, equal_name(name)) != objects_.end())
+    if (p_->obj_find<caption>(name) != p_->obj_end<caption>())
         throw std::runtime_error("Object with such name already attached!");
 
     Object obj(new object(g, s, name, desc));
-    objects_.insert(std::make_pair(obj, Storages()));
+    p_->obj_data.insert(Pimpl::objects_data(obj, Storage()));
     
     return obj;
 }
 
 void syncro_manager::detach(const syncro_manager::Object& obj)
 {
-    if (objects_.erase(obj) == 0)
-        throw std::runtime_error("No object with such name attached!");
+    Pimpl::obj_iterator<Object>::type it1, it2;
+    boost::tuples::tie(it1,it2) = get<Object>(p_->obj_data).equal_range(obj);
+    
+    p_->obj_data.erase(it1, it2);
 }
 
-remote::service& syncro_manager::find_service(const QString& caption)
-{
-    LOG_ERR << "caption:" << caption;
-    std::list<Service>::iterator srv = boost::find_if(services_, boost::bind(&service::caption, _1) == caption);
-    LOG_DEBUG << caption;
-    if (srv == services_.end())
-        throw std::runtime_error("No service with such caption");
-    
-    return cast(*srv);
-}
+// remote::service& syncro_manager::find_service(const QString& caption)
+// {
+//     LOG_ERR << "caption:" << caption;
+//     std::list<Service>::iterator srv = boost::find_if(services_, boost::bind(&service::caption, _1) == caption);
+//     LOG_DEBUG << caption;
+//     if (srv == services_.end())
+//         throw std::runtime_error("No service with such caption");
+//     
+//     return cast(*srv);
+// }
 
 
 
