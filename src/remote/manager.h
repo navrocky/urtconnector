@@ -26,7 +26,7 @@ public:
     typedef boost::shared_ptr<const object> Object;
     
     /*! Type of access key to registered services*/
-    typedef boost::shared_ptr<const service> Service;
+    typedef boost::shared_ptr<const remote::service> Service;
     
     /*! Type of access key to existing storage */
     typedef boost::shared_ptr<const storage> Storage;
@@ -35,20 +35,27 @@ public:
 
     syncro_manager();
 
-
     /*! List of registered services */
     std::set<Service> services() const;
 
-        /*! list of created storages */
-    std::set<Storage> storages() const;
+    /*! Get Service apropriate to this \p storage */
+    Service service(const Storage& storage) const;
     
-    /*! list of attached objects */
-    std::list<Object> objects() const;
+    
+    /*! List of storages apropriate to this \p srv or \b All storages*/
+    std::set<Storage> storages(const Service& srv = Service()) const;
+    
+    /*! List of storages apropriate to this \p storage or \b All objects*/
+    std::set<Object> objects(const Storage& storage = Storage()) const;
 
 
 
     /*! create new instance of storage provided by service */
     Storage create(const Service&, const QString& name, const QVariantMap& settings);
+    
+    void remove(const Storage& storage);
+    
+    QVariantMap settings(const Storage& storage) const;
    
     /*! attach callbacks to manager, and get object to interact
      * \p getter - callback to get data when synchronize needed
@@ -63,6 +70,17 @@ public:
 
     /*! Bind \p subject to be synced with \p storage*/
     void bind(const Object& subject, const Storage& storage);
+    
+    /*! UnBind \p subject from all storages */
+    void unbind(const Object& subject);
+    
+    /*! UnBind \p storage from all subjects */
+    void unbind(const Storage& storage);
+    
+    void unbind(const Object& subject, const Storage& storage);
+    
+    
+    
 
     /*! start syncronization */
     void sync(const Object& obj);
@@ -77,8 +95,13 @@ public Q_SLOTS:
     void error(const QString& err);
     void finished();
 
+Q_SIGNALS:
+    void storage_changed(remote::syncro_manager::Storage current, remote::syncro_manager::Storage previous);
+    void object_changed(remote::syncro_manager::Object current, remote::syncro_manager::Object previous);
    
 private:
+    
+    void register_service(const Service& srv);
 
     typedef std::set<Storage> Storages;
     typedef std::map<Object, Storages> Objects;

@@ -11,7 +11,8 @@ server_bookmark::server_bookmark(const server_id& id,
                                  const QString& comment,
                                  const QString& password,
                                  const QString& rcon_password,
-                                 const QString& ref_password)
+                                 const QString& ref_password,
+                                 const QDateTime& sync_stamp)
 {
     d->id = id;
     d->name = name;
@@ -19,6 +20,8 @@ server_bookmark::server_bookmark(const server_id& id,
     d->password = password;
     d->rcon_password = rcon_password;
     d->ref_password = ref_password;
+    if (!sync_stamp.isNull())
+        set_sync_stamp(sync_stamp);
 }
 
 const server_bookmark& server_bookmark::empty()

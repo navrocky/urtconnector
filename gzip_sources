@@ -1,2 +1,2 @@
 #!/bin/sh
-tar --exclude-vcs --exclude="*.kdev4" --exclude=".kdev4" --exclude="release" --exclude="debug" -cf - ../urtconnector | gzip -f9 > ../urtconnector.tar.gz
+tar --exclude-vcs --exclude="*.kdev4" --exclude=".kdev4" --exclude="release" --exclude="debug" -cf - -C ../urtconnector-0.8.0/ | gzip -f9 > ../urtconnector.tar.gz

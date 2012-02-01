@@ -76,6 +76,7 @@ base_settings::qsettings_p clone_settings( base_settings::qsettings_p s, const Q
 void copy_settings( base_settings::qsettings_p src, base_settings::qsettings_p dst );
 
 base_settings::qsettings_p fill_settings( base_settings::qsettings_p dst, const QVariantMap& settings );
+QVariantMap extract_settings(base_settings::qsettings_p src);
 
 ///Base class tu provide uid to any settings objects
 

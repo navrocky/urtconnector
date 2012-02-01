@@ -73,7 +73,7 @@ public:
     const QString& caption() const { return caption_; };
     const QString& description() const {  return desc_; };
 
-    Storage create(const boost::shared_ptr<QSettings>& settings) {
+    Storage create(const boost::shared_ptr<QSettings>& settings) const {
         return do_create(settings);
     }
     

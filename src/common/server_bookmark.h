@@ -21,7 +21,8 @@ public:
                     const QString& comment,
                     const QString& password,
                     const QString& rcon_password,
-                    const QString& ref_password);
+                    const QString& ref_password,
+                    const QDateTime& sync_stamp);
 
     const server_id& id() const { return d->id; }
     void set_id(const server_id& val) { d->id = val; set_sync_stamp(); }

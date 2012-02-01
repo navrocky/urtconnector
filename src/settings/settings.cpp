@@ -194,3 +194,13 @@ base_settings::qsettings_p fill_settings(base_settings::qsettings_p dst, const Q
     return dst;
 }
 
+QVariantMap extract_settings(base_settings::qsettings_p src)
+{
+    QVariantMap dst;
+    BOOST_FOREACH( const QString& key, src->allKeys() )
+        dst[key] = src->value(key);
+    
+    return dst;
+}
+
+

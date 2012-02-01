@@ -337,7 +337,7 @@ void main_window::show_options()
     d.add_item( new history_settings_form() );
     d.add_item( new rcon_settings_form() );
     d.add_item( new anticheat::settings_widget() );
-    d.add_item( new sync_settings_form() );
+    d.add_item( new sync_settings_form(sync_man_) );
 
     d.exec();
 
