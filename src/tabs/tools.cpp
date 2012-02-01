@@ -15,6 +15,7 @@
 #include "tools.h"
 
 const int c_ping_column = 3;
+const int c_player_count_column = 6;
 
 ////////////////////////////////////////////////////////////////////////////////
 // server_info_item
@@ -31,14 +32,22 @@ server_info_item::server_info_item(QTreeWidgetItem* parent)
 
 bool server_info_item::operator<(const QTreeWidgetItem &other) const
 {
-    if (treeWidget()->sortColumn() == c_ping_column)
+    switch (treeWidget()->sortColumn())
     {
-        int i1 = text(c_ping_column).toInt();
-        int i2 = other.text(c_ping_column).toInt();
-        return i1 < i2;
+        case c_ping_column:
+        {
+            int i1 = text(c_ping_column).toInt();
+            int i2 = other.text(c_ping_column).toInt();
+            return i1 < i2;
+        }
+        case c_player_count_column:
+        {
+            int i1 = data(c_player_count_column, Qt::UserRole).toInt();
+            int i2 = other.data(c_player_count_column, Qt::UserRole).toInt();
+            return i1 < i2;
+        }
     }
-    else
-        return QTreeWidgetItem::operator<(other);
+    return QTreeWidgetItem::operator<(other);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -103,10 +112,11 @@ void update_server_info_item(const tab_context& ctx, QTreeWidgetItem* item)
             player_count = QString("%1/%2/%3").arg(si->players.size())
             .arg(si->public_slots()).arg(si->max_player_count);
 
-        item->setText(6, player_count);
-        item->setToolTip(6, QObject::tr("Current %1 / Public slots %2 / Total %3")
+        item->setText(c_player_count_column, player_count);
+        item->setToolTip(c_player_count_column, QObject::tr("Current %1 / Public slots %2 / Total %3")
                          .arg(si->players.size()).arg(si->public_slots())
                          .arg(si->max_player_count));
+        item->setData(c_player_count_column, Qt::UserRole, si->players.size());
         item->setData(0, c_stamp_role, QVariant::fromValue(si->update_stamp()));
         item->setText(7, id.address());
     }
