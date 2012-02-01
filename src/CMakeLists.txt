@@ -137,6 +137,7 @@ cl_define_deps(
     preferences
     common
     database
+    remote
 )
 
 qt4_wrap_cpp(CL_SOURCES ${CL_MOC})
