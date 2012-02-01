@@ -30,6 +30,9 @@ typedef boost::shared_ptr<context> ContextPtr;
 struct document {
     QString id;
     QString src;
+    QString edit;
+    QString e;
+    QString edit_media;
     QString filename;
 };
 
@@ -108,6 +111,18 @@ public:
         return QString();
     }
     
+    QString update_url() const {
+        QDomNodeList links = dom_.elementsByTagName("link");
+        
+        for (uint i = 0; i < links.size(); ++ i)
+        {
+            if (links.at(i).toElement().attribute("rel") != "http://schemas.google.com/g/2005#resumable-edit-media") continue;
+
+            return links.at(i).toElement().attribute("href");
+        }
+        return QString();
+    }
+    
     std::list<document> documents() const {
         std::list<document> ret;
         QDomNodeList entries = dom_.elementsByTagName("entry");
@@ -128,6 +143,23 @@ public:
             d.id.replace(tmp, "");
 
             d.src = entries.at(i).firstChildElement("content").attribute("src");
+            
+            QDomNodeList childs = entries.at(i).childNodes();
+            for (uint c = 0; c < childs.size(); ++c)
+            {
+                if (childs.at(c).toElement().attribute("rel")== "edit")
+                {
+                    d.e = childs.at(c).toElement().attribute("href");
+                }
+                if (childs.at(c).toElement().attribute("rel")== "edit-media")
+                {
+                    d.edit_media = childs.at(c).toElement().attribute("href");
+                }
+                if (childs.at(c).toElement().attribute("rel")== "http://schemas.google.com/g/2005#resumable-edit-media")
+                {
+                    d.edit = childs.at(c).toElement().attribute("href");
+                }
+            }
             
             ret.push_back(d);
         }

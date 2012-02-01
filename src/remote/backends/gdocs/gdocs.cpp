@@ -137,6 +137,7 @@ gdocs::gdocs(const QString& login, const QString& password, const QString& app_n
     , app_name_(app_name)
     , id_(0)
 {
+    LOG_DEBUG << "LOGIN=" << login.toStdString();
     connect(manager_, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)),
             SLOT(authentication_required(QNetworkReply*, QAuthenticator*)));
 
@@ -221,6 +222,9 @@ void gdocs::finished(QNetworkReply* reply)
     {
         LOG_ERR << reply->error();
         LOG_ERR << reply->errorString().toStdString();
+        
+        LOG_DEBUG << "Reply data:" << QString(reply->readAll()).toStdString();
+        
         //TODO handle error string
         emit ctx->pending->error(reply->errorString());
         return;
@@ -368,6 +372,7 @@ void gdocs::process_query(ContextPtr ctx, const QByteArray& data)
         LOG_DEBUG << "Finded file: "<< ctx->doc.filename.toStdString();
         LOG_DEBUG << "Finded id: "  << ctx->doc.id.toStdString();
         LOG_DEBUG << "Finded src: " << ctx->doc.src.toStdString();
+        LOG_DEBUG << "Finded edit: " << ctx->doc.edit.toStdString();
         emit ctx->pending->exists();
     }
     else
@@ -460,6 +465,8 @@ void gdocs::process_upload(ContextPtr ctx, const QUrl& u, const QByteArray& data
     if (u.isEmpty())
         return;
 
+    LOG_DEBUG << " 11111111 process_upload: " << data.constData();
+    
     QUrl url( QUrl::fromEncoded(data));
     
     LOG_DEBUG << "http PUT: " << url.toString().toStdString();
