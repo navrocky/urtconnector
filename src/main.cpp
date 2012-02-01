@@ -65,17 +65,17 @@ void init_application(QApplication* a)
 
     if ( !qt_trans->isEmpty() )
     {
-        LOG_DEBUG << "Translation \"%1\" loaded", app_settings().country_name();
+        LOG_DEBUG << "Qt translation \"%1\" loaded", app_settings().country_name();
     }
     else
     {
-        LOG_DEBUG << "Failed to load system translation \"%1\". Trying \"%2\" instead...", app_settings().country_name(), QLocale::system().name();
+        LOG_DEBUG << "Failed to load Qt translation \"%1\". Trying \"%2\" instead...", app_settings().country_name(), QLocale::system().name();
 
         qt_trans = system_translator( QLocale::system().name() );
         if( !qt_trans->isEmpty() )
-            LOG_DEBUG << "Translation \"%1\" loaded", QLocale::system().name();
+            LOG_DEBUG << "Qt translation \"%1\" loaded", QLocale::system().name();
         else
-            LOG_DEBUG << "Failed to load system translation \"%1\"", QLocale::system().name();
+            LOG_DEBUG << "Failed to load Qt translation \"%1\"", QLocale::system().name();
     }
 
     a->installTranslator(qt_trans.get());
@@ -84,11 +84,11 @@ void init_application(QApplication* a)
 
     if ( !urt_tr->isEmpty()  )
     {
-        LOG_DEBUG << "Translation \"%1\" loaded", app_settings().country_name();
+        LOG_DEBUG << "Application translation \"%1\" loaded", app_settings().country_name();
     }
     else
     {
-        LOG_DEBUG << "Failed to load local translation \"%1\"", app_settings().country_name();
+        LOG_DEBUG << "Failed to load application translation \"%1\"", app_settings().country_name();
     }
 
     a->installTranslator(urt_tr.get());
