@@ -132,6 +132,8 @@ bookmark_tab::bookmark_tab(const QString& object_name,
 
     update_actions();
     
+    
+    //registering Object in syncro_manager
     syncro_manager::Getter g = boost::bind(get_group, boost::ref(context()));
     syncro_manager::Setter s = boost::bind(set_group, boost::ref(context()), _1);
     context().syncro().attach("bookmarks", g, s, "bookmarks");

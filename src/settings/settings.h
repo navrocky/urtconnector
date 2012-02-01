@@ -9,9 +9,7 @@
 class QString;
 class QSettings;
 
-///Main settings holder
-
-/*!
+/*! \brief Main settings holder
 
 Example:
 
@@ -30,8 +28,12 @@ Example:
         //registering launch uid to be handled from subgroup.
         main_settings.register_file( launch_settings::uid(), "launch" );
     }
- 
- */
+
+    \warning:
+    Official Qt: 
+    void QSettings::clear() - Removes all entries in the primary location associated to this QSettings object.
+    If you only want to remove the entries in the current group(), use remove("") instead.
+*/
 class base_settings
 {
 public:
@@ -79,7 +81,6 @@ base_settings::qsettings_p fill_settings( base_settings::qsettings_p dst, const 
 QVariantMap extract_settings(base_settings::qsettings_p src);
 
 ///Base class tu provide uid to any settings objects
-
 template<typename T>
 class settings_uid_provider
 {

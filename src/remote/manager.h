@@ -50,8 +50,8 @@ public:
 
 
 
-    /*! create new instance of storage provided by service */
-    Storage create(const Service&, const QString& name, const QVariantMap& settings);
+    /*! create new instance of storage provided by \p service */
+    Storage create(const Service& service, const QString& name, const QVariantMap& settings);
     
     void remove(const Storage& storage);
     
@@ -82,11 +82,12 @@ public:
     
     
 
-    /*! start syncronization */
+    /*! start syncronization */ //FIXME just download for now
     void sync(const Object& obj);
     
     void put(const Object& obj);
 
+    /*! restore state of manager from config*/
     void load();
     
 public Q_SLOTS:
@@ -96,6 +97,7 @@ public Q_SLOTS:
     void finished();
 
 Q_SIGNALS:
+    //FIXME works strange
     void storage_changed(remote::syncro_manager::Storage current, remote::syncro_manager::Storage previous);
     void object_changed(remote::syncro_manager::Object current, remote::syncro_manager::Object previous);
    
@@ -106,21 +108,14 @@ private:
     typedef std::set<Storage> Storages;
     typedef std::map<Object, Storages> Objects;
     
-    
-//     remote::service& find_service(const QString& caption);
-    
 private:
     
     
     struct Pimpl;
     std::auto_ptr<Pimpl> p_;
     
-//     QString services_uid_;
-//     std::list<Service> services_;
-//     std::list<Storage> storages_;
-//     Objects objects_;
 
-    
+    //TODO move to cpp and redesign
 
     struct sync_task {
         
@@ -156,21 +151,13 @@ private:
         
         return *it;
     }
-    
-/*    
-    std::map<boost::sha, boost::function<Storage()> > factory_;*/
+
 };
 
 /*! \brief This object represents one element of syncronization
  * For example: "bookmarks" or "profile"
  */
 class syncro_manager::object {
-
-friend class syncro_manager;
-
-    object(const Getter& getter, const Setter& setter, const QString& name, const QString& desc)
-        : getter_(getter), setter_(setter), name_(name), description_(desc)
-    {}
 public:
 
     inline const QString& name() const { return name_; }
@@ -180,26 +167,19 @@ public:
     virtual void put(const remote::group& gr) { setter_(gr); };
     
 private:
+    
+    friend class syncro_manager;
+
+    object(const Getter& getter, const Setter& setter, const QString& name, const QString& desc)
+        : getter_(getter), setter_(setter), name_(name), description_(desc) {}
+    
+private:
     Getter getter_;
     Setter setter_;
     
     QString name_;
     QString description_;
 };
-
-
-// struct manager::registrator {
-//     
-//     template<typename Eraser>
-//     registrator(const Eraser& eraser) : eraser_(eraser) {}
-//    
-//     ~registrator() {eraser_();}
-//     
-// private:
-//     boost::function<void()> eraser_;
-// };
-//     
-
 
 
 } //namespace remote

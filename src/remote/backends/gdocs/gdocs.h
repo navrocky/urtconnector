@@ -30,9 +30,9 @@ typedef boost::shared_ptr<context> ContextPtr;
 struct document {
     QString id;
     QString src;
-    QString edit;
-    QString e;
-    QString edit_media;
+    QString edit_href;
+    QString edit_media_href;
+    QString update_href;
     QString filename;
 };
 
@@ -149,15 +149,15 @@ public:
             {
                 if (childs.at(c).toElement().attribute("rel")== "edit")
                 {
-                    d.e = childs.at(c).toElement().attribute("href");
+                    d.edit_href = childs.at(c).toElement().attribute("href");
                 }
                 if (childs.at(c).toElement().attribute("rel")== "edit-media")
                 {
-                    d.edit_media = childs.at(c).toElement().attribute("href");
+                    d.edit_media_href = childs.at(c).toElement().attribute("href");
                 }
                 if (childs.at(c).toElement().attribute("rel")== "http://schemas.google.com/g/2005#resumable-edit-media")
                 {
-                    d.edit = childs.at(c).toElement().attribute("href");
+                    d.update_href = childs.at(c).toElement().attribute("href");
                 }
             }
             
