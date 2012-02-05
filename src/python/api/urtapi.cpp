@@ -1,41 +1,12 @@
 
 #include <boost/function.hpp>
-
-#include <boost/python/to_python_converter.hpp>
-
 #include <boost/mpl/vector.hpp>
+#include <boost/python.hpp>
 
 #include <QString>
 
-#include "urt_api.h"
-
-char const* greet()
-{
-	std::cerr<<"This is fucken greet!"<<std::endl;
-   return "hello, world";
-}
-
-
-struct QString_to_python_str
-{
-    static PyObject* convert(const QString& s)
-    {
-        return boost::python::incref(
-            boost::python::object(
-                s.toUtf8().constData()).ptr());
-    }
-    
-    
-};
-
-// register the QString-to-python converter
-
-
-std::string to_str(server_bookmark* bm)
-{
-	return bm->name().toStdString();
-}
-
+#include "common/server_id.h"
+#include "common/server_bookmark.h"
 
 template <typename T>
 struct smart_getter {};
@@ -48,18 +19,7 @@ struct smart_getter<boost::shared_ptr<T> > {
     }
 };
 
-
-template <typename B, typename Func>
-bool test_f(B b) {
-//     return (b->*Func)();
-};
-
-struct tester {
-    bool yep()
-    {
-        return true;
-    }
-};
+/// super macros to make function call through boost::shared_ptr, when object stord in python by shared_ptr
 #define MAKE_SMART_FUNC_0(type, func, ret)\
     make_function( \
         boost::bind(&type::func, boost::bind(smart_getter<boost::shared_ptr<type> >::get_ptr, _1)) \
@@ -81,20 +41,10 @@ struct tester {
         , boost::mpl::vector<ret, boost::shared_ptr<type>, arg1, arg2>() \
     )
 
-
-BOOST_PYTHON_MODULE(liburt_api)
+    
+BOOST_PYTHON_MODULE(liburtapi)
 {
-//     test_m<&server_bookmark_list::size> t;
-    
     using namespace boost::python;
-    
-    tester t;
-    
-//     test_f<tester*, &tester::>(&t);
-    
-//     boost::python::to_python_converter<QString, QString_to_python_str>();
-    
-    def("greet", greet);
     
     class_<QString>("QString")
         .def(init<const char*>())
@@ -136,19 +86,6 @@ BOOST_PYTHON_MODULE(liburt_api)
         .def("empty", &server_bookmark::is_empty);
 	
 	
-//     class_<QObject*>("QObject");
-        
-        struct GS {
-            static void add(server_bookmark_list_p l, const server_bookmark& bm ){
-                l->add(bm);
-            }
-        };
-        
-        boost::function<void(server_bookmark_list_p, server_bookmark)> f =
-        boost::bind(&server_bookmark_list::add
-            , boost::bind(smart_getter<server_bookmark_list_p>::get_ptr, _1)
-            , _2);
-        
     class_<server_bookmark_list_p>("server_bookmark_list")
         .def("add", MAKE_SMART_FUNC_1(server_bookmark_list, add, void, const server_bookmark&) )
         .def("change", MAKE_SMART_FUNC_1(server_bookmark_list, change, void, const server_bookmark&) )        
@@ -156,19 +93,6 @@ BOOST_PYTHON_MODULE(liburt_api)
         .def("remove", MAKE_SMART_FUNC_1(server_bookmark_list, remove, void, const server_id&) )        
         .def("remove", MAKE_SMART_FUNC_1(server_bookmark_list, remove, void, const server_bookmark&) )
         .def("clear", MAKE_SMART_FUNC_0(server_bookmark_list, clear, void) )
-        
-    
-//             .def("add", make_function( 
-//                             f
-//                             , default_call_policies()
-//                             , boost::mpl::vector<void, server_bookmark_list_p, server_bookmark>()
-//                         ))
-//         .def("change", (void (server_bookmark_list::*)(const server_id&, const server_bookmark&))(&server_bookmark_list::change))
-//         .def("change", (void (server_bookmark_list::*)( const server_bookmark&))(&server_bookmark_list::change))
-//         .def("remove", (void (server_bookmark_list::*)(const server_id&))(&server_bookmark_list::remove))
-//         .def("remove", (void (server_bookmark_list::*)(const server_bookmark&))(&server_bookmark_list::remove))
-//         .def("clear", &server_bookmark_list::clear)
-//         .def("get", &server_bookmark_list::get, return_value_policy<copy_const_reference>())
 // //         .def("list", &server_bookmark_list::list);
         .def("size", MAKE_SMART_FUNC_0(server_bookmark_list, size, int) );
 

@@ -56,10 +56,10 @@ void qsettings_deleter::aboutToQuit()
 struct base_settings::pimpl
 {
     pimpl(bool org)
-    : settings_(new QSettings(format_c, QSettings::UserScope
-                              , (org) ? QCoreApplication::organizationName() : QCoreApplication::applicationName()
-                              , QCoreApplication::applicationName()))
-    , registered_(settings_holder::registered())
+        : settings_(new QSettings(format_c, QSettings::UserScope
+                                , (org) ? QCoreApplication::organizationName() : QCoreApplication::applicationName()
+                                , QCoreApplication::applicationName()))
+        , registered_(settings_holder::registered())
     {}
 
     ///Get dir to the main QSettings object

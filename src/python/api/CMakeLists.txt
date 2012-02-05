@@ -1,4 +1,4 @@
-set(TARGET urt_api)
+set(TARGET urtapi)
 project(${TARGET})
 
 cmake_minimum_required(VERSION 2.4)
@@ -21,11 +21,10 @@ include_directories(${PYTHON_INCLUDE_DIRS})
 
 
 set(SOURCES
-    urt_api.cpp
+    urtapi.cpp
 )
 
 set(HEADERS
-    urt_api.h
 )
 
 

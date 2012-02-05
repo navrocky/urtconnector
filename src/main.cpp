@@ -40,8 +40,9 @@
 #include "app_options.h"
 
 #include "python/python_api.h"
-#include "python/engine.h"
-#include "python/module/urt_api.h"
+#include "python/python_engine.h"
+#include "boost/exception/diagnostic_information.hpp"
+#include <boost/exception/current_exception_cast.hpp>
 
 using namespace cl::syslog;
 using namespace std;
@@ -235,81 +236,8 @@ int main(int argc, char *argv[])
             return 0;
         }
 
-        python_ctx p_ctx;
-        python_init(p_ctx);
-	
-
-	boost::python::object Sb = python_eval<boost::python::object>("liburt_api.server_bookmark()", p_ctx);
-	
-	p_ctx.main_namespace["b"] = Sb;
-	
-	boost::python::object func = p_ctx.main_namespace["b"].attr("empty");
-	
-	
-	std::cerr<<"Empty = "<<boost::python::extract<bool>(func())<<std::endl;
-
-	server_bookmark& bm = boost::python::extract<server_bookmark&>(p_ctx.main_namespace["b"]);
-	
-	bm.set_name("super name!");
-	
-	std::cerr<<"Empty2 = "<<boost::python::extract<bool>(func())<<std::endl;
-	
-	boost::python::object x_class 
-		= boost::python::class_<server_id>("server_id")
-			.def("set_port", (void (server_id::*)(int))(&server_id::set_port));
-
-
-	
-	boost::python::object test = x_class();
-	
-	p_ctx.main_namespace["ff"] = test;
-
-	server_id& srv_id = boost::python::extract<server_id&>(test);
-	srv_id.set_port("32167");
-	
-	x_class.attr("port") = &server_id::port;
-	
-	python_exec("port = ff.port()", p_ctx);
-	
-	boost::python::object port = p_ctx.main_namespace["port"];
-	
-	std::cerr<<"FUCKEN port = " << boost::python::extract<int>(port)<<std::endl;
-			
-	
-	server_bookmark bm2;
-	boost::python::object new_bm(bm2);
-	
-	p_ctx.main_namespace["bm2"] = new_bm;
-	func = p_ctx.main_namespace["bm2"].attr("empty");
-	std::cerr<<"===== Empty = "<<boost::python::extract<bool>(func())<<std::endl;
-	server_bookmark& bm2_ref = boost::python::extract<server_bookmark&>(p_ctx.main_namespace["bm2"]);
-    bm2_ref.set_id(server_id("ip4"));
-	bm2_ref.set_name("super name4");
-	std::cerr<<"===== Empty = "<<boost::python::extract<bool>(func())<<std::endl;
-	
-	
-	QString bm3 = python_eval<QString>("bm2.name", p_ctx);
-	
-
-	std::cerr<<"Name="<<bm3.toStdString()<<std::endl;
-	
-
-	
-	
-	std::cerr<<"a3"<<std::endl;
-	python_exec("hello = file('/tmp/hello.txt', 'w')\n"
-                    "hello.write('Hello world!\\n')",
-		    p_ctx);
-	std::cerr<<"a4"<<std::endl;
-		    
-
         application a(argc, argv);
         gui_enabled = true;
-
-	python_exec("hello.write('application started\\n')", p_ctx);
-	
-    
-        
     
 #ifdef USE_SINGLE_APP
         if ( a.isRunning() )
@@ -341,19 +269,36 @@ int main(int argc, char *argv[])
         {
         }
 
+        python_ctx py_ctx;
+        
+        try {
+            python_init(py_ctx);
+        }
+        catch(std::exception& e) {
+            LOG_ERR << "can't initialize python interpretter";
+            if (boost::exception* be = boost::current_exception_cast<boost::exception>())
+            {
+                LOG_ERR << boost::diagnostic_information(*be);
+            }
+            else
+            {
+                LOG_ERR << e.what();
+            }
+        }
+
+        python_exec("hello = file('/tmp/hello.txt', 'w')\n"
+                    "hello.write('Hello world!\\n')",
+            py_ctx);
+            
+       
         main_window w;
 
-        server_bookmark_list_p lst =  w.bookmarks_;
+        std::auto_ptr<engine> eng_;
         
-        p_ctx.main_namespace["bm_list"] = lst;
-    
-        std::cerr<<"BMSIZE="<<python_eval<int>("bm_list.size()", p_ctx)<<std::endl;
-        python_exec("bm_list.add(bm2)", p_ctx);
-        std::cerr<<"BMSIZE2="<<python_eval<int>("bm_list.size()", p_ctx)<<std::endl;
-
-    
-        engine e(w.bookmarks_, p_ctx);
-        
+        if (py_ctx.initialized) {
+            eng_.reset(new engine(w.bookmarks_, py_ctx));
+        }
+                
         // detect christmas and activate this mode if any
 //        int month = QDate::currentDate().month();
 //        w.set_christmas_mode(month == 1 || month == 12);
@@ -366,27 +311,21 @@ int main(int argc, char *argv[])
 
         LOG_DEBUG << "Application finished";
 
-	python_exec(QString("hello.write('Iam %1\\n')").arg(a.applicationName()).toStdString(), p_ctx);
-	
-// 	server_bookmark bm = *w.bookmarks_->list().begin();
-// 	boost::python::object bookmark(bm);
-	
-	std::cerr<<"123"<<std::endl;
+	python_exec(QString("hello.write('Iam %1\\n')").arg(a.applicationName()).toStdString(), py_ctx);
 	
 
-//         .def_readonly("length", &Point::length)
-//         .def_readonly("angle", &Point::angle)
-//     )(3.0, 4.0);
-
 	
-// 	REFLECT_PYTHON(greet, p_ctx);
-	std::cerr<<"333"<<std::endl;
-	
-	
-	
-	python_exec("hello.write('exitting...\\n')", p_ctx);
-	python_exec("hello.close()", p_ctx);
+	python_exec("hello.write('exitting...\\n')", py_ctx);
+	python_exec("hello.close()", py_ctx);
         return res;
+    }
+    catch(const boost::exception& e) 
+    {
+        if (std::exception* se = boost::current_exception_cast<std::exception>())
+        {
+            error_str = to_qstr(se->what());
+        }
+       LOG_ERR << boost::diagnostic_information(e);
     }
     catch (const std::exception& e)
     {

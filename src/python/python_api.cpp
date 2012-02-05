@@ -1,32 +1,28 @@
 
-// char const* greet()
-// {
-//    return "hello, world";
-// }
+#include <boost/throw_exception.hpp>
+#include <boost/exception/info.hpp>
+#include <boost/exception/diagnostic_information.hpp>
 
-
-
-
-// BOOST_PYTHON_MODULE(hello_ext)
-// {
-//     using namespace boost::python;
-//     def("greet", greet);
-// }
-
-
-#include "python_api.h"
 #include <QSettings>
 #include <QFileInfo>
 #include <QDir>
+#include <QApplication>
+
+#include <cl/syslog/syslog.h>
+#include "python_api.h"
+
+SYSLOG_MODULE(pyhton_api)
 
 namespace py = boost::python;
 
+typedef boost::error_info<struct initialize_error, std::string> init_err;
+typedef boost::error_info<struct exec_error, std::string> exec_err;
+typedef boost::error_info<struct exec_file_error, std::string> exec_file_err;
 
 class stderr_catcher {
 public:
     void write(const std::string & message) {
-	if (!msg.empty()) msg += "\n";
-	msg += message;
+        msg += message;
     }
     
     std::string msg;
@@ -34,13 +30,20 @@ public:
 
 std::string python_err(python_ctx& ctx)
 {
-	py::object stderr_orig = ctx.main_namespace["sys"].attr("stderr");
-	ctx.main_namespace["sys"].attr("stderr") = stderr_catcher();
+    try {
+        py::object stderr_orig = ctx.main_namespace["sys"].attr("stderr");
+        ctx.main_namespace["sys"].attr("stderr") = stderr_catcher();
 	
         PyErr_Print();	
-	stderr_catcher catcher = py::extract<stderr_catcher>(ctx.main_namespace["sys"].attr("stderr"));
-	ctx.main_namespace["sys"].attr("stderr") = stderr_orig;
-	return  catcher.msg;
+        stderr_catcher catcher = py::extract<stderr_catcher>(ctx.main_namespace["sys"].attr("stderr"));
+        ctx.main_namespace["sys"].attr("stderr") = stderr_orig;
+        return  catcher.msg;
+    }
+    catch(...)
+    {
+        PyErr_Print();      
+        return "Can't extract python error: something goes very wrong!";
+    }
 }
 
 
@@ -50,86 +53,71 @@ void python_init(python_ctx& ctx)
     {
         Py_Initialize();
 
+        py::class_<stderr_catcher>("stderr_catcher")
+            .def("write", &stderr_catcher::write);
+        
 	
+        //Я не знаю что ИМЕННО это значит
         ctx.main_module = py::import("__main__");
         ctx.main_namespace = ctx.main_module.attr("__dict__");
 
+        //и не знаю почему надо писать так но задача следующая -
+        // загркзить "sys" чтоб он было доступен как "sys"
         ctx.main_namespace["sys"] = py::import("sys");
 
+        LOG_DEBUG << "configuring pyhton environment";
+        
         python_exec(
             "sys.path.append('./')\n"
-            "import liburt_api\n",
+            "import liburtapi\n",
             ctx
         );
 
-        py::class_<stderr_catcher>("stderr_catcher")
-            .def("write", &stderr_catcher::write);
-	
-//         QString py_main = QFileInfo(QSettings().fileName()).dir().path();
-        QString py_main = QSettings().fileName();
-        py_main += "/main.py";
+        //FIXME //HACK :)
+        QString py_main = QFileInfo(QSettings(qApp->applicationName(), qApp->applicationName()).fileName()).dir().path();
+        py_main += "/scripts/main.py";
         
-        boost::python::exec_file(py_main.toStdString().c_str(), ctx.main_namespace);
-
-// 	python_exec("a = b", ctx);
-	
-// 	ctx.main_namespace["liburt_api"] = py::import("liburt_api");
-	  // Register the module with the interpreter
-
-
-	
+        LOG_DEBUG << "loading main.py...";
+        boost::python::exec_file(py_main.toStdString().c_str(), ctx.main_namespace, ctx.main_namespace);
+        ctx.initialized = true;
     }
     catch(py::error_already_set const &)
     {
-        throw std::runtime_error(python_err(ctx));
-    }		
+        throw boost::enable_error_info(std::runtime_error(python_err(ctx))) << init_err("Pyhton initialization failed");
+    }
+    catch(boost::exception& e)
+    {
+        e << init_err("Pyhton initialization failed");
+        throw;
+    }    
+    LOG_DEBUG << "python initialized";
 }
 
 boost::python::object python_exec(const std::string& expression, python_ctx& ctx)
 {
     try
     {	
-        return boost::python::exec(expression.c_str(), ctx.main_namespace);
+        LOG_HARD << "python_exec: %1", expression;
+        return boost::python::exec(expression.c_str(), ctx.main_namespace, ctx.main_namespace);
     }
     catch(py::error_already_set const &)
     {
-        throw std::runtime_error(python_err(ctx));
+        throw boost::enable_error_info(std::runtime_error("Executing of python expression failed")) << exec_err(python_err(ctx));
     }	
 }
 
-
-// int main(int argc, char **argv)
-// {
-//     
-//     
-// 
-// 
-//     python::object ignored = python::exec("hello = file('hello.txt', 'w')\n"
-//                       "hello.write('Hello world!')\n"
-//                       "hello.close()",
-//                       python_main_namespace);
-    
-    // Set up general stuff to allow Python to be used
-/*    EXEC_PYTHON("import sys, os");*/
-
-
-    // Pass C commandline arguments untouched to Python
- /*   try
-    {
-        boost::python::list args;
-        for (int i = 0; i < argc; i++)
-            args.append(std::string(argv[i]));
-        REFLECT_PYTHON( set_python_args )
-        set_python_args(args);
-    } catch(boost::python::error_already_set const &)
-    {
-        printf("Error in Python execution of setting args\r\n");
-        PyErr_Print();
-        assert(0 && "Halting on Python error");
+boost::python::api::object python_exec_file(const std::string& filename, python_ctx& ctx)
+{
+    try
+    {   
+        LOG_HARD << "python_exec_file: %1", filename;
+        return boost::python::exec_file(filename.c_str(), ctx.main_namespace, ctx.main_namespace);
     }
-   */ 
-    
-// }
+    catch(py::error_already_set const &)
+    {
+        throw boost::enable_error_info(std::runtime_error("Executing of python file failed")) << exec_err(python_err(ctx));
+    }   
+}
 
 
 
