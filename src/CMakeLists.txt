@@ -16,6 +16,9 @@ if (UNIX)
     find_package(X11)
 endif()
 
+find_package(PythonLibs)
+include_directories(${PYTHON_INCLUDE_DIRS})
+
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 find_package( Boost 1.39.0 REQUIRED COMPONENTS
@@ -24,6 +27,7 @@ find_package( Boost 1.39.0 REQUIRED COMPONENTS
     date_time
     filesystem
     system
+    python
 )
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -65,6 +69,7 @@ cl_add_subdirectory(friend_list)
 cl_add_subdirectory(tabs)
 cl_add_subdirectory(setting_forms)
 cl_add_subdirectory(tracking)
+cl_add_subdirectory(python)
 
 cl_define_headers(
     about_dialog.h
@@ -142,7 +147,7 @@ qt4_wrap_ui(CL_SOURCES ${CL_IFACES})
 qt4_add_resources(CL_SOURCES ${CL_RESOURCES})
 
 add_executable(${TARGET} WIN32 ${CL_HEADERS} ${CL_SOURCES})
-target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES} ${X11_LIBRARIES} ${CL_DEPS})
+target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES} ${X11_LIBRARIES} ${CL_DEPS} ${PYTHON_LIBRARIES} python)
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 install(FILES icons/urtconnector.png DESTINATION share/icons)

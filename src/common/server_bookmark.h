@@ -39,7 +39,7 @@ public:
     const QString& ref_password() const { return d->ref_password; }
     void set_ref_password(const QString& val) { d->ref_password = val; }
 
-    bool is_empty() const { return d->id.is_empty(); }
+    bool is_empty() const { return d->id.is_empty();}
 
     static const server_bookmark& empty();
 
@@ -84,6 +84,8 @@ public:
     const server_bookmark& get(const server_id& id) const;
 
     const bookmark_map_t& list() const { return list_; }
+    
+    int size() const { return list_.size(); }
 
 signals:
     

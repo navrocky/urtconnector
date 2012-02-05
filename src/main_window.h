@@ -52,6 +52,7 @@ public:
     ~main_window();
 
 private slots:
+public slots:
     void show_options();
     void show_about();
     void show_anticheat_options();
@@ -84,6 +85,7 @@ private slots:
     void add_to_friend( const player_info& player );
 
 private:
+public:
     void load_all_at_start();
     void save_state_at_exit();
     void save_geometry();
