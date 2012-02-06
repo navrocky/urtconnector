@@ -18,6 +18,7 @@ engine::engine(server_bookmark_list_p bookmarks, python_ctx& ctx, main_tab_widge
         connect(bookmarks.get(), SIGNAL(changed(server_bookmark, server_bookmark)), SLOT(changed(server_bookmark, server_bookmark)));
 
         le = new QLineEdit(0);
+        le->setWindowTitle("Python interpretter");
         connect (le, SIGNAL(returnPressed()), SLOT(exec()));
         le->show();
 }

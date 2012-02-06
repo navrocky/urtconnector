@@ -300,6 +300,8 @@ int main(int argc, char *argv[])
             py_ctx.main_namespace["engine"] = boost::ref(*eng_);
         }
                 
+                
+                
         // detect christmas and activate this mode if any
 //        int month = QDate::currentDate().month();
 //        w.set_christmas_mode(month == 1 || month == 12);

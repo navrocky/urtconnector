@@ -2,7 +2,7 @@ from PyQt4.Qt import *
 import sip
 
 def toQt(object, type):
-    ptr = liburtapi.unwrap(object)
+    ptr = object.unwrap()
     return sip.wrapinstance(ptr, type)
 
 def toUt(object, type):

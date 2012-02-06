@@ -25,6 +25,7 @@ set(SOURCES
 )
 
 set(HEADERS
+    map.h
 )
 
 

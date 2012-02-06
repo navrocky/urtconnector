@@ -107,9 +107,9 @@ void bookmark_tab::update_contents()
     const server_bookmark_list::bookmark_map_t& bms = context().bookmarks()->list();
 
     // who changed, appeared?
-    foreach (const server_bookmark& bm, bms)
+    foreach (const server_bookmark_list::bookmark_map_t::value_type& bm, bms)
     {
-        const server_id& id = bm.id();
+        const server_id& id = bm.second.id();
         server_items::iterator it2 = items_.find(id);
         QTreeWidgetItem* item;
 
@@ -190,9 +190,9 @@ void bookmark_tab::refresh_all()
 {
     server_id_list l;
 
-    foreach(const server_bookmark& bm, context().bookmarks()->list())
+    foreach(const server_bookmark_list::bookmark_map_t::value_type& bm, context().bookmarks()->list())
     {
-        l.push_back(bm.id());
+        l.push_back(bm.second.id());
     }
 
     context().job_que()->add_job(job_p(new job_update_selected(l,

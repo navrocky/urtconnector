@@ -1,4 +1,5 @@
 
+#include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 
 #include "server_bookmark.h"
@@ -38,7 +39,7 @@ server_bookmark_list::server_bookmark_list()
 void server_bookmark_list::add( const server_bookmark& bm )
 {
     server_bookmark old_bm = get( bm.id() );
-    emit changed( old_bm, *list_.insert( bm.id(), bm ) );
+    emit changed( old_bm, list_.insert( std::make_pair(bm.id(), bm) ).first->second );
 }
 
 void server_bookmark_list::change( const server_id& old, const server_bookmark& bm )
@@ -56,12 +57,12 @@ void server_bookmark_list::change( const server_bookmark& bm )
 void server_bookmark_list::remove( const server_id& id )
 {
     server_bookmark old_bm = get( id );
-    list_.remove( id );
+    list_.erase( id );
     emit changed( old_bm, server_bookmark::empty() );
 }
 
 void server_bookmark_list::remove( const server_bookmark& bm )
-{ list_.remove( bm.id() ); }
+{ list_.erase( bm.id() ); }
 
 
 const server_bookmark& server_bookmark_list::get( const server_id& id ) const
@@ -69,14 +70,16 @@ const server_bookmark& server_bookmark_list::get( const server_id& id ) const
     bookmark_map_t::const_iterator it = list_.find( id );
     
     if( it != list_.end() )
-        return *it;
+        return it->second;
     else
         return server_bookmark::empty();
 }
 
 void server_bookmark_list::clear()
 {
-    std::for_each( list_.begin(), list_.end(), boost::bind( &server_bookmark_list::changed, this, _1, server_bookmark::empty() ) );
+    BOOST_FOREACH(const bookmark_map_t::value_type val, list_) {
+        emit changed( val.second, server_bookmark::empty() );
+    }
     list_.clear();
 }
 

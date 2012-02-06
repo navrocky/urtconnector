@@ -479,9 +479,9 @@ void friend_list_widget::update_bookmarks()
     LOG_DEBUG << "Refresh bookmarks";
     server_id_list l;
 
-    foreach(const server_bookmark& bm, context().bookmarks()->list())
+    foreach(const server_bookmark_list::bookmark_map_t::value_type& bm, context().bookmarks()->list())
     {
-        l.push_back(bm.id());
+        l.push_back(bm.second.id());
     }
 
     context().job_que()->add_job(job_p(new job_update_selected(l,

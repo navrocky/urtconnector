@@ -62,7 +62,7 @@ class server_bookmark_list : public QObject
 public:
     server_bookmark_list();
 
-    typedef QMap<server_id, server_bookmark> bookmark_map_t;
+    typedef std::map<server_id, server_bookmark> bookmark_map_t;
 
     ///Add bookmark \p bm to list
     void add( const server_bookmark& bm );

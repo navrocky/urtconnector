@@ -70,15 +70,15 @@ void save_server_bookmarks(qsettings_p s, server_bookmark_list* bml)
 {
     s->beginWriteArray("favorites");
     int i = 0;
-    foreach (const server_bookmark& bm, bml->list())
+    foreach (const server_bookmark_list::bookmark_map_t::value_type& bm, bml->list())
     {
         s->setArrayIndex(i);
-        s->setValue("name", bm.name());
-        s->setValue("address", bm.id().address());
-        s->setValue("comment", bm.comment());
-        s->setValue("password", bm.password());
-        s->setValue("rcon_password", bm.rcon_password());
-        s->setValue("ref_password", bm.ref_password());
+        s->setValue("name", bm.second.name());
+        s->setValue("address", bm.second.id().address());
+        s->setValue("comment", bm.second.comment());
+        s->setValue("password", bm.second.password());
+        s->setValue("rcon_password", bm.second.rcon_password());
+        s->setValue("ref_password", bm.second.ref_password());
         i++;
     }
     s->endArray();
