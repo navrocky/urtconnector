@@ -602,7 +602,9 @@ void main_window::current_tab_changed()
 
     // update tab toolbar actions
     tab_toolbar_->clear();
-    tab_toolbar_->addActions(current_tab_widget()->actions());
+    if (main_tab* tab = current_tab_widget()){
+        tab_toolbar_->addActions(tab->actions());    
+    }
 }
 
 void main_window::save_geometry()

@@ -69,7 +69,7 @@ void python_init(python_ctx& ctx)
         
         python_exec(
             "sys.path.append('./')\n"
-            "import liburtapi\n",
+            "import liburtapi as Ut\n",
             ctx
         );
 

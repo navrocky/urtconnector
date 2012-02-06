@@ -4,9 +4,13 @@
 #include <boost/python.hpp>
 
 #include <QString>
+#include <QtGui>
 
 #include "common/server_id.h"
 #include "common/server_bookmark.h"
+
+#include "python/python_engine.h"
+
 
 template <typename T>
 struct smart_getter {};
@@ -41,10 +45,62 @@ struct smart_getter<boost::shared_ptr<T> > {
         , boost::mpl::vector<ret, boost::shared_ptr<type>, arg1, arg2>() \
     )
 
-    
+namespace boost { namespace python { namespace objects {
+
+template <typename Source, typename Target>
+struct dynamic_cast_generator<boost::shared_ptr<Source>, Target>
+{
+    static void* execute(void* source)
+    {
+        return dynamic_cast<Target*>(
+            static_cast<boost::shared_ptr<Source>*>(source)->get());
+    }
+        
+};
+
+}}};
+
+long int unwrap(QObject* ptr) {
+    return reinterpret_cast<long int>(ptr);
+}
+
+
+long int unwrap(boost::shared_ptr<QObject> ptr) {
+    return reinterpret_cast<long int>(ptr.get());
+}
+
+template <typename T>
+T* wrap(long int ptr) {
+    return reinterpret_cast<T*>(ptr);
+}
+
+
+
 BOOST_PYTHON_MODULE(liburtapi)
 {
     using namespace boost::python;
+    
+    class_<QObject, QObject*, boost::noncopyable>("QObject", no_init)
+        .def("unwrap", (long int(*)(QObject*)) unwrap)
+        .def("wrap", make_function( wrap<QObject>, return_value_policy<return_by_value>() ))
+        .staticmethod("wrap");
+        
+    class_<QWidget, bases<QObject>, QWidget*, boost::noncopyable>("QWidget")
+        .def("wrap", make_function( wrap<QWidget>, return_value_policy<return_by_value>() ))
+        .staticmethod("wrap");
+        
+    class_<QFrame, bases<QWidget>, QFrame*, boost::noncopyable>("QFrame")
+        .def("wrap", make_function( wrap<QFrame>, return_value_policy<return_by_value>() ))
+        .staticmethod("wrap");
+        
+    class_<QMainWindow, bases<QWidget>, QMainWindow*, boost::noncopyable>("QMainWindow")
+        .def("wrap", make_function( wrap<QMainWindow>, return_value_policy<return_by_value>() ))
+        .staticmethod("wrap");
+        
+        
+    class_<engine, bases<QObject>, engine*, boost::noncopyable>("engine", no_init)
+        .def("add_tab", &engine::add_tab);
+        
     
     class_<QString>("QString")
         .def(init<const char*>())
@@ -86,22 +142,24 @@ BOOST_PYTHON_MODULE(liburtapi)
         .def("empty", &server_bookmark::is_empty);
 	
 	
-    class_<server_bookmark_list_p>("server_bookmark_list")
-        .def("add", MAKE_SMART_FUNC_1(server_bookmark_list, add, void, const server_bookmark&) )
-        .def("change", MAKE_SMART_FUNC_1(server_bookmark_list, change, void, const server_bookmark&) )        
-        .def("change", MAKE_SMART_FUNC_2(server_bookmark_list, change, void, const server_id&, const server_bookmark&) )
-        .def("remove", MAKE_SMART_FUNC_1(server_bookmark_list, remove, void, const server_id&) )        
-        .def("remove", MAKE_SMART_FUNC_1(server_bookmark_list, remove, void, const server_bookmark&) )
-        .def("clear", MAKE_SMART_FUNC_0(server_bookmark_list, clear, void) )
-// //         .def("list", &server_bookmark_list::list);
-        .def("size", MAKE_SMART_FUNC_0(server_bookmark_list, size, int) );
+//     class_<server_bookmark_list_p, bases<QObject> >("server_bookmark_list")
+//         .def("add", MAKE_SMART_FUNC_1(server_bookmark_list, add, void, const server_bookmark&) )
+//         .def("change", MAKE_SMART_FUNC_1(server_bookmark_list, change, void, const server_bookmark&) )        
+//         .def("change", MAKE_SMART_FUNC_2(server_bookmark_list, change, void, const server_id&, const server_bookmark&) )
+//         .def("remove", MAKE_SMART_FUNC_1(server_bookmark_list, remove, void, const server_id&) )        
+//         .def("remove", MAKE_SMART_FUNC_1(server_bookmark_list, remove, void, const server_bookmark&) )
+//         .def("clear", MAKE_SMART_FUNC_0(server_bookmark_list, clear, void) )
+// // //         .def("list", &server_bookmark_list::list);
+//         .def("size", MAKE_SMART_FUNC_0(server_bookmark_list, size, int) );
+        
+        class_<server_bookmark_list, bases<QObject>, boost::noncopyable >("server_bookmark_list")
+            .def("size", &server_bookmark_list::size);
 
-            
         
+
+        register_ptr_to_python< boost::shared_ptr<server_bookmark_list> >();
         
-        
-      
-	
+//         register_ptr_to_python< QWidget >();
 
     
 }

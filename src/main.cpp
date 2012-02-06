@@ -296,7 +296,8 @@ int main(int argc, char *argv[])
         std::auto_ptr<engine> eng_;
         
         if (py_ctx.initialized) {
-            eng_.reset(new engine(w.bookmarks_, py_ctx));
+            eng_.reset(new engine(w.bookmarks_, py_ctx, w.tab_widget_));
+            py_ctx.main_namespace["engine"] = boost::ref(*eng_);
         }
                 
         // detect christmas and activate this mode if any
