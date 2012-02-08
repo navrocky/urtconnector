@@ -30,6 +30,8 @@ class QTranslator;
         ((use_holiday_mode, bool, true)) \
         ((clear_offline, bool, true)) \
         ((country_name, QString, QString())) \
+        ((style_name, QString, QString())) \
+        ((default_style_name, QString, QString())) \
         ((use_mumble_overlay, bool, false)) \
         ((mumble_overlay_bin, QString, QString("/usr/bin/mumble-overlay"))) \
         ((style_sheet_file, QString, QString())) \

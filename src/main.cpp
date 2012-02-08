@@ -13,6 +13,7 @@
 #include <QDesktopWidget>
 #include <QDesktopServices>
 #include <QLocale>
+#include <QStyle>
 
 #include <cl/syslog/output_stream.h>
 #include <cl/syslog/output_file.h>
@@ -122,6 +123,9 @@ void init_application(QApplication* a)
     a->translate("language", "Russian");
     a->translate("language", "English");
     a->translate("language", "kitaiskij");
+    
+    app_settings().default_style_name_set(QApplication::style()->objectName());
+    QApplication::setStyle(app_settings().style_name());    
 }
 
 int main(int argc, char *argv[])
