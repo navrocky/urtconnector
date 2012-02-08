@@ -2,6 +2,7 @@ set(TARGET translations)
 
 set(TRANSLATION_FILES
   urtconnector_ru.ts
+  urtconnector_ru.pl
 )
 
 find_package( Qt4 REQUIRED )
@@ -12,5 +13,6 @@ add_custom_target(${TARGET} ALL DEPENDS ${QM_FILES})
 
 install(FILES 
   ${CMAKE_CURRENT_BINARY_DIR}/urtconnector_ru.qm 
+  ${CMAKE_CURRENT_BINARY_DIR}/urtconnector_pl.qm 
 DESTINATION share/urtconnector/translations)
 
