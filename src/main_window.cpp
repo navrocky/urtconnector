@@ -16,6 +16,8 @@
 #include <QInputDialog>
 #include <QByteArray>
 #include <QFile>
+#include <QFileInfo>
+#include <QFileDialog>
 #include <QHeaderView>
 #include <QProcess>
 #include <QToolBar>
@@ -558,6 +560,14 @@ void main_window::connect_to_server(const server_id& id,
         return;
     }
 #endif
+
+    while(!QFileInfo(as.binary_path()).exists() || !QFileInfo(as.binary_path()).isExecutable()) {
+        QMessageBox::information(this, tr("UrbanTerror executable missing"), tr("No UrbanTerror executable found, please select executable manually"));
+        const QString binary = QFileDialog::getOpenFileName(this, tr("Please select UrbanTerror executeable"));
+        if (binary.isNull()) return;
+
+        as.binary_path_set(binary);
+    }
 
     launcher* l = launcher_;
     l->set_server_id(id);
