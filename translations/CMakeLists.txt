@@ -2,7 +2,7 @@ set(TARGET translations)
 
 set(TRANSLATION_FILES
   urtconnector_ru.ts
-  urtconnector_ru.pl
+  urtconnector_pl.ts
 )
 
 find_package( Qt4 REQUIRED )
