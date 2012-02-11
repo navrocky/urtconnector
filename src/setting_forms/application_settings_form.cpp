@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QFile>
 #include <QTextStream>
+#include <QStyleFactory>
 
 #include <common/scoped_tools.h>
 #include <common/exception.h>
@@ -84,6 +85,7 @@ application_settings_form::application_settings_form(QWidget* parent)
     connect(p_->ui.hide_mainwindow_check, SIGNAL(stateChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.holiday_check, SIGNAL(stateChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.language_box, SIGNAL(currentIndexChanged(int)), this, SLOT(int_changed()));
+    connect(p_->ui.style_box, SIGNAL(currentIndexChanged(int)), this, SLOT(int_changed()));
     connect(p_->ui.group_clipboard_watch, SIGNAL(clicked(bool)), this, SLOT(int_changed()));
     connect(p_->ui.clip_regexp_edit, SIGNAL(textChanged(const QString&)), this, SLOT(int_changed()));
     connect(p_->ui.clip_host_spin, SIGNAL(valueChanged(int)), this, SLOT(int_changed()));
@@ -108,7 +110,7 @@ void application_settings_form::update_preferences()
     p_->ui.hide_mainwindow_check->setChecked(as.start_hidden());
     p_->ui.holiday_check->setChecked(as.use_holiday_mode());
 
-    QString country_code = as.country_name();
+    const QString country_code = as.country_name();
 
     p_->ui.language_box->clear();
     foreach( const CountryId& cid, find_countries() ){
@@ -120,6 +122,15 @@ void application_settings_form::update_preferences()
     }
     p_->ui.language_box->setCurrentIndex( p_->ui.language_box->findData( country_code ) );
 
+    const QString style_name = as.style_name();
+
+    p_->ui.style_box->clear();
+    p_->ui.style_box->addItem(tr("Default"), as.default_style_name());
+    foreach( const QString& style, QStyleFactory::keys() ){
+        p_->ui.style_box->addItem( style, style );
+    }
+    p_->ui.style_box->setCurrentIndex( p_->ui.style_box->findData( style_name ) );
+    
     p_->ui.group_clipboard_watch->setChecked(cs.watching());
     p_->ui.clip_regexp_edit->setText(cs.regexp());
     p_->ui.clip_host_spin->setValue(cs.host());
@@ -136,13 +147,17 @@ void application_settings_form::accept()
     as.start_hidden_set(p_->ui.hide_mainwindow_check->isChecked());
     as.use_holiday_mode_set(p_->ui.holiday_check->isChecked());
 
-    QString country_code =  p_->ui.language_box->itemData( p_->ui.language_box->currentIndex() ).toString();
+    const QString country_code =  p_->ui.language_box->itemData( p_->ui.language_box->currentIndex() ).toString();
+    const QString style_name =  p_->ui.style_box->itemData( p_->ui.style_box->currentIndex() ).toString();
 
-    if( country_code != as.country_name() )
-        QMessageBox::information(this, tr("Language preferences"),
-                                 tr("Selected language will be applied after restart"));
+    if( country_code != as.country_name() || style_name != as.style_name() )
+        QMessageBox::information(this, tr("Language/Style preferences"),
+                                 tr("Selected language/style will be applied after restart"));
 
     as.country_name_set( country_code );
+    as.style_name_set( style_name );
+    QApplication::setStyle( style_name );
+    
     as.style_sheet_file_set(p_->ui.style_sheet_file_edit->text());
     as.notification_sound_set(p_->ui.notify_sound_edit->text());
 

@@ -759,6 +759,7 @@ src/updater/update_task.cpp -text
 src/updater/update_task.h -text
 src/urtconnector.desktop -text
 translations/CMakeLists.txt -text
+translations/urtconnector_pl.ts -text
 translations/urtconnector_ru.ts -text
 /update_translations -text
 /version -text

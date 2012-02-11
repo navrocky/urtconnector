@@ -677,7 +677,7 @@ p, li { white-space: pre-wrap; }
     <name>QObject</name>
     <message>
         <location filename="../src/application.cpp" line="36"/>
-        <location filename="../src/main.cpp" line="289"/>
+        <location filename="../src/main.cpp" line="293"/>
         <source>Unknown error</source>
         <translation>Неизвестная ошибка</translation>
     </message>
@@ -858,7 +858,7 @@ p, li { white-space: pre-wrap; }
         <translation>Не удалось завершить запрос: %1</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="203"/>
+        <location filename="../src/main.cpp" line="207"/>
         <source>Unnamed</source>
         <translation>Безымянный</translation>
     </message>
@@ -874,17 +874,17 @@ p, li { white-space: pre-wrap; }
         <translation>Фильтр</translation>
     </message>
     <message>
-        <location filename="../src/tabs/tools.cpp" line="78"/>
+        <location filename="../src/tabs/tools.cpp" line="87"/>
         <source>Private</source>
         <translation>Частный</translation>
     </message>
     <message>
-        <location filename="../src/tabs/tools.cpp" line="80"/>
+        <location filename="../src/tabs/tools.cpp" line="89"/>
         <source>Not pure</source>
         <translation>Не выделенный сервер</translation>
     </message>
     <message>
-        <location filename="../src/tabs/tools.cpp" line="107"/>
+        <location filename="../src/tabs/tools.cpp" line="116"/>
         <source>Current %1 / Public slots %2 / Total %3</source>
         <translation>Сейчас %1 / Публичные слоты %2 / Всего %3</translation>
     </message>
@@ -1328,117 +1328,135 @@ If the user selects &quot;No&quot; then processing of following actions stops.</
         <translation>Язык</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="55"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="53"/>
+        <source>Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="68"/>
         <source>Clipboard watching for server info and password</source>
         <translation>Слежение за появлением информации о сервере и пароле в буфере обмена</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="66"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="79"/>
         <source>RegExp for watch</source>
         <translation>Регулярное выражение (RegExp)</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="82"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="95"/>
         <source>Host match num</source>
         <translation>Номер совпадения для хоста или ip</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="96"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="109"/>
         <source>Port match num</source>
         <translation>Номер совпадения для порта</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="110"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="123"/>
         <source>Password match num</source>
         <translation>Номер совпадения для пароля</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="127"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="140"/>
         <source>Style sheet</source>
         <translation>Стиль CSS</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="135"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="148"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="145"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="158"/>
         <source>Reread and apply style sheet from selected file</source>
         <translation>Перечитать и применить стиль из выбранного файла</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="148"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="161"/>
         <source>Refresh</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="157"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="170"/>
         <source>You can learn more about the style sheets &lt;a href=&quot;http://doc.qt.nokia.com/latest/stylesheet.html&quot;&gt;here&lt;/a&gt;</source>
         <translation>Вы можете узнать больше о CSS &lt;a href=&quot;http://doc.crossplatform.ru/qt/4.7.x/stylesheet.html&quot;&gt;здесь&lt;/a&gt; </translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="170"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="183"/>
         <source>Notification sound</source>
         <translation>Звук оповещения по умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="176"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="189"/>
         <source>Play sound</source>
         <translation>Проиграть звук</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.ui" line="190"/>
+        <location filename="../src/setting_forms/application_settings_form.ui" line="203"/>
         <source>Notification sound file</source>
         <translation>Звуковой файл оповещения</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="63"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="64"/>
         <source>Application</source>
         <translation>Приложение</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="70"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="71"/>
         <source>Application settings</source>
         <translation>Настройки приложения</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="75"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="76"/>
         <source>Select a style sheet file name</source>
         <translation>Выбрать CSS файл</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="80"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="81"/>
         <source>Select notification sound file name</source>
         <translation>Выбрать файл звукового оповещения</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="142"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="128"/>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="154"/>
+        <source>Language/Style preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="155"/>
+        <source>Selected language/style will be applied after restart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Language preferences</source>
-        <translation>Настройки языка</translation>
+        <translation type="obsolete">Настройки языка</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="143"/>
         <source>Selected language will be applied after restart</source>
-        <translation>Выбрать язык интерфейса (активируется при старте программы)</translation>
+        <translation type="obsolete">Выбрать язык интерфейса (активируется при старте программы)</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="192"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="207"/>
         <source>Select a style sheet file</source>
         <translation>Укажите CSS файл</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="193"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="208"/>
         <source>CSS Files (*.css)(*.css);;All files(*)</source>
         <translation>CSS файлы (*.css)(*.css);;Все файлы(*)</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="200"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="215"/>
         <source>Select a notification sound</source>
         <translation>Укажите звуковой файл</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/application_settings_form.cpp" line="201"/>
+        <location filename="../src/setting_forms/application_settings_form.cpp" line="216"/>
         <source>Sounds (*.ogg *.wav)(*.ogg *.wav);;All files(*)</source>
         <translation>Звуки (*.ogg *.wav)(*.ogg *.wav);;Все файлы(*)</translation>
     </message>
@@ -1878,17 +1896,17 @@ If the user selects &quot;No&quot; then processing of following actions stops.</
 <context>
     <name>language</name>
     <message>
-        <location filename="../src/main.cpp" line="123"/>
+        <location filename="../src/main.cpp" line="124"/>
         <source>English</source>
         <translation>Английский</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="124"/>
+        <location filename="../src/main.cpp" line="125"/>
         <source>kitaiskij</source>
         <translation>Китайский</translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="122"/>
+        <location filename="../src/main.cpp" line="123"/>
         <source>Russian</source>
         <translation>Русский</translation>
     </message>
@@ -2052,37 +2070,37 @@ If the user selects &quot;No&quot; then processing of following actions stops.</
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main_window.cpp" line="154"/>
+        <location filename="../src/main_window.cpp" line="156"/>
         <source>Current tab toolbar</source>
         <translation>Панель инструментов текущей закладки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="167"/>
+        <location filename="../src/main_window.cpp" line="169"/>
         <source>Enable anticheat</source>
         <translation>Включить Интичит</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="171"/>
+        <location filename="../src/main_window.cpp" line="173"/>
         <source>Configure anticheat</source>
         <translation>Настроить Античит</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="175"/>
+        <location filename="../src/main_window.cpp" line="177"/>
         <source>Copy server info to clipboard</source>
         <translation>Копировать информацию о сервере в буфер обмена</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="205"/>
+        <location filename="../src/main_window.cpp" line="207"/>
         <source>Click to show/hide UrTConnector or middle click to quick launch</source>
         <translation>Щелкните левой кнопкой для открытия окна UrTConnector или средней кнопкой для быстрого запуска</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="300"/>
+        <location filename="../src/main_window.cpp" line="302"/>
         <source>Server info catched</source>
         <translation>Информация о сервере получена</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="301"/>
+        <location filename="../src/main_window.cpp" line="303"/>
         <source>Address: %1
 Password: %2
 
@@ -2093,42 +2111,42 @@ Click this message to open UrTConnector.</source>
 Щелкните по этому сообщению чтобы открыть UrTConnector.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="321"/>
+        <location filename="../src/main_window.cpp" line="323"/>
         <source>Options</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="437"/>
+        <location filename="../src/main_window.cpp" line="439"/>
         <source>Game is launched already</source>
         <translation>Игра уже запущена</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="448"/>
+        <location filename="../src/main_window.cpp" line="450"/>
         <source>Update server info and launch a game</source>
         <translation>Обновить информацию о сервере и запустить игру</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="475"/>
+        <location filename="../src/main_window.cpp" line="477"/>
         <source>Server is full.</source>
         <translation>Сервер полон</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="476"/>
+        <location filename="../src/main_window.cpp" line="478"/>
         <source>Would you like to wait until there will be empty slots or to connect right now?</source>
         <translation>Желаете ли вы подождать когда на сервере появятся свободные места или подключиться прямо сейчас?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="478"/>
+        <location filename="../src/main_window.cpp" line="480"/>
         <source>Wait for empty slots</source>
         <translation>Ожидать появление свободного места</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="480"/>
+        <location filename="../src/main_window.cpp" line="482"/>
         <source>Connect right now</source>
         <translation>Подключиться прямо сейчас</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="499"/>
+        <location filename="../src/main_window.cpp" line="501"/>
         <source>Server is empty.
 
 Do you want to continue connecting?</source>
@@ -2137,17 +2155,32 @@ Do you want to continue connecting?</source>
 Все равно подключиться?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="830"/>
+        <location filename="../src/main_window.cpp" line="565"/>
+        <source>UrbanTerror executable missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="565"/>
+        <source>No UrbanTerror executable found, please select executable manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="566"/>
+        <source>Please select UrbanTerror executeable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="840"/>
         <source>Connect to %1</source>
         <translation>Подключиться к %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="863"/>
+        <location filename="../src/main_window.cpp" line="873"/>
         <source>Connect</source>
         <translation>Соединение</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="864"/>
+        <location filename="../src/main_window.cpp" line="874"/>
         <source>On the server &lt;b&gt;%server&lt;/b&gt; appeared empty slots.&lt;br&gt;&lt;br&gt;Do you wish to connect?</source>
         <translation>На сервере &lt;b&gt;%server&lt;/b&gt; появились свободные места.&lt;br&gt;&lt;br&gt;Желаете подключиться?</translation>
     </message>
@@ -2156,8 +2189,8 @@ Do you want to continue connecting?</source>
         <translation type="obsolete">Сервер пуст.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="473"/>
-        <location filename="../src/main_window.cpp" line="498"/>
+        <location filename="../src/main_window.cpp" line="475"/>
+        <location filename="../src/main_window.cpp" line="500"/>
         <source>Connecting to the server</source>
         <translation>Соединяемся с сервером</translation>
     </message>
@@ -2168,39 +2201,39 @@ Do you want to continue connecting?</source>
         <translation type="obsolete">%1\n\nЖелаете продолджить присоединение?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="514"/>
+        <location filename="../src/main_window.cpp" line="516"/>
         <source>This server require the password</source>
         <translation>Сервер требует пароль</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="515"/>
+        <location filename="../src/main_window.cpp" line="517"/>
         <source>Enter the password</source>
         <translation>Введите пароль</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="697"/>
+        <location filename="../src/main_window.cpp" line="707"/>
         <source>Quit</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="697"/>
+        <location filename="../src/main_window.cpp" line="707"/>
         <source>The game is started at this moment.
 
 Kill the game and quit now?</source>
         <translation>Игра запущена.\n\nЗавершить и выйти?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="743"/>
+        <location filename="../src/main_window.cpp" line="753"/>
         <source>RCon : %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="779"/>
+        <location filename="../src/main_window.cpp" line="789"/>
         <source>The player&apos;s name must be defined in the quick launch window for the anti-cheat!</source>
         <translation>Античиту требуется заданное имя игрока в окне быстрого запуска!</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="785"/>
+        <location filename="../src/main_window.cpp" line="795"/>
         <source>Anticheat options</source>
         <translation>Параметры Античита</translation>
     </message>

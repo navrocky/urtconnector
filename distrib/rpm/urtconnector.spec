@@ -13,7 +13,7 @@ Release: 1
 #AutoReq: off
 License: GPL
 BuildRequires: cmake gcc-c++ boost-devel phonon-devel
-%if %{defined fedora}
+%if 0%{?fedora} || 0%{?rhel_version} || 0%{?centos_version}
 BuildRequires: qt-devel sqlite-devel
 %else
 BuildRequires: libqt4-devel sqlite3-devel
@@ -33,7 +33,7 @@ Advanced UrbanTerror launcher and server browser program. Developed by members o
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX:PATH=$RPM_BUILD_ROOT/usr ..
-make
+make %{?_smp_mflags}
 
 %install
 rm -rf $RPM_BUILD_ROOT

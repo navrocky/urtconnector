@@ -30,9 +30,9 @@ boost::shared_ptr< QTranslator > local_translator(const QString& code)
     boost::shared_ptr<QTranslator> ret( new QTranslator );
 
 #if defined(Q_OS_UNIX)
-    ret->load( "urtconnector_" + code, "/usr/share/urtconnector/translations");
+    ret->load("urtconnector_" + code, "/usr/share/urtconnector/translations");
 #elif defined(Q_OS_WIN)
-    ret->load(code);
+    ret->load("urtconnector_" + code);
 #elif defined(Q_OS_MAC)
     // FIXME i don't know how do this on mac
     ret->load(code);

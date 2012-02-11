@@ -13,6 +13,7 @@
 #include <QDesktopWidget>
 #include <QDesktopServices>
 #include <QLocale>
+#include <QStyle>
 
 #include <cl/syslog/output_stream.h>
 #include <cl/syslog/output_file.h>
@@ -65,17 +66,17 @@ void init_application(QApplication* a)
 
     if ( !qt_trans->isEmpty() )
     {
-        LOG_DEBUG << "Translation \"%1\" loaded", app_settings().country_name();
+        LOG_DEBUG << "Qt translation \"%1\" loaded", app_settings().country_name();
     }
     else
     {
-        LOG_DEBUG << "Failed to load system translation \"%1\". Trying \"%2\" instead...", app_settings().country_name(), QLocale::system().name();
+        LOG_DEBUG << "Failed to load Qt translation \"%1\". Trying \"%2\" instead...", app_settings().country_name(), QLocale::system().name();
 
         qt_trans = system_translator( QLocale::system().name() );
         if( !qt_trans->isEmpty() )
-            LOG_DEBUG << "Translation \"%1\" loaded", QLocale::system().name();
+            LOG_DEBUG << "Qt translation \"%1\" loaded", QLocale::system().name();
         else
-            LOG_DEBUG << "Failed to load system translation \"%1\"", QLocale::system().name();
+            LOG_DEBUG << "Failed to load Qt translation \"%1\"", QLocale::system().name();
     }
 
     a->installTranslator(qt_trans.get());
@@ -84,11 +85,11 @@ void init_application(QApplication* a)
 
     if ( !urt_tr->isEmpty()  )
     {
-        LOG_DEBUG << "Translation \"%1\" loaded", app_settings().country_name();
+        LOG_DEBUG << "Application translation \"%1\" loaded", app_settings().country_name();
     }
     else
     {
-        LOG_DEBUG << "Failed to load local translation \"%1\"", app_settings().country_name();
+        LOG_DEBUG << "Failed to load application translation \"%1\"", app_settings().country_name();
     }
 
     a->installTranslator(urt_tr.get());
@@ -122,6 +123,9 @@ void init_application(QApplication* a)
     a->translate("language", "Russian");
     a->translate("language", "English");
     a->translate("language", "kitaiskij");
+    
+    app_settings().default_style_name_set(QApplication::style()->objectName());
+    QApplication::setStyle(app_settings().style_name());    
 }
 
 int main(int argc, char *argv[])
@@ -265,10 +269,6 @@ int main(int argc, char *argv[])
         }
 
         main_window w;
-
-        // detect christmas and activate this mode if any
-//        int month = QDate::currentDate().month();
-//        w.set_christmas_mode(month == 1 || month == 12);
 
 #ifdef USE_SINGLE_APP
         //set a widget that should raise when new instance trying to start

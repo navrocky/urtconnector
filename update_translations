@@ -5,5 +5,4 @@ DIR=translations
 [ -d $DIR ] || mkdir $DIR
 
 lupdate src -ts $DIR/urtconnector_ru.ts
-#lupdate src -ts $DIR/urtconnector_kz.ts
-#lupdate src -ts $DIR/urtconnector_by.ts
+lupdate src -ts $DIR/urtconnector_pl.ts

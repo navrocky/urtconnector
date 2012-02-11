@@ -106,8 +106,8 @@ Section "UrT Connector"
   File "qsvg4.dll"
   SetOutPath "$INSTDIR\sounds"
   File "${DIR_SRC}\sounds\notify1.wav"
-  ;File "${DIR_SRC}\sounds\notify2.wav"
-  ;File "${DIR_SRC}\sounds\notify3.wav"
+  ;File "${DIR_SRC}\sounds\notify2.ogg"
+  ;File "${DIR_SRC}\sounds\notify3.ogg"
 
 SectionEnd
 

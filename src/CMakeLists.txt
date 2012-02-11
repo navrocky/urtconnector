@@ -84,6 +84,7 @@ cl_define_headers(
     job_update_from_master.h
     clipper.h
     server_info_manager.h
+    config_wizard.h
 )
 
 cl_define_moc(
@@ -97,7 +98,7 @@ cl_define_moc(
     job_update_from_master.h
     clipper.h
     server_info_manager.h
-    gdoc.h
+    config_wizard.h
 )
 
 cl_define_sources(
@@ -117,6 +118,7 @@ cl_define_sources(
     job_update_from_master.cpp
     clipper.cpp
     server_info_manager.cpp
+    config_wizard.cpp
 )
 
 cl_define_interfaces(
