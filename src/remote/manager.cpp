@@ -33,6 +33,7 @@
 
 #include "cl/syslog/syslog.h"
 #include "common/qt_syslog.h"
+#include "backends/fileservice/fileservice.h"
 
 using namespace std;
 using namespace boost;
@@ -309,6 +310,18 @@ struct gdocs_service2: public service {
     }
 };
 
+struct fileservice: public service {
+
+    fileservice()
+        : service("fileservice", "fileservice")
+    {}
+    
+    service::Storage do_create(const boost::shared_ptr<QSettings>& settings) const {
+        service::Storage s = service::Storage(new filestorage("/tmp"));
+        return s;
+    }
+};
+
 
 syncro_manager::syncro_manager()
     : p_(new Pimpl)
@@ -318,6 +331,7 @@ syncro_manager::syncro_manager()
     
     register_service(Service(new gdocs_service));
     register_service(Service(new gdocs_service2));
+    register_service(Service(new fileservice));
 }
 
 void syncro_manager::register_service(const Service& srv)
@@ -561,6 +575,7 @@ syncro_manager::Object syncro_manager::attach(const QString& name, const Getter&
         throw std::runtime_error("Object with such name already attached!");
 
     Object obj(new object(g, s, name, desc));
+    bind(obj, Storage());
     return obj;
 }
 
