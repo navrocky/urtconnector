@@ -47,6 +47,7 @@ add_definitions(-DUSE_SINGLE_APP)
 
 configure_file(config.h.in config.h)
 
+cl_add_subdirectory(3rdparty)
 cl_add_subdirectory(updater)
 cl_add_subdirectory(rcon)
 cl_add_subdirectory(jobs)
