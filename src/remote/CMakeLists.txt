@@ -10,8 +10,6 @@ set(HEADERS
     storage.h
     manager.h
     settings.h
-    backends/binary_file.h
-    backends/json_file.h
     backends/gdocs/gdocs.h 
     sync_settings_form.h
 )
@@ -28,8 +26,6 @@ set(SOURCES
     remote.cpp
     manager.cpp
     settings.cpp
-    backends/binary_file.cpp
-    backends/json_file.cpp
     backends/gdocs/gdocs.cpp
     sync_settings_form.cpp
 )
@@ -44,7 +40,7 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
-target_link_libraries( ${TARGET} ${QT_LIBRARIES} qjson fileservice)
+target_link_libraries( ${TARGET} ${QT_LIBRARIES} common fileservice)
 
 
 

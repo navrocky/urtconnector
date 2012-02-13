@@ -3,8 +3,10 @@
 #define URT_REMOTE_MANAGER_H
 
 #include <boost/function.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include "remote.h"
+#include "storage.h"
 
 namespace remote {
 

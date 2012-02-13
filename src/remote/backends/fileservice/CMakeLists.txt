@@ -24,7 +24,7 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
-#target_link_libraries( ${TARGET} ${QT_LIBRARIES} qjson)
+target_link_libraries( ${TARGET} ${QT_LIBRARIES} common)
 
 
 

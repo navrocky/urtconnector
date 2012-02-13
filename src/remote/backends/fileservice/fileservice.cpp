@@ -1,7 +1,10 @@
 
+#include <QSettings>
+#include <QFileDialog>
 #include <QFileInfo>
 #include <QDir>
 
+#include "common/json_tools.h"
 #include "fileservice.h"
 
 struct fileaction : remote::action {
@@ -27,7 +30,7 @@ struct fileaction : remote::action {
             switch (action_) {
             case read:
                 data_ = file.readAll();
-                emit loaded(remote::from_json(data_));
+                emit loaded(from_json(data_));
                 break;
             case write:
                 file.resize(0);
@@ -53,14 +56,14 @@ struct fileaction : remote::action {
 };
 
 
-filestorage::filestorage(const QString& path, QObject* parent)
+filestorage::filestorage(const QString& location, QObject* parent)
     : QObject(parent)
-    , path_(path)
+    , location_(location)
 {
-    if (!QFileInfo(path_).exists())
+    if (!QFileInfo(location_).exists())
     {
-        if(!QDir().mkpath(path_))
-            throw std::runtime_error(std::string("Can't create directory ") + path_.toStdString());
+        if(!QDir().mkpath(location_))
+            throw std::runtime_error(std::string("Can't create directory ") + location_.toStdString());
     }
     
     
@@ -76,18 +79,48 @@ QString mkname(const QString& path, const QString& type) {
 
 remote::action* filestorage::get(const QString& type)
 {
-    return new fileaction(mkname(path_, type), fileaction::read);
+    return new fileaction(mkname(location_, type), fileaction::read);
 }
 
 remote::action* filestorage::put(const remote::group& gr)
 {
-    return new fileaction(mkname(path_, gr.type()), fileaction::write, remote::to_json(gr.save()));
+    return new fileaction(mkname(location_, gr.type()), fileaction::write, to_json(gr.save()));
 }
 
 remote::action* filestorage::check(const QString& type)
 {
-    return new fileaction(mkname(path_, type), fileaction::check);
+    return new fileaction(mkname(location_, type), fileaction::check);
 }
+
+
+
+
+remote::service::Storage fileservice::do_create(const boost::shared_ptr<QSettings>& settings) const
+{
+    if (!settings->contains("location"))
+        throw std::runtime_error("settings not valid");
+    return service::Storage(new filestorage(settings->value("location").toString()));
+}
+
+
+QVariantMap fileservice::configure(const QVariantMap& settings) const
+{
+    QVariantMap ret(settings);
+
+    QString location = ret["location"].toString();
+
+    location = QFileDialog::getExistingDirectory(
+        0,
+        QObject::tr("Select location for fileservice"),
+        location);
+
+    if (!location.isNull()) {
+        ret["location"] = location;
+    }
+
+    return ret;
+}
+
 
 
 

@@ -120,11 +120,10 @@ void sync_settings_form::create()
     Service service = srv_current();
     if (!service) return;
     
-    QVariantMap settings;
-    settings["mail"] = QInputDialog::getText(this, "Creating account", "Login");
-    settings["password"] = QInputDialog::getText(this, "Creating account", "Password", QLineEdit::PasswordEchoOnEdit);
-    
-    p_->sync_man->create(service, settings["mail"].toString(), settings);
+    const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name");
+    const QVariantMap settings = service->configure();
+
+    p_->sync_man->create(service, storage_name, settings);
 }
 
 void sync_settings_form::erase()
@@ -143,12 +142,12 @@ void sync_settings_form::edit()
     
     if (!service || !storage) return;
     
-    QVariantMap settings = p_->sync_man->settings(storage);
-    settings["mail"] = QInputDialog::getText(this, "Creating account", "Login", QLineEdit::Normal, settings["mail"].toString());
-    settings["password"] = QInputDialog::getText(this, "Creating account", "Password", QLineEdit::PasswordEchoOnEdit, settings["password"].toString());
+    const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name", QLineEdit::Normal, storage->name());
+
+    const QVariantMap settings = service->configure(p_->sync_man->settings(storage));
 
     p_->sync_man->remove(storage);
-    p_->sync_man->create(service, settings["mail"].toString(), settings);
+    p_->sync_man->create(service, storage_name, settings);
 }
 
 void sync_settings_form::unbind_storage()
@@ -199,8 +198,7 @@ void sync_settings_form::storage_changed(const syncro_manager::Storage& current,
     if (!current)     //storage deleted
     {
         Q_ASSERT(previous.get());
-        const QString name = p_->sync_man->settings(previous)["storage_name"].toString();
-        QList<QListWidgetItem *> items = p_->ui.storage_list->findItems(name, Qt::MatchExactly);
+        QList<QListWidgetItem *> items = p_->ui.storage_list->findItems(previous->name(), Qt::MatchExactly);
         if (items.isEmpty()) return;
         Q_ASSERT(items.size() == 1);
         delete items.front();
@@ -213,7 +211,7 @@ void sync_settings_form::storage_changed(const syncro_manager::Storage& current,
             return;
         
         QVariantMap settings = p_->sync_man->settings(current);
-        QListWidgetItem* item = new QListWidgetItem(settings["storage_name"].toString());
+        QListWidgetItem* item = new QListWidgetItem(current->name());
         item->setData(Qt::UserRole, qVariantFromValue(current));
         p_->ui.storage_list->addItem(item);
     }

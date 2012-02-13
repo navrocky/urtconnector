@@ -11,6 +11,7 @@
 #include <QVariantMap>
 
 class QSettings;
+class QWidget;
 
 namespace remote {
 
@@ -50,12 +51,18 @@ Q_SIGNALS:
 /*! \brief Storage interface
  * Represents instance of any service(account)
  */
-class storage {
+struct storage {
 
-public:
+
+    void set_name(const QString& name) {name_ = name;};
+    const QString& name() const { return name_; };
+
     virtual action* get(const QString& type) = 0;
     virtual action* put(const group& gr) = 0;
     virtual action* check(const QString& type) = 0;
+
+private:
+    QString name_;
 };
 
 /*! \brief base class for any service(Google docs, DropBox, etc)
@@ -76,6 +83,8 @@ public:
     Storage create(const boost::shared_ptr<QSettings>& settings) const {
         return do_create(settings);
     }
+
+    virtual QVariantMap configure(const QVariantMap& settings = QVariantMap()) const = 0;
     
 protected:
     virtual Storage do_create(const boost::shared_ptr<QSettings>& settings) const = 0;

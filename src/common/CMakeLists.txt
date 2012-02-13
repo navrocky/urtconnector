@@ -36,6 +36,7 @@ set(HEADERS
     notificator.h
     play_sound.h
     qstat_options.h
+    json_tools.h
 )
 
 set(MOC_HEADERS
@@ -69,6 +70,7 @@ set(SOURCES
     notificator.cpp
     play_sound.cpp
     qstat_options.cpp
+    json_tools.cpp
 )
 
 if (${QT_VERSION_MAJOR}.${QT_VERSION_MINOR} VERSION_GREATER 4.5)
@@ -94,4 +96,4 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
-target_link_libraries(${TARGET} ${QT_LIBRARIES})
+target_link_libraries(${TARGET} ${QT_LIBRARIES} qjson)

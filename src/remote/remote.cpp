@@ -60,8 +60,5 @@ void group::load(const QVariantMap& data)
     std::transform(list.begin(), list.end(),
         std::inserter(entries_, entries_.end()), boost::bind(ptr, _1));
     
-    std::cerr<<"esize:"<<entries_.size()<<std::endl;
-    std::cerr<<"E:"<<entries_.begin()->sync_stamp().toString().toStdString()<<std::endl;    
-    
 }
 

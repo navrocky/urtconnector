@@ -3,6 +3,7 @@
 
 
 //FIXME cleanup headers
+#include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include <boost/fusion/container/map.hpp>
 #include <boost/fusion/include/at_key.hpp>
@@ -292,6 +293,8 @@ struct gdocs_service: public service {
         service::Storage s = service::Storage(new gdocs( settings->value("mail").toString(), settings->value("password").toString(), "urt" ));
         return s;
     }
+
+    QVariantMap configure(const QVariantMap& settings) const{}
 };
 
 ///another service for testings
@@ -308,18 +311,8 @@ struct gdocs_service2: public service {
         service::Storage s = service::Storage(new gdocs( settings->value("mail").toString(), settings->value("password").toString(), "urt" ));
         return s;
     }
-};
 
-struct fileservice: public service {
-
-    fileservice()
-        : service("fileservice", "fileservice")
-    {}
-    
-    service::Storage do_create(const boost::shared_ptr<QSettings>& settings) const {
-        service::Storage s = service::Storage(new filestorage("/tmp"));
-        return s;
-    }
+    QVariantMap configure(const QVariantMap& settings) const{}
 };
 
 
@@ -329,8 +322,8 @@ syncro_manager::syncro_manager()
     p_->services_uid = base_settings().get_settings(manager_options::uid())->fileName() + "services";
     base_settings().register_sub_group(p_->services_uid, "services", manager_options::uid());
     
-    register_service(Service(new gdocs_service));
-    register_service(Service(new gdocs_service2));
+//    register_service(Service(new gdocs_service));
+//    register_service(Service(new gdocs_service2));
     register_service(Service(new fileservice));
 }
 
@@ -384,13 +377,16 @@ syncro_manager::Storage syncro_manager::create(const Service& srv, const QString
     base_settings::qsettings_p qs = base_settings().register_sub_group(storage_uid, name, it->service_uid);
     qs = fill_settings(qs, settings);
     qs->setValue(s_caption, srv->caption());
-    qs->setValue("storage_name", name);
+//    qs->setValue("storage_name", name);
     
     manager_options().storages_set((manager_options().storages().toSet() << name).toList());
     
-    Pimpl::ServiceData::iterator new_it = p_->srv_data.insert(Pimpl::service_data(srv, srv->create(qs))).first;
+    service::Storage storage = srv->create(qs);
+    storage->set_name(name);
+    Pimpl::ServiceData::iterator new_it = p_->srv_data.insert(Pimpl::service_data(srv, storage)).first;
     new_it->service_uid = it->service_uid;
     new_it->storage_uid = storage_uid;
+
     
     LOG_INFO << "new remote storage created: '%1'('%2') UID:'%3'", name, srv->caption(), new_it->storage_uid;
 

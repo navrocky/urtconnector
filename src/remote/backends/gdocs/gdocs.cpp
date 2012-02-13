@@ -17,9 +17,9 @@
 #include <cl/syslog/syslog.h>
 
 #include "common/tools.h"
+#include "common/json_tools.h"
 
 #include "gdocs.h"
-#include "../json_file.h"
 #include <remote.h>
 
 
@@ -430,7 +430,7 @@ void gdocs::upload_impl(ContextPtr ctx, const QByteArray& data)
         request.setRawHeader(h.first, h.second);
     }
     
-    QByteArray content = remote::to_json(ctx->obj.save());
+    QByteArray content = to_json(ctx->obj.save());
     
     LOG_DEBUG << "content SIZE:"<< content.size();
     
@@ -457,7 +457,7 @@ void gdocs::process_download(ContextPtr ctx, const QByteArray& data)
 {
     GDOCS_DEBUG << ctx->id;
     introspect(ctx);
-    emit ctx->pending->loaded(remote::from_json(data));
+    emit ctx->pending->loaded(from_json(data));
 }
 
 void gdocs::process_upload(ContextPtr ctx, const QUrl& u, const QByteArray& data)
@@ -481,7 +481,7 @@ void gdocs::process_upload(ContextPtr ctx, const QUrl& u, const QByteArray& data
         request.setRawHeader(h.first, h.second);
     }
     
-    QByteArray content = remote::to_json(ctx->obj.save());
+    QByteArray content = to_json(ctx->obj.save());
     
     LOG_DEBUG << "content SIZE:"<< content.size();
     LOG_DEBUG << "content CONTENT:"<< content.constData();

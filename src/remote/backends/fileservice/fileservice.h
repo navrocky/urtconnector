@@ -9,7 +9,7 @@ class filestorage: public QObject, public remote::storage {
 Q_OBJECT
 public:
     
-    explicit filestorage(const QString& path, QObject* parent = 0);
+    explicit filestorage(const QString& location, QObject* parent = 0);
     virtual ~filestorage();
 
     virtual remote::action* get(const QString& type);
@@ -17,7 +17,17 @@ public:
     virtual remote::action* check(const QString& type);
   
 private:
-    QString path_;
+    QString location_;
+};
+
+struct fileservice: public remote::service {
+
+    fileservice()
+        : service("fileservice", "Synchronization with files")
+    {}
+
+    remote::service::Storage do_create(const boost::shared_ptr<QSettings>& settings) const;
+    virtual QVariantMap configure(const QVariantMap& settings) const;
 };
 
 
