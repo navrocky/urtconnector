@@ -66,6 +66,8 @@ doc/tracking_rus.odt -text
 /gzip_sources -text
 /how_to_install.txt -text
 /how_to_make_distrib.txt -text
+src/3rdparty/qstat/tests/etqw_1.4_test1 -text
+src/3rdparty/qstat/tests/etqw_1.4_test2 -text
 src/CMakeLists.txt -text
 src/GeoIP.dat -text
 src/about_dialog.cpp -text
