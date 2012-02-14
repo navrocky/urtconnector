@@ -52,6 +52,13 @@ SYSLOG_MODULE(syncro_manager);
 
 namespace remote {
 
+///const cast pointer to refference(to convert "key" objects to "useful" objects)
+template <typename T>
+inline T& cast(const boost::shared_ptr<const T>& ptr) {
+    return *const_cast<T*>(ptr.get());
+}
+
+    
 template<class KeyExtractor1,class KeyExtractor2>
 struct key_from_key
 {
@@ -269,12 +276,49 @@ struct syncro_manager::Pimpl {
     QString services_uid;
 };
 
+struct syncro_manager::GetTask : public task {
+    Object object;
+    Storages storages;
+    remote::group group;
+    remote::action* action;
+    remote::group::Entries entries;
+    
+    GetTask(const Object& o, const Storages& st, const remote::group& gr)
+        : object(o), storages(st), group(gr), action(0){}
+    
+    void start() {
+        action = cast(*storages.begin()).get(group.type());
+        
+        connect(action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&)));
+        connect(action, SIGNAL(error(QString)), SLOT(error(QString)));
+        connect(action, SIGNAL(finished()), SLOT(finished()));
+    }
+    
+    virtual void loaded(const remote::group& obj) {
+        Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
+        
+        entries = remote::merge(obj.entries(), entries);        
+    }
+    
+    virtual void error(const QString& error) {
+        SYNC_DEBUG << "Error:" << error;
+    }
+    
+    virtual void finished() {
+        Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
+    
+        storages.erase(storages.begin());
 
-///const cast pointer to refference(to convert "key" objects to "useful" objects)
-template <typename T>
-inline T& cast(const boost::shared_ptr<const T>& ptr) {
-    return *const_cast<T*>(ptr.get());
-}
+        if (storages.empty())
+        {
+            cast(object).put(remote::group(group.type(), entries));
+        }
+        else
+        {
+            start();
+        }
+    }
+};
 
 QString con_str(const QString& str1, const QString& str2) {
     return str1 + "-" + str2;
@@ -494,20 +538,39 @@ void syncro_manager::load()
 
 void syncro_manager::sync(const Object& obj)
 {
-    if (boost::find_if(tasks_, boost::bind(&sync_task::object, _1) == obj) != tasks_.end())
-    {
-        return;        
-    }
- 
+//     if (boost::find_if(tasks_, boost::bind(&sync_task::object, _1) == obj) != tasks_.end())
+//     {
+//         return;        
+//     }
+//  
     sync_task& task = *tasks_.insert(tasks_.end(), sync_task(obj, p_->storages(obj), obj->get()));
     storage& storage = cast(task.current_storage());
-    
+//     
     task.action = storage.get(task.group.type());
-    Q_ASSERT(connect(task.action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&))));
-    assert(connect(task.action, SIGNAL(error(const QString&)), SLOT(error(const QString&))));
-    assert(connect(task.action, SIGNAL(finished()), SLOT(finished())));
+//     Q_ASSERT(connect(task.action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&))));
+//     assert(connect(task.action, SIGNAL(error(const QString&)), SLOT(error(const QString&))));
+//     assert(connect(task.action, SIGNAL(finished()), SLOT(finished())));
+//     
+//     task.action->start();    
+//     
+//     
+//     
+
+std::cerr<<"123"<<std::endl;
     
-    task.action->start();    
+    std::auto_ptr<GetTask> gt(new GetTask(obj, p_->storages(obj), obj->get()));
+    
+    connect(task.action, SIGNAL(loaded(const remote::group&)), gt.get(), SLOT(loaded(const remote::group&)));
+    connect(task.action, SIGNAL(error(QString)), gt.get(), SLOT(error(QString)));
+    connect(task.action, SIGNAL(finished()), gt.get(), SLOT(finished()));
+    
+    std::cerr<<"12333333"<<std::endl;
+//     
+//     connect(task.action, SIGNAL(loaded(const remote::group&))
+//         , new qswg(task.action, boost::bind(&GetTask::loaded, gt, _1))
+//         , SLOT(activate(const remote::group&))); 
+    
+    
 }
 
 void syncro_manager::put(const remote::syncro_manager::Object& obj)

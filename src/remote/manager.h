@@ -153,7 +153,19 @@ private:
         
         return *it;
     }
+    
+    struct GetTask;
 
+};
+
+class task : public QObject {
+    Q_OBJECT
+    
+public Q_SLOTS:
+    
+    virtual void loaded(const remote::group& obj) = 0;
+    virtual void error(const QString& error) = 0;
+    virtual void finished() = 0;
 };
 
 /*! \brief This object represents one element of syncronization
