@@ -287,6 +287,8 @@ struct syncro_manager::GetTask : public task {
         : object(o), storages(st), group(gr), action(0){}
     
     void start() {
+        Q_ASSERT(!storages.empty());
+
         action = cast(*storages.begin()).get(group.type());
         
         connect(action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&)));
@@ -306,6 +308,7 @@ struct syncro_manager::GetTask : public task {
     
     virtual void finished() {
         Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
+        Q_ASSERT(!storages.empty());
     
         storages.erase(storages.begin());
 
@@ -336,6 +339,8 @@ struct syncro_manager::SyncTask : public task {
     }
 
     void start_get() {
+        Q_ASSERT(!get_storages.empty());
+
         action = cast(*get_storages.begin()).get(group.type());
 
         connect(action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&)));
@@ -344,9 +349,11 @@ struct syncro_manager::SyncTask : public task {
     }
 
     void start_put() {
-        action = cast(*get_storages.begin()).put(group.type());
+        Q_ASSERT(!put_storages.empty());
 
-//        connect(action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&)));
+        action = cast(*put_storages.begin()).put(group);
+
+        connect(action, SIGNAL(saved()), SLOT(saved()));
         connect(action, SIGNAL(error(QString)), SLOT(error(QString)));
         connect(action, SIGNAL(finished()), SLOT(finished()));
     }
@@ -361,6 +368,10 @@ struct syncro_manager::SyncTask : public task {
         SYNC_DEBUG << "Error:" << error;
     }
 
+    virtual void saved() {
+        Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
+    }
+
     virtual void finished() {
         Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
 
@@ -370,19 +381,24 @@ struct syncro_manager::SyncTask : public task {
     }
 
     void get_finished() {
-         get_storages.erase(get_storages.begin());
-         if (get_storages.empty())
-         {
-             group = remote::group(group.type(), entries);
-             start_put();
-         }
-         else
-         {
-             start_get();
-         }
+        Q_ASSERT(!get_storages.empty());
+
+        get_storages.erase(get_storages.begin());
+        if (get_storages.empty())
+        {
+            group = remote::group(group.type(), entries);
+            start_put();
+        }
+        else
+        {
+            start_get();
+        }
     }
 
     void put_finished() {
+         Q_ASSERT(get_storages.empty());
+         Q_ASSERT(!put_storages.empty());
+
          put_storages.erase(put_storages.begin());
          if (put_storages.empty())
          {
@@ -633,7 +649,7 @@ void syncro_manager::sync(const Object& obj)
 
 std::cerr<<"123"<<std::endl;
     
-    std::auto_ptr<GetTask> gt(new GetTask(obj, p_->storages(obj), obj->get()));
+    std::auto_ptr<SyncTask> gt(new SyncTask(obj, p_->storages(obj), obj->get()));
     
     connect(task.action, SIGNAL(loaded(const remote::group&)), gt.get(), SLOT(loaded(const remote::group&)));
     connect(task.action, SIGNAL(error(QString)), gt.get(), SLOT(error(QString)));

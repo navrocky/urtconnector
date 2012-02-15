@@ -164,9 +164,10 @@ class task : public QObject {
     
 public Q_SLOTS:
     
-    virtual void loaded(const remote::group& obj) = 0;
-    virtual void error(const QString& error) = 0;
-    virtual void finished() = 0;
+    virtual void loaded(const remote::group& obj) {};
+    virtual void saved() {};
+    virtual void error(const QString& error) {};
+    virtual void finished() {};
 };
 
 /*! \brief This object represents one element of syncronization
