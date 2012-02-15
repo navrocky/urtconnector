@@ -90,6 +90,8 @@ src/3rdparty/qjson/serializer.h -text
 src/3rdparty/qjson/serializerrunnable.cpp -text
 src/3rdparty/qjson/serializerrunnable.h -text
 src/3rdparty/qjson/stack.hh -text
+src/3rdparty/qstat/tests/etqw_1.4_test1 -text
+src/3rdparty/qstat/tests/etqw_1.4_test2 -text
 src/CMakeLists.txt -text
 src/GeoIP.dat -text
 src/about_dialog.cpp -text
