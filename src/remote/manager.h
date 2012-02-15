@@ -155,6 +155,7 @@ private:
     }
     
     struct GetTask;
+    struct SyncTask;
 
 };
 

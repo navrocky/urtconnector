@@ -320,6 +320,81 @@ struct syncro_manager::GetTask : public task {
     }
 };
 
+struct syncro_manager::SyncTask : public task {
+    Object object;
+    Storages get_storages;
+    Storages put_storages;
+    remote::group group;
+    remote::action* action;
+    remote::group::Entries entries;
+
+    SyncTask(const Object& o, const Storages& st, const remote::group& gr)
+        : object(o), get_storages(st), put_storages(st), group(gr), action(0){}
+
+    void start() {
+        start_get();
+    }
+
+    void start_get() {
+        action = cast(*get_storages.begin()).get(group.type());
+
+        connect(action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&)));
+        connect(action, SIGNAL(error(QString)), SLOT(error(QString)));
+        connect(action, SIGNAL(finished()), SLOT(finished()));
+    }
+
+    void start_put() {
+        action = cast(*get_storages.begin()).put(group.type());
+
+//        connect(action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&)));
+        connect(action, SIGNAL(error(QString)), SLOT(error(QString)));
+        connect(action, SIGNAL(finished()), SLOT(finished()));
+    }
+
+    virtual void loaded(const remote::group& obj) {
+        Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
+
+        entries = remote::merge(obj.entries(), entries);
+    }
+
+    virtual void error(const QString& error) {
+        SYNC_DEBUG << "Error:" << error;
+    }
+
+    virtual void finished() {
+        Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
+
+        (!get_storages.empty())
+            ? get_finished()
+            : put_finished();
+    }
+
+    void get_finished() {
+         get_storages.erase(get_storages.begin());
+         if (get_storages.empty())
+         {
+             group = remote::group(group.type(), entries);
+             start_put();
+         }
+         else
+         {
+             start_get();
+         }
+    }
+
+    void put_finished() {
+         put_storages.erase(put_storages.begin());
+         if (put_storages.empty())
+         {
+             cast(object).put(group);
+         }
+         else
+         {
+             start_put();
+         }
+    }
+};
+
 QString con_str(const QString& str1, const QString& str2) {
     return str1 + "-" + str2;
 }
