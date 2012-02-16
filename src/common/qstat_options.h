@@ -5,11 +5,11 @@
 #include <settings/settings_generator.h>
 
 #if defined(Q_OS_UNIX)
-#define QSTAT_DEF_PATH "/usr/bin/qstat"
+#define QSTAT_DEF_PATH "/usr/bin/urtc_qstat"
 #elif defined(Q_OS_WIN)
-#define QSTAT_DEF_PATH "qstat.exe"
+#define QSTAT_DEF_PATH "urtc_qstat.exe"
 #elif defined(Q_OS_MAC)
-#define QSTAT_DEF_PATH "/usr/bin/qstat"
+#define QSTAT_DEF_PATH "/usr/bin/urtc_qstat"
 #endif
 
 #define QSTAT_OPTIONS \
