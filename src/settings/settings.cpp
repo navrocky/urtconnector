@@ -152,6 +152,20 @@ base_settings::qsettings_p base_settings::get_settings(const QString& uid)
     return s.p_->get_settings(uid);
 }
 
+
+settings_group::settings_group(base_settings::qsettings_p settings, const QString& group)
+    : settings_(settings)
+{
+    settings_->beginGroup(group);
+}
+
+settings_group::~settings_group()
+{
+    settings_->endGroup();
+}
+
+
+
 void update_setting_value(base_settings::qsettings_p& old_s, base_settings::qsettings_p& new_s, const QString& old_key, const QString& new_key)
 {
     if( !old_s->childKeys().contains( old_key ) )

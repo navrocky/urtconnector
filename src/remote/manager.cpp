@@ -13,9 +13,9 @@
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index_container.hpp>
-#include <boost/range/algorithm/find.hpp>
-#include <boost/range/algorithm/find_if.hpp>
-#include <boost/range/algorithm/set_algorithm.hpp>
+// #include <boost/range/algorithm/find.hpp>
+// #include <boost/range/algorithm/find_if.hpp>
+// #include <boost/range/algorithm/set_algorithm.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 
@@ -42,6 +42,7 @@ using namespace boost;
 using namespace boost::multi_index;
 
 static const QString s_caption = "service_caption";
+static const QString s_storages = "storages";
 
 SYSLOG_MODULE(syncro_manager);
 
@@ -494,6 +495,7 @@ void syncro_manager::register_service(const Service& srv)
 
     it->service_uid = con_str(p_->services_uid, srv->caption());
     base_settings().register_sub_group(it->service_uid, srv->caption(), p_->services_uid);
+    base_settings().register_sub_group(it->service_uid + s_storages, s_storages, it->service_uid);
     
     LOG_INFO << "new remote service registered '%1' UID:'%2'" , srv->caption(), it->service_uid;
 }
@@ -532,7 +534,7 @@ syncro_manager::Storage syncro_manager::create(const Service& srv, const QString
 
     const QString storage_uid = con_str(it->service_uid, name);
     
-    base_settings::qsettings_p qs = base_settings().register_sub_group(storage_uid, name, it->service_uid);
+    base_settings::qsettings_p qs = base_settings().register_sub_group(storage_uid, name, it->service_uid + s_storages);
     qs = fill_settings(qs, settings);
     qs->setValue(s_caption, srv->caption());
 //    qs->setValue("storage_name", name);
@@ -629,24 +631,31 @@ void syncro_manager::load()
     base_settings::qsettings_p all_services_cfg = base_settings().get_settings(p_->services_uid);
     
     BOOST_FOREACH(const QString& service, all_services_cfg->childGroups()) {
-        base_settings::qsettings_p service_cfg = base_settings().get_settings(p_->services_uid + "-" + service);
-
+        
         Pimpl::srv_iterator<QString>::type it = p_->srv_find(service);
         if (it == p_->srv_end<QString>())
         {
             LOG_WARN << "remote service '%1' cannot be loaded", service;
             continue;
         }
+
+        base_settings::qsettings_p service_cfg = base_settings().get_settings(con_str(p_->services_uid, service));
+
         LOG_WARN << "service '%1' LOADED", service;
+
+        settings_group storages(service_cfg, s_storages);
         
         BOOST_FOREACH(const QString& storage, service_cfg->childGroups()) {
             LOG_WARN << "STORAGE '%1' LOADED", storage;
-            service_cfg->beginGroup(storage);
-            QVariantMap settings = extract_settings(service_cfg);
-            service_cfg->endGroup();
+            {
+                settings_group storage_cfg(service_cfg, storage);
+                QVariantMap settings = extract_settings(service_cfg);
+            }
             
             create(it->service, storage, settings);
         }
+
+        service_cfg->endGroup();
     }
 }
 

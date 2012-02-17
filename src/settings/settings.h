@@ -69,6 +69,14 @@ private:
     boost::shared_ptr<pimpl> p_;
 };
 
+struct settings_group {
+    explicit settings_group(base_settings::qsettings_p settings, const QString& group);
+    ~settings_group();
+    
+private:
+    const base_settings::qsettings_p settings_;
+};
+
 
 ///Take value from \p old_settings by \p old_key and put it to \p new_settigns by \p new_key. Old entry completely removed from old_settings
 void update_setting_value( base_settings::qsettings_p& old_setings, base_settings::qsettings_p& new_setings, const QString& old_key, const QString& new_key );
