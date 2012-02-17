@@ -80,6 +80,7 @@ void save_server_bookmarks(qsettings_p s, server_bookmark_list* bml)
         s->setValue("rcon_password", bm.rcon_password());
         s->setValue("ref_password", bm.ref_password());
         s->setValue("sync_stamp", bm.sync_stamp());
+        s->setValue("sync_deleted", bm.is_deleted());
         i++;
     }
     s->endArray();
@@ -99,6 +100,8 @@ void load_server_bookmarks(qsettings_p s, server_bookmark_list* bml)
                            s->value("rcon_password").toString(),
                            s->value("ref_password").toString(),
                            s->value("sync_stamp").toDateTime() );
+        if (s->value("sync_deleted").toBool())
+            bm.set_deleted();
         bml->add(bm);
     }
     s->endArray();

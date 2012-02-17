@@ -332,23 +332,29 @@ struct syncro_manager::SyncTask : public task {
     remote::group::Entries entries;
 
     SyncTask(const Object& o, const Storages& st, const remote::group& gr)
-        : object(o), get_storages(st), put_storages(st), group(gr), action(0){}
+        : object(o), get_storages(st), put_storages(st), group(gr), action(0)
+        , entries(group.entries())
+    {}
 
     void start() {
+        LOG_INFO << "start...";
         start_get();
     }
 
     void start_get() {
         Q_ASSERT(!get_storages.empty());
 
+        LOG_INFO << " <<< start get...";
         action = cast(*get_storages.begin()).get(group.type());
 
         connect(action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&)));
         connect(action, SIGNAL(error(QString)), SLOT(error(QString)));
         connect(action, SIGNAL(finished()), SLOT(finished()));
+        action->start();
     }
 
     void start_put() {
+        LOG_INFO << "start PUT... >>> ";
         Q_ASSERT(!put_storages.empty());
 
         action = cast(*put_storages.begin()).put(group);
@@ -356,11 +362,13 @@ struct syncro_manager::SyncTask : public task {
         connect(action, SIGNAL(saved()), SLOT(saved()));
         connect(action, SIGNAL(error(QString)), SLOT(error(QString)));
         connect(action, SIGNAL(finished()), SLOT(finished()));
+        action->start();
     }
 
     virtual void loaded(const remote::group& obj) {
         Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
 
+        LOG_INFO << "LAODED";
         entries = remote::merge(obj.entries(), entries);
     }
 
@@ -370,11 +378,13 @@ struct syncro_manager::SyncTask : public task {
 
     virtual void saved() {
         Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
+        LOG_INFO << "SAVED >>>";
     }
 
     virtual void finished() {
         Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
 
+        LOG_INFO << "finished...";
         (!get_storages.empty())
             ? get_finished()
             : put_finished();
@@ -383,14 +393,23 @@ struct syncro_manager::SyncTask : public task {
     void get_finished() {
         Q_ASSERT(!get_storages.empty());
 
+        LOG_INFO << " <<< finihsed get ...";
         get_storages.erase(get_storages.begin());
         if (get_storages.empty())
         {
+            LOG_INFO << " <<< finihsed get ALL";
+            remote::group::Entries non_deleted;
+
+            std::remove_copy_if(entries.begin(), entries.end(), std::inserter(non_deleted, non_deleted.end()),
+                                boost::bind(&remote::intermediate::is_deleted, _1));
+
+            entries.swap(non_deleted);
             group = remote::group(group.type(), entries);
             start_put();
         }
         else
         {
+            LOG_INFO << " <<< partial";
             start_get();
         }
     }
@@ -399,13 +418,17 @@ struct syncro_manager::SyncTask : public task {
          Q_ASSERT(get_storages.empty());
          Q_ASSERT(!put_storages.empty());
 
+        LOG_INFO << " <<< finihsed put ...";
+
          put_storages.erase(put_storages.begin());
          if (put_storages.empty())
          {
+             LOG_INFO << " <<< finihsed put ALL";
              cast(object).put(group);
          }
          else
          {
+             LOG_INFO << " <<< partial put";
              start_put();
          }
     }
@@ -614,8 +637,10 @@ void syncro_manager::load()
             LOG_WARN << "remote service '%1' cannot be loaded", service;
             continue;
         }
+        LOG_WARN << "service '%1' LOADED", service;
         
         BOOST_FOREACH(const QString& storage, service_cfg->childGroups()) {
+            LOG_WARN << "STORAGE '%1' LOADED", storage;
             service_cfg->beginGroup(storage);
             QVariantMap settings = extract_settings(service_cfg);
             service_cfg->endGroup();
@@ -629,43 +654,15 @@ void syncro_manager::load()
 
 void syncro_manager::sync(const Object& obj)
 {
-//     if (boost::find_if(tasks_, boost::bind(&sync_task::object, _1) == obj) != tasks_.end())
-//     {
-//         return;        
-//     }
-//  
-    sync_task& task = *tasks_.insert(tasks_.end(), sync_task(obj, p_->storages(obj), obj->get()));
-    storage& storage = cast(task.current_storage());
-//     
-    task.action = storage.get(task.group.type());
-//     Q_ASSERT(connect(task.action, SIGNAL(loaded(const remote::group&)), SLOT(loaded(const remote::group&))));
-//     assert(connect(task.action, SIGNAL(error(const QString&)), SLOT(error(const QString&))));
-//     assert(connect(task.action, SIGNAL(finished()), SLOT(finished())));
-//     
-//     task.action->start();    
-//     
-//     
-//     
-
-std::cerr<<"123"<<std::endl;
-    
-    std::auto_ptr<SyncTask> gt(new SyncTask(obj, p_->storages(obj), obj->get()));
-    
-    connect(task.action, SIGNAL(loaded(const remote::group&)), gt.get(), SLOT(loaded(const remote::group&)));
-    connect(task.action, SIGNAL(error(QString)), gt.get(), SLOT(error(QString)));
-    connect(task.action, SIGNAL(finished()), gt.get(), SLOT(finished()));
-    
-    std::cerr<<"12333333"<<std::endl;
-//     
-//     connect(task.action, SIGNAL(loaded(const remote::group&))
-//         , new qswg(task.action, boost::bind(&GetTask::loaded, gt, _1))
-//         , SLOT(activate(const remote::group&))); 
-    
-    
+    SyncTask* gt(new SyncTask(obj, p_->storages(obj), obj->get()));
+    gt->start();
 }
 
 void syncro_manager::put(const remote::syncro_manager::Object& obj)
 {
+    sync(obj);
+    return;
+
     if (boost::find_if(tasks_, boost::bind(&sync_task::object, _1) == obj) != tasks_.end())
     {
         return;        

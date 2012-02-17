@@ -48,18 +48,10 @@ remote::group get_group(const tab_context& ctx){
 }
 
 void set_group(const tab_context& ctx, const remote::group& remote){
-    remote::group obj("bookmarks");
 
-    SYNC_DEBUG;
-    
-    BOOST_FOREACH( const server_bookmark& bm, ctx.bookmarks()->list() ) {
-        obj << bm;
-        SYNC_DEBUG << bm.sync_stamp().toString();
-    }  
+    ctx.bookmarks()->clear();
 
-    remote::group::Entries merged = remote::merge( obj.entries(), remote.entries() );
-    
-    BOOST_FOREACH( const remote::intermediate& imd, merged ) {
+    BOOST_FOREACH( const remote::intermediate& imd, remote.entries() ) {
         server_bookmark bm;
         bm.load( imd.save() );
         SYNC_DEBUG << "adding bookmark:"<<bm.id().address();
@@ -168,6 +160,8 @@ void bookmark_tab::update_contents()
     // who changed, appeared?
     foreach (const server_bookmark& bm, bms)
     {
+        if (bm.is_deleted()) continue;
+
         const server_id& id = bm.id();
         server_items::iterator it2 = items_.find(id);
         QTreeWidgetItem* item;
@@ -184,7 +178,7 @@ void bookmark_tab::update_contents()
     for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
     {
         const server_id& id = it->first;
-        if ( bms.find(id) != bms.end() )
+        if ( bms.find(id) != bms.end() && !context().bookmarks()->get(id).is_deleted())
             continue;
         QTreeWidgetItem* item = it->second;
         if (item == cur_item)
@@ -241,7 +235,10 @@ void bookmark_tab::remove_selected()
 
     foreach (const server_id& id, sel)
     {
-        context().bookmarks()->remove(id);
+        server_bookmark bm = context().bookmarks()->get(id);
+        bm.set_deleted();
+        bm.set_sync_stamp();
+        context().bookmarks()->change(bm);
     }
 }
 
@@ -267,105 +264,3 @@ void bookmark_tab::update_actions()
     refresh_all_->setEnabled(context().bookmarks()->list().size() > 0);
 }
 
-
-// syncro_manager::Object s_obj;
-// 
-// void bookmark_tab::test_import(){
-//    
-// 
-//     SYNC_DEBUG << "1";
-//     remote::syncro_manager& syncro = context().syncro();
-// 
-//     SYNC_DEBUG << "2";
-//     
-//     syncro_manager::Service gdocs_service = *syncro.services().begin();
-//     
-// 
-//     
-//     QVariantMap set;
-//     
-//     set["mail"] = "kinnalru@gmail.com";
-//     set["password"] = "malder22";
-// 
-//         
-//     SYNC_DEBUG << "3";
-//     if (syncro.storages().empty())
-//     {
-//         syncro.create(gdocs_service, "sec_plugin", set);
-//     }
-//     
-//     syncro_manager::Storage storage = *syncro.storages().begin();
-//     
-//     
-//     SYNC_DEBUG << "4";
-//     syncro_manager::Getter g = boost::bind(get_group, boost::ref(context()));
-//     
-//     syncro_manager::Setter s = boost::bind(set_group, boost::ref(context()), _1);
-//     
-//     
-//     if (!s_obj)
-//     {
-//         SYNC_DEBUG << "5";
-//         s_obj = syncro.attach("bookmarks", g, s, "bookmarks");
-//     }
-//     
-//     SYNC_DEBUG << "6";
-//     
-//     syncro.bind(s_obj, storage);
-//     
-//     SYNC_DEBUG << "7";
-//     
-//     syncro.sync(s_obj);
-//     
-//     SYNC_DEBUG << "8";
-//     
-// }
-// 
-// 
-// 
-// void bookmark_tab::test_export(){
-// 
-//     SYNC_DEBUG << "1";
-//     remote::syncro_manager& syncro = context().syncro();
-// 
-//     SYNC_DEBUG << "2";
-//     
-//     syncro_manager::Service gdocs_service = *syncro.services().begin();
-//     
-//     QVariantMap set;
-//     
-//     set["mail"] = "kinnalru@gmail.com";
-//     set["password"] = "malder22";
-//     
-//     
-//     SYNC_DEBUG << "3";
-// 
-//     if (syncro.storages().empty())
-//     {
-//         syncro.create(gdocs_service, "sec_plugin", set);
-//     }
-//     
-//     syncro_manager::Storage storage = *syncro.storages().begin();
-//     
-//     
-//     
-//     SYNC_DEBUG << "4";
-// 
-//     
-//     
-//     if (!s_obj)
-//     {
-//         SYNC_DEBUG << "5";
-//         s_obj = syncro.attach("bookmarks", g, s, "bookmarks");
-//     }
-//     
-//     SYNC_DEBUG << "6";
-//     
-//     syncro.bind(s_obj, storage);
-//     
-//     SYNC_DEBUG << "7";
-//     
-//     syncro.put(s_obj);
-//     
-//     SYNC_DEBUG << "8";
-// }

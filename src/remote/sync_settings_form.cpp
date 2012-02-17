@@ -92,7 +92,7 @@ void sync_settings_form::current_srv_changed(QListWidgetItem* current, QListWidg
         
         BOOST_FOREACH(Storage storage, p_->sync_man->storages(srv_current())) {
             QVariantMap settings = p_->sync_man->settings(storage);
-            QListWidgetItem* item = new QListWidgetItem(settings["storage_name"].toString());
+            QListWidgetItem* item = new QListWidgetItem(storage->name());
             item->setData(Qt::UserRole, qVariantFromValue(storage));
             p_->ui.storage_list->addItem(item);
         }
