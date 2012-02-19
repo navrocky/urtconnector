@@ -1,6 +1,8 @@
 #!/bin/bash
-mkdir debug
-pushd debug
+BUILD_FOLDER=debug
+CPUCOUNT=`awk '/processor/{i++}END{print i}' /proc/cpuinfo`
+[ ! -d $DEBUG_FOLDER ] && mkdir $DEBUG_FOLDER
+pushd $DEBUG_FOLDER
 cmake -DCMAKE_BUILD_TYPE=Debug ..
-make
+make -j $CPUCOUNT
 popd

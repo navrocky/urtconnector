@@ -1,16 +1,11 @@
 set(TARGET common)
 
-find_package(Qt4 COMPONENTS Phonon QtCore)
+find_package(Qt4 COMPONENTS QtCore)
 include(${QT_USE_FILE})
 
-if (NOT QT_PHONON_FOUND)
-    find_library(PHONON phonon)
-    if (PHONON)
-        list(APPEND QT_LIBRARIES ${PHONON})
-    else()
-        message(FATAL_ERROR "Phonon not found")
-    endif()
-endif()
+find_package(Phonon REQUIRED)
+
+include_directories(${PHONON_INCLUDES})
 
 set(HEADERS
     scoped_tools.h
@@ -94,4 +89,4 @@ qt4_wrap_ui(SOURCES ${IFACES})
 
 add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
-target_link_libraries(${TARGET} ${QT_LIBRARIES})
+target_link_libraries(${TARGET} ${QT_LIBRARIES} ${PHONON_LIBRARY})

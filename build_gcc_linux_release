@@ -1,6 +1,8 @@
 #!/bin/bash
-mkdir release
-pushd release
+BUILD_FOLDER=release
+CPUCOUNT=`awk '/processor/{i++}END{print i}' /proc/cpuinfo`
+[ ! -d $DEBUG_FOLDER ] && mkdir $DEBUG_FOLDER
+pushd $DEBUG_FOLDER
 cmake -DCMAKE_BUILD_TYPE=Release ..
-make
+make -j $CPUCOUNT
 popd
