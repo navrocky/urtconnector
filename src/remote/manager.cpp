@@ -14,7 +14,7 @@
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index_container.hpp>
 // #include <boost/range/algorithm/find.hpp>
-// #include <boost/range/algorithm/find_if.hpp>
+ #include <boost/range/algorithm/find_if.hpp>
 // #include <boost/range/algorithm/set_algorithm.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/multi_index/hashed_index.hpp>
@@ -23,6 +23,7 @@
 #include <QDir>
 #include <QSet>
 #include <QSettings>
+#include <QUuid>
 
 #include <backends/gdocs/gdocs.h>
 #include "manager.h"
@@ -41,8 +42,23 @@ using namespace boost;
 
 using namespace boost::multi_index;
 
-static const QString s_caption = "service_caption";
+static const QString s_service_tag = "storage_service";
+static const QString s_uuid_tag = "storage_uuid";
+static const QString s_name_tag = "storage_name";
+
+static const QString s_services = "services";
 static const QString s_storages = "storages";
+static const QString s_instance = "instance";
+
+inline QString st_instance_uid(const QString& storage_uid) {
+	return storage_uid + s_instance;
+}
+
+inline QString st_list_uid(const QString& service_uid) {
+	return service_uid + s_storages;
+}
+
+
 
 SYSLOG_MODULE(syncro_manager);
 
@@ -90,15 +106,17 @@ struct syncro_manager::Pimpl {
     typedef std::set<Storage> Storages;
     
     struct service_data {
-        Service service;
-        Storage storage;
-        mutable QString service_uid;
-        mutable QString storage_uid;
+        const Service service;
+        const Storage storage;
+		const QString storage_uid;
+
+        //mutable QString service_uid;
         
-        service_data(Service se, Storage st) : service(se), storage(st) {}
+        service_data(Service se, Storage st, const QString& uid)
+			: service(se), storage(st), storage_uid(uid){}
         
         bool operator == (const service_data& other) const {
-            return service == other.service && storage == other.storage;
+            return storage == other.storage;
         }
     };    
     
@@ -132,24 +150,19 @@ struct syncro_manager::Pimpl {
         indexed_by<
             ordered_non_unique<
                 tag<Service>,
-                BOOST_MULTI_INDEX_MEMBER(service_data, Service, service)
+                BOOST_MULTI_INDEX_MEMBER(service_data, const Service, service)
             >,
-            ordered_non_unique<
+            ordered_unique<
                 tag<Storage>,
-                BOOST_MULTI_INDEX_MEMBER(service_data, Storage, storage)
+                BOOST_MULTI_INDEX_MEMBER(service_data, const Storage, storage)
             >,
             ordered_non_unique<
                 tag<QString>,
                 key_from_key<
                     BOOST_MULTI_INDEX_CONST_MEM_FUN(remote::service, const QString&, caption),
-                    BOOST_MULTI_INDEX_MEMBER(service_data, Service, service)
+                    BOOST_MULTI_INDEX_MEMBER(service_data, const Service, service)
                 >
-            >,
-            hashed_unique<
-                tag<service_data>,
-                identity<service_data>,
-                hash
-            >                
+            >            
         >
     > ServiceData;
     
@@ -176,6 +189,8 @@ struct syncro_manager::Pimpl {
             >              
         >
     > ObjectsData;
+
+	Services srv_list;
 
     ServiceData srv_data;     
     ObjectsData obj_data;
@@ -212,13 +227,9 @@ struct syncro_manager::Pimpl {
     template <typename Tag>
     typename obj_iterator<Tag>::type obj_find(const Tag& key) { return obj_data.get<Tag>().find(key); }
 
-    
-    Services services() const {
-        return Services(
-            make_transform_iterator(srv_data.begin(), boost::bind(&service_data::service, _1)),
-            make_transform_iterator(srv_data.end(), boost::bind(&service_data::service, _1))
-        );
-    }
+	Services services() const {
+		return srv_list;
+	}
     
     template <typename Tag>
     Services services(const Tag& key) const {
@@ -479,7 +490,7 @@ syncro_manager::syncro_manager()
     : p_(new Pimpl)
 {
     p_->services_uid = base_settings().get_settings(manager_options::uid())->fileName() + "services";
-    base_settings().register_sub_group(p_->services_uid, "services", manager_options::uid());
+    base_settings().register_sub_group(p_->services_uid, s_services, manager_options::uid());
     
 //    register_service(Service(new gdocs_service));
 //    register_service(Service(new gdocs_service2));
@@ -488,17 +499,21 @@ syncro_manager::syncro_manager()
 
 void syncro_manager::register_service(const Service& srv)
 {
-    Pimpl::ServiceData::iterator it; bool inserted;
-    std::tr1::tie(it, inserted) = p_->srv_data.insert(Pimpl::service_data(srv, Storage()));
+    Pimpl::Services::iterator it; bool inserted;
+    std::tr1::tie(it, inserted) = p_->srv_list.insert(srv);
     
     if (!inserted) throw std::runtime_error("This service already registered");
 
-    it->service_uid = con_str(p_->services_uid, srv->caption());
-    base_settings().register_sub_group(it->service_uid, srv->caption(), p_->services_uid);
-    base_settings().register_sub_group(it->service_uid + s_storages, s_storages, it->service_uid);
+	const QString service_uid = con_str(p_->services_uid, srv->caption());
+	const QString storages_uid = con_str(service_uid, s_storages);
+
+    base_settings().register_sub_group(service_uid, srv->caption(), p_->services_uid);
+    base_settings().register_sub_group(storages_uid, s_storages, service_uid);
     
-    LOG_INFO << "new remote service registered '%1' UID:'%2'" , srv->caption(), it->service_uid;
+    LOG_INFO << "new remote service registered '%1' UID:'%2'" , srv->caption(), service_uid;
 }
+
+
 
 syncro_manager::Pimpl::Services syncro_manager::services() const
 {
@@ -527,26 +542,26 @@ std::set<syncro_manager::Object> syncro_manager::objects(const Storage& storage)
     return p_->objects(storage);
 }
 
-syncro_manager::Storage syncro_manager::create(const Service& srv, const QString& name, const QVariantMap& settings)
+syncro_manager::Storage syncro_manager::create(const Service& srv, const QString& name, const QVariantMap& settings, const QString storage_uid)
 {
-    Pimpl::srv_iterator<Service>::type it = p_->srv_find<Service>(srv);
-    THROW_IF_EQUAL(it, p_->srv_end<Service>(), "no such service registered");
+	Pimpl::Services::iterator it = p_->srv_list.find(srv);
+    THROW_IF_EQUAL(it, p_->srv_list.end(), "no such service registered");
 
-    const QString storage_uid = con_str(it->service_uid, name);
-    
-    base_settings::qsettings_p qs = base_settings().register_sub_group(storage_uid, name, it->service_uid + s_storages);
-    qs = fill_settings(qs, settings);
-    qs->setValue(s_caption, srv->caption());
-//    qs->setValue("storage_name", name);
-    
-    manager_options().storages_set((manager_options().storages().toSet() << name).toList());
-    
-    service::Storage storage = srv->create(qs);
-    storage->set_name(name);
-    Pimpl::ServiceData::iterator new_it = p_->srv_data.insert(Pimpl::service_data(srv, storage)).first;
-    new_it->service_uid = it->service_uid;
-    new_it->storage_uid = storage_uid;
+	const QString service_uid = con_str(p_->services_uid, srv->caption());
+	const QString storage_list_uid = st_list_uid(service_uid);
+	const QString storage_instance_uid = st_instance_uid(storage_uid);
 
+    base_settings::qsettings_p storage_desc = base_settings().register_sub_group(storage_uid, name, storage_list_uid);
+	storage_desc->setValue(s_service_tag, srv->caption());
+	storage_desc->setValue(s_uuid_tag, storage_uid);
+	storage_desc->setValue(s_name_tag, name);
+
+	base_settings::qsettings_p storage_instance = base_settings().register_sub_group(storage_instance_uid, name, storage_uid);
+    storage_instance = fill_settings(storage_instance, settings);
+    
+    service::Storage storage = srv->create(storage_instance);
+
+    Pimpl::ServiceData::iterator new_it = p_->srv_data.insert(Pimpl::service_data(srv, storage, storage_uid)).first;
     
     LOG_INFO << "new remote storage created: '%1'('%2') UID:'%3'", name, srv->caption(), new_it->storage_uid;
 
@@ -571,13 +586,26 @@ void syncro_manager::remove(const Storage& storage)
 }
 
 
-QVariantMap syncro_manager::settings(const remote::syncro_manager::Storage& storage) const
+QVariantMap syncro_manager::settings(const Storage& storage) const
 {
     Pimpl::srv_iterator<Storage>::type it = p_->srv_find<Storage>(storage);
     THROW_IF_EQUAL(it, p_->srv_end<Storage>(), "no such storage registered");
     
     return extract_settings(base_settings().get_settings(it->storage_uid));
 }
+
+base_settings::qsettings_p syncro_manager::settings(const Service& srv)
+{
+	THROW_IF_EQUAL(base_settings::has_settings(uuid(srv)), false, "no settings for this storage!");
+	return base_settings::get_settings(uuid(srv));
+}
+
+QString syncro_manager::uuid(const Service& srv) const
+{
+	THROW_IF_EQUAL(p_->srv_list.find(srv), p_->srv_list.end(), "no such service registered");
+	return con_str(p_->services_uid, srv->caption());
+}
+
 
 
 void syncro_manager::bind(const Object& obj, const Storage& storage)
@@ -632,28 +660,40 @@ void syncro_manager::load()
     
     BOOST_FOREACH(const QString& service, all_services_cfg->childGroups()) {
         
-        Pimpl::srv_iterator<QString>::type it = p_->srv_find(service);
-        if (it == p_->srv_end<QString>())
+		Pimpl::Services::iterator it = boost::find_if(p_->srv_list, boost::bind(&remote::service::caption, _1) == service);
+			
+        if (it == p_->srv_list.end())
         {
             LOG_WARN << "remote service '%1' cannot be loaded", service;
             continue;
         }
 
-        base_settings::qsettings_p service_cfg = base_settings().get_settings(con_str(p_->services_uid, service));
+        base_settings::qsettings_p service_cfg = settings(*it);
 
         LOG_WARN << "service '%1' LOADED", service;
 
-        settings_group storages(service_cfg, s_storages);
+        settings_group storage_list_lock(service_cfg, s_storages);
         
-        BOOST_FOREACH(const QString& storage, service_cfg->childGroups()) {
-            LOG_WARN << "STORAGE '%1' LOADED", storage;
-            {
-                settings_group storage_cfg(service_cfg, storage);
-                QVariantMap settings = extract_settings(service_cfg);
-            }
+        BOOST_FOREACH(const QString& storage_name, service_cfg->childGroups()) {
+            LOG_WARN << "STORAGE '%1' LOADED", storage_name;
+			
+            settings_group storage_desc_lock(service_cfg, storage_name);
+            QVariantMap desc_settings = extract_settings(service_cfg);
             
-            create(it->service, storage, settings);
+			THROW_IF_NOT_EQUAL(desc_settings[s_service_tag].toString(), service, "invalid storage description[service]");
+			THROW_IF_NOT_EQUAL(desc_settings[s_name_tag].toString(), storage_name, "invalid storage description[name]");
+			THROW_IF_EQUAL(desc_settings[s_uuid_tag], QVariant(), "invalid storage description[uuid]");
+			
+            create(*it, storage_name, desc_settings[s_instance].toMap(), desc_settings[s_uuid_tag].toString());
         }
+
+
+		storage_desc->setValue(s_service_tag, srv->caption());
+		storage_desc->setValue(s_uuid_tag, storage_uid);
+		storage_desc->setValue(s_name_tag, name);
+
+		base_settings::qsettings_p storage_instance = base_settings().register_sub_group(storage_instance_uid, name, storage_uid);
+		storage_instance = fill_settings(storage_instance, settings);
 
         service_cfg->endGroup();
     }

@@ -5,6 +5,10 @@
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
 
+#include <QUuid>
+
+#include "settings/settings.h"
+
 #include "remote.h"
 #include "storage.h"
 
@@ -53,7 +57,7 @@ public:
 
 
     /*! create new instance of storage provided by \p service */
-    Storage create(const Service& service, const QString& name, const QVariantMap& settings);
+    Storage create(const Service& service, const QString& name, const QVariantMap& settings, const QString storage_uid);
     
     void remove(const Storage& storage);
     
@@ -91,6 +95,8 @@ public:
 
     /*! restore state of manager from config*/
     void load();
+
+	QString uuid(const Service& srv) const;
     
 public Q_SLOTS:
     void loaded(const remote::group& obj);
@@ -106,6 +112,7 @@ Q_SIGNALS:
 private:
     
     void register_service(const Service& srv);
+	base_settings::qsettings_p settings(const Service& srv);
 
     typedef std::set<Storage> Storages;
     typedef std::map<Object, Storages> Objects;

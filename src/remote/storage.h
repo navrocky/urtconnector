@@ -9,6 +9,7 @@
 
 #include <QObject>
 #include <QVariantMap>
+//#include <QUuid>
 
 class QSettings;
 class QWidget;
@@ -53,16 +54,19 @@ Q_SIGNALS:
  */
 struct storage {
 
+	//void set_uuid(const QUuid& uuid) { uuid_ = uuid; }
+	//const QUuid& uuid() const { return uuid_; };
 
-    void set_name(const QString& name) {name_ = name;};
-    const QString& name() const { return name_; };
+    //void set_name(const QString& name) {name_ = name; };
+    //const QString& name() const { return name_; };
 
     virtual action* get(const QString& type) = 0;
     virtual action* put(const group& gr) = 0;
     virtual action* check(const QString& type) = 0;
 
 private:
-    QString name_;
+    //QString name_;
+	//QUuid uuid_;
 };
 
 /*! \brief base class for any service(Google docs, DropBox, etc)

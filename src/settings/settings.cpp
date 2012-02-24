@@ -78,6 +78,11 @@ struct base_settings::pimpl
         return it->second;
     }
 
+	bool is_registered(const QString & uid) const
+	{
+		return registered_.find(uid) != registered_.end();
+	}
+
     ///Create QSettings object from main object and enter to the \p uid group
     qsettings_p create_group(const QString& uid, const QString group = QString())
     {
@@ -148,9 +153,14 @@ base_settings::qsettings_p base_settings::main()
 
 base_settings::qsettings_p base_settings::get_settings(const QString& uid)
 {
-    base_settings s;
-    return s.p_->get_settings(uid);
+    return base_settings().p_->get_settings(uid);
 }
+
+bool base_settings::has_settings( const QString& uid )
+{
+	return base_settings().p_->is_registered(uid);
+}
+
 
 
 settings_group::settings_group(base_settings::qsettings_p settings, const QString& group)

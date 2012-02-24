@@ -63,6 +63,7 @@ public:
     ///Get QSettings object registered byt \p uid.
     /*! If no object registered register_group(uid, uid) is called and created object returned */
     static qsettings_p get_settings(const QString& uid);
+	static bool has_settings(const QString& uid);
 
 private:
     struct pimpl;
