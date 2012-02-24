@@ -92,9 +92,9 @@ void sync_settings_form::current_srv_changed(QListWidgetItem* current, QListWidg
         
         BOOST_FOREACH(Storage storage, p_->sync_man->storages(srv_current())) {
             QVariantMap settings = p_->sync_man->settings(storage);
-            QListWidgetItem* item = new QListWidgetItem(storage->name());
-            item->setData(Qt::UserRole, qVariantFromValue(storage));
-            p_->ui.storage_list->addItem(item);
+            //QListWidgetItem* item = new QListWidgetItem(storage->name());
+            //item->setData(Qt::UserRole, qVariantFromValue(storage));
+            //p_->ui.storage_list->addItem(item);
         }
     }
 }
@@ -123,7 +123,7 @@ void sync_settings_form::create()
     const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name");
     const QVariantMap settings = service->configure();
 
-    p_->sync_man->create(service, storage_name, settings);
+    //p_->sync_man->create(service, storage_name, settings);
 }
 
 void sync_settings_form::erase()
@@ -142,12 +142,12 @@ void sync_settings_form::edit()
     
     if (!service || !storage) return;
     
-    const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name", QLineEdit::Normal, storage->name());
+    //const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name", QLineEdit::Normal, storage->name());
 
-    const QVariantMap settings = service->configure(p_->sync_man->settings(storage));
+    //const QVariantMap settings = service->configure(p_->sync_man->settings(storage));
 
-    p_->sync_man->remove(storage);
-    p_->sync_man->create(service, storage_name, settings);
+    //p_->sync_man->remove(storage);
+    //p_->sync_man->create(service, storage_name, settings);
 }
 
 void sync_settings_form::unbind_storage()
@@ -198,10 +198,10 @@ void sync_settings_form::storage_changed(const syncro_manager::Storage& current,
     if (!current)     //storage deleted
     {
         Q_ASSERT(previous.get());
-        QList<QListWidgetItem *> items = p_->ui.storage_list->findItems(previous->name(), Qt::MatchExactly);
-        if (items.isEmpty()) return;
-        Q_ASSERT(items.size() == 1);
-        delete items.front();
+        //QList<QListWidgetItem *> items = p_->ui.storage_list->findItems(previous->name(), Qt::MatchExactly);
+        //if (items.isEmpty()) return;
+        //Q_ASSERT(items.size() == 1);
+        //delete items.front();
     }
     
     if (QListWidgetItem* srv_item = p_->ui.srv_list->currentItem())
@@ -210,10 +210,10 @@ void sync_settings_form::storage_changed(const syncro_manager::Storage& current,
         if (previous || p_->sync_man->service(current) != service)
             return;
         
-        QVariantMap settings = p_->sync_man->settings(current);
-        QListWidgetItem* item = new QListWidgetItem(current->name());
-        item->setData(Qt::UserRole, qVariantFromValue(current));
-        p_->ui.storage_list->addItem(item);
+        //QVariantMap settings = p_->sync_man->settings(current);
+        //QListWidgetItem* item = new QListWidgetItem(current->name());
+        //item->setData(Qt::UserRole, qVariantFromValue(current));
+        //p_->ui.storage_list->addItem(item);
     }
 }
 
