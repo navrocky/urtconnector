@@ -57,7 +57,7 @@ public:
 
 
     /*! create new instance of storage provided by \p service */
-    Storage create(const Service& service, const QString& name, const QVariantMap& settings, const QString storage_uid);
+    Storage create(const Service& service, const QString& name, const QVariantMap& settings, QString storage_uid = QString());
     
     void remove(const Storage& storage);
     

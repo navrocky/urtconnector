@@ -123,7 +123,7 @@ void sync_settings_form::create()
     const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name");
     const QVariantMap settings = service->configure();
 
-    //p_->sync_man->create(service, storage_name, settings);
+    p_->sync_man->create(service, storage_name, settings);
 }
 
 void sync_settings_form::erase()
