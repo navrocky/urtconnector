@@ -42,7 +42,7 @@ public:
     syncro_manager();
 
     /*! List of registered services */
-    std::set<Service> services() const;
+    const std::set<Service>& services() const;
 
     /*! Get Service apropriate to this \p storage */
     Service service(const Storage& storage) const;
@@ -51,7 +51,7 @@ public:
     /*! List of storages apropriate to this \p srv or \b All storages*/
     std::set<Storage> storages(const Service& srv = Service()) const;
     
-    /*! List of storages apropriate to this \p storage or \b All objects*/
+    /*! List of objects binded to this \p storage or \b All objects*/
     std::set<Object> objects(const Storage& storage = Storage()) const;
 
 
@@ -73,6 +73,7 @@ public:
     
     /*! detacj object from manager */
     void detach(const Object&);
+
 
     /*! Bind \p subject to be synced with \p storage*/
     void bind(const Object& subject, const Storage& storage);
@@ -96,8 +97,7 @@ public:
     /*! restore state of manager from config*/
     void load();
 
-	QString uuid(const Service& srv) const;
-    
+   
 public Q_SLOTS:
     void loaded(const remote::group& obj);
     void saved();
@@ -105,13 +105,16 @@ public Q_SLOTS:
     void finished();
 
 Q_SIGNALS:
-    //FIXME works strange
     void storage_changed(remote::syncro_manager::Storage current, remote::syncro_manager::Storage previous);
-    void object_changed(remote::syncro_manager::Object current, remote::syncro_manager::Object previous);
+
+	void object_attached(remote::syncro_manager::Object obj);
+	void object_detached(remote::syncro_manager::Object obj);
+	void object_changed(remote::syncro_manager::Object changed);
    
 private:
     
     void register_service(const Service& srv);
+	QString uuid(const Service& srv) const;
 	base_settings::qsettings_p settings(const Service& srv);
 
     typedef std::set<Storage> Storages;

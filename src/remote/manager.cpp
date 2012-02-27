@@ -227,10 +227,6 @@ struct syncro_manager::Pimpl {
     template <typename Tag>
     typename obj_iterator<Tag>::type obj_find(const Tag& key) { return obj_data.get<Tag>().find(key); }
 
-	Services services() const {
-		return srv_list;
-	}
-    
     template <typename Tag>
     Services services(const Tag& key) const {
         return Services (
@@ -240,48 +236,32 @@ struct syncro_manager::Pimpl {
     }
     
     Storages storages() const {
-        Storages st(
+        return Storages(
             make_transform_iterator(st_data.begin(), boost::bind(&storage_data::storage, _1)),
             make_transform_iterator(st_data.end(), boost::bind(&storage_data::storage, _1))
         );
-        st.erase(Storage());
-        return st;
     }
     
     template <typename Tag>
     Storages storages(const Tag& key) const {
-        Storages st (
+        return Storages(
             make_transform_iterator(st_data.get<Tag>().lower_bound(key), boost::bind(&storage_data::storage, _1)),
             make_transform_iterator(st_data.get<Tag>().upper_bound(key), boost::bind(&storage_data::storage, _1))
         );
-        st.erase(Storage());
-        return st;
     }
     
     Storages storages(const Object& obj) const {
-        Storages st (
+        return Storages(
             make_transform_iterator(obj_data.get<Object>().lower_bound(obj), boost::bind(&objects_data::storage, _1)),
             make_transform_iterator(obj_data.get<Object>().upper_bound(obj), boost::bind(&objects_data::storage, _1))
         );
-        st.erase(Storage());
-        return st;
     }
     
-    std::set<Object> objects(const Storage& storage = Storage()) const {
-        if (storage)
-        {
-            return std::set<Object>(
-                boost::make_transform_iterator(obj_data.get<Storage>().lower_bound(storage), boost::bind(&objects_data::object, _1)),
-                boost::make_transform_iterator(obj_data.get<Storage>().upper_bound(storage), boost::bind(&objects_data::object, _1))
-            );
-        }
-        else
-        {
-            return std::set<Object>(
-                boost::make_transform_iterator(obj_data.begin(), boost::bind(&objects_data::object, _1)),
-                boost::make_transform_iterator(obj_data.end(), boost::bind(&objects_data::object, _1))
-            );
-        }
+    std::set<Object> objects(const Storage& storage) const {
+		return std::set<Object>(
+            boost::make_transform_iterator(obj_data.get<Storage>().lower_bound(storage), boost::bind(&objects_data::object, _1)),
+            boost::make_transform_iterator(obj_data.get<Storage>().upper_bound(storage), boost::bind(&objects_data::object, _1))
+        );
     }
 
     /*! UID to access "services" group of syncro_manager settings */
@@ -504,9 +484,9 @@ void syncro_manager::register_service(const Service& srv)
     Pimpl::Services::iterator it; bool inserted;
     std::tr1::tie(it, inserted) = p_->srv_list.insert(srv);
     
-    if (!inserted) throw std::runtime_error("This service already registered");
+	THROW_IF_EQUAL(inserted, false, "This service already registered");
 
-	const QString service_uid = con_str(p_->services_uid, srv->caption());
+	const QString service_uid = uuid(srv);
 	const QString storage_list_uid = st_list_uid(service_uid);
 
     base_settings().register_sub_group(service_uid, srv->caption(), p_->services_uid);
@@ -518,9 +498,9 @@ void syncro_manager::register_service(const Service& srv)
 
 
 
-syncro_manager::Pimpl::Services syncro_manager::services() const
+const syncro_manager::Pimpl::Services& syncro_manager::services() const
 {
-    return p_->services();
+    return p_->srv_list;
 }
 
 syncro_manager::Service syncro_manager::service(const Storage& storage) const
@@ -542,19 +522,19 @@ syncro_manager::Pimpl::Storages syncro_manager::storages(const Service& srv) con
 
 std::set<syncro_manager::Object> syncro_manager::objects(const Storage& storage) const
 {
-    return p_->objects(storage);
+	if (storage)
+		return p_->objects(storage);
+	else
+		return p_->obj_list;
 }
 
 syncro_manager::Storage syncro_manager::create(const Service& srv, const QString& name, const QVariantMap& settings, QString storage_uid)
 {
-	Pimpl::Services::iterator it = p_->srv_list.find(srv);
-    THROW_IF_EQUAL(it, p_->srv_list.end(), "no such service registered");
-
 	storage_uid = (storage_uid.isEmpty())
 		? QUuid::createUuid().toString()
 		: storage_uid;
 
-	const QString service_uid = con_str(p_->services_uid, srv->caption());
+	const QString service_uid = uuid(srv);
 	const QString storage_list_uid = st_list_uid(service_uid);
 	const QString storage_instance_uid = st_instance_uid(storage_uid);
 
@@ -617,6 +597,23 @@ QString syncro_manager::uuid(const Service& srv) const
 	return con_str(p_->services_uid, srv->caption());
 }
 
+syncro_manager::Object syncro_manager::attach(const QString& name, const Getter& g, const Setter& s, const QString& desc)
+{
+	Pimpl::Objects::iterator it = boost::find_if(p_->obj_list, boost::bind(&object::name, _1) == name);
+	THROW_IF_NOT_EQUAL(it, p_->obj_list.end(), "Object with such name already attached!");
+
+	it = p_->obj_list.insert(Object(new object(g, s, name, desc))).first;
+
+	object_attached(*it);
+	return *it;
+}
+
+void syncro_manager::detach(const Object& obj)
+{
+	unbind(obj);
+	p_->obj_list.erase(obj);
+	object_detached(obj);
+}
 
 
 void syncro_manager::bind(const Object& obj, const Storage& storage)
@@ -624,44 +621,37 @@ void syncro_manager::bind(const Object& obj, const Storage& storage)
     Pimpl::ObjectsData::iterator it; bool inserted;
     std::tr1::tie(it, inserted) = p_->obj_data.insert(Pimpl::objects_data(obj, storage));
     
-    if (!inserted) throw std::runtime_error("This already binded to this storage");
-    
-    //LOG_DEBUG << "object '%1' binded to '%2'", obj->name(), p_->st_find<Storage>(storage)->service->caption();
-    
-    emit object_changed(obj, obj);    
+	THROW_IF_EQUAL(inserted, false, "This already binded to this storage");
+
+    LOG_DEBUG << "object '%1' binded to '%2'", obj->name(), p_->st_find<Storage>(storage)->service->caption();
+    emit object_changed(obj);    
 }
 
-void syncro_manager::unbind(const Object& subject)
+void syncro_manager::unbind(const Object& obj)
 {
-    emit object_changed(Object(), subject);
-    
     boost::erase(p_->obj_data.get<Object>(),
-        make_iterator_range(p_->obj_data.get<Object>().equal_range(subject)));
-    
-    p_->obj_data.insert(Pimpl::objects_data(subject, Storage()));
+        make_iterator_range(p_->obj_data.get<Object>().equal_range(obj)));
+
+	emit object_changed(obj);
 }
 
 
 void syncro_manager::unbind(const Storage& storage)
 {
-    BOOST_FOREACH(const Object& object, p_->objects(storage)) {
-        emit object_changed(object, object);
-    }
-
     boost::erase(p_->obj_data.get<Storage>(),
         make_iterator_range(p_->obj_data.get<Storage>().equal_range(storage)));
+
+	BOOST_FOREACH(const Object& object, p_->objects(storage)) {
+		emit object_changed(object);
+	}
 }
 
-void syncro_manager::unbind(const remote::syncro_manager::Object& subject, const remote::syncro_manager::Storage& storage)
+void syncro_manager::unbind(const remote::syncro_manager::Object& obj, const remote::syncro_manager::Storage& storage)
 {
-    std::set<Object> all_objects = p_->objects(storage);
-    
-    Pimpl::obj_iterator<Pimpl::objects_data>::type it = p_->obj_find(Pimpl::objects_data(subject, storage));
+    Pimpl::obj_iterator<Pimpl::objects_data>::type it = p_->obj_find(Pimpl::objects_data(obj, storage));
     p_->obj_data.get<Pimpl::objects_data>().erase(it);
     
-    BOOST_FOREACH(const Object& object, all_objects) {
-        emit object_changed(object, object);
-    }
+	emit object_changed(obj);
 }
 
 
@@ -764,24 +754,6 @@ void syncro_manager::finished()
         cast(task.object).put(group(task.group.type(), task.entries));
         tasks_.remove(task);
     }
-}
-
-syncro_manager::Object syncro_manager::attach(const QString& name, const Getter& g, const Setter& s, const QString& desc)
-{
-    if (p_->obj_find<QString>(name) != p_->obj_end<QString>())
-        throw std::runtime_error("Object with such name already attached!");
-
-    Object obj(new object(g, s, name, desc));
-    bind(obj, Storage());
-    return obj;
-}
-
-void syncro_manager::detach(const syncro_manager::Object& obj)
-{
-    Pimpl::obj_iterator<Object>::type it1, it2;
-    boost::tuples::tie(it1,it2) = get<Object>(p_->obj_data).equal_range(obj);
-    
-    p_->obj_data.erase(it1, it2);
 }
 
 };
