@@ -175,7 +175,7 @@ void bookmark_tab::update_contents()
     }
 
     // remove old items
-    for (server_items::iterator it = items_.begin(); it != items_.end(); it++)
+    for (server_items::iterator it = items_.begin(); it != items_.end(); ++it)
     {
         const server_id& id = it->first;
         if ( bms.find(id) != bms.end() && !context().bookmarks()->get(id).is_deleted())

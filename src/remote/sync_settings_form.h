@@ -27,7 +27,9 @@ private slots:
     void current_st_changed ( QListWidgetItem * current, QListWidgetItem * previous );
     
     void storage_changed(const remote::syncro_manager::Storage& current, const remote::syncro_manager::Storage& previous);
-    void object_changed(const remote::syncro_manager::Object& current, const remote::syncro_manager::Object& previous);
+    void object_changed(const remote::syncro_manager::Object& current);
+	void object_attached(const remote::syncro_manager::Object& current);
+	void object_detached(const remote::syncro_manager::Object& current);
     
     void do_import();
     void do_export();

@@ -68,8 +68,10 @@ sync_settings_form::sync_settings_form(boost::shared_ptr<remote::syncro_manager>
 
     
     connect(p_->sync_man.get(), SIGNAL(storage_changed(remote::syncro_manager::Storage,remote::syncro_manager::Storage)), SLOT(storage_changed(remote::syncro_manager::Storage,remote::syncro_manager::Storage)));
-    connect(p_->sync_man.get(), SIGNAL(object_changed(remote::syncro_manager::Object,remote::syncro_manager::Object)), SLOT(object_changed(remote::syncro_manager::Object,remote::syncro_manager::Object)));
-    
+    connect(p_->sync_man.get(), SIGNAL(object_changed(remote::syncro_manager::Object)), SLOT(object_changed(remote::syncro_manager::Object)));
+	connect(p_->sync_man.get(), SIGNAL(object_attached(remote::syncro_manager::Object)), SLOT(object_attached(remote::syncro_manager::Object)));
+	connect(p_->sync_man.get(), SIGNAL(object_detached(remote::syncro_manager::Object)), SLOT(object_detached(remote::syncro_manager::Object)));
+
 //     connect(p_->ui.geoip_database_choose_button, SIGNAL(clicked()), SLOT(choose_geoip_database()));
 //     connect(p_->ui.center_current_row_check, SIGNAL(stateChanged(int)), this, SLOT(int_changed()));
 //     connect(p_->ui.clear_offline_check, SIGNAL(stateChanged(int)), this, SLOT(int_changed()));
@@ -92,9 +94,9 @@ void sync_settings_form::current_srv_changed(QListWidgetItem* current, QListWidg
         
         BOOST_FOREACH(Storage storage, p_->sync_man->storages(srv_current())) {
             QVariantMap settings = p_->sync_man->settings(storage);
-            //QListWidgetItem* item = new QListWidgetItem(storage->name());
-            //item->setData(Qt::UserRole, qVariantFromValue(storage));
-            //p_->ui.storage_list->addItem(item);
+            QListWidgetItem* item = new QListWidgetItem(p_->sync_man->name(storage));
+            item->setData(Qt::UserRole, qVariantFromValue(storage));
+            p_->ui.storage_list->addItem(item);
         }
     }
 }
@@ -142,12 +144,12 @@ void sync_settings_form::edit()
     
     if (!service || !storage) return;
     
-    //const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name", QLineEdit::Normal, storage->name());
+    const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name", QLineEdit::Normal, p_->sync_man->name(storage));
 
-    //const QVariantMap settings = service->configure(p_->sync_man->settings(storage));
+    const QVariantMap settings = service->configure(p_->sync_man->settings(storage));
 
-    //p_->sync_man->remove(storage);
-    //p_->sync_man->create(service, storage_name, settings);
+    p_->sync_man->remove(storage);
+    p_->sync_man->create(service, storage_name, settings);
 }
 
 void sync_settings_form::unbind_storage()
@@ -198,10 +200,10 @@ void sync_settings_form::storage_changed(const syncro_manager::Storage& current,
     if (!current)     //storage deleted
     {
         Q_ASSERT(previous.get());
-        //QList<QListWidgetItem *> items = p_->ui.storage_list->findItems(previous->name(), Qt::MatchExactly);
-        //if (items.isEmpty()) return;
-        //Q_ASSERT(items.size() == 1);
-        //delete items.front();
+        QList<QListWidgetItem *> items = p_->ui.storage_list->findItems(p_->sync_man->name(previous), Qt::MatchExactly);
+        if (items.isEmpty()) return;
+        Q_ASSERT(items.size() == 1);
+        delete items.front();
     }
     
     if (QListWidgetItem* srv_item = p_->ui.srv_list->currentItem())
@@ -210,36 +212,40 @@ void sync_settings_form::storage_changed(const syncro_manager::Storage& current,
         if (previous || p_->sync_man->service(current) != service)
             return;
         
-        //QVariantMap settings = p_->sync_man->settings(current);
-        //QListWidgetItem* item = new QListWidgetItem(current->name());
-        //item->setData(Qt::UserRole, qVariantFromValue(current));
-        //p_->ui.storage_list->addItem(item);
+        QVariantMap settings = p_->sync_man->settings(current);
+        QListWidgetItem* item = new QListWidgetItem(p_->sync_man->name(current));
+        item->setData(Qt::UserRole, qVariantFromValue(current));
+        p_->ui.storage_list->addItem(item);
     }
 }
 
-void sync_settings_form::object_changed(const remote::syncro_manager::Object& current, const remote::syncro_manager::Object& previous)
+void sync_settings_form::object_changed(const remote::syncro_manager::Object& current)
 {
-    if (!current)     //Object deleted
-    {
-        Q_ASSERT(previous.get());
-        const QString name = previous->name();
-        QList<QListWidgetItem *> items = p_->ui.all_objects->findItems(name, Qt::MatchExactly);
-        
-        BOOST_FOREACH(QListWidgetItem * item, p_->ui.all_objects->findItems(name, Qt::MatchExactly)) {
-            delete item;
-        }
-    }
-    else if (current && !previous)     //Object created
-    {
-        QListWidgetItem* item = new QListWidgetItem(current->name());
-        item->setData(Qt::UserRole, qVariantFromValue(current));
-    
-        p_->ui.all_objects->addItem(item);
-    }
-    
     current_st_changed(p_->ui.storage_list->currentItem(), 0);    
 }
 
+void sync_settings_form::object_attached(const remote::syncro_manager::Object& obj)
+{
+	QListWidgetItem* item = new QListWidgetItem(obj->name());
+	item->setData(Qt::UserRole, qVariantFromValue(obj));
+
+	p_->ui.all_objects->addItem(item);
+
+    current_st_changed(p_->ui.storage_list->currentItem(), 0);  
+}
+
+void sync_settings_form::object_detached(const remote::syncro_manager::Object& obj)
+{
+	Q_ASSERT(obj.get());
+	const QString name = obj->name();
+	QList<QListWidgetItem *> items = p_->ui.all_objects->findItems(name, Qt::MatchExactly);
+
+	BOOST_FOREACH(QListWidgetItem * item, p_->ui.all_objects->findItems(name, Qt::MatchExactly)) {
+		delete item;
+	}
+
+	current_st_changed(p_->ui.storage_list->currentItem(), 0);  
+}
 
 
 
@@ -338,6 +344,8 @@ syncro_manager::Object sync_settings_form::obj_current() const
     
     return (item) ? item->data(Qt::UserRole).value<Object>() : Object();
 }
+
+
 
 
 

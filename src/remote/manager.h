@@ -36,6 +36,8 @@ public:
     
     /*! Type of access key to existing storage */
     typedef boost::shared_ptr<const storage> Storage;
+
+	typedef std::set<Storage> Storages;
     
 
 
@@ -49,7 +51,7 @@ public:
     
     
     /*! List of storages apropriate to this \p srv or \b All storages*/
-    std::set<Storage> storages(const Service& srv = Service()) const;
+    Storages storages(const Service& srv = Service()) const;
     
     /*! List of objects binded to this \p storage or \b All objects*/
     std::set<Object> objects(const Storage& storage = Storage()) const;
@@ -97,6 +99,8 @@ public:
     /*! restore state of manager from config*/
     void load();
 
+	QString name(const Storage& storage) const;
+
    
 public Q_SLOTS:
     void loaded(const remote::group& obj);
@@ -111,15 +115,15 @@ Q_SIGNALS:
 	void object_detached(remote::syncro_manager::Object obj);
 	void object_changed(remote::syncro_manager::Object changed);
    
+private Q_SLOTS:
+	void completed(const syncro_manager::Object& obj, const remote::group& group);
+
 private:
     
     void register_service(const Service& srv);
 	QString uuid(const Service& srv) const;
 	base_settings::qsettings_p settings(const Service& srv);
-
-    typedef std::set<Storage> Storages;
-    typedef std::map<Object, Storages> Objects;
-    
+   
 private:
     
     
@@ -129,7 +133,7 @@ private:
 
     //TODO move to cpp and redesign
 
-    struct sync_task {
+  /*  struct sync_task {
         
         sync_task(
             const Object& obj,
@@ -162,22 +166,12 @@ private:
             throw std::runtime_error("no such task");
         
         return *it;
-    }
+    }*/
     
-    struct GetTask;
-    struct SyncTask;
-
-};
-
-class task : public QObject {
-    Q_OBJECT
-    
-public Q_SLOTS:
-    
-    virtual void loaded(const remote::group& obj) {};
-    virtual void saved() {};
-    virtual void error(const QString& error) {};
-    virtual void finished() {};
+	class task;
+	struct task_factory;
+    class get_task;
+    class sync_task;
 };
 
 /*! \brief This object represents one element of syncronization

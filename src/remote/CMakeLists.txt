@@ -9,6 +9,7 @@ set(HEADERS
     remote.h
     storage.h
     manager.h
+    task.h
     settings.h
     backends/gdocs/gdocs.h 
     sync_settings_form.h
@@ -17,6 +18,7 @@ set(HEADERS
 set(MOC_HEADERS
     storage.h
     manager.h
+    task.h
     backends/gdocs/gdocs.h
     backends/gdocs/gdocs_widget.h
     sync_settings_form.h
@@ -25,6 +27,7 @@ set(MOC_HEADERS
 set(SOURCES
     remote.cpp
     manager.cpp
+    task.cpp
     settings.cpp
     backends/gdocs/gdocs.cpp
     sync_settings_form.cpp
