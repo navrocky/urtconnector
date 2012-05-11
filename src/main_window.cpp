@@ -61,6 +61,7 @@
 #include <filters/filter_list.h>
 #include <filters/composite_filter.h>
 #include <filters/hide_full_filter.h>
+#include <filters/hide_empty_filter.h>
 
 #include "config.h"
 #include "ui_main_window.h"
@@ -495,12 +496,25 @@ void main_window::connect_to_server(const server_id& id,
 
         if (info->players.size() == 0)
         {
-
-            if (QMessageBox::warning(this
-                , tr("Connecting to the server")
-                , tr("Server is empty.\n\nDo you want to continue connecting?").arg(msg)
-                , QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes
-                ) != QMessageBox::Yes)
+            QMessageBox msg;
+            msg.setIcon(QMessageBox::Question);
+            msg.setWindowTitle(tr("Connecting to the server"));
+            msg.setWindowIcon(QIcon("icons:urtconnector.png"));
+            msg.setText(tr("Server is empty."));
+            msg.setInformativeText(tr("Do you want to wait when someone appear on this server or to connect right now?"));
+            QPushButton* wait_btn = msg.addButton(tr("Wait for someone"), QMessageBox::AcceptRole);
+            wait_btn->setIcon(QIcon("icons:chronometer.png"));
+            QPushButton* connect_btn = msg.addButton(tr("Connect right now"), QMessageBox::AcceptRole);
+            connect_btn->setIcon(QIcon("icons:launch.png"));
+            QPushButton* cancel_btn = msg.addButton(QMessageBox::Cancel);
+            msg.setDefaultButton(wait_btn);
+            msg.exec();
+            if (msg.clickedButton() == wait_btn)
+            {
+                create_waiting_someone_task(id);
+                return;
+            }
+            if (msg.clickedButton() == cancel_btn || msg.clickedButton() == 0)
                 return;
         }
     }
@@ -884,4 +898,58 @@ void main_window::create_waiting_task(const server_id& id)
     track_man_->add_task(task);
     task->condition()->start();
     
+}
+
+void main_window::create_waiting_someone_task(const server_id& id)
+{
+    using namespace tracking;
+
+    server_info_p si = all_sl_->get(id);
+
+    // creating task
+    task_t* task = new task_t(this);
+    task->set_caption(tr("Connect to %1 if someone appeared").arg(si ? si->name : id.address()));
+    task->set_operation_mode(task_t::om_destroy_after_trigger);
+    QUuid uid = QUuid::createUuid();
+    task->set_id(uid.toString());
+
+    // assign filter condition to the task
+    condition_class_p cc(new server_filter_condition_class(track_ctx_));
+    condition_p cond = cc->create();
+    server_filter_condition* sfc = dynamic_cast<server_filter_condition*>(cond.get());
+    task->set_condition(cond);
+    sfc->set_interval(5000);
+    sfc->set_servers(id.address());
+    sfc->set_use_auto_update(true);
+
+    // add someone appeared filter
+    composite_filter* cf = dynamic_cast<composite_filter*>(sfc->filters()->root_filter().get());
+
+    filter_class_p fc(new hide_empty_filter_class);
+    filter_p flt = fc->create_filter();
+    flt->set_name(QUuid::createUuid().toString());
+    cf->add_filter(flt);
+
+    // add play sound action
+    action_class_p ac(new play_sound_action_class(track_ctx_));
+    action_p a = ac->create();
+    play_sound_action* psa = static_cast<play_sound_action*>(a.get());
+    psa->set_sound_file(app_settings().notification_sound());
+    task->add_action(a);
+
+    // add query action
+    ac.reset(new show_query_action_class(track_ctx_));
+    a = ac->create();
+    show_query_action* qa = dynamic_cast<show_query_action*>(a.get());
+    qa->set_title(tr("Connect"));
+    qa->set_message(tr("On the server <b>%server</b> someone appeared.<br><br>Do you wish to connect him?"));
+    task->add_action(a);
+
+    // add connect action
+    ac.reset(new connect_action_class(track_ctx_));
+    a = ac->create();
+    task->add_action(a);
+
+    track_man_->add_task(task);
+    task->condition()->start();
 }
