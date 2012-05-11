@@ -64,6 +64,12 @@ private Q_SLOTS:
     void bookmark_changed( const server_bookmark& old_bm, const server_bookmark& new_bm );
     
 private:
+    enum sorting_mode_t
+    {
+        sm_nickname,
+        sm_ping,
+        sm_score
+    };
 
     void update();
     
@@ -80,7 +86,7 @@ private:
 
     ///Parse internal html document and regenerate all widgets
     void regenerate_widgets( const server_info& si );
-
+    void regenerate_sortings();
     void regenerate_friends( const server_info& si );
     void regenerate_maps( const server_info& si );
     
@@ -93,8 +99,9 @@ private:
     ///Magic function that creates "render" for \p widget at position cursor.
     ///\note ownership of widget is at widget's parent but when textBlock at position \p cursor is deleted widget is deleted \b too
     QWidget* wrap_widget( QWidget* widget, QTextCursor& cursor );
+
+    void set_player_sorting(sorting_mode_t mode);
     
-private:
     server_bookmark_list_p bookmarks_;
     QTextBrowser*   browser_;
     
@@ -110,6 +117,7 @@ private:
     Q3ColorMap html_colors_;
     
     rcon_connection* rcon_;
+    sorting_mode_t sorting_mode_;
 };
 
 class map_combo: public QComboBox{
