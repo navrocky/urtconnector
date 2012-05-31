@@ -204,6 +204,8 @@ src/filters/hide_full_filter.cpp -text
 src/filters/hide_full_filter.h -text
 src/filters/hide_private_filter.cpp -text
 src/filters/hide_private_filter.h -text
+src/filters/minimum_empty_slots_filter.cpp -text
+src/filters/minimum_empty_slots_filter.h -text
 src/filters/online_clans_filter.cpp -text
 src/filters/online_clans_filter.h -text
 src/filters/ping_filter.cpp -text
