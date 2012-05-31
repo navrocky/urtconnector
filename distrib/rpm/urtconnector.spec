@@ -1,5 +1,5 @@
 %define name urtconnector
-%define version 0.8.0
+%define version 0.8.1
 
 Summary: Advanced Urban Terror launcher
 Name: %{name}
@@ -18,7 +18,6 @@ BuildRequires: qt-devel sqlite-devel
 %else
 BuildRequires: libqt4-devel sqlite3-devel
 %endif
-Requires: qstat >= 2.12
 
 
 %description
