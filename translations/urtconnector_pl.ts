@@ -147,10 +147,18 @@
     </message>
 </context>
 <context>
+    <name>QJson::ParserRunnable</name>
+    <message>
+        <location filename="../src/3rdparty/qjson/parserrunnable.cpp" line="64"/>
+        <source>An error occurred while parsing json: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../src/application.cpp" line="36"/>
-        <location filename="../src/main.cpp" line="293"/>
+        <location filename="../src/main.cpp" line="289"/>
         <source>Unknown error</source>
         <translation type="unfinished">Nieznany błąd</translation>
     </message>
@@ -604,8 +612,12 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
     </message>
     <message>
         <location filename="../src/about_dialog.cpp" line="89"/>
+        <source>&lt;p class=&quot;name&quot;&gt;Vladislav Navrocky (=XaoC=vlad.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:navrocky.vlad@gmail.com&quot;&gt;navrocky.vlad@gmail.com&lt;/a&gt;&lt;br&gt;Russian translation.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;MajkiFajki&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:MajkFajkiPublic@gmail.com&quot;&gt;MajkFajkiPublic@gmail.com&lt;/a&gt;&lt;br&gt;Polish translation.&lt;/p&gt;&lt;p&gt;UrTConnector translated to many languages. Thanks to people who helped with translation.&lt;/p&gt;&lt;p&gt;If you want to help with translation UrTConnector to your language - &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;join&lt;/a&gt; us!&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&lt;p&gt;UrTConnector translated to many languages. Thanks to people who helped with translation.&lt;/p&gt;&lt;p&gt;If you want to help with translation UrTConnector to your language - &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;join&lt;/a&gt; us!&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;UrTConnector jest w wielu wersjach językowych. Dziękujemy ludziom, którzy pomogli w tłumaczeniu.&lt;/p&gt;&lt;p&gt;Jeśli chcesz pomóc w przetłumaczeniu UrTConnector na swój język - &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;Dołącz&lt;/a&gt; do nas!&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;UrTConnector jest w wielu wersjach językowych. Dziękujemy ludziom, którzy pomogli w tłumaczeniu.&lt;/p&gt;&lt;p&gt;Jeśli chcesz pomóc w przetłumaczeniu UrTConnector na swój język - &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;Dołącz&lt;/a&gt; do nas!&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -836,6 +848,39 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
         <location filename="../src/filters/composite_filter.cpp" line="181"/>
         <source>OR</source>
         <translation type="unfinished">LUB</translation>
+    </message>
+</context>
+<context>
+    <name>config_wizard</name>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="33"/>
+        <source>qstat executable missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="33"/>
+        <source>No qstat(quakestat) executable found, please select executable manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="35"/>
+        <source>Please select qstat(quakestat) executeable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="54"/>
+        <source>UrbanTerror executable missing</source>
+        <translation type="unfinished">Plik wykonywalny gry nie znaleziony</translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="54"/>
+        <source>No UrbanTerror executable found, please select executable manually</source>
+        <translation type="unfinished">Nie znaleziono pliku wykonywalnego gry, proszę podaj jego lokalizację</translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="56"/>
+        <source>Please select UrbanTerror executeable</source>
+        <translation type="unfinished">Wybierz lokalizację pliku wykonywalnego gry</translation>
     </message>
 </context>
 <context>
@@ -1491,12 +1536,12 @@ Czy chcesz kontynować łączenie?</translation>
         <translation type="unfinished">Wybierz lokalizację pliku wykonywalnego gry</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="707"/>
+        <location filename="../src/main_window.cpp" line="709"/>
         <source>Quit</source>
         <translation type="unfinished">Wyjdź</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="707"/>
+        <location filename="../src/main_window.cpp" line="709"/>
         <source>The game is started at this moment.
 
 Kill the game and quit now?</source>
@@ -1505,32 +1550,32 @@ Kill the game and quit now?</source>
 Zamknąć ją i wyjść teraz?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="753"/>
+        <location filename="../src/main_window.cpp" line="755"/>
         <source>RCon : %1</source>
         <translation type="unfinished">RCON : %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="789"/>
+        <location filename="../src/main_window.cpp" line="791"/>
         <source>The player&apos;s name must be defined in the quick launch window for the anti-cheat!</source>
         <translation type="unfinished">Nick gracza musi być podany w oknie szybkiego uruchamiania aby AntiCheat mógł działać!</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="795"/>
+        <location filename="../src/main_window.cpp" line="797"/>
         <source>Anticheat options</source>
         <translation type="unfinished">Opcje AntiCheat</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="840"/>
+        <location filename="../src/main_window.cpp" line="842"/>
         <source>Connect to %1</source>
         <translation type="unfinished">Połącz z %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="873"/>
+        <location filename="../src/main_window.cpp" line="875"/>
         <source>Connect</source>
         <translation type="unfinished">Połącz</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="874"/>
+        <location filename="../src/main_window.cpp" line="876"/>
         <source>On the server &lt;b&gt;%server&lt;/b&gt; appeared empty slots.&lt;br&gt;&lt;br&gt;Do you wish to connect?</source>
         <translation type="unfinished">Na serwerze &lt;b&gt;%server&lt;/b&gt; zwolnił się slot.&lt;br&gt;&lt;br&gt;Chesz się połączyć?</translation>
     </message>

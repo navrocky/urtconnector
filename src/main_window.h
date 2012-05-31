@@ -104,6 +104,7 @@ private:
     main_tab* current_tab_widget() const;
     server_info_p selected_info() const;
     void create_waiting_task(const server_id&);
+    void create_waiting_someone_task(const server_id&);
 
     boost::shared_ptr<Ui_MainWindowClass> ui_;
     main_tab_widget* tab_widget_;

@@ -674,10 +674,18 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QJson::ParserRunnable</name>
+    <message>
+        <location filename="../src/3rdparty/qjson/parserrunnable.cpp" line="64"/>
+        <source>An error occurred while parsing json: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="../src/application.cpp" line="36"/>
-        <location filename="../src/main.cpp" line="293"/>
+        <location filename="../src/main.cpp" line="289"/>
         <source>Unknown error</source>
         <translation>Неизвестная ошибка</translation>
     </message>
@@ -1268,8 +1276,8 @@ If the user selects &quot;No&quot; then processing of following actions stops.</
     </message>
     <message>
         <location filename="../src/about_dialog.cpp" line="89"/>
-        <source>&lt;p&gt;UrTConnector translated to many languages. Thanks to people who helped with translation.&lt;/p&gt;&lt;p&gt;If you want to help with translation UrTConnector to your language - &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;join&lt;/a&gt; us!&lt;/p&gt;</source>
-        <translation></translation>
+        <source>&lt;p class=&quot;name&quot;&gt;Vladislav Navrocky (=XaoC=vlad.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:navrocky.vlad@gmail.com&quot;&gt;navrocky.vlad@gmail.com&lt;/a&gt;&lt;br&gt;Russian translation.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;MajkiFajki&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:MajkFajkiPublic@gmail.com&quot;&gt;MajkFajkiPublic@gmail.com&lt;/a&gt;&lt;br&gt;Polish translation.&lt;/p&gt;&lt;p&gt;UrTConnector translated to many languages. Thanks to people who helped with translation.&lt;/p&gt;&lt;p&gt;If you want to help with translation UrTConnector to your language - &lt;a href=&quot;http://code.google.com/p/urtconnector&quot;&gt;join&lt;/a&gt; us!&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;p&gt;Developed by members of the best russian clan &lt;a href=&quot;http://www.urt-xaoc.ru&quot;&gt;=XaoC=&lt;/a&gt;.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Navrocky Vladislav (=XaoC=vlad.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:navrocky@visualdata.ru&quot;&gt;navrocky@visualdata.ru&lt;/a&gt;&lt;br&gt;Project leader, maintainer, architecture, windows and rpm packager.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;EnD3n1s&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:endenis@mail.ru&quot;&gt;endenis@mail.ru&lt;/a&gt;&lt;br&gt;Founder, base concept, first release, tester.&lt;/p&gt;&lt;p class=&quot;name&quot;&gt;Samoilenko Yuri (jerry.gkb.ru)&lt;p&gt;&lt;p class=&quot;info&quot;&gt;&lt;a href=&quot;mailto:kinallru@gmail.com&quot;&gt;kinallru@gmail.com&lt;/a&gt;&lt;br&gt;Code, ideas, Gentoo packager.&lt;/p&gt;</source>
@@ -1524,6 +1532,39 @@ If the user selects &quot;No&quot; then processing of following actions stops.</
         <location filename="../src/filters/composite_filter.cpp" line="181"/>
         <source>OR</source>
         <translation>ИЛИ</translation>
+    </message>
+</context>
+<context>
+    <name>config_wizard</name>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="33"/>
+        <source>qstat executable missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="33"/>
+        <source>No qstat(quakestat) executable found, please select executable manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="35"/>
+        <source>Please select qstat(quakestat) executeable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="54"/>
+        <source>UrbanTerror executable missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="54"/>
+        <source>No UrbanTerror executable found, please select executable manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/config_wizard.cpp" line="56"/>
+        <source>Please select UrbanTerror executeable</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2170,17 +2211,17 @@ Do you want to continue connecting?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="840"/>
+        <location filename="../src/main_window.cpp" line="842"/>
         <source>Connect to %1</source>
         <translation>Подключиться к %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="873"/>
+        <location filename="../src/main_window.cpp" line="875"/>
         <source>Connect</source>
         <translation>Соединение</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="874"/>
+        <location filename="../src/main_window.cpp" line="876"/>
         <source>On the server &lt;b&gt;%server&lt;/b&gt; appeared empty slots.&lt;br&gt;&lt;br&gt;Do you wish to connect?</source>
         <translation>На сервере &lt;b&gt;%server&lt;/b&gt; появились свободные места.&lt;br&gt;&lt;br&gt;Желаете подключиться?</translation>
     </message>
@@ -2211,29 +2252,29 @@ Do you want to continue connecting?</source>
         <translation>Введите пароль</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="707"/>
+        <location filename="../src/main_window.cpp" line="709"/>
         <source>Quit</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="707"/>
+        <location filename="../src/main_window.cpp" line="709"/>
         <source>The game is started at this moment.
 
 Kill the game and quit now?</source>
         <translation>Игра запущена.\n\nЗавершить и выйти?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="753"/>
+        <location filename="../src/main_window.cpp" line="755"/>
         <source>RCon : %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="789"/>
+        <location filename="../src/main_window.cpp" line="791"/>
         <source>The player&apos;s name must be defined in the quick launch window for the anti-cheat!</source>
         <translation>Античиту требуется заданное имя игрока в окне быстрого запуска!</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="795"/>
+        <location filename="../src/main_window.cpp" line="797"/>
         <source>Anticheat options</source>
         <translation>Параметры Античита</translation>
     </message>

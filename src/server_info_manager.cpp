@@ -27,6 +27,9 @@
 
 const QString player_tag_c = "PLAYER_TAG=\"%1\"";
 const QString map_tag_c = "MAP_TAG=\"%1\"";
+const QString sort_by_name_tag_c = "%SORT_BY_NAME%";
+const QString sort_by_ping_tag_c = "%SORT_BY_PING%";
+const QString sort_by_score_tag_c = "%SORT_BY_SCORE%";
 
 const char* player_property_c = "player";
 
@@ -87,6 +90,7 @@ server_info_manager::server_info_manager( QWidget* parent )
     , rcon_( new rcon_connection( server_id(), "", this ) )
     , browser_( new QTextBrowser(this) )
     , html_colors_( default_colors() )
+    , sorting_mode_(sm_nickname)
 {
     //Registering our-handler to make QTextBrowser widget-embeddable
     QObject *wInterface = new widget_object;
@@ -331,7 +335,8 @@ QString server_info_manager::make_players(const server_info& si) const
     if ( pil.size() > 0 )
     {
         players += tr("<hr>%1 players:<table width=100%>"
-                     "<tr class=\"header\"><td>Nick</td><td>Ping</td><td>Score</td></tr>").arg( pil.size() );
+                     "<tr class=\"header\"><td>Nick%2</td><td>Ping%3</td><td>Score%4</td></tr>")
+                .arg( pil.size() ).arg(sort_by_name_tag_c).arg(sort_by_ping_tag_c).arg(sort_by_score_tag_c);
         int i = 0;
         foreach (const player_info& pi, pil)
         {
@@ -398,8 +403,40 @@ void server_info_manager::regenerate_widgets( const server_info& si )
     LOG_DEBUG << "regenerating widgets";
     LOG_EXIT_DEBUG << "widget regenerating completed";
     widgets_.clear();
+    regenerate_sortings();
     regenerate_friends(si);
     regenerate_maps(si);
+}
+
+void server_info_manager::regenerate_sortings()
+{
+    QRegExp sort_tag_rx( QString("(%1|%2|%3)").arg(sort_by_name_tag_c).arg(sort_by_ping_tag_c).arg(sort_by_score_tag_c) );
+    QTextCursor cursor( browser_->document() );
+
+    forever
+    {
+        cursor = browser_->document()->find( sort_tag_rx, cursor );
+        if (cursor.isNull())
+            break;
+
+        QString tag = sort_tag_rx.cap(1);
+        QWidget* w = 0;
+        if (tag == sort_by_name_tag_c)
+        {
+            w = wrap_widget(create_tool_button(QIcon("icons:bookmarks.png"),
+                bind(&server_info_manager::set_player_sorting, this, sm_nickname)), cursor);
+        }
+        else if (tag == sort_by_ping_tag_c)
+        {
+            w = wrap_widget(create_tool_button(QIcon("icons:bookmarks.png"),
+                bind(&server_info_manager::set_player_sorting, this, sm_ping)), cursor);
+        }
+        else if (tag == sort_by_score_tag_c)
+        {
+            w = wrap_widget(create_tool_button(QIcon("icons:bookmarks.png"),
+                bind(&server_info_manager::set_player_sorting, this, sm_score)), cursor);
+        }
+    }
 }
 
 void server_info_manager::regenerate_friends(const server_info& si)
@@ -513,5 +550,13 @@ QWidget* server_info_manager::wrap_widget( QWidget* widget, QTextCursor& cursor 
     QObject::connect( cursor.currentFrame(), SIGNAL( destroyed(QObject *) ), widget, SLOT( deleteLater() ) );
     widgets_[ cursor.block() ].push_back( widget );
     return widget;
+}
+
+void server_info_manager::set_player_sorting(sorting_mode_t mode)
+{
+    if (sorting_mode_ == mode)
+        return;
+    sorting_mode_ = mode;
+    //
 }
 
