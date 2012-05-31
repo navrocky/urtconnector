@@ -16,7 +16,7 @@
 QString prepare_html(const QString& s)
 {
     QString html("<html><head><style> "
-                 ".name{margin-bottom:0px;}"
+                 ".name{margin-bottom:0px;font:bold;}"
                  ".info{margin-left:20px; margin-top:0px;}"
                  "</style></head><body>%1</body></html>");
     return html.arg(s);
@@ -87,6 +87,12 @@ about_dialog::about_dialog(QWidget *parent)
                                                  )));
     ui_->translation_browser->setPalette(transp_palette);
     ui_->translation_browser->setHtml(prepare_html(tr(
+                                                      "<p class=\"name\">Vladislav Navrocky (=XaoC=vlad.ru)<p>"
+                                                      "<p class=\"info\"><a href=\"mailto:navrocky.vlad@gmail.com\">navrocky.vlad@gmail.com</a><br>"
+                                                      "Russian translation.</p>"
+                                                      "<p class=\"name\">MajkiFajki<p>"
+                                                      "<p class=\"info\"><a href=\"mailto:MajkFajkiPublic@gmail.com\">MajkFajkiPublic@gmail.com</a><br>"
+                                                      "Polish translation.</p>"
                                                       "<p>UrTConnector translated to many languages. "
                                                       "Thanks to people who helped with translation.</p>"
                                                       "<p>If you want to help with translation UrTConnector to your language - "
