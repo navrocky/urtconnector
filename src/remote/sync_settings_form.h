@@ -33,6 +33,7 @@ private slots:
     
     void do_import();
     void do_export();
+    void do_sync();    
     
 
     //  service functions

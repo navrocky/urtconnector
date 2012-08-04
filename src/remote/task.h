@@ -8,29 +8,29 @@
 
 namespace remote {
 
-class syncro_manager::task : public QObject {
-	Q_OBJECT
-
-public:
-	virtual void start() {};
-
+class syncro_manager::task : public remote::action {
+    Q_OBJECT
+    
 Q_SIGNALS:
-	void completed(const syncro_manager::Object&, const remote::group&);
+    void completed(const syncro_manager::Object&, const remote::group&);
 
 private Q_SLOTS:
-	virtual void loaded(const remote::group& obj) {};
-	virtual void saved() {};
-	virtual void error(const QString& error) {};
-	virtual void finished() {};
+    virtual void loaded_one(const remote::group& obj) {};
+    virtual void saved_one() {};
+    virtual void error_one(const QString& error) {};
+    virtual void finished_one() {};
 };
 
 struct syncro_manager::task_factory {
 
-	static boost::shared_ptr<syncro_manager::task>
-	create_get_task(const syncro_manager::Object& o, const syncro_manager::Storages& st, const remote::group& gr);
+    static boost::shared_ptr<syncro_manager::task>
+    create_get(const syncro_manager::Object& o, const syncro_manager::Storages& st, const remote::group& gr);
 
-	static boost::shared_ptr<syncro_manager::task>
-	create_sync_task(const syncro_manager::Object& o, const syncro_manager::Storages& st, const remote::group& gr);
+    static boost::shared_ptr<syncro_manager::task>
+    create_sync(const syncro_manager::Object& o, const syncro_manager::Storages& st, const remote::group& gr);
+    
+    static boost::shared_ptr<syncro_manager::task>
+    create_put(const syncro_manager::Object& o, const syncro_manager::Storages& st, const remote::group& gr);
 
 };
 

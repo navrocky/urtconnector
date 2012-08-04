@@ -544,46 +544,57 @@ void syncro_manager::load()
     }
 }
 
-
-
-void syncro_manager::sync(const Object& obj)
+void syncro_manager::get(const remote::syncro_manager::Object& obj)
 {
-	THROW_IF_NOT_EQUAL(p_->active.find(obj), p_->active.end(), "Object alredy in process");
+    THROW_IF_NOT_EQUAL(p_->active.find(obj), p_->active.end(), "Object alredy in process");
 
-	boost::shared_ptr<task> gt(task_factory::create_sync_task(obj, p_->storages(obj), obj->get()));
-	p_->active.insert(std::make_pair(obj, gt));
+    boost::shared_ptr<task> gt = task_factory::create_get(obj, p_->storages(obj), obj->get());
+    p_->active.insert(std::make_pair(obj, gt));
 
-	try {
-		connect(gt.get(), SIGNAL(completed(const syncro_manager::Object&, const remote::group&)), SLOT(completed(const syncro_manager::Object&, const remote::group&)));
-		gt->start();
-	}
-	catch (const std::exception& e) {
-		LOG_ERR << "can't start task for object '%1'", obj->name();
-		p_->active.erase(obj);
-	}
+    try {
+        connect(gt.get(), SIGNAL(completed(const syncro_manager::Object&, const remote::group&)), SLOT(completed(const syncro_manager::Object&, const remote::group&)));
+        gt->start();
+    }
+    catch (const std::exception& e) {
+        LOG_ERR << "can't start task for object '%1'", obj->name();
+        p_->active.erase(obj);
+    }
 }
 
 void syncro_manager::put(const remote::syncro_manager::Object& obj)
 {
-/*    sync(obj);
-    return;
+    THROW_IF_NOT_EQUAL(p_->active.find(obj), p_->active.end(), "Object alredy in process");
 
-    if (boost::find_if(tasks_, boost::bind(&sync_task::object, _1) == obj) != tasks_.end())
-    {
-        return;        
+    boost::shared_ptr<task> gt = task_factory::create_put(obj, p_->storages(obj), obj->get());
+    p_->active.insert(std::make_pair(obj, gt));
+
+    try {
+        connect(gt.get(), SIGNAL(completed(const syncro_manager::Object&, const remote::group&)), SLOT(completed(const syncro_manager::Object&, const remote::group&)));
+        gt->start();
     }
- 
-    sync_task& task = *tasks_.insert(tasks_.end(), sync_task(obj, p_->storages(obj), obj->get()));
-    storage& storage = cast(task.current_storage());
-    
-    task.action = storage.put(obj->get());
-    Q_ASSERT(connect(task.action, SIGNAL(saved()), SLOT(saved())));
-    assert(connect(task.action, SIGNAL(error(const QString&)), SLOT(error(const QString&))));
-    assert(connect(task.action, SIGNAL(finished()), SLOT(finished())));
-    
-    task.action->start();   */ 
+    catch (const std::exception& e) {
+        LOG_ERR << "can't start task for object '%1'", obj->name();
+        p_->active.erase(obj);
+    }
 }
 
+void syncro_manager::sync(const Object& obj)
+{
+    THROW_IF_NOT_EQUAL(p_->active.find(obj), p_->active.end(), "Object alredy in process");
+
+    boost::shared_ptr<task> gt(task_factory::create_sync(obj, p_->storages(obj), obj->get()));
+    
+    p_->active.insert(std::make_pair(obj, gt));
+
+    try {
+        connect(gt.get(), SIGNAL(completed(const syncro_manager::Object&, const remote::group&)), SLOT(completed(const syncro_manager::Object&, const remote::group&)));
+        gt->start();
+    }
+    catch (const std::exception& e) {
+        LOG_ERR << "can't start task for object '%1'", obj->name();
+        p_->active.erase(obj);
+    }
+}
 
 void syncro_manager::loaded(const remote::group& obj)
 {
@@ -623,13 +634,14 @@ void syncro_manager::finished()
 
 void syncro_manager::completed(const syncro_manager::Object& obj, const remote::group& group)
 {
-	Pimpl::Tasks::iterator it = p_->active.find(obj);
-	THROW_IF_EQUAL(it, p_->active.end(), "Object is not in process");
+    Pimpl::Tasks::iterator it = p_->active.find(obj);
+    THROW_IF_EQUAL(it, p_->active.end(), "Object is not in process");
 
-	boost::shared_ptr<task> guard(it->second);
-	p_->active.erase(it);
-
-	cast(obj).put(group);
+    boost::shared_ptr<task> guard(it->second);
+    p_->active.erase(it);
+    
+    std::cerr << "MANGER::COMPLETED " << std::endl;
+    cast(obj).put(group);
 }
 
 QString syncro_manager::name(const Storage& storage) const

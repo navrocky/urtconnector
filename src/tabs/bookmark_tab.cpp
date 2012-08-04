@@ -49,6 +49,7 @@ remote::group get_group(const tab_context& ctx){
 
 void set_group(const tab_context& ctx, const remote::group& remote){
 
+    SYNC_DEBUG << "SET GROUP";
     ctx.bookmarks()->clear();
 
     BOOST_FOREACH( const remote::intermediate& imd, remote.entries() ) {

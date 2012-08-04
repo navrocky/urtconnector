@@ -15,44 +15,57 @@ struct fileaction : remote::action {
         : filename_(filename)
         , action_(act)
         , data_(data)
+        , status_(None)
     {
     }
-    
+
     virtual void start()
     {
         try {
             QFile file(filename_);
             if (!file.open(QIODevice::ReadWrite))
                 throw std::runtime_error(std::string("Can't open file ") + filename_.toStdString());
-
+            
+            status_ |= Exists;
             emit exists();
             
             switch (action_) {
             case read:
                 data_ = file.readAll();
+                status_ |= Loaded;
                 emit loaded(from_json(data_));
                 break;
             case write:
                 file.resize(0);
                 file.write(data_);
+                status_ |= Saved;
                 emit saved();
             case check:
                 break;
             };
         }
         catch (std::exception& e) {
+            status_ |= Error;
             emit error(QString(e.what()));
         }
        
+        status_ |= Finished;
         emit finished();
         deleteLater();
     }
     
-    virtual void abort(){}
+    virtual void abort() {
+        status_ |= Aborted;
+    }
+    
+    virtual Status status() const {
+        return status_;
+    }
         
     QString filename_;
     Action action_;
     QByteArray data_;
+    Status status_;
 };
 
 

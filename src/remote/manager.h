@@ -37,7 +37,7 @@ public:
     /*! Type of access key to existing storage */
     typedef boost::shared_ptr<const storage> Storage;
 
-	typedef std::set<Storage> Storages;
+    typedef std::set<Storage> Storages; 
     
 
 
@@ -90,11 +90,14 @@ public:
     
     
     
+    void get(const Object& obj);
 
-    /*! start syncronization */ //FIXME just download for now
+    void put(const Object& obj);
+    
+    /*! start syncronization */
     void sync(const Object& obj);
     
-    void put(const Object& obj);
+    
 
     /*! restore state of manager from config*/
     void load();
@@ -116,7 +119,7 @@ Q_SIGNALS:
 	void object_changed(remote::syncro_manager::Object changed);
    
 private Q_SLOTS:
-	void completed(const syncro_manager::Object& obj, const remote::group& group);
+    void completed(const syncro_manager::Object& obj, const remote::group& group);
 
 private:
     
@@ -168,9 +171,10 @@ private:
         return *it;
     }*/
     
-	class task;
-	struct task_factory;
+    class task;
+    struct task_factory;
     class get_task;
+    class put_task;
     class sync_task;
 };
 

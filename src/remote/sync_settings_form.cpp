@@ -61,6 +61,7 @@ sync_settings_form::sync_settings_form(boost::shared_ptr<remote::syncro_manager>
     
     connect(p_->ui.import_btn, SIGNAL(clicked()), SLOT(do_import()));
     connect(p_->ui.export_btn, SIGNAL(clicked()), SLOT(do_export()));
+    connect(p_->ui.sync_btn, SIGNAL(clicked()), SLOT(do_sync()));
     
     connect(p_->ui.srv_list, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), SLOT(current_srv_changed(QListWidgetItem*,QListWidgetItem*)));
     connect(p_->ui.storage_list, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), SLOT(current_st_changed(QListWidgetItem*,QListWidgetItem*)));    
@@ -313,7 +314,7 @@ void sync_settings_form::do_import()
     Object object = obj_current();
     if (!object) return;
     
-    p_->sync_man->sync(object);
+    p_->sync_man->get(object);
 }
 
 void sync_settings_form::do_export()
@@ -323,6 +324,15 @@ void sync_settings_form::do_export()
     
     p_->sync_man->put(object);
 }
+
+void sync_settings_form::do_sync()
+{
+    Object object = obj_current();
+    if (!object) return;
+    
+    p_->sync_man->sync(object);
+}
+
 
 syncro_manager::Service sync_settings_form::srv_current() const
 {

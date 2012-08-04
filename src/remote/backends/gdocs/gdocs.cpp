@@ -61,6 +61,10 @@ public:
         
     };
     
+    virtual Status status() const {
+        None;
+    }
+    
     friend class gdocs;
     std::auto_ptr<context> ctx;
     QPointer<gdocs> manager;

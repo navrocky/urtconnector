@@ -22,6 +22,20 @@ class group;
 class action: public QObject {
     Q_OBJECT
 public:
+    
+    enum status_e
+    {
+        None    = 0,
+        Loaded  = 1 << 0,
+        Saved   = 1 << 1,
+        Exists  = 1 << 2,
+        Error   = 1 << 3, 
+        Finished= 1 << 4,
+        Aborted = 1 << 5,
+    };
+    
+    typedef int Status;
+    
     /*! \brief Starts execution of the action.
      * \warning action can be synchronous, therefor don't use this object directly
      * after calling this method, because of it can be even deleted.
@@ -30,6 +44,8 @@ public:
     virtual void start() = 0;
 
     virtual void abort() = 0;
+    
+    virtual Status status() const = 0;
     
 Q_SIGNALS:
     /*! \brief Group successfuly downloaded from storoge */

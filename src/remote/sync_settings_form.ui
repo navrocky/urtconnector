@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>379</height>
+    <height>439</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -261,10 +261,17 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="4" column="0" colspan="2">
     <widget class="QPushButton" name="export_btn">
      <property name="text">
       <string>export</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="sync_btn">
+     <property name="text">
+      <string>sync</string>
      </property>
     </widget>
    </item>
