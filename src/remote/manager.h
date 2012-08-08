@@ -56,13 +56,15 @@ public:
     /*! List of objects binded to this \p storage or \b All objects*/
     std::set<Object> objects(const Storage& storage = Storage()) const;
 
-
-
     /*! create new instance of storage provided by \p service */
     Storage create(const Service& service, const QString& name, const QVariantMap& settings, QString storage_uid = QString());
     
     void remove(const Storage& storage);
     
+    /*! \brief get settings associated wth storage
+     *  generic settings can be accessed directly: \example settings.value("storage_name").
+     *  instance settings gropped in "data" group: \example settings.value("data/location").
+     */
     QVariantMap settings(const Storage& storage) const;
    
     /*! attach callbacks to manager, and get object to interact
@@ -102,30 +104,27 @@ public:
     /*! restore state of manager from config*/
     void load();
 
-	QString name(const Storage& storage) const;
+    QString name(const Storage& storage) const;
 
    
-public Q_SLOTS:
-    void loaded(const remote::group& obj);
-    void saved();
-    void error(const QString& err);
-    void finished();
-
 Q_SIGNALS:
     void storage_changed(remote::syncro_manager::Storage current, remote::syncro_manager::Storage previous);
 
-	void object_attached(remote::syncro_manager::Object obj);
-	void object_detached(remote::syncro_manager::Object obj);
-	void object_changed(remote::syncro_manager::Object changed);
+    void object_attached(remote::syncro_manager::Object obj);
+    void object_detached(remote::syncro_manager::Object obj);
+    void object_changed(remote::syncro_manager::Object changed);
    
 private Q_SLOTS:
     void completed(const syncro_manager::Object& obj, const remote::group& group);
+    void completed(const syncro_manager::Object& obj);
+    void finished();
+    void error(const QString& err);
 
 private:
     
     void register_service(const Service& srv);
-	QString uuid(const Service& srv) const;
-	base_settings::qsettings_p settings(const Service& srv);
+    QString uuid(const Service& srv) const;
+    base_settings::qsettings_p settings(const Service& srv);
    
 private:
     

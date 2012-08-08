@@ -24,10 +24,10 @@ SETTINGS_GENERATE_CLASS(my_settings, MY_SETTINGS)
 */
 
 #define __GENERATE_METHODS_DECL(name, value_type, default_value) \
-    value_type name() const; \
-    void BOOST_PP_CAT(name, _set)(const value_type& val); \
-    value_type BOOST_PP_CAT(name, _default)() const; \
-    void BOOST_PP_CAT(name, _reset)();
+    virtual value_type name() const; \
+    virtual void BOOST_PP_CAT(name, _set)(const value_type& val); \
+    virtual value_type BOOST_PP_CAT(name, _default)() const; \
+    virtual void BOOST_PP_CAT(name, _reset)();
 
 #define __GENERATE_METHODS_DECL_MACRO(r, data, elem) __GENERATE_METHODS_DECL elem
 #define __GENERATE_ALL_METHODS_DECL(opts_list) BOOST_PP_SEQ_FOR_EACH(__GENERATE_METHODS_DECL_MACRO,, opts_list)

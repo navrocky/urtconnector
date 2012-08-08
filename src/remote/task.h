@@ -9,9 +9,13 @@
 namespace remote {
 
 class syncro_manager::task : public remote::action {
-    Q_OBJECT
+Q_OBJECT
+
+public:
+    virtual const Object& object() const = 0;
     
 Q_SIGNALS:
+    void completed(const syncro_manager::Object&);
     void completed(const syncro_manager::Object&, const remote::group&);
 
 private Q_SLOTS:

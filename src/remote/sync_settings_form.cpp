@@ -145,9 +145,9 @@ void sync_settings_form::edit()
     
     if (!service || !storage) return;
     
-    const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name", QLineEdit::Normal, p_->sync_man->name(storage));
+    const QString storage_name = QInputDialog::getText(this, "Editing storage", "Name", QLineEdit::Normal, p_->sync_man->name(storage));
 
-    const QVariantMap settings = service->configure(p_->sync_man->settings(storage));
+    const QVariantMap settings = service->configure(p_->sync_man->settings(storage).value("data").value<QVariantMap>());
 
     p_->sync_man->remove(storage);
     p_->sync_man->create(service, storage_name, settings);
