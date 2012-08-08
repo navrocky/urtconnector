@@ -16,3 +16,5 @@ src/moc_serverlistcustom.cpp
 src/moc_serverlistqstat.cpp
 src/moc_servlistwidget.cpp
 src/moc_servoptsdialog.cpp
+/debug/
+/*.txt.user

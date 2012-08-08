@@ -21,6 +21,7 @@ QString server_info::get_mode_name(game_mode mode)
     {
         case gm_none: return QString();
         case gm_free_for_all: return QObject::tr("Free For All");
+        case gm_last_man_standing: return QObject::tr("Last Man Standing");
         case gm_team_death_match: return QObject::tr("Team DeathMatch");
         case gm_team_survivor: return QObject::tr("Team Survivor");
         case gm_follow_the_leader: return QObject::tr("Follow The Leader");

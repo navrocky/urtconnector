@@ -14,7 +14,7 @@
 
 #define QSTAT_OPTIONS \
     (( qstat_path, QString, QString(QSTAT_DEF_PATH) )) \
-    (( master_server, QString, QString("master.urbanterror.net") )) \
+    (( master_server, QString, QString("master.urbanterror.info") )) \
     (( max_sim_queries, int, 200 )) \
     (( retry_number, int, 15 )) \
     (( retry_interval, double, 0.5 )) \
