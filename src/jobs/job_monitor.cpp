@@ -38,7 +38,7 @@ void job_monitor::update_contents()
     job_p job = popup_->current_job();
     if (job)
     {
-        QString capt = job->get_caption();
+        QString capt = job->caption();
         if (ui_->label->text() != capt)
             ui_->label->setText(capt);
         ui_->progress->setValue(job->get_progress());
@@ -95,7 +95,7 @@ void job_item::update_contents()
     if (!j)
         return;
 
-    ui_->label->setText(j->get_caption());
+    ui_->label->setText(j->caption());
     ui_->progress->setValue(j->get_progress());
 }
 

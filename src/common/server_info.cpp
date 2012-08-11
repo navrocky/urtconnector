@@ -9,8 +9,6 @@ server_info::server_info()
 , mode(gm_none)
 , ping(0)
 , retries(0)
-, red_score(0)
-, blue_score(0)
 , update_stamp_(1)
 {
 }
@@ -79,13 +77,9 @@ void server_info::update_from(const server_info& src)
         ping = src.ping;
 //    if (!src.players.empty())
     players = src.players;
-    if (src.red_score != 0)
-        red_score = src.red_score;
     if (src.retries != 0)
         retries = src.retries;
     status = src.status;
-    if (src.blue_score != 0)
-        blue_score = src.blue_score;
     if (!src.game_type.isEmpty())
         game_type = src.game_type;
     id = src.id;

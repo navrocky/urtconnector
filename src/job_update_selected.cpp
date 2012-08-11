@@ -6,19 +6,12 @@
 job_update_selected::job_update_selected(const server_id_list& selection, 
                                          server_list_p list,
                                          const geoip& gi,
-                                         const QString& caption)
-: caption_(tr("Update selected servers"))
-, selection_(selection)
-, updater_(new qstat_updater(list, gi))
+                                         const QString& caption_)
+    : selection_(selection)
+    , updater_(new qstat_updater(list, gi))
 {
+    set_caption(caption_.isEmpty() ? tr("Update selected servers") : caption_);
     connect(updater_.get(), SIGNAL(refresh_stopped()), SLOT(stopped()));
-    if (!caption.isEmpty())
-        caption_ = caption;
-}
-
-QString job_update_selected::get_caption()
-{
-    return caption_;
 }
 
 void job_update_selected::start()

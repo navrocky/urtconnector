@@ -11,6 +11,13 @@
 #include <QPointer>
 #include <QVariant>
 #include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
+#include <QGraphicsDropShadowEffect>
+#include <QGraphicsBlurEffect>
+#include <QMouseEvent>
+#include <QAction>
+#include <QClipboard>
+#include <QStyle>
 
 typedef QPointer<Notificator> notificator_p;
 
@@ -28,10 +35,19 @@ Notificator::Notificator(QWidget* parent)
 : QFrame(parent)
 , autoDestroy_(false)
 {
+    copyAction_ = new QAction(tr("Copy to the clipboard"), this);
+    connect(copyAction_, SIGNAL(triggered()), SLOT(copyToClip()));
+    closeAction_ = new QAction(style()->standardIcon(QStyle::SP_DialogCloseButton), tr("Close"), this);
+    connect(closeAction_, SIGNAL(triggered()), SLOT(showFinished()));
+
+    addAction(copyAction_);
+    addAction(closeAction_);
+    setContextMenuPolicy(Qt::ActionsContextMenu);
+
     setStyleSheet(
         "Notificator{ "
             "border-radius:5px;"
-            "border: 1px solid gray;"
+            "border: 2px solid gray;"
             "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.412, y2:1, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(255, 239, 146, 255));"
         "}"
         "QProgressBar{"
@@ -41,7 +57,6 @@ Notificator::Notificator(QWidget* parent)
         "QProgressBar::chunk {"
             "background-color: rgb(200, 200, 0);"
             "border-radius:4px;"
-            "height:1px;"
         "}"
         "QLabel#title{"
             "font-weight: bold;"
@@ -72,6 +87,18 @@ Notificator::Notificator(QWidget* parent)
     progressAnimation_->setStartValue(cStepCount);
     progressAnimation_->setEndValue(0);
     connect(progressAnimation_, SIGNAL(finished()), SLOT(showFinished()));
+
+//    opacityEffect_ = new QGraphicsOpacityEffect(this);
+//    setGraphicsEffect(opacityEffect_);
+//    opacityEffect_->setOpacity(0.5);
+
+//    QGraphicsDropShadowEffect* eff = new QGraphicsDropShadowEffect(this);
+//    eff->
+//    setGraphicsEffect(eff);
+//    eff->setBlurRadius(10);
+//    eff->setColor(Qt::black);
+//    eff->setXOffset(2);
+//    eff->setYOffset(2);
 
     setAttribute(Qt::WA_Hover, true);
 }
@@ -110,6 +137,12 @@ void Notificator::showFinished()
         deleteLater();
 }
 
+void Notificator::copyToClip()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(messageLab_->text());
+}
+
 void Notificator::showMessage(const QIcon& icon, const QString& title, const QString& message)
 {
     QWidget* w = qApp->activeWindow();
@@ -140,8 +173,20 @@ bool Notificator::event(QEvent* e)
     }
     else if (e->type() == QEvent::MouseButtonPress)
     {
-        showFinished();
+        QMouseEvent* me = static_cast<QMouseEvent*>(e);
+        if (me->button() == Qt::LeftButton)
+            showFinished();
     }
 
     return QFrame::event(e);
+}
+
+void Notificator::hideWidget()
+{
+
+}
+
+void Notificator::showWidget()
+{
+
 }

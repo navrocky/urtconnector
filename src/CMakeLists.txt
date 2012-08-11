@@ -66,6 +66,7 @@ cl_add_subdirectory(friend_list)
 cl_add_subdirectory(tabs)
 cl_add_subdirectory(setting_forms)
 cl_add_subdirectory(tracking)
+cl_add_subdirectory(server_query)
 
 cl_define_headers(
     about_dialog.h

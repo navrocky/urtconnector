@@ -21,7 +21,6 @@ public:
                         const geoip& gi,
                         const QString& caption = QString());
 
-    QString get_caption();
     void start();
     void cancel();
     int get_progress();
@@ -30,7 +29,6 @@ private slots:
     void stopped();
 
 private:
-    QString caption_;
     server_id_list selection_;
     std::auto_ptr<qstat_updater> updater_;
 };
