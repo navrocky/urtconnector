@@ -166,4 +166,7 @@ void server_list_updater::prepare_info(server_info_p si)
         si->ping = 9999;
 }
 
+void server_list_updater::refresh_cancel()
+{}
+
 
