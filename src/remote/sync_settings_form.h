@@ -8,6 +8,7 @@
 #include <preferences/src/preferences_widget.h>
 
 class QListWidgetItem;
+class QTreeWidgetItem;
 
 class sync_settings_form: public preferences_widget {
     Q_OBJECT
@@ -61,6 +62,52 @@ private:
     std::auto_ptr<Pimpl> p_;
     bool lock_change_;
 };
+
+
+
+class sync_settings_form2: public preferences_widget {
+    Q_OBJECT
+public:
+    sync_settings_form2(boost::shared_ptr<remote::syncro_manager> sync_man, QWidget* parent = 0);
+    virtual ~sync_settings_form2(){}
+    
+    
+private slots:
+    virtual void update_preferences();
+    virtual void accept();
+    virtual void reject();
+    virtual void reset_defaults();
+    
+    void current_storage_changed (QTreeWidgetItem * current, QTreeWidgetItem * previous);
+    void current_object_changed (QListWidgetItem * current, QListWidgetItem * previous);
+
+    void update();
+    
+    void create();
+    void edit();
+    void destroy();    
+    
+    void bind();
+    void unbind();
+    void unbindall();
+
+private:
+    template <typename T>
+    T current() const;
+//     remote::syncro_manager::Object obj_current() const;
+   
+    
+private:
+    struct Pimpl;
+    std::auto_ptr<Pimpl> p_;
+    bool lock_change_;
+};
+
+
+
+
+
+
 
 #endif
 

@@ -106,6 +106,10 @@ remote::action* filestorage::check(const QString& type)
 }
 
 
+fileservice::fileservice()
+    : service("fileservice", "Synchronization with files", QIcon::fromTheme("folder", QIcon::fromTheme("folder-open")))
+{
+}
 
 
 remote::service::Storage fileservice::do_create(const boost::shared_ptr<QSettings>& settings) const
@@ -116,7 +120,7 @@ remote::service::Storage fileservice::do_create(const boost::shared_ptr<QSetting
 }
 
 
-QVariantMap fileservice::configure(const QVariantMap& settings) const
+std::auto_ptr<QVariantMap> fileservice::configure(const QVariantMap& settings) const
 {
     QVariantMap ret(settings);
 
@@ -127,11 +131,13 @@ QVariantMap fileservice::configure(const QVariantMap& settings) const
         QObject::tr("Select location for fileservice"),
         location);
 
-    if (!location.isNull()) {
-        ret["location"] = location;
+    if (location.isNull()) {
+        return std::auto_ptr<QVariantMap>();
     }
-
-    return ret;
+    
+    ret["location"] = location;
+    
+    return std::auto_ptr<QVariantMap>(new QVariantMap(ret));
 }
 
 

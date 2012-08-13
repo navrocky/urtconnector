@@ -331,7 +331,7 @@ void main_window::show_options()
 {
     app_settings as;
 
-    preferences_dialog d( preferences_dialog::Auto, false, this );
+    preferences_dialog d( preferences_dialog::Auto, true, this );
     d.setWindowTitle(tr("Options"));
     d.setWindowIcon(QIcon("icons:configure.png"));
     d.add_item( new launch_settings_form() );
@@ -340,7 +340,9 @@ void main_window::show_options()
     d.add_item( new history_settings_form() );
     d.add_item( new rcon_settings_form() );
     d.add_item( new anticheat::settings_widget() );
-    d.add_item( new sync_settings_form(sync_man_) );
+//     preferences_item it = d.add_item( new sync_settings_form(sync_man_) );
+//     d.add_item( new sync_settings_form2(sync_man_), it );
+    preferences_item it = d.add_item( new sync_settings_form2(sync_man_) );
 
     d.exec();
 

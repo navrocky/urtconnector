@@ -22,12 +22,10 @@ private:
 
 struct fileservice: public remote::service {
 
-    fileservice()
-        : service("fileservice", "Synchronization with files")
-    {}
+    fileservice();
 
     remote::service::Storage do_create(const boost::shared_ptr<QSettings>& settings) const;
-    virtual QVariantMap configure(const QVariantMap& settings) const;
+    virtual std::auto_ptr<QVariantMap> configure(const QVariantMap& settings) const;
 };
 
 

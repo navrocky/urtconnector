@@ -73,7 +73,7 @@ public:
      * \p name - name must be uniqe within one manager \example "bookmarks"
      * \p desc - description
      */    
-    Object attach(const QString& name, const Getter& g, const Setter& s, const QString& desc);
+    Object attach(const QString& name, const Getter& g, const Setter& s, const QString& desc, const QIcon& icon = QIcon());
     
     /*! detacj object from manager */
     void detach(const Object&);
@@ -183,6 +183,7 @@ private:
 class syncro_manager::object {
 public:
 
+    inline const QIcon& icon() const { return icon_; }
     inline const QString& name() const { return name_; }
     inline const QString& description() const { return description_; }
 
@@ -193,13 +194,14 @@ private:
     
     friend class syncro_manager;
 
-    object(const Getter& getter, const Setter& setter, const QString& name, const QString& desc)
-        : getter_(getter), setter_(setter), name_(name), description_(desc) {}
+    object(const Getter& getter, const Setter& setter, const QString& name, const QString& desc, const QIcon& icon)
+        : getter_(getter), setter_(setter), name_(name), description_(desc), icon_(icon) {}
     
 private:
     Getter getter_;
     Setter setter_;
     
+    QIcon icon_;
     QString name_;
     QString description_;
 };

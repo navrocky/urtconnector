@@ -8,6 +8,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <QObject>
+#include <QIcon>
 #include <QVariantMap>
 //#include <QUuid>
 
@@ -93,18 +94,19 @@ public:
 
     typedef boost::shared_ptr<storage> Storage;
 
-    service(const QString& c, const QString& d)
-        : caption_(c), desc_(d)
+    service(const QString& c, const QString& d, const QIcon& i = QIcon())
+        : caption_(c), desc_(d), icon_(i)
     {}
     
     const QString& caption() const { return caption_; };
     const QString& description() const {  return desc_; };
+    const QIcon& icon() const {  return icon_; };
 
     Storage create(const boost::shared_ptr<QSettings>& settings) const {
         return do_create(settings);
     }
 
-    virtual QVariantMap configure(const QVariantMap& settings = QVariantMap()) const = 0;
+    virtual std::auto_ptr<QVariantMap> configure(const QVariantMap& settings = QVariantMap()) const = 0;
     
 protected:
     virtual Storage do_create(const boost::shared_ptr<QSettings>& settings) const = 0;
@@ -112,6 +114,7 @@ protected:
 private:
     QString caption_;
     QString desc_;
+    QIcon icon_;
 };
 
 // class storage_manager {

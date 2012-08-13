@@ -129,7 +129,7 @@ bookmark_tab::bookmark_tab(const QString& object_name,
     //registering Object in syncro_manager
     syncro_manager::Getter g = boost::bind(get_group, boost::ref(context()));
     syncro_manager::Setter s = boost::bind(set_group, boost::ref(context()), _1);
-    context().syncro().attach("bookmarks", g, s, "bookmarks");
+    context().syncro().attach("bookmarks", g, s, "bookmarks", QIcon("icons:bookmarks.png"));
 }
 
 void bookmark_tab::do_selection_change()

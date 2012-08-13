@@ -105,7 +105,7 @@ struct base_settings::pimpl
 
     qsettings_p create_file(const QString& filename, bool relative)
     {
-        QString dir = (relative) ? dir_path() + "/" : QString();
+        QString dir = (relative) ? dir_path() + "/" : "";
         return qsettings_p(new QSettings(dir + filename, format_c));
     }
 
@@ -213,7 +213,10 @@ void copy_settings(base_settings::qsettings_p src, base_settings::qsettings_p ds
 base_settings::qsettings_p fill_settings(base_settings::qsettings_p dst, const QVariantMap& settings)
 {
     BOOST_FOREACH( const QString& key, settings.keys() )
+    {
+        std::cerr << "fillsettings key:" << key.toLocal8Bit().constData() << std::endl;
         dst->setValue(key, settings.value(key));
+    }
     
     return dst;
 }

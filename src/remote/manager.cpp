@@ -283,7 +283,7 @@ struct gdocs_service: public service {
         return s;
     }
 
-    QVariantMap configure(const QVariantMap& settings) const{}
+    std::auto_ptr<QVariantMap> configure(const QVariantMap& settings) const{}
 };
 
 ///another service for testings
@@ -301,7 +301,7 @@ struct gdocs_service2: public service {
         return s;
     }
 
-    QVariantMap configure(const QVariantMap& settings) const{}
+    std::auto_ptr<QVariantMap> configure(const QVariantMap& settings) const{}
 };
 
 
@@ -326,6 +326,9 @@ void syncro_manager::register_service(const Service& srv)
     const QString service_uid = uuid(srv);
     const QString storage_list_uid = st_list_uid(service_uid);
 
+//     base_settings::qsettings_p services = base_settings().get_settings(p_->services_uid);
+//     services->setValue("array", "123");
+//     base_settings().register_file(service_uid, QFileInfo(services->fileName()).absoluteDir().absolutePath() + "/services/" + srv->caption() + ".ini", false);
 
     base_settings().register_sub_group(service_uid, srv->caption(), p_->services_uid);
     base_settings().register_sub_group(storage_list_uid, s_storages, service_uid);
@@ -375,6 +378,7 @@ void setup_generic_settings(const QString& storage_uid, const QString& name, con
 
 syncro_manager::Storage syncro_manager::create(const Service& srv, const QString& name, const QVariantMap& settings, QString storage_uid)
 {
+    const bool load = !storage_uid.isEmpty();
     storage_uid = (storage_uid.isEmpty())
         ? QUuid::createUuid().toString()
         : storage_uid;
@@ -383,7 +387,7 @@ syncro_manager::Storage syncro_manager::create(const Service& srv, const QString
     const QString storage_list_uid = st_list_uid(service_uid);
     const QString storage_instance_uid = st_instance_uid(storage_uid);
 
-    if (manager_options().storages().contains(name)) throw std::runtime_error("storage with this name already exists");
+    if (!load && manager_options().storages().contains(name)) throw std::runtime_error("storage with this name already exists");
     
     setup_generic_settings(storage_uid, name, storage_list_uid, srv);
 
@@ -402,7 +406,6 @@ syncro_manager::Storage syncro_manager::create(const Service& srv, const QString
 
 void syncro_manager::remove(const Storage& storage)
 {
-    emit storage_changed(Storage(), storage);    
     unbind(storage);
     
     Pimpl::st_iterator<Storage>::type it = p_->st_find(storage);
@@ -419,6 +422,7 @@ void syncro_manager::remove(const Storage& storage)
     settings->sync();
     
     p_->st_data.get<Storage>().erase(it);
+    emit storage_changed(Storage(), storage);        
 }
 
 QVariantMap syncro_manager::settings(const Storage& storage) const
@@ -441,12 +445,12 @@ QString syncro_manager::uuid(const Service& srv) const
     return con_str(p_->services_uid, srv->caption());
 }
 
-syncro_manager::Object syncro_manager::attach(const QString& name, const Getter& g, const Setter& s, const QString& desc)
+syncro_manager::Object syncro_manager::attach(const QString& name, const Getter& g, const Setter& s, const QString& desc, const QIcon& icon)
 {
     Pimpl::Objects::iterator it = boost::find_if(p_->obj_list, boost::bind(&object::name, _1) == name);
     THROW_IF_NOT_EQUAL(it, p_->obj_list.end(), "Object with such name already attached!");
 
-    it = p_->obj_list.insert(Object(new object(g, s, name, desc))).first;
+    it = p_->obj_list.insert(Object(new object(g, s, name, desc, icon))).first;
 
     object_attached(*it);
     return *it;
@@ -504,6 +508,8 @@ void syncro_manager::load()
     base_settings::qsettings_p all_services_cfg = base_settings().get_settings(p_->services_uid);
     
     BOOST_FOREACH(const QString& service, all_services_cfg->childGroups()) {
+        
+        LOG_DEBUG << "trying to load <" << service << "> service";
         
         Pimpl::Services::iterator it = boost::find_if(p_->srv_list, boost::bind(&remote::service::caption, _1) == service);
             

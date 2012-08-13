@@ -35,6 +35,7 @@ set(SOURCES
 
 set(IFACES
     sync_settings_form.ui
+    storages.ui
     backends/gdocs/gdocs_widget.ui
 )
 

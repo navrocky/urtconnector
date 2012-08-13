@@ -4,8 +4,11 @@
 
 #include "sync_settings_form.h"
 #include "ui_sync_settings_form.h"
+#include "ui_storages.h"
 
 #include <QInputDialog>
+#include <QTreeWidget>
+#include <QPixmap>
 
 using namespace remote;
 
@@ -124,9 +127,11 @@ void sync_settings_form::create()
     if (!service) return;
     
     const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name");
-    const QVariantMap settings = service->configure();
+    const std::auto_ptr<QVariantMap> settings = service->configure();
 
-    p_->sync_man->create(service, storage_name, settings);
+    if (!settings.get()) return;
+    
+    p_->sync_man->create(service, storage_name, *settings);
 }
 
 void sync_settings_form::erase()
@@ -147,10 +152,12 @@ void sync_settings_form::edit()
     
     const QString storage_name = QInputDialog::getText(this, "Editing storage", "Name", QLineEdit::Normal, p_->sync_man->name(storage));
 
-    const QVariantMap settings = service->configure(p_->sync_man->settings(storage).value("data").value<QVariantMap>());
+    const std::auto_ptr<QVariantMap> settings = service->configure(p_->sync_man->settings(storage).value("data").value<QVariantMap>());
 
+    if (!settings.get()) return;
+    
     p_->sync_man->remove(storage);
-    p_->sync_man->create(service, storage_name, settings);
+    p_->sync_man->create(service, storage_name, *settings);
 }
 
 void sync_settings_form::unbind_storage()
@@ -356,6 +363,284 @@ syncro_manager::Object sync_settings_form::obj_current() const
 }
 
 
+struct sync_settings_form2::Pimpl
+{
+    Ui::storages_settings_form2 ui;
+    boost::shared_ptr<remote::syncro_manager> sync_man;
+};
 
+sync_settings_form2::sync_settings_form2(boost::shared_ptr< syncro_manager > sync_man, QWidget* parent)
+    : preferences_widget(parent, tr("Synchronization"))
+    , p_(new Pimpl)
+    , lock_change_(false)    
+{
+    p_->ui.setupUi(this);
+    p_->sync_man = sync_man;
+    
+    set_icon(QIcon("icons:view-refresh.png"));
+    set_header(tr("Server list updating settings"));
+
+    p_->ui.storageslst->setHeaderHidden(true);
+    p_->ui.storageslst->setIconSize(QSize(25,25));
+    p_->ui.objectlst->setIconSize(QSize(25,25));
+    
+    connect(p_->ui.storageslst, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*))
+        , SLOT(current_storage_changed(QTreeWidgetItem*,QTreeWidgetItem*)));
+    
+    connect(p_->ui.objectlst, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*))
+        , SLOT(current_object_changed(QListWidgetItem*,QListWidgetItem*)));
+    
+    connect(p_->sync_man.get(), SIGNAL(storage_changed(remote::syncro_manager::Storage,remote::syncro_manager::Storage))
+        , SLOT(update()));
+    connect(p_->sync_man.get(), SIGNAL(object_changed(remote::syncro_manager::Object))
+        , SLOT(update()));
+    connect(p_->sync_man.get(), SIGNAL(object_attached(remote::syncro_manager::Object))
+        , SLOT(update()));
+    connect(p_->sync_man.get(), SIGNAL(object_detached(remote::syncro_manager::Object))
+        , SLOT(update()));
+    
+    connect(p_->ui.addbtn, SIGNAL(clicked()), SLOT(create()));
+    connect(p_->ui.editbtn, SIGNAL(clicked()), SLOT(edit()));
+    connect(p_->ui.delbtn, SIGNAL(clicked()), SLOT(destroy()));    
+    
+    connect(p_->ui.bindbtn, SIGNAL(clicked()), SLOT(bind()));
+    connect(p_->ui.unbindbtn, SIGNAL(clicked()), SLOT(unbind()));
+    connect(p_->ui.unbindallbtn, SIGNAL(clicked()), SLOT(unbindall()));
+        
+    update();
+}
+
+void sync_settings_form2::update()
+{
+    current_storage_changed(0, 0);
+    current_object_changed(0, 0);
+
+    p_->ui.objectlst->clear();
+    p_->ui.storageslst->clear();
+    
+    BOOST_FOREACH (Service srv, p_->sync_man->services()) {
+        QTreeWidgetItem* srvitem = new QTreeWidgetItem(QStringList() << srv->caption());
+        p_->ui.storageslst->setItemsExpandable(false);
+        
+        srvitem->setData(0, Qt::UserRole, qVariantFromValue(srv));
+        srvitem->setIcon(0, srv->icon());
+        p_->ui.storageslst->insertTopLevelItem(0, srvitem);
+        
+        BOOST_FOREACH (Storage storage, p_->sync_man->storages(srv)) {
+            QTreeWidgetItem* stitem = new QTreeWidgetItem(srvitem, QStringList() << p_->sync_man->name(storage));
+            stitem->setData(0, Qt::UserRole, qVariantFromValue(storage));
+            
+            BOOST_FOREACH(Object obj, p_->sync_man->objects(storage)) {
+                QTreeWidgetItem* objitem = new QTreeWidgetItem(stitem, QStringList() << obj->name());
+                objitem->setData(0, Qt::UserRole, qVariantFromValue(obj));
+                objitem->setIcon(0, obj->icon());
+            }
+            stitem->setExpanded(true);
+        }
+        srvitem->setExpanded(true);        
+    }
+    
+    BOOST_FOREACH (Object obj, p_->sync_man->objects()) {
+        QListWidgetItem* item = new QListWidgetItem(obj->name());
+        item->setData(Qt::UserRole, qVariantFromValue(obj));
+        item->setIcon(obj->icon());
+        p_->ui.objectlst->addItem(item);
+    }
+}
+
+template <typename T>
+T sync_settings_form2::current() const
+{
+    QTreeWidgetItem* item = p_->ui.storageslst->currentItem();
+    
+    return (item) ? item->data(0, Qt::UserRole).value<T>() : T();
+}
+
+template <>
+remote::syncro_manager::Object sync_settings_form2::current<remote::syncro_manager::Object>() const
+{
+    QListWidgetItem* item = p_->ui.objectlst->currentItem();
+    
+    return (item) ? item->data(Qt::UserRole).value<Object>() : Object();
+}
+
+
+
+void sync_settings_form2::current_storage_changed(QTreeWidgetItem* current, QTreeWidgetItem* previous)
+{
+    p_->ui.addbtn->setEnabled(false);
+    p_->ui.delbtn->setEnabled(false);
+    p_->ui.editbtn->setEnabled(false);
+    p_->ui.bindbtn->setEnabled(false);
+    p_->ui.unbindbtn->setEnabled(false);
+    
+    if (current)
+    {
+        QVariant data = current->data(0, Qt::UserRole);
+        
+        if (data.canConvert<Service>())
+        {
+            p_->ui.addbtn->setEnabled(true);
+        }
+        
+        if (data.canConvert<Storage>())
+        {
+            p_->ui.delbtn->setEnabled(true);
+            p_->ui.editbtn->setEnabled(true);
+            
+            QListWidgetItem* obj = p_->ui.objectlst->currentItem();
+            if (obj)
+            {
+                p_->ui.bindbtn->setEnabled(true);
+            }
+        }
+        
+        if (data.canConvert<Object>())
+        {
+            p_->ui.unbindbtn->setEnabled(true);
+        }
+    }
+}
+
+void sync_settings_form2::current_object_changed(QListWidgetItem* current, QListWidgetItem* previous)
+{
+    p_->ui.bindbtn->setEnabled(false);
+    p_->ui.unbindallbtn->setEnabled(false);
+    
+    
+    
+    if (current)
+    {
+        p_->ui.unbindallbtn->setEnabled(true);
+        
+        if (QTreeWidgetItem* storage = p_->ui.storageslst->currentItem())
+        {
+            QVariant data = storage->data(0, Qt::UserRole);
+            
+            if (data.canConvert<Storage>())
+            {
+                p_->ui.bindbtn->setEnabled(true);
+            }
+        }
+    }
+}
+
+template <typename T>
+QTreeWidgetItem * find_item(QTreeWidgetItem *parent, const T& t)
+{
+    if (parent->data(0, Qt::UserRole).value<T>() == t) {
+        return parent;
+    }
+        
+    for (int i = 0; i< parent->childCount(); ++i) {
+        if (QTreeWidgetItem * item = find_item(parent->child(i), t)) {
+            return item;
+        }
+    }
+    return 0;
+}
+
+template <typename T>
+QTreeWidgetItem * find_item(QTreeWidget* tree, const T& t)
+{
+    for (int i = 0; i < tree->topLevelItemCount(); ++i) {
+        if (QTreeWidgetItem * item = find_item(tree->topLevelItem(i, t))) {
+            return item;
+        }
+    }
+    return 0;
+}
+
+void sync_settings_form2::create()
+{
+    Service service = current<Service>();
+    Q_ASSERT(service);
+    
+    const QString storage_name = QInputDialog::getText(this, "Creating storage", "Name");
+    if (storage_name.isEmpty()) return;
+    
+    const std::auto_ptr<QVariantMap> settings = service->configure();
+    if (!settings.get()) return;
+    
+    p_->sync_man->create(service, storage_name, *settings);
+}
+
+void sync_settings_form2::edit()
+{
+    Storage storage = current<Storage>();
+    Q_ASSERT(storage);    
+    
+    Service service = p_->sync_man->service(storage);
+    Q_ASSERT(service);    
+    
+    const QString storage_name = QInputDialog::getText(this, "Editing storage", "Name", QLineEdit::Normal, p_->sync_man->name(storage));
+    if (storage_name.isEmpty()) return;    
+
+    const std::auto_ptr<QVariantMap> settings = service->configure(p_->sync_man->settings(storage).value("data").value<QVariantMap>());
+    if (!settings.get()) return;
+    
+    p_->sync_man->remove(storage);
+    p_->sync_man->create(service, storage_name, *settings);
+}
+
+void sync_settings_form2::destroy()
+{
+    Storage storage = current<Storage>();
+    Q_ASSERT(storage);  
+    
+    p_->sync_man->remove(storage);
+}
+
+void sync_settings_form2::bind()
+{
+    Storage storage = current<Storage>();
+    Q_ASSERT(storage);
+    
+    Object object = current<Object>();
+    Q_ASSERT(object);
+    
+    p_->sync_man->bind(object, storage);
+}
+
+void sync_settings_form2::unbind()
+{
+    Storage storage = current<Storage>();
+    Q_ASSERT(storage);
+    
+    Object object = current<Object>();  
+    Q_ASSERT(object);
+    
+    p_->sync_man->unbind(object, storage);
+}
+
+void sync_settings_form2::unbindall()
+{
+    Object object = current<Object>();
+    Q_ASSERT(object);
+    
+    p_->sync_man->unbind(object);
+}
+
+void sync_settings_form2::accept()
+{
+    preferences_widget::accept();
+}
+
+
+void sync_settings_form2::reject()
+{
+    preferences_widget::reject();
+}
+
+void sync_settings_form2::reset_defaults()
+{
+    preferences_widget::reset_defaults();
+}
+
+void sync_settings_form2::update_preferences()
+{
+    update();
+    preferences_widget::update_preferences();
+}
 
 
