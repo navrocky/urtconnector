@@ -69,7 +69,6 @@ struct tab_view : base_view {
     void make_tab( QTabWidget* tw, preferences_item item )
     {
         preferences_widget* cw = item.widget();
-        cw->show();
 
         item.set_index( tw->addTab( cw, cw->icon(), cw->name() ) );
 
