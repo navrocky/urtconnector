@@ -18,6 +18,7 @@ public:
     {
         gm_none = 0,
         gm_free_for_all = 1,
+        gm_last_man_standing = 2,
         gm_team_death_match = 4,
         gm_team_survivor = 5,
         gm_follow_the_leader = 6,
