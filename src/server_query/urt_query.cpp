@@ -187,10 +187,8 @@ void urt_query::host_looked_up(const QHostInfo& host)
 
 bool urt_query::do_process_reply(const QByteArray &data)
 {
-    int elapsed = time_.elapsed();
+    ping_ = time_.elapsed();
     bool res = process_reply(data);
-    if (res && !ping_)
-        ping_ = elapsed;
     return res;
 }
 
@@ -241,6 +239,7 @@ void urt_query_dispatcher::read_pending_datagrams()
 {
     while (sock_->hasPendingDatagrams())
     {
+        LOG_DEBUG << "Read pending datagrams";
         QByteArray datagram;
         datagram.resize(sock_->pendingDatagramSize());
         QHostAddress sender;
@@ -267,7 +266,9 @@ void urt_query_dispatcher::read_pending_datagrams()
 void urt_query_dispatcher::send_query(const server_id& id, const QByteArray& data)
 {
     qint64 res = sock_->writeDatagram(data, QHostAddress(id.ip()), id.port());
-    Q_ASSERT(res == data.size());
+    if (res != data.size())
+        LOG_WARN << "Datagram write res: %1", res;
+//    Q_ASSERT(res == data.size());
 }
 
 void urt_query_dispatcher::query_reg(urt_query * q)
@@ -301,6 +302,32 @@ void urt_get_server_list::exec()
     first_reply_received_ = false;
 }
 
+#pragma pack(push,1)
+union ip_union
+{
+    struct
+    {
+        char _1;
+        char _2;
+        char _3;
+        char _4;
+
+    } ip;
+    quint32 ip_as_int;
+};
+
+union port_union
+{
+    struct
+    {
+        char _1;
+        char _2;
+
+    } field;
+    quint16 port_as_int;
+};
+#pragma pack(pop)
+
 bool urt_get_server_list::process_reply(const QByteArray &data)
 {
     QDataStream ds(data);
@@ -317,15 +344,23 @@ bool urt_get_server_list::process_reply(const QByteArray &data)
         if (!check_string(ds, "\\"))
             break;
 
-        quint32 ip;
+        ip_union ip;
         if (ds.readRawData(reinterpret_cast<char*>(&ip), sizeof(ip)) != sizeof(ip))
             break;
+        ip_union ip2;
+        ip2.ip._1 = ip.ip._4;
+        ip2.ip._2 = ip.ip._3;
+        ip2.ip._3 = ip.ip._2;
+        ip2.ip._4 = ip.ip._1;
 
-        quint16 port;
+        port_union port;
         if (ds.readRawData(reinterpret_cast<char*>(&port), sizeof(port)) != sizeof(port))
             break;
+        port_union port2;
+        port2.field._1 = port.field._2;
+        port2.field._2 = port.field._1;
 
-        server_id id(QHostAddress(ip).toString(), QString(), port);
+        server_id id(QHostAddress(ip2.ip_as_int).toString(), QString(), port2.port_as_int);
         res_.append(id);
         cnt++;
     }
@@ -376,13 +411,13 @@ bool urt_get_server_info::process_reply(const QByteArray &data)
         return false;
 
     QByteArray ba = read_data(ds, data.size());
-    QStringList sl = QString(ba).split('\\');
+    QStringList sl = QString(ba).split('\\', QString::SkipEmptyParts);
 
     info_.clear();
     for (int i = 0; i < sl.size(); i += 2)
     {
-        QString key = sl[i];
-        QString value = sl[i+1];
+        QString key = sl[i].trimmed();
+        QString value = sl[i+1].trimmed();
         info_[key] = value;
     }
     LOG_HARD << "Info received: %1", QString(ba);
@@ -425,16 +460,16 @@ bool urt_get_server_status::process_reply(const QByteArray &data)
         return false;
 
     QByteArray ba = read_data(ds, data.size());
-    QStringList sl = QString(ba).split('\n');
+    QStringList sl = QString(ba).split('\n', QString::SkipEmptyParts);
 
     if (sl.size() > 0)
     {
-        QStringList sl2 = sl[0].split("\\");
+        QStringList sl2 = sl[0].split("\\", QString::SkipEmptyParts);
         info_.clear();
         for (int i = 0; i < sl2.size(); i += 2)
         {
-            QString key = sl2[i];
-            QString value = sl2[i+1];
+            QString key = sl2[i].trimmed();
+            QString value = sl2[i+1].trimmed();
             info_[key] = value;
         }
 
@@ -452,7 +487,7 @@ bool urt_get_server_status::process_reply(const QByteArray &data)
             rec.score = player_rx_.cap(2).toInt(&ok);
             if (!ok)
                 LOG_WARN << "Invalid player score: %1", sl[i];
-            rec.name = player_rx_.cap(3);
+            rec.name = player_rx_.cap(3).trimmed();
             players_.append(rec);
         }
     }

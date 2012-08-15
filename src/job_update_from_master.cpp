@@ -1,25 +1,25 @@
+#include "job_update_from_master.h"
 
 #include <common/server_list.h>
 #include <common/tools.h>
 #include <common/qt_syslog.h>
-#include "qstat_updater.h"
-#include "app_options.h"
-#include "common/qstat_options.h"
+#include <common/qstat_options.h>
+#include <server_query/server_list_updater.h>
 
-#include "job_update_from_master.h"
+#include "app_options.h"
 
 SYSLOG_MODULE(job_update_from_master)
 
 job_update_from_master::job_update_from_master( server_list_p list, const geoip& gi)
-    : updater_(new qstat_updater(list, gi))
-    , dispatcher_(new urt_query_dispatcher(this))
+    : dispatcher_(new urt_query_dispatcher(this))
     , get_list_query_(0)
 {
     set_caption(tr("Update from master server"));
     app_settings as;
-    updater_->set_clear_offline(as.clear_offline());
 
-    connect(updater_.get(), SIGNAL(refresh_stopped()), SLOT(stopped()));
+    updater_ = new server_list_updater(list, gi, this);
+//    updater_->set_max_sim_queries(20);
+    connect(updater_, SIGNAL(refresh_stopped()), SLOT(stopped()));
 }
 
 job_update_from_master::~job_update_from_master()
@@ -47,13 +47,14 @@ void job_update_from_master::cancel()
     delete get_list_query_;
     get_list_query_ = 0;
 
-//    updater_->refresh_cancel();
+    delete updater_;
+    updater_ = 0;
 }
 
 int job_update_from_master::get_progress()
 {
-    int cnt = updater_->get_count();
-    int progress = updater_->get_progress();
+    int cnt = updater_->count();
+    int progress = updater_->progress();
     if (cnt > 0)
         return progress * 100 / cnt;
     else
@@ -68,9 +69,13 @@ void job_update_from_master::stopped()
 void job_update_from_master::query_server_list_finished(const server_id_list & list)
 {
     LOG_DEBUG << "Taken %1 servers from master", list.size();
-    delete get_list_query_;
-    get_list_query_ = 0;
-    set_state(js_finished);
+//    delete get_list_query_;
+//    get_list_query_ = 0;
+
+    updater_->refresh_selected(list);
+
+
+//    set_state(js_finished);
 }
 
 void job_update_from_master::error(const QString &msg)

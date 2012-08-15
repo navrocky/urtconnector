@@ -1,16 +1,17 @@
 #ifndef _JOB_UPDATE_SELECTED_H
 #define	_JOB_UPDATE_SELECTED_H
 
-#include <memory>
 #include <QString>
 
-#include "jobs/job.h"
-#include "common/server_id.h"
-#include "qstat_updater.h"
+#include <jobs/job.h>
+#include <geoip/geoip.h>
+#include <common/server_id.h>
 #include "pointers.h"
+
 
 class qstat_updater;
 class qstat_options;
+class server_list_updater;
 
 class job_update_selected : public job_t
 {
@@ -29,8 +30,10 @@ private slots:
     void stopped();
 
 private:
+    void clear_updating();
+
     server_id_list selection_;
-    std::auto_ptr<qstat_updater> updater_;
+    server_list_updater* updater_;
 };
 
 #endif	/* _JOB_UPDATE_SELECTED_H */
