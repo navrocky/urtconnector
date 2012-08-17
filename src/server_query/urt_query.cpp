@@ -65,7 +65,6 @@ urt_query_options::urt_query_options(int timeout_, int series_timeout_, int retr
 
 urt_query::urt_query(QObject *parent)
     : QObject(parent)
-    , executing_(false)
     , dispatcher_(0)
     , registered_(false)
     , retries_(0)
@@ -77,19 +76,19 @@ urt_query::urt_query(QObject *parent)
 
 urt_query::~urt_query()
 {
-    if (executing_ && dispatcher_ && registered_)
+    if (dispatcher_ && registered_)
         dispatcher_->query_unreg(addr_, this);
 }
 
 void urt_query::set_addr(const server_id &addr)
 {
-    Q_ASSERT(!executing_);
+    Q_ASSERT(status_ != s_executing);
     addr_ = addr;
 }
 
 void urt_query::set_opts(const urt_query_options& val)
 {
-    Q_ASSERT(!executing_);
+    Q_ASSERT(status_ != s_executing);
     opts_ = val;
 }
 
@@ -98,7 +97,7 @@ bool urt_query::event(QEvent * e)
     if (e->type() == QEvent::Timer)
     {
         QTimerEvent* te = static_cast<QTimerEvent*>(e);
-        if (te->timerId() == timer_id_)
+        if (timer_id_ != 0 && te->timerId() == timer_id_)
         {
             killTimer(timer_id_);
             timer_id_ = 0;
@@ -111,7 +110,7 @@ bool urt_query::event(QEvent * e)
 
 void urt_query::finish()
 {
-    if (!executing_)
+    if (status_ != s_executing)
         return;
     if (timer_id_)
     {
@@ -121,7 +120,6 @@ void urt_query::finish()
     if (dispatcher_ && registered_)
         dispatcher_->query_unreg(addr_, this);
     registered_ = false;
-    executing_ = false;
     status_ = s_finished;
 }
 
@@ -131,7 +129,7 @@ bool urt_query::retry()
         return false;
     finish();
     retries_++;
-    LOG_DEBUG << "Query timeout. Retry %1 from %2.", retries_, opts_.retries;
+    LOG_HARD << "Query timeout. Retry %1 from %2.", retries_, opts_.retries;
     start();
     return true;
 }
@@ -154,6 +152,7 @@ void urt_query::start_timeout(int tm)
     if (timer_id_)
         killTimer(timer_id_);
     timer_id_ = startTimer(tm);
+    Q_ASSERT(timer_id_ != 0);
 }
 
 void urt_query::send_command(const QString &cmd)
@@ -182,6 +181,7 @@ void urt_query::host_looked_up(const QHostInfo& host)
     addr_.set_ip(ip);
     addr_.set_host_name(QString());
 
+    status_ = s_not_started;
     start();
 }
 
@@ -194,7 +194,8 @@ bool urt_query::do_process_reply(const QByteArray &data)
 
 void urt_query::start()
 {
-    executing_ = true;
+    Q_ASSERT(status_ != s_executing);
+    status_ = s_executing;
 
     Q_ASSERT(!addr_.is_empty());
     if (addr_.ip().isEmpty())
@@ -217,6 +218,7 @@ void urt_query::start()
 urt_query_dispatcher::urt_query_dispatcher(QObject *parent)
     : QObject(parent)
     , sock_(new QUdpSocket(this))
+    , send_errors_(0)
 {
     connect(sock_, SIGNAL(readyRead()), SLOT(read_pending_datagrams()));
     bool res = sock_->bind();
@@ -239,7 +241,7 @@ void urt_query_dispatcher::read_pending_datagrams()
 {
     while (sock_->hasPendingDatagrams())
     {
-        LOG_DEBUG << "Read pending datagrams";
+        LOG_HARD << "Read pending datagrams";
         QByteArray datagram;
         datagram.resize(sock_->pendingDatagramSize());
         QHostAddress sender;
@@ -267,7 +269,12 @@ void urt_query_dispatcher::send_query(const server_id& id, const QByteArray& dat
 {
     qint64 res = sock_->writeDatagram(data, QHostAddress(id.ip()), id.port());
     if (res != data.size())
+    {
         LOG_WARN << "Datagram write res: %1", res;
+        send_errors_++;
+    }
+
+//    usleep(10000);
 //    Q_ASSERT(res == data.size());
 }
 
@@ -295,7 +302,7 @@ urt_get_server_list::urt_get_server_list(QObject *parent)
 void urt_get_server_list::exec()
 {
     send_command("getservers 68 full empty");
-    send_command("getservers 70 full empty");
+//    send_command("getservers 70 full empty");
 
     res_.clear();
     start_timeout(opts().timeout);
@@ -342,16 +349,29 @@ bool urt_get_server_list::process_reply(const QByteArray &data)
     while (!ds.atEnd())
     {
         if (!check_string(ds, "\\"))
+        {
+            Q_ASSERT(false);
             break;
+        }
 
         ip_union ip;
         if (ds.readRawData(reinterpret_cast<char*>(&ip), sizeof(ip)) != sizeof(ip))
+        {
+            Q_ASSERT(false);
             break;
+        }
+
+        // "\EOT" protocol 70
+        if (ip.ip_as_int == 0x544F45)
+            break;
+
         ip_union ip2;
         ip2.ip._1 = ip.ip._4;
         ip2.ip._2 = ip.ip._3;
         ip2.ip._3 = ip.ip._2;
         ip2.ip._4 = ip.ip._1;
+
+        Q_ASSERT(ip2.ip._1 != 0 && ip2.ip._4 != 0);
 
         port_union port;
         if (ds.readRawData(reinterpret_cast<char*>(&port), sizeof(port)) != sizeof(port))
@@ -359,6 +379,8 @@ bool urt_get_server_list::process_reply(const QByteArray &data)
         port_union port2;
         port2.field._1 = port.field._2;
         port2.field._2 = port.field._1;
+
+        Q_ASSERT(port2.port_as_int != 0);
 
         server_id id(QHostAddress(ip2.ip_as_int).toString(), QString(), port2.port_as_int);
         res_.append(id);
@@ -431,17 +453,14 @@ bool urt_get_server_info::process_reply(const QByteArray &data)
 void urt_get_server_info::timeout()
 {
     if (!retry())
-    {
-        finish();
         throw_error(tr("Query server info timeout"));
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 urt_get_server_status::urt_get_server_status(QObject *parent)
     : urt_query(parent)
-    , player_rx_("^(\\d+) (\\d+) \"(.+)\"$")
+    , player_rx_("^(-?\\d+) (\\d+) \"(.+)\"$")
 {
 }
 
@@ -481,12 +500,12 @@ bool urt_get_server_status::process_reply(const QByteArray &data)
 
             bool ok;
             player_t rec;
-            rec.ping = player_rx_.cap(1).toInt(&ok);
-            if (!ok)
-                LOG_WARN << "Invalid player ping: %1", sl[i];
-            rec.score = player_rx_.cap(2).toInt(&ok);
+            rec.score = player_rx_.cap(1).toInt(&ok);
             if (!ok)
                 LOG_WARN << "Invalid player score: %1", sl[i];
+            rec.ping = player_rx_.cap(2).toInt(&ok);
+            if (!ok)
+                LOG_WARN << "Invalid player ping: %1", sl[i];
             rec.name = player_rx_.cap(3).trimmed();
             players_.append(rec);
         }
@@ -503,8 +522,5 @@ bool urt_get_server_status::process_reply(const QByteArray &data)
 void urt_get_server_status::timeout()
 {
     if (!retry())
-    {
-        finish();
         throw_error(tr("Query server status timeout"));
-    }
 }

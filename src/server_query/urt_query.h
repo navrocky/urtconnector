@@ -30,6 +30,7 @@ public:
     enum status_t
     {
         s_not_started,
+        s_executing,
         s_finished,
         s_error
     };
@@ -79,7 +80,6 @@ private:
     friend class urt_query_dispatcher;
     server_id addr_;
     urt_query_options opts_;
-    bool executing_;
     urt_query_dispatcher* dispatcher_;
     bool registered_;
     int retries_;
@@ -99,6 +99,8 @@ public:
 
     void cancel_all_queries();
 
+    int send_errors() const {return send_errors_;}
+
 private slots:
     void read_pending_datagrams();
 
@@ -111,6 +113,7 @@ private:
     typedef QMultiMap<server_id, urt_query*> queries_t;
     QUdpSocket* sock_;
     queries_t queries_;
+    int send_errors_;
 };
 
 class urt_get_server_list : public urt_query

@@ -2,6 +2,7 @@
 #define SERVER_LIST_UPDATER_H
 
 #include <QObject>
+#include <QTime>
 
 #include <common/server_info.h>
 #include <geoip/geoip.h>
@@ -40,6 +41,7 @@ signals:
 
 private slots:
     void query_finished();
+    void query_error(const QString&);
     void start_later();
 
 private:
@@ -57,7 +59,6 @@ private:
 
     int current_id_;
     server_id_list id_list_;
-    int sim_queries_count_;
     server_list_p serv_list_;
     server_recs_t queries_;
     int count_;
@@ -70,6 +71,11 @@ private:
     server_id_list later_status_start_;
     int timeout_;
     int retries_;
+    int started_;
+    int finished_;
+    int retries_counter_;
+    int failed_counter_;
+    QTime time_;
 };
 
 #endif // SERVER_LIST_UPDATER_H

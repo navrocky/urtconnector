@@ -1,5 +1,6 @@
 #include "server_list_updater.h"
 
+#include <set>
 #include <QTimer>
 #include <boost/make_shared.hpp>
 #include <common/server_list.h>
@@ -22,11 +23,18 @@ server_list_updater::server_list_updater(server_list_p list,
                                          QObject *parent)
     : QObject(parent)
     , serv_list_(list)
+    , count_(0)
+    , progress_(0)
+    , canceled_(false)
     , geoip_(gi)
     , dispatcher_(new urt_query_dispatcher(this))
     , maximum_sim_queries_(c_max_sim)
     , timeout_(c_timeout)
     , retries_(c_retries)
+    , started_(0)
+    , finished_(0)
+    , retries_counter_(0)
+    , failed_counter_(0)
 {
 }
 
@@ -37,7 +45,18 @@ void server_list_updater::refresh_selected(const server_id_list &list)
     count_ = list.size();
     id_list_ = list;
     current_id_ = 0;
-    sim_queries_count_ = 0;
+
+//    typedef std::set<server_id> ids_t;
+//    ids_t ids;
+//    foreach (const server_id& id, list)
+//    {
+//        ids_t::iterator it = ids.find(id);
+//        Q_ASSERT(it == ids.end());
+//        ids.insert(id);
+//    }
+//    Q_ASSERT(ids.size() == list.size());
+
+    time_.start();
 
     query_portion();
 }
@@ -49,14 +68,18 @@ void server_list_updater::clear()
     count_ = 0;
     id_list_.clear();
     current_id_ = 0;
-    sim_queries_count_ = 0;
     canceled_ = false;
+    queries_.clear();
+    started_ = 0;
+    finished_ = 0;
+    retries_counter_ = 0;
+    failed_counter_ = 0;
 }
 
 void server_list_updater::query_portion()
 {
     int cnt = 0;
-    while ((maximum_sim_queries_ == 0 || sim_queries_count_ < maximum_sim_queries_)
+    while ((maximum_sim_queries_ == 0 || queries_.size() < maximum_sim_queries_)
            && current_id_ < id_list_.size())
     {
         server_id id = id_list_[current_id_];
@@ -73,43 +96,51 @@ void server_list_updater::query_portion()
         rec.info_query->set_addr(id);
         rec.info_query->set_opts(opts);
         connect(rec.info_query, SIGNAL(finished()), SLOT(query_finished()));
-        connect(rec.info_query, SIGNAL(error(QString)), SLOT(query_finished()));
+        connect(rec.info_query, SIGNAL(error(QString)), SLOT(query_error(QString)));
 
         rec.status_query = new urt_get_server_status(this);
         rec.status_query->set_addr(id);
         rec.status_query->set_opts(opts);
         connect(rec.status_query, SIGNAL(finished()), SLOT(query_finished()));
-        connect(rec.status_query, SIGNAL(error(QString)), SLOT(query_finished()));
+        connect(rec.status_query, SIGNAL(error(QString)), SLOT(query_error(QString)));
 
-        server_recs_t::iterator it = queries_.find(id);
-        Q_ASSERT(it == queries_.end());
         queries_[id] = rec;
 
         dispatcher_->exec_query(rec.info_query);
         later_status_start_.append(id);
 
         current_id_++;
-        sim_queries_count_++;
         cnt++;
+        started_++;
     }
     if (cnt > 0)
     {
         QTimer::singleShot(c_time_between_info_and_status, this, SLOT(start_later()));
-        LOG_DEBUG << "Created %1 queries", cnt;
+        LOG_HARD << "Created %1-%2 queries of %3", current_id_ - cnt,
+                current_id_, id_list_.size() ;
     }
 }
 
 void server_list_updater::query_finished()
 {
+    finished_++;
     urt_query* q = static_cast<urt_query*>(sender());
     server_id id = q->addr();
+
+    if (q->status() == urt_query::s_finished)
+        retries_counter_ += q->retries() /*- 1*/;
+    else
+        failed_counter_++;
 
     server_recs_t::iterator it = queries_.find(id);
     Q_ASSERT(it != queries_.end());
 
-    const server_rec& rec = it.value();
+    server_rec& rec = it.value();
+
     if (rec.info_query->status() == urt_query::s_not_started ||
-        rec.status_query->status() == urt_query::s_not_started)
+            rec.info_query->status() == urt_query::s_executing ||
+            rec.status_query->status() == urt_query::s_not_started ||
+            rec.status_query->status() == urt_query::s_executing)
         return;
 
     bool failed = rec.info_query->status() == urt_query::s_error ||
@@ -174,7 +205,6 @@ void server_list_updater::query_finished()
     rec.info_query->deleteLater();
     rec.status_query->deleteLater();
     queries_.erase(it);
-    sim_queries_count_--;
 
     serv_list_->state_changed();
 
@@ -182,9 +212,19 @@ void server_list_updater::query_finished()
 
     if (queries_.size() == 0)
     {
+        LOG_DEBUG << "Started %1 finished %2", started_, finished_;
+        LOG_DEBUG << "send_errors=%1, retries=%2, failed=%3, elapsed=%4", dispatcher_->send_errors(),
+                retries_counter_, failed_counter_, time_.elapsed();
+
         // finished
         emit refresh_stopped();
     }
+}
+
+void server_list_updater::query_error(const QString & msg)
+{
+    LOG_ERR << "Query error: " << msg;
+    query_finished();
 }
 
 void server_list_updater::start_later()
@@ -199,6 +239,7 @@ void server_list_updater::start_later()
             continue;
         server_rec& rec = it.value();
         dispatcher_->exec_query(rec.status_query);
+        started_++;
     }
     later_status_start_.clear();
 }

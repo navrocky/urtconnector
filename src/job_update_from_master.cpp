@@ -15,10 +15,12 @@ job_update_from_master::job_update_from_master( server_list_p list, const geoip&
     , get_list_query_(0)
 {
     set_caption(tr("Update from master server"));
-    app_settings as;
+    qstat_options opts;
 
     updater_ = new server_list_updater(list, gi, this);
-//    updater_->set_max_sim_queries(20);
+    updater_->set_max_sim_queries(opts.max_sim_queries());
+    updater_->set_retries(opts.retry_number());
+    updater_->set_timeout(opts.timeout());
     connect(updater_, SIGNAL(refresh_stopped()), SLOT(stopped()));
 }
 

@@ -6,7 +6,7 @@
 
 #define QSTAT_OPTIONS \
     (( master_server, QString, QString("master.urbanterror.info") )) \
-    (( max_sim_queries, int, 0 )) \
+    (( max_sim_queries, int, 40 )) \
     (( timeout, int, 2000 )) \
     (( series_timeout, int, 100 )) \
     (( retry_number, int, 2 ))
