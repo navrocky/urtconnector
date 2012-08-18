@@ -302,7 +302,7 @@ urt_get_server_list::urt_get_server_list(QObject *parent)
 void urt_get_server_list::exec()
 {
     send_command("getservers 68 full empty");
-//    send_command("getservers 70 full empty");
+    send_command("getservers 70 full empty");
 
     res_.clear();
     start_timeout(opts().timeout);

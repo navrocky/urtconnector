@@ -31,6 +31,9 @@ void job_update_from_master::start()
 {
     set_state(job_t::js_executing);
 
+    app_settings as;
+    clear_offline_ = as.clear_offline();
+
     qstat_options opts;
     QString address = opts.master_server();
 
@@ -40,7 +43,12 @@ void job_update_from_master::start()
     connect(get_list_query_, SIGNAL(error(QString)), SLOT(error(QString)));
     dispatcher_->exec_query(get_list_query_);
 
-//    updater_->refresh_all();
+    // setup updating state
+    foreach (server_info_list::const_reference r, updater_->server_list()->list())
+    {
+        r.second->updating = true;
+    }
+    updater_->server_list()->state_changed();
 }
 
 void job_update_from_master::cancel()
@@ -48,6 +56,13 @@ void job_update_from_master::cancel()
     set_state(job_t::js_canceled);
     delete get_list_query_;
     get_list_query_ = 0;
+
+    // setup updating state
+    foreach (server_info_list::const_reference r, updater_->server_list()->list())
+    {
+        r.second->updating = false;
+    }
+    updater_->server_list()->state_changed();
 
     delete updater_;
     updater_ = 0;
@@ -65,6 +80,21 @@ int job_update_from_master::get_progress()
 
 void job_update_from_master::stopped()
 {
+    server_list_p l = updater_->server_list();
+    if (clear_offline_)
+    {
+        server_id_list to_remove;
+        foreach (server_info_list::const_reference r, l->list())
+            if (r.second->updating)
+                to_remove.append(r.first);
+        l->remove_selected(to_remove);
+    } else
+    {
+        foreach (server_info_list::const_reference r, l->list())
+            r.second->updating = false;
+        updater_->server_list()->state_changed();
+    }
+
     set_state(js_finished);
 }
 

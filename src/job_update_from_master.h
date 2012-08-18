@@ -32,6 +32,7 @@ private:
     urt_query_dispatcher* dispatcher_;
     urt_get_server_list* get_list_query_;
     server_list_updater* updater_;
+    bool clear_offline_;
 };
 
 #endif	/* _JOB_UPDATE_FROM_MASTER_H */
