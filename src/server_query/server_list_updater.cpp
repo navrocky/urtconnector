@@ -35,6 +35,7 @@ server_list_updater::server_list_updater(server_list_p list,
     , finished_(0)
     , retries_counter_(0)
     , failed_counter_(0)
+    , mode_(m_status_after_info)
 {
 }
 
@@ -45,16 +46,6 @@ void server_list_updater::refresh_selected(const server_id_list &list)
     count_ = list.size();
     id_list_ = list;
     current_id_ = 0;
-
-//    typedef std::set<server_id> ids_t;
-//    ids_t ids;
-//    foreach (const server_id& id, list)
-//    {
-//        ids_t::iterator it = ids.find(id);
-//        Q_ASSERT(it == ids.end());
-//        ids.insert(id);
-//    }
-//    Q_ASSERT(ids.size() == list.size());
 
     time_.start();
 
@@ -107,7 +98,9 @@ void server_list_updater::query_portion()
         queries_[id] = rec;
 
         dispatcher_->exec_query(rec.info_query);
-        later_status_start_.append(id);
+
+        if (mode_ == m_parallel)
+            later_status_start_.append(id);
 
         current_id_++;
         cnt++;
@@ -128,7 +121,7 @@ void server_list_updater::query_finished()
     server_id id = q->addr();
 
     if (q->status() == urt_query::s_finished)
-        retries_counter_ += q->retries() /*- 1*/;
+        retries_counter_ += q->retries();
     else
         failed_counter_++;
 
@@ -136,6 +129,13 @@ void server_list_updater::query_finished()
     Q_ASSERT(it != queries_.end());
 
     server_rec& rec = it.value();
+
+    if (mode_ == m_status_after_info && rec.status_query->status() == urt_query::s_not_started)
+    {
+        dispatcher_->exec_query(rec.status_query);
+        started_++;
+        return;
+    }
 
     if (rec.info_query->status() == urt_query::s_not_started ||
             rec.info_query->status() == urt_query::s_executing ||
@@ -164,8 +164,8 @@ void server_list_updater::query_finished()
         si->mode = server_info::game_mode(rec.info_query->info()["gametype"].toInt() + 1);
         si->map = rec.info_query->info()["mapname"];
         si->map_url = rec.status_query->info()["sv_dlURL"];
-        si->ping = q->ping();
-        si->retries = q->retries();
+        si->ping = qMin(rec.info_query->ping(), rec.status_query->ping());
+        si->retries = rec.info_query->retries() + rec.status_query->retries();
 
         foreach (const urt_get_server_status::player_t& player, rec.status_query->players())
         {
@@ -213,7 +213,8 @@ void server_list_updater::query_finished()
     if (queries_.size() == 0)
     {
         LOG_DEBUG << "Started %1 finished %2", started_, finished_;
-        LOG_DEBUG << "send_errors=%1, retries=%2, failed=%3, elapsed=%4", dispatcher_->send_errors(),
+        LOG_DEBUG << "send_errors=%1, resended=%2, retries=%3, failed=%4, elapsed=%5",
+                dispatcher_->send_errors(), dispatcher_->total_resended(),
                 retries_counter_, failed_counter_, time_.elapsed();
 
         // finished
@@ -223,7 +224,7 @@ void server_list_updater::query_finished()
 
 void server_list_updater::query_error(const QString & msg)
 {
-    LOG_ERR << "Query error: " << msg;
+    LOG_DEBUG << "Query error: " << msg;
     query_finished();
 }
 

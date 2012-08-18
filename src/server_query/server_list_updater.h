@@ -17,6 +17,12 @@ class server_list_updater : public QObject
 {
     Q_OBJECT
 public:
+    enum update_mode
+    {
+        m_parallel,
+        m_status_after_info
+    };
+
     server_list_updater(server_list_p list, const geoip& gi, QObject* parent = 0);
 
     void set_timeout(int val) {timeout_ = val;}
@@ -76,6 +82,7 @@ private:
     int retries_counter_;
     int failed_counter_;
     QTime time_;
+    update_mode mode_;
 };
 
 #endif // SERVER_LIST_UPDATER_H

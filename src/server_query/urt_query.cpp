@@ -219,6 +219,10 @@ urt_query_dispatcher::urt_query_dispatcher(QObject *parent)
     : QObject(parent)
     , sock_(new QUdpSocket(this))
     , send_errors_(0)
+    , send_later_timer_(0)
+    , resend_interval_(20)
+    , max_resend_(5)
+    , total_resended_(0)
 {
     connect(sock_, SIGNAL(readyRead()), SLOT(read_pending_datagrams()));
     bool res = sock_->bind();
@@ -232,9 +236,19 @@ void urt_query_dispatcher::exec_query(urt_query * q)
     q->start();
 }
 
-void urt_query_dispatcher::cancel_all_queries()
+bool urt_query_dispatcher::event(QEvent* e)
 {
-
+    if (e->type() == QEvent::Timer)
+    {
+        QTimerEvent* te = static_cast<QTimerEvent*>(e);
+        if (te->timerId() == send_later_timer_)
+        {
+            // resend
+            resend();
+            return true;
+        }
+    }
+    return QObject::event(e);
 }
 
 void urt_query_dispatcher::read_pending_datagrams()
@@ -265,17 +279,26 @@ void urt_query_dispatcher::read_pending_datagrams()
     }
 }
 
-void urt_query_dispatcher::send_query(const server_id& id, const QByteArray& data)
+void urt_query_dispatcher::send_query(const server_id& id, const QByteArray& data, int send_num)
 {
     qint64 res = sock_->writeDatagram(data, QHostAddress(id.ip()), id.port());
     if (res != data.size())
     {
-        LOG_WARN << "Datagram write res: %1", res;
+        if (res == -1)
+        {
+            LOG_DEBUG << "Datagram send error: %1 %2", sock_->error(), sock_->errorString();
+
+            // resend datagram
+            queue_rec rec = {send_num, id, data};
+            resend_que_.enqueue(rec);
+
+            if (!send_later_timer_)
+                send_later_timer_ = startTimer(resend_interval_);
+        }
+        else
+            LOG_WARN << "Datagram size is %1 but sended %2", data.size(), res;
         send_errors_++;
     }
-
-//    usleep(10000);
-//    Q_ASSERT(res == data.size());
 }
 
 void urt_query_dispatcher::query_reg(urt_query * q)
@@ -290,18 +313,50 @@ void urt_query_dispatcher::query_unreg(const server_id & id, urt_query* q)
     Q_ASSERT(num == 1);
 }
 
+void urt_query_dispatcher::resend()
+{
+    if (resend_que_.isEmpty())
+    {
+        if (send_later_timer_)
+        {
+            killTimer(send_later_timer_);
+            send_later_timer_ = 0;
+        }
+        return;
+    }
+
+    int sz = resend_que_.size();
+    for (int i = 0; i < sz; i++)
+    {
+        queue_rec rec = resend_que_.dequeue();
+        if (rec.send_num >= max_resend_)
+        {
+            LOG_DEBUG << "Sendeding datagram dropped: maximum resend count exceeded";
+            continue;
+        }
+        total_resended_++;
+        send_query(rec.id, rec.data, rec.send_num + 1);
+    }
+
+    if (resend_que_.isEmpty() && send_later_timer_)
+    {
+        killTimer(send_later_timer_);
+        send_later_timer_ = 0;
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
 urt_get_server_list::urt_get_server_list(QObject *parent)
     : urt_query(parent)
     , first_reply_received_(false)
+    , first_query_finished_(false)
 {
 }
 
 void urt_get_server_list::exec()
 {
-    send_command("getservers 68 full empty");
     send_command("getservers 70 full empty");
 
     res_.clear();
@@ -363,7 +418,11 @@ bool urt_get_server_list::process_reply(const QByteArray &data)
 
         // "\EOT" protocol 70
         if (ip.ip_as_int == 0x544F45)
-            break;
+        {
+            first_reply_received_ = true;
+            timeout(); // launch second query
+            return true;
+        }
 
         ip_union ip2;
         ip2.ip._1 = ip.ip._4;
@@ -396,6 +455,15 @@ void urt_get_server_list::timeout()
 {
     if (first_reply_received_)
     {
+        if (!first_query_finished_)
+        {
+            // launch second query
+            first_query_finished_ = true;
+            send_command("getservers 68 full empty");
+            start_timeout(opts().timeout);
+            first_reply_received_ = false;
+            return;
+        }
         finish();
         emit finished(res_);
     }
@@ -460,7 +528,7 @@ void urt_get_server_info::timeout()
 
 urt_get_server_status::urt_get_server_status(QObject *parent)
     : urt_query(parent)
-    , player_rx_("^(-?\\d+) (\\d+) \"(.+)\"$")
+    , player_rx_("^(-?\\d+) (\\d+) \"(.*)\"$")
 {
 }
 

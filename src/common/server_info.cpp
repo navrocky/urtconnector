@@ -97,9 +97,9 @@ const QString& server_info::meta_info_string() const
         foreach (const player_info& pi, players)
             pl += pi.nick_name();
 
-        meta_info_string_ = QString("%1 %2 %3 %4 %5 %6 %7").arg(name)
+        meta_info_string_ = QString("%1 %2 %3 %4 %5 %6 %7 %8").arg(name)
             .arg(id.address()).arg(country).arg(map).arg(mode_name()).arg(pl.join(" "))
-            .arg(status_name());
+                .arg(status_name()).arg(game_type);
 
     }
     return meta_info_string_;

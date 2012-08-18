@@ -6,6 +6,7 @@
 #include <QMultiMap>
 #include <QTime>
 #include <QRegExp>
+#include <QQueue>
 
 #include <common/server_id.h>
 
@@ -97,23 +98,42 @@ public:
 
     void exec_query(urt_query*);
 
-    void cancel_all_queries();
-
     int send_errors() const {return send_errors_;}
+
+    int resend_interval() const {return resend_interval_;}
+    void set_resend_interval(int val) {resend_interval_ = val;}
+
+    void set_max_resend(int val) {max_resend_ = val;}
+    int total_resended() const {return total_resended_;}
+
+    bool event(QEvent *);
 
 private slots:
     void read_pending_datagrams();
 
 private:
     friend class urt_query;
-    void send_query(const server_id&, const QByteArray&);
+    void send_query(const server_id&, const QByteArray&, int resend = 0);
     void query_reg(urt_query*);
     void query_unreg(const server_id&, urt_query *q);
+    void resend();
 
     typedef QMultiMap<server_id, urt_query*> queries_t;
     QUdpSocket* sock_;
     queries_t queries_;
     int send_errors_;
+
+    struct queue_rec
+    {
+        int send_num;
+        server_id id;
+        QByteArray data;
+    };
+    QQueue<queue_rec> resend_que_;
+    int send_later_timer_;
+    int resend_interval_;
+    int max_resend_;
+    int total_resended_;
 };
 
 class urt_get_server_list : public urt_query
@@ -133,6 +153,7 @@ protected:
 private:
     server_id_list res_;
     bool first_reply_received_;
+    bool first_query_finished_;
 };
 
 typedef QMap<QString, QString> urt_server_info_t;
