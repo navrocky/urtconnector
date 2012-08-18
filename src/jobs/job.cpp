@@ -24,7 +24,7 @@ void job_t::set_caption(const QString & val)
 {
     if (caption_ == val)
         return;
-    caption_ == val;
+    caption_ = val;
     emit caption_changed();
 }
 
