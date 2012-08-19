@@ -39,12 +39,34 @@ server_list_updater::server_list_updater(server_list_p list,
 {
 }
 
+server_list_updater::~server_list_updater()
+{
+    foreach (const server_rec& rec, queries_)
+    {
+        delete rec.info_query;
+        delete rec.status_query;
+    }
+}
+
 void server_list_updater::refresh_selected(const server_id_list &list)
 {
     clear();
 
-    count_ = list.size();
-    id_list_ = list;
+    // remove duplicates
+    typedef std::set<server_id> id_set_t;
+    id_set_t set;
+    id_list_.clear();
+    foreach (const server_id& id, list)
+    {
+        id_set_t::iterator it = set.find(id);
+        if (it == set.end())
+        {
+            set.insert(id);
+            id_list_.append(id);
+        }
+    }
+
+    count_ = id_list_.size();
     current_id_ = 0;
 
     time_.start();
@@ -187,14 +209,17 @@ void server_list_updater::query_finished()
     prepare_info(si);
 
     server_info_p si2 = serv_list_->get(si->id);
-    if ( !si2 )
+    if ( !si2 && si->status == server_info::s_up)
     {
         si2 = boost::make_shared<server_info>();
         si2->id = si->id;
         serv_list_->add(si2);
     }
-    si2->update_from(*si);
-    si2->updating = false;
+    if (si2)
+    {
+        si2->update_from(*si);
+        si2->updating = false;
+    }
 
     progress_++;
 

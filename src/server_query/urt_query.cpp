@@ -275,7 +275,7 @@ void urt_query_dispatcher::read_pending_datagrams()
             }
         }
         if (!processed)
-            LOG_WARN << "Received datagram was ignored because no waiting query";
+            LOG_DEBUG << "Received datagram was ignored because no waiting query";
     }
 }
 

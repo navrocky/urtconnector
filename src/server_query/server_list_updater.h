@@ -24,6 +24,7 @@ public:
     };
 
     server_list_updater(server_list_p list, const geoip& gi, QObject* parent = 0);
+    ~server_list_updater();
 
     void set_timeout(int val) {timeout_ = val;}
     void set_max_sim_queries(int val) {maximum_sim_queries_ = val;}
