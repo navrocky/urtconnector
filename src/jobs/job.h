@@ -22,7 +22,7 @@ public:
     job_t();
 
     // caption of job
-    virtual QString get_caption() = 0;
+    QString caption() const {return caption_;}
 
     // start job
     virtual void start() = 0;
@@ -52,13 +52,16 @@ public:
 
 signals:
     void state_changed(job_t::state_t state);
+    void caption_changed();
 
 protected:
     void set_state(state_t state);
+    void set_caption(const QString&);
 
 private:
     state_t state_;
     QPointer<QEventLoop> event_loop_;
+    QString caption_;
 };
 
 #endif	/* _JOB_H */

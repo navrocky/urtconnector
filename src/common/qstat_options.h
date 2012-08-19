@@ -4,21 +4,12 @@
 #include <QString>
 #include <settings/settings_generator.h>
 
-#if defined(Q_OS_UNIX)
-#define QSTAT_DEF_PATH "/usr/bin/urtc_qstat"
-#elif defined(Q_OS_WIN)
-#define QSTAT_DEF_PATH "urtc_qstat.exe"
-#elif defined(Q_OS_MAC)
-#define QSTAT_DEF_PATH "/usr/bin/urtc_qstat"
-#endif
-
 #define QSTAT_OPTIONS \
-    (( qstat_path, QString, QString(QSTAT_DEF_PATH) )) \
     (( master_server, QString, QString("master.urbanterror.info") )) \
-    (( max_sim_queries, int, 200 )) \
-    (( retry_number, int, 15 )) \
-    (( retry_interval, double, 0.5 )) \
-    (( retry_master_interval, double, 0.1 ))
+    (( max_sim_queries, int, 100 )) \
+    (( timeout, int, 1000 )) \
+    (( series_timeout, int, 100 )) \
+    (( retry_number, int, 2 ))
 
 SETTINGS_GENERATE_CLASS(qstat_options, QSTAT_OPTIONS)
 

@@ -131,4 +131,6 @@ private:
 // loads and apply style sheet
 void load_app_style_sheet(const QString& file_name);
 
+void show_error(const QString& msg);
+
 #endif

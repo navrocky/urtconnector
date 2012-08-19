@@ -52,8 +52,6 @@ public:
     static QString get_mode_name(game_mode mode);
     int ping;
     int retries;
-    int red_score;
-    int blue_score;
     QString map;
     QString map_url;
 

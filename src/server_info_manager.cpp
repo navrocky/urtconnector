@@ -443,6 +443,13 @@ void server_info_manager::regenerate_sortings()
 void server_info_manager::regenerate_friends(const server_info& si)
 {
     player_info_list plist = si.players;
+
+    // remove color tags
+    BOOST_FOREACH (player_info& pi, plist)
+    {
+        pi.set_nick_name(q3stripcolor(pi.nick_name()));
+    }
+
     LOG_HARD << "players count: " << plist.size();
 
     QTextCursor cursor( browser_->document() );

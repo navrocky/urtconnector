@@ -20,6 +20,14 @@ void job_t::set_state(state_t state)
         event_loop_->quit();
 }
 
+void job_t::set_caption(const QString & val)
+{
+    if (caption_ == val)
+        return;
+    caption_ = val;
+    emit caption_changed();
+}
+
 bool job_t::is_stopped()
 {
     return state_is_stopped(state_);

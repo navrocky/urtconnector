@@ -19,7 +19,6 @@ private slots:
 
     void int_changed();
 
-    void choose_qstat_binary();
     void choose_geoip_database();
 
 private:

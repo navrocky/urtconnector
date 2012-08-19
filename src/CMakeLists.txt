@@ -66,6 +66,7 @@ cl_add_subdirectory(friend_list)
 cl_add_subdirectory(tabs)
 cl_add_subdirectory(setting_forms)
 cl_add_subdirectory(tracking)
+cl_add_subdirectory(server_query)
 
 cl_define_headers(
     about_dialog.h
@@ -79,7 +80,6 @@ cl_define_headers(
     app_options_saver.h
     server_info_html.h
     config.h
-    qstat_updater.h
     job_update_selected.h
     job_update_from_master.h
     clipper.h
@@ -93,7 +93,6 @@ cl_define_moc(
     main_window.h
     push_button_action_link.h
     server_options_dialog.h
-    qstat_updater.h
     job_update_selected.h
     job_update_from_master.h
     clipper.h
@@ -113,7 +112,6 @@ cl_define_sources(
     server_options_dialog.cpp
     app_options_saver.cpp
     server_info_html.cpp
-    qstat_updater.cpp
     job_update_selected.cpp
     job_update_from_master.cpp
     clipper.cpp

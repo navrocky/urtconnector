@@ -7,6 +7,8 @@ class QLabel;
 class QIcon;
 class QProgressBar;
 class QPropertyAnimation;
+class QAction;
+class QGraphicsOpacityEffect;
 
 class Notificator : public QFrame
 {
@@ -25,9 +27,19 @@ public:
 
 private slots:
     void showFinished();
+    void copyToClip();
 
 private:
+    enum state_t
+    {
+        s_none,
+        s_show,
+        s_hide
+    };
+
     void correctPosition();
+    void hideWidget();
+    void showWidget();
 
     QLabel* iconLab_;
     QLabel* titleLab_;
@@ -35,6 +47,9 @@ private:
     QProgressBar* progress_;
     bool autoDestroy_;
     QPropertyAnimation* progressAnimation_;
+    QAction* copyAction_;
+    QAction* closeAction_;
+    QGraphicsOpacityEffect* opacityEffect_;
 };
 
 #endif

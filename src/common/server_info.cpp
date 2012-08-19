@@ -9,8 +9,6 @@ server_info::server_info()
 , mode(gm_none)
 , ping(0)
 , retries(0)
-, red_score(0)
-, blue_score(0)
 , update_stamp_(1)
 {
 }
@@ -79,13 +77,9 @@ void server_info::update_from(const server_info& src)
         ping = src.ping;
 //    if (!src.players.empty())
     players = src.players;
-    if (src.red_score != 0)
-        red_score = src.red_score;
     if (src.retries != 0)
         retries = src.retries;
     status = src.status;
-    if (src.blue_score != 0)
-        blue_score = src.blue_score;
     if (!src.game_type.isEmpty())
         game_type = src.game_type;
     id = src.id;
@@ -103,9 +97,9 @@ const QString& server_info::meta_info_string() const
         foreach (const player_info& pi, players)
             pl += pi.nick_name();
 
-        meta_info_string_ = QString("%1 %2 %3 %4 %5 %6 %7").arg(name)
+        meta_info_string_ = QString("%1 %2 %3 %4 %5 %6 %7 %8").arg(name)
             .arg(id.address()).arg(country).arg(map).arg(mode_name()).arg(pl.join(" "))
-            .arg(status_name());
+                .arg(status_name()).arg(game_type);
 
     }
     return meta_info_string_;

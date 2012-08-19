@@ -26,7 +26,7 @@ void init_database()
         "    id INTEGER,"
         "    address VARCHAR(255),"
         "    name VARCHAR(255),"
-        "    gametype INTEGER,"
+        "    gametype VARCHAR(255),"
         "    map VARCHAR(255),"
         "    mapurl VARCHAR(255),"
         "    maxplayercount VARCHAR(255),"
@@ -45,7 +45,7 @@ void init_database()
         "    id INTEGER,"
         "    address VARCHAR(255),"
         "    name VARCHAR(255),"
-        "    gametype INTEGER,"
+        "    gametype VARCHAR(255),"
         "    map VARCHAR(255),"
         "    mapurl VARCHAR(255),"
         "    maxplayercount VARCHAR(255),"
@@ -116,7 +116,7 @@ void load_server_list(const QString& name, server_list_p list)
             server_info_p info(new server_info());
             info->id = server_id(database::qqdecode_string(row[1]));
             info->name = database::qqdecode_string(row[2]);
-            info->game_type = database::qqdecode_string(row[3]).toInt();
+            info->game_type = database::qqdecode_string(row[3]);
             info->map = database::qqdecode_string(row[4]);
             info->map_url = database::qqdecode_string(row[5]);
             info->max_player_count = database::qqdecode_string(row[6]).toInt();
