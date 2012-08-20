@@ -101,6 +101,8 @@
 #include "remote/settings.h"
 #include "remote/manager.h"
 
+#include "profile/profile.h"
+
 SYSLOG_MODULE(main_window)
 
 using namespace std;
@@ -299,6 +301,11 @@ main_window::main_window(QWidget *parent)
 
     // launch tracking
     track_man_->start();
+    
+    //registering Object in syncro_manager
+    remote::syncro_manager::Getter g = boost::bind(&profile::get_group);
+    remote::syncro_manager::Setter s = boost::bind(&profile::set_group, _1);
+    sync_man_->attach("profile", g, s, "profile", QIcon("icons:user-identity.png"));
 }
 
 main_window::~main_window()

@@ -1,10 +1,12 @@
 #ifndef APPOPTIONS_H
 #define APPOPTIONS_H
 
+#include <QDateTime>
 #include <QString>
 #include <QtGlobal>
 
 #include <settings/settings_generator.h>
+
 
 class QTranslator;
 
@@ -35,7 +37,8 @@ class QTranslator;
         ((use_mumble_overlay, bool, false)) \
         ((mumble_overlay_bin, QString, QString("/usr/bin/mumble-overlay"))) \
         ((style_sheet_file, QString, QString())) \
-        ((notification_sound, QString, QString(SOUND_FILE)))
+        ((notification_sound, QString, QString(SOUND_FILE))) \
+        ((last_sync, QDateTime, QDateTime::currentDateTime()))
 SETTINGS_GENERATE_CLASS(app_settings, APP_SETTINGS)
 
 bool is_christmas_mode();

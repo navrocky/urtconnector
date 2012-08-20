@@ -7,6 +7,7 @@
 
 #include <set>
 #include <stdexcept>
+#include <iostream>
 
 #include <QDateTime>
 #include <QVariant>
@@ -123,6 +124,12 @@ inline group::Entries merge(const group::Entries& e1, const group::Entries& e2 )
     group::Entries::iterator it;
     BOOST_FOREACH(const intermediate& imd, e2) {
         std::tr1::tie(it, inserted) = ret.insert(imd);
+        
+        if (!inserted)
+        {
+            std::cerr << "Old stamp:" << it->sync_stamp().toString().toStdString() << std::endl;
+            std::cerr << "New stamp:" << imd.sync_stamp().toString().toStdString() << std::endl;
+        }
         
         if( !inserted && it->sync_stamp() < imd.sync_stamp() ) {
             const intermediate& tmp = *it;

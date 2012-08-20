@@ -90,10 +90,15 @@ private slots:
     void bind();
     void unbind();
     void unbindall();
+    
+    void do_import();
+    void do_export();
+    void do_sync();    
 
 private:
     template <typename T>
     T current() const;
+    remote::syncro_manager::Object current_object() const;
 //     remote::syncro_manager::Object obj_current() const;
    
     

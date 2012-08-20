@@ -406,7 +406,11 @@ sync_settings_form2::sync_settings_form2(boost::shared_ptr< syncro_manager > syn
     connect(p_->ui.bindbtn, SIGNAL(clicked()), SLOT(bind()));
     connect(p_->ui.unbindbtn, SIGNAL(clicked()), SLOT(unbind()));
     connect(p_->ui.unbindallbtn, SIGNAL(clicked()), SLOT(unbindall()));
-        
+    
+    connect(p_->ui.importbtn, SIGNAL(clicked()), SLOT(do_import()));
+    connect(p_->ui.exportbtn, SIGNAL(clicked()), SLOT(do_export()));
+    connect(p_->ui.syncbtn, SIGNAL(clicked()), SLOT(do_sync()));
+    
     update();
 }
 
@@ -456,14 +460,12 @@ T sync_settings_form2::current() const
     return (item) ? item->data(0, Qt::UserRole).value<T>() : T();
 }
 
-template <>
-remote::syncro_manager::Object sync_settings_form2::current<remote::syncro_manager::Object>() const
+Object sync_settings_form2::current_object() const
 {
     QListWidgetItem* item = p_->ui.objectlst->currentItem();
     
     return (item) ? item->data(Qt::UserRole).value<Object>() : Object();
 }
-
 
 
 void sync_settings_form2::current_storage_changed(QTreeWidgetItem* current, QTreeWidgetItem* previous)
@@ -506,8 +508,6 @@ void sync_settings_form2::current_object_changed(QListWidgetItem* current, QList
 {
     p_->ui.bindbtn->setEnabled(false);
     p_->ui.unbindallbtn->setEnabled(false);
-    
-    
     
     if (current)
     {
@@ -596,7 +596,7 @@ void sync_settings_form2::bind()
     Storage storage = current<Storage>();
     Q_ASSERT(storage);
     
-    Object object = current<Object>();
+    Object object = current_object();
     Q_ASSERT(object);
     
     p_->sync_man->bind(object, storage);
@@ -604,22 +604,45 @@ void sync_settings_form2::bind()
 
 void sync_settings_form2::unbind()
 {
-    Storage storage = current<Storage>();
-    Q_ASSERT(storage);
-    
     Object object = current<Object>();  
     Q_ASSERT(object);
+
+    Storage storage = p_->ui.storageslst->currentItem()->parent()->data(0, Qt::UserRole).value<Storage>();
+    Q_ASSERT(storage);
     
     p_->sync_man->unbind(object, storage);
 }
 
 void sync_settings_form2::unbindall()
 {
-    Object object = current<Object>();
+    Object object = current_object();
     Q_ASSERT(object);
     
     p_->sync_man->unbind(object);
 }
+
+void sync_settings_form2::do_import()
+{
+    BOOST_FOREACH(Object o, p_->sync_man->objects()) {
+        p_->sync_man->get(o);
+    }
+}
+
+void sync_settings_form2::do_export()
+{
+    BOOST_FOREACH(Object o, p_->sync_man->objects()) {
+        p_->sync_man->put(o);
+    }
+}
+
+void sync_settings_form2::do_sync()
+{
+    BOOST_FOREACH(Object o, p_->sync_man->objects()) {
+        p_->sync_man->sync(o);
+    }
+}
+
+
 
 void sync_settings_form2::accept()
 {

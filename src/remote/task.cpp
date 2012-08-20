@@ -28,7 +28,9 @@ struct syncro_manager::get_task : public syncro_manager::task {
     get_task(const Object& o, const Storages& st, const remote::group& gr)
         : obj(o), storages(st), group(gr), action(0)
         , entries(group.entries()), st(None)
-    {}
+    {
+        std::cerr <<"GETTASK:" << gr.type().toUtf8().constData()<<std::endl;
+    }
     
     const Object& object() const { return obj; }
 
@@ -56,7 +58,13 @@ struct syncro_manager::get_task : public syncro_manager::task {
     virtual void loaded_one(const remote::group& obj) {
         Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
 
-        entries = remote::merge(entries, entries);
+        std::cerr << "Loalded one: key:" << obj.entries().begin()->sync_id().toStdString()
+            << " TIME: " << obj.entries().begin()->sync_stamp().toString().toStdString() << std::endl;
+        
+        entries = remote::merge(entries, obj.entries());
+        
+        std::cerr << "MERGED: key:" << entries.begin()->sync_id().toStdString()
+            << " TIME: " << entries.begin()->sync_stamp().toString().toStdString() << std::endl;
     }
     
     virtual void finished_one() {
@@ -68,6 +76,7 @@ struct syncro_manager::get_task : public syncro_manager::task {
         if (storages.empty())
         {
             st |= Finished;
+            std::cerr <<"FINISHED:" << group.type().toUtf8().constData()<<std::endl;
             emit finished();
             emit completed(obj, remote::group(group.type(), entries));
         }
@@ -165,13 +174,15 @@ struct syncro_manager::put_task : public syncro_manager::task {
 
 struct syncro_manager::sync_task : public syncro_manager::task {
     Object obj;
+    Storages storages;
     get_task* gt;
     put_task* pt;
     Status st;
     
     sync_task(const Object& o, const Storages& st, const remote::group& gr)
         : obj(o)
-        , gt(new get_task(o, st, gr))
+        , storages(st)
+        , gt(new get_task(o, storages, gr))
         , pt(0)
     {
         connect(gt, SIGNAL(error(QString)), SLOT(error_one(QString)));
@@ -217,7 +228,7 @@ struct syncro_manager::sync_task : public syncro_manager::task {
 
             entries.swap(non_deleted);
             
-            pt = new put_task(gt->obj, gt->storages, remote::group(gt->group.type(), entries));
+            pt = new put_task(gt->obj, storages, remote::group(gt->group.type(), entries));
             connect(pt, SIGNAL(error(QString)), SLOT(error_one(QString)));
             connect(pt, SIGNAL(finished()), SLOT(finished_one()));
             

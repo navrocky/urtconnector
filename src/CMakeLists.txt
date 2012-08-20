@@ -86,6 +86,7 @@ cl_define_headers(
     clipper.h
     server_info_manager.h
     config_wizard.h
+    profile/profile.h
 )
 
 cl_define_moc(
@@ -120,6 +121,7 @@ cl_define_sources(
     clipper.cpp
     server_info_manager.cpp
     config_wizard.cpp
+    profile/profile.cpp
 )
 
 cl_define_interfaces(
