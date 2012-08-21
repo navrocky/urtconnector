@@ -574,7 +574,7 @@ bool urt_get_server_status::process_reply(const QByteArray &data)
             rec.ping = player_rx_.cap(2).toInt(&ok);
             if (!ok)
                 LOG_WARN << "Invalid player ping: %1", sl[i];
-            rec.name = player_rx_.cap(3).trimmed();
+            rec.name = player_rx_.cap(3).simplified();
             players_.append(rec);
         }
     }
