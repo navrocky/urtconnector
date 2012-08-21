@@ -5,7 +5,6 @@
 
 #include <common/qt_syslog.h>
 #include <common/exception.h>
-#include "../app_options.h"
 
 #include "tools.h"
 #include "launcher.h"
@@ -73,6 +72,7 @@ launcher::launcher(QObject* parent)
 : QObject(parent)
 , detach_(false)
 , mumble_overlay_(false)
+, separate_x_(false)
 {
 }
 
@@ -85,7 +85,7 @@ void launcher::parse_combined_arg_string(const QString& launch_str, QString& pro
 
 QString launcher::get_work_dir()
 {
-    return QFileInfo(app_settings().binary_path()).absoluteDir().absolutePath();
+    return QFileInfo(binary_path_).absoluteDir().absolutePath();
 }
 
 void launcher::set_server_id(const server_id & id)
@@ -176,9 +176,8 @@ void launcher::proc_error(QProcess::ProcessError error)
 
 QString launcher::launch_string(bool separate_x)
 {
-    app_settings as;
-    return launch_string(as.use_adv_cmd_line(), as.adv_cmd_line(),
-                         as.binary_path(), separate_x);
+    return launch_string(!advanced_cmd_line_.isEmpty(), advanced_cmd_line_,
+                         binary_path_, separate_x);
 }
 
 
@@ -235,7 +234,7 @@ QString launcher::get_separate_x_launch_str(const QString& ls)
 
 QString launcher::launch_string()
 {
-    return launch_string( app_settings().separate_xsession() );
+    return launch_string( separate_x_ );
 }
 
 void launcher::stop()

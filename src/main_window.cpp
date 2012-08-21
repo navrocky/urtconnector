@@ -575,12 +575,25 @@ void main_window::connect_to_server(const server_id& id,
     }
 #endif
 
-    while(!QFileInfo(as.binary_path()).exists() || !QFileInfo(as.binary_path()).isExecutable()) {
-        QMessageBox::information(this, tr("UrbanTerror executable missing"), tr("No UrbanTerror executable found, please select executable manually"));
-        const QString binary = QFileDialog::getOpenFileName(this, tr("Please select UrbanTerror executeable"));
-        if (binary.isNull()) return;
+    bool is_urt42 = info->game_type == "q3urt42";
 
-        as.binary_path_set(binary);
+    QString binary_path = is_urt42 ? as.binary_path_42() : as.binary_path();
+    QString adv_cmd_line = is_urt42 ? (as.use_adv_cmd_line_42() ? as.adv_cmd_line_42() : QString())
+                                    : (as.use_adv_cmd_line() ? as.adv_cmd_line() : QString()) ;
+
+    QString version = is_urt42 ? "4.2" : "4.1";
+
+    while(!QFileInfo(binary_path).exists() || !QFileInfo(binary_path).isExecutable()) {
+        QMessageBox::information(this, tr("UrbanTerror %1 executable missing").arg(version),
+                                 tr("No UrbanTerror %1 executable found, please select executable manually").arg(version));
+        const QString binary = QFileDialog::getOpenFileName(this, tr("Please select UrbanTerror %1 executable").arg(version));
+        if (binary.isNull())
+            return;
+
+        if (is_urt42)
+            as.binary_path_42_set(binary);
+        else
+            as.binary_path_set(binary);
     }
 
     launcher* l = launcher_;
@@ -589,6 +602,9 @@ void main_window::connect_to_server(const server_id& id,
     l->set_password(pass);
     l->set_referee(bm.ref_password());
     l->set_rcon(bm.rcon_password());
+    l->set_binary_path(binary_path);
+    l->set_advanced_cmd_line(adv_cmd_line);
+    l->set_separate_x(as.separate_xsession());
     l->set_mumble_overlay(as.use_mumble_overlay());
     l->set_mumble_overlay_bin(as.mumble_overlay_bin());
     l->launch();

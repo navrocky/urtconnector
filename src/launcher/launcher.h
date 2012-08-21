@@ -34,6 +34,10 @@ public:
 
     void set_mumble_overlay(bool);
     void set_mumble_overlay_bin(const QString&);
+
+    void set_binary_path(const QString& val) {binary_path_ = val;}
+    void set_advanced_cmd_line(const QString& val) {advanced_cmd_line_ = val;}
+    void set_separate_x(bool val) {separate_x_ = val;}
     
     /*! Urban Terror detaches from UrTconnector  */
     bool is_detach() const {return detach_;}
@@ -79,6 +83,9 @@ private:
     bool mumble_overlay_;
     QString mumble_overlay_bin_;
     QPointer<QProcess> proc_;
+    QString binary_path_;
+    QString advanced_cmd_line_;
+    bool separate_x_;
 };
 
 #endif

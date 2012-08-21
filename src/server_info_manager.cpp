@@ -335,9 +335,12 @@ QString server_info_manager::make_players(const server_info& si) const
 
     if ( pil.size() > 0 )
     {
+//        players += tr("<hr>%1 players:<table width=100%>"
+//                     "<tr class=\"header\"><td>Nick%2</td><td>Ping%3</td><td>Score%4</td></tr>")
+//                .arg( pil.size() ).arg(sort_by_name_tag_c).arg(sort_by_ping_tag_c).arg(sort_by_score_tag_c);
         players += tr("<hr>%1 players:<table width=100%>"
-                     "<tr class=\"header\"><td>Nick%2</td><td>Ping%3</td><td>Score%4</td></tr>")
-                .arg( pil.size() ).arg(sort_by_name_tag_c).arg(sort_by_ping_tag_c).arg(sort_by_score_tag_c);
+                      "<tr class=\"header\"><td>Nick</td><td>Ping</td><td>Score</td></tr>")
+                .arg( pil.size() );
         int i = 0;
         foreach (const player_info& pi, pil)
         {
