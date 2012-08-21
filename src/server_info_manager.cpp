@@ -325,11 +325,16 @@ QString server_info_manager::make_status(const server_info& si) const
     return status_str;
 }
 
+bool playerInfoLessThan(const player_info& pi1, const player_info& pi2)
+{
+    return pi1.nick_name() < pi2.nick_name();
+}
+
 QString server_info_manager::make_players(const server_info& si) const
 {
     LOG_HARD << "creating players template";
     LOG_EXIT_HARD << "completed";
-    const player_info_list& pil = si.players;
+    player_info_list pil = si.players;
 
     QString players;
 
@@ -342,6 +347,8 @@ QString server_info_manager::make_players(const server_info& si) const
                       "<tr class=\"header\"><td>Nick</td><td>Ping</td><td>Score</td></tr>")
                 .arg( pil.size() );
         int i = 0;
+
+        qSort(pil.begin(), pil.end(), &playerInfoLessThan);
         foreach (const player_info& pi, pil)
         {
             QString player = QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
