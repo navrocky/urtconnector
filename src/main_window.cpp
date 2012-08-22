@@ -583,17 +583,33 @@ void main_window::connect_to_server(const server_id& id,
 
     QString version = is_urt42 ? "4.2" : "4.1";
 
-    while(!QFileInfo(binary_path).exists() || !QFileInfo(binary_path).isExecutable()) {
+    if (binary_path.isEmpty() || !QFileInfo(binary_path).exists() || !QFileInfo(binary_path).isExecutable())
+    {
         QMessageBox::information(this, tr("UrbanTerror %1 executable missing").arg(version),
                                  tr("No UrbanTerror %1 executable found, please select executable manually").arg(version));
-        const QString binary = QFileDialog::getOpenFileName(this, tr("Please select UrbanTerror %1 executable").arg(version));
-        if (binary.isNull())
-            return;
+        forever
+        {
+            binary_path = QFileDialog::getOpenFileName(this, tr("Please select UrbanTerror %1 executable").arg(version));
+            if (binary_path.isNull())
+                return;
 
-        if (is_urt42)
-            as.binary_path_42_set(binary);
-        else
-            as.binary_path_set(binary);
+            if (!QFileInfo(binary_path).exists())
+            {
+                QMessageBox::critical(this, tr("Error"), tr("File %1 doesn't exists").arg(binary_path));
+                continue;
+            }
+            if (!QFileInfo(binary_path).isExecutable())
+            {
+                QMessageBox::critical(this, tr("Error"), tr("File %1 doesn't executable").arg(binary_path));
+                continue;
+            }
+
+            if (is_urt42)
+                as.binary_path_42_set(binary_path);
+            else
+                as.binary_path_set(binary_path);
+            break;
+        }
     }
 
     launcher* l = launcher_;
