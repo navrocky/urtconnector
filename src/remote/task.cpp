@@ -58,13 +58,13 @@ struct syncro_manager::get_task : public syncro_manager::task {
     virtual void loaded_one(const remote::group& obj) {
         Q_ASSERT(action == qobject_cast<remote::action*>(sender())); //sanity check
 
-        std::cerr << "Loalded one: key:" << obj.entries().begin()->sync_id().toStdString()
-            << " TIME: " << obj.entries().begin()->sync_stamp().toString().toStdString() << std::endl;
+//         std::cerr << "Loalded one: key:" << obj.entries().begin()->sync_id().toStdString()
+//             << " TIME: " << obj.entries().begin()->sync_stamp().toString().toStdString() << std::endl;
         
         entries = remote::merge(entries, obj.entries());
         
-        std::cerr << "MERGED: key:" << entries.begin()->sync_id().toStdString()
-            << " TIME: " << entries.begin()->sync_stamp().toString().toStdString() << std::endl;
+//         std::cerr << "MERGED: key:" << entries.begin()->sync_id().toStdString()
+//             << " TIME: " << entries.begin()->sync_stamp().toString().toStdString() << std::endl;
     }
     
     virtual void finished_one() {

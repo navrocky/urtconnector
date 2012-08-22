@@ -1,4 +1,8 @@
 
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/foreach.hpp>
+
 #include <QSettings>
 
 
@@ -15,12 +19,14 @@ struct item : public remote::syncable
 {
     QString uid;
     QString key;
-    QVariant value;
     
     item() {}
     
-    item(const QString& uid, const QString& key, const QVariant& value)
-        : uid(uid), key(key), value(value) {}
+    item(const QString& uid, const QString& key)
+        : uid(uid), key(key)
+    {
+        set_sync_stamp(lastmod());
+    }
     
     virtual QString sync_id() const { return uid+key; }
     
@@ -28,9 +34,7 @@ struct item : public remote::syncable
         QVariantMap ret;
         ret["uid"] = uid;
         ret["key"] = key;
-        ret["value"] = value;
-        
-        std::cerr << "SAVING:" << key.toStdString() << " value:" << value.toBool() << std::endl;
+        ret["value"] = base_settings().get_settings(uid)->value(key);
         
         return ret;
     }
@@ -38,11 +42,33 @@ struct item : public remote::syncable
     virtual void load(const QVariantMap& data) {
         uid = data["uid"].toString();
         key = data["key"].toString();
-        value = data["value"].toString();
-       
-        std::cerr << "LOADING:" << key.toStdString() << " value:" << value.toBool() << std::endl;
+        const QVariant value = data["value"];
+        base_settings().get_settings(uid)->setValue(key, value);
+        
+        touch();
+    }
+    
+    inline QDateTime lastmod() const 
+    {
+        return base_settings().get_settings("profile")->value("lastmod_" + key
+            , QDateTime::currentDateTime().toString(Qt::ISODate)).toDateTime();
+    }
+    
+    inline void touch() 
+    {
+        base_settings().get_settings("profile")->setValue("lastmod_" + key, sync_stamp().toString(Qt::ISODate));
     }
 };
+
+std::list<std::pair<QString, QString> > make_list()
+{
+    std::list<std::pair<QString, QString> > ret;
+    ret.push_back(std::make_pair(app_settings::uid(), "start_hidden"));
+    return ret;
+}
+
+const std::list<std::pair<QString, QString> > item_desc = make_list();
+
 
 profile::profile()
 {
@@ -51,27 +77,25 @@ profile::profile()
 
 remote::group profile::get_group()
 {
-    app_settings s;
-    item it(app_settings::uid(), "start_hidden", s.start_hidden());
-    it.set_sync_stamp(s.last_sync());
-    
-    std::cerr << "Preparing item"<<std::endl;
-    std::cerr << "==== Profile last sync:" << it.sync_stamp().toString().toStdString() << std::endl;
-    
     remote::group obj("profile");
-    obj << it;
+    
+    std::pair<QString, QString> p;
+    BOOST_FOREACH(p, item_desc)
+    {
+        item it = item(p.first, p.second);
+        obj << it;
+        std::cerr << "Preparing item"<<std::endl;
+        std::cerr << "==== Profile last sync:" << it.sync_stamp().toString().toStdString() << std::endl;        
+    }
+
     return obj;
 }
 
-
 void profile::set_group(const remote::group& remote)
 {
-    app_settings s;
-    item it;
-    std::cerr << "try load..." << std::endl;
-    it.load(remote.entries().begin()->save());
-    std::cerr << "load ok" << std::endl;
-    
-    s.start_hidden_set(it.value.toBool());
-    s.last_sync_set(remote.entries().begin()->sync_stamp());
+    BOOST_FOREACH(remote::group::Entries::value_type i, remote.entries())
+    {
+        item it;
+        it.load(i.save());
+    }
 }
