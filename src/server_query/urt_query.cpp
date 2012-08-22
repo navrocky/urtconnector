@@ -430,7 +430,7 @@ bool urt_get_server_list::process_reply(const QByteArray &data)
         ip2.ip._3 = ip.ip._2;
         ip2.ip._4 = ip.ip._1;
 
-        Q_ASSERT(ip2.ip._1 != 0 && ip2.ip._4 != 0);
+        Q_ASSERT(ip2.ip._1 != 0);
 
         port_union port;
         if (ds.readRawData(reinterpret_cast<char*>(&port), sizeof(port)) != sizeof(port))

@@ -19,6 +19,7 @@ cl_define_headers(
     player_filter.h
     friend_filter.h
     minimum_empty_slots_filter.h
+    game_version_filter.h
 )
 
 cl_define_moc(
@@ -38,6 +39,7 @@ cl_define_moc(
     player_filter.h
     friend_filter.h
     minimum_empty_slots_filter.h
+    game_version_filter.h
 )
 
 cl_define_sources(
@@ -60,4 +62,5 @@ cl_define_sources(
     player_filter.cpp
     friend_filter.cpp
     minimum_empty_slots_filter.cpp
+    game_version_filter.cpp
 )

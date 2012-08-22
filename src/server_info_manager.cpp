@@ -276,7 +276,8 @@ QString server_info_manager::make_info(const server_info& si) const
     server_info += tr("<tr class=\"line1\"><td>Country</td><td>%1 %2</td></tr>").arg(country_flag).arg(si.country);
     server_info += tr("<tr class=\"line2\"><td>Public slots</td><td>%1</td></tr>").arg(si.max_player_count - si.private_slots());
     server_info += tr("<tr class=\"line1\"><td>Total slots</td><td>%1</td></tr>").arg(si.max_player_count);
-    server_info += tr("<tr class=\"line2\"><td>Game version</td><td>%1</td></tr>").arg(si.game_type);
+    QString version = si.game_type == "q3urt42" ? "4.2" : "4.1";
+    server_info += tr("<tr class=\"line2\"><td>Game version</td><td>%1</td></tr>").arg(version);
     
     if ( !si.forbidden_gears().empty() )
     {
