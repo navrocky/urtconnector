@@ -43,6 +43,7 @@ struct item : public remote::syncable
         uid = data["uid"].toString();
         key = data["key"].toString();
         const QVariant value = data["value"];
+         set_sync_stamp(data[remote::syncable::stamp_key].toDateTime());
         base_settings().get_settings(uid)->setValue(key, value);
         
         touch();
@@ -95,6 +96,7 @@ void profile::set_group(const remote::group& remote)
 {
     BOOST_FOREACH(remote::group::Entries::value_type i, remote.entries())
     {
+        std::cerr << "SETTING ITEM"<<std::endl;
         item it;
         it.load(i.save());
     }
