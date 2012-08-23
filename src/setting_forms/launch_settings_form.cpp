@@ -12,6 +12,7 @@
 #include <launcher/tools.h>
 #include <common/scoped_tools.h>
 
+#include "launch_opts_panel.h"
 #include "ui_launch_settings_form.h"
 
 
@@ -29,38 +30,34 @@ launch_settings_form::launch_settings_form(QWidget* parent, Qt::WindowFlags f)
     set_icon( QIcon("images:logo.png") );
     set_header( tr("UrbanTerror launch settings") );
 
-    connect( p_->ui.select_bin_button,        SIGNAL(clicked()),                 this, SLOT( choose_binary() ));
-    connect( p_->ui.insertFileButton,         SIGNAL(clicked()),                 this, SLOT( insert_file_path() ));
+    connect(p_->ui.urt41_panel, SIGNAL(changed()), SIGNAL(changed()));
+    connect(p_->ui.urt42_panel, SIGNAL(changed()), SIGNAL(changed()));
+
     connect( p_->ui.x_check_button,           SIGNAL(clicked()),                 this, SLOT( x_check() ));
     connect( p_->ui.select_mumble_bin_button, SIGNAL(clicked()),                 this, SLOT( choose_mumble_bin() ));
 
-    connect( p_->ui.binary_edit,          SIGNAL(textChanged(QString)),          this, SLOT( int_changed() ) );
-    connect( p_->ui.advCmdBox,            SIGNAL(clicked(bool)),                 this, SLOT( int_changed() ) );
-    connect( p_->ui.advCmdEdit,           SIGNAL(textChanged(QString)),          this, SLOT( int_changed() ) );
     connect( p_->ui.separate_x_check,     SIGNAL(stateChanged(int)),             this, SLOT( int_changed() ) );
     connect( p_->ui.update_server_check,  SIGNAL(stateChanged(int)),             this, SLOT( int_changed() ) );
     connect( p_->ui.mumble_overlay_group, SIGNAL(toggled(bool)),                 this, SLOT( int_changed() ) );
     connect( p_->ui.mumble_bin_edit,      SIGNAL(textChanged(QString)),          this, SLOT( int_changed() ) );
-
-    p_->ui.adv_cmd_help_label->setText(tr(
-        "<b>%bin%</b> - UrbanTerror binary path<br>"
-        "<b>%name%</b> - player name<br>"
-        "<b>%pwd%</b> - password<br>"
-        "<b>%addr%</b> - hostname or ip and port<br>"
-        "<b>%rcon%</b> - RCON password"
-    ));
 
 #ifndef Q_OS_UNIX
     p_->ui.separate_x_check->setVisible(false);
     p_->ui.x_check_button->setVisible(false);
     p_->ui.mumble_overlay_group->setVisible(false);
 #endif
-
 }
 
 void launch_settings_form::int_changed()
 {
-    update_launch_string();
+    launch_opts_panel* p41 = p_->ui.urt41_panel;
+    launch_opts_panel* p42 = p_->ui.urt42_panel;
+    p41->set_separate_xsession(p_->ui.separate_x_check->isChecked());
+    p41->set_use_mumble_overlay(p_->ui.mumble_overlay_group->isChecked());
+    p41->set_mumble_overlay_bin(p_->ui.mumble_bin_edit->text());
+    p42->set_separate_xsession(p_->ui.separate_x_check->isChecked());
+    p42->set_use_mumble_overlay(p_->ui.mumble_overlay_group->isChecked());
+    p42->set_mumble_overlay_bin(p_->ui.mumble_bin_edit->text());
     if (!lock_change_)
         emit changed();
 }
@@ -70,24 +67,45 @@ void launch_settings_form::update_preferences()
     scoped_value_change<bool> s(lock_change_, true, false);
 
     app_settings as;
-    p_->ui.binary_edit->setText( as.binary_path() );
-    p_->ui.advCmdEdit->setText( as.adv_cmd_line() );
-    p_->ui.advCmdBox->setChecked( as.use_adv_cmd_line() );
+
+    launch_opts_panel* p41 = p_->ui.urt41_panel;
+    launch_opts_panel* p42 = p_->ui.urt42_panel;
+
+    p41->set_binary_path(as.binary_path());
+    p42->set_binary_path(as.binary_path_42());
+    p41->set_adv_cmd_line( as.adv_cmd_line() );
+    p42->set_adv_cmd_line( as.adv_cmd_line_42() );
+    p41->set_use_adv_cmd_line( as.use_adv_cmd_line() );
+    p42->set_use_adv_cmd_line( as.use_adv_cmd_line_42() );
     p_->ui.update_server_check->setChecked( as.update_before_connect() );
 #if defined(Q_OS_UNIX)
     p_->ui.separate_x_check->setChecked( as.separate_xsession() );
+    p41->set_separate_xsession( as.separate_xsession() );
+    p42->set_separate_xsession( as.separate_xsession() );
+
     p_->ui.mumble_overlay_group->setChecked( as.use_mumble_overlay() );
+    p41->set_use_mumble_overlay( as.use_mumble_overlay() );
+    p42->set_use_mumble_overlay( as.use_mumble_overlay() );
+
     p_->ui.mumble_bin_edit->setText( as.mumble_overlay_bin() );
+    p41->set_mumble_overlay_bin( as.mumble_overlay_bin() );
+    p42->set_mumble_overlay_bin( as.mumble_overlay_bin() );
 #endif
-    update_launch_string();
 }
 
 void launch_settings_form::accept()
 {
     app_settings as;
-    as.binary_path_set( p_->ui.binary_edit->text() );
-    as.use_adv_cmd_line_set( p_->ui.advCmdBox->isChecked() );
-    as.adv_cmd_line_set( p_->ui.advCmdEdit->text() );
+
+    launch_opts_panel* p41 = p_->ui.urt41_panel;
+    launch_opts_panel* p42 = p_->ui.urt42_panel;
+
+    as.binary_path_set( p41->binary_path() );
+    as.binary_path_42_set( p42->binary_path() );
+    as.use_adv_cmd_line_set( p41->use_adv_cmd_line() );
+    as.use_adv_cmd_line_42_set( p42->use_adv_cmd_line() );
+    as.adv_cmd_line_set( p41->adv_cmd_line() );
+    as.adv_cmd_line_42_set( p42->adv_cmd_line() );
     as.update_before_connect_set(p_->ui.update_server_check->isChecked());
 #if defined(Q_OS_UNIX)
     as.separate_xsession_set( p_->ui.separate_x_check->isChecked() );
@@ -105,23 +123,20 @@ void launch_settings_form::reject()
 
 void launch_settings_form::reset_defaults()
 {
-    p_->ui.binary_edit->setText("urbanterror");
-    p_->ui.advCmdEdit->clear();
-    p_->ui.advCmdBox->setChecked(false);
-    p_->ui.update_server_check->setChecked(true);
-    p_->ui.mumble_bin_edit->setText("/usr/bin/mumble-overlay");
-
-    accept();
-}
-
-void launch_settings_form::choose_binary()
-{
-    QString fileName = QFileDialog::getOpenFileName(this,
-      tr("Urban Terror executable"), "",
-      tr("Executables (*.i386 *.x86_64 *.exe);;All Files (*)"));
-    if (fileName.isEmpty()) return;
-
-    p_->ui.binary_edit->setText(fileName);
+    app_settings as;
+    as.binary_path_reset();
+    as.binary_path_42_reset();
+    as.use_adv_cmd_line_reset();
+    as.use_adv_cmd_line_42_reset();
+    as.adv_cmd_line_reset();
+    as.adv_cmd_line_42_reset();
+    as.update_before_connect_reset();
+#if defined(Q_OS_UNIX)
+    as.separate_xsession_reset();
+    as.use_mumble_overlay_reset();
+    as.mumble_overlay_bin_reset();
+#endif
+    update_preferences();
 }
 
 void launch_settings_form::choose_mumble_bin()
@@ -134,41 +149,8 @@ void launch_settings_form::choose_mumble_bin()
     p_->ui.mumble_bin_edit->setText(fileName);
 }
 
-void launch_settings_form::insert_file_path()
+namespace
 {
-    QString fileName = QFileDialog::getOpenFileName(this,
-      tr("Select file to insert"), "",
-      tr("All Files (*)"));
-    if (fileName.isEmpty()) return;
-
-    p_->ui.advCmdEdit->insert(fileName);
-
-    emit changed();
-}
-
-void launch_settings_form::update_launch_string()
-{
-    launcher l;
-    l.set_server_id(server_id("server:12345"));
-    l.set_user_name("New_URT_Player");
-    l.set_rcon("rcon_pAsSwOrD");
-    l.set_password("pAsSwOrD");
-    l.set_referee("referee_pAsSwOrD");
-
-#if defined(Q_OS_UNIX)
-    l.set_mumble_overlay(p_->ui.mumble_overlay_group->isChecked());
-    l.set_mumble_overlay_bin(p_->ui.mumble_bin_edit->text());
-#endif
-
-    QString ls = l.launch_string(p_->ui.advCmdBox->isChecked(),
-                                 p_->ui.advCmdEdit->text(),
-                                 p_->ui.binary_edit->text(),
-                                 p_->ui.separate_x_check->isChecked() );
-
-    p_->ui.adv_cmd_preview_edit->setText(ls);
-}
-
-namespace {
 
 void test_thread( dialog_syncer& syncer)
 {

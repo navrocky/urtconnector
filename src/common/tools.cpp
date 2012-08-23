@@ -19,12 +19,14 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QComboBox>
-#include <qnamespace.h>
-
 #include <QTextStream>
 #include <QApplication>
 
 #include "tools.h"
+#include "notificator.h"
+#include "qt_syslog.h"
+
+SYSLOG_MODULE(tools)
 
 using namespace std;
 
@@ -307,3 +309,11 @@ int combo_find_item(QComboBox* c, const QVariant& v)
     }
     return -1;
 }
+
+void show_error(const QString& msg)
+{
+    QIcon ico = qApp->style()->standardIcon(QStyle::SP_MessageBoxCritical);
+    Notificator::showMessage(ico, QString(), msg);
+    LOG_ERR << msg;
+}
+

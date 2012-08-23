@@ -13,7 +13,7 @@
 // game_type_filter_class
 
 game_type_filter_class::game_type_filter_class()
-: filter_class(get_id(), QObject::tr("Game mode filter"),
+: filter_class(get_id(), QObject::tr("Game mode"),
                QObject::tr("Hides all servers thats don's match selected game mode."))
 {}
 

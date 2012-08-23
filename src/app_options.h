@@ -19,9 +19,12 @@ class QTranslator;
 #define APP_SETTINGS \
         ((start_hidden, bool, false)) \
         ((use_adv_cmd_line, bool, false)) \
+        ((use_adv_cmd_line_42, bool, false)) \
         ((adv_cmd_line, QString, QString())) \
+        ((adv_cmd_line_42, QString, QString())) \
         ((separate_xsession, bool, true)) \
-        ((binary_path, QString, QString("urbanterror"))) \
+        ((binary_path, QString, QString())) \
+        ((binary_path_42, QString, QString())) \
         ((geoip_database, QString, QString(URT_DATADIR"GeoIP.dat"))) \
         ((center_current_row, bool, true)) \
         ((keep_history, bool, true)) \

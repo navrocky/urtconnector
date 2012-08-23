@@ -14,6 +14,8 @@
 #include "custom_filter.h"
 #include "player_filter.h"
 #include "friend_filter.h"
+#include "minimum_empty_slots_filter.h"
+#include "game_version_filter.h"
 
 #include "reg_filters.h"
 
@@ -38,4 +40,6 @@ void register_filters(filter_factory_p f)
     reg<custom_filter_class>(f);
     reg<player_filter_class>(f);
     reg<friend_filter_class>(f);
+    reg<minimum_empty_slots_filter_class>(f);
+    reg<game_version_filter_class>(f);
 }

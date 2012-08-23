@@ -276,6 +276,8 @@ QString server_info_manager::make_info(const server_info& si) const
     server_info += tr("<tr class=\"line1\"><td>Country</td><td>%1 %2</td></tr>").arg(country_flag).arg(si.country);
     server_info += tr("<tr class=\"line2\"><td>Public slots</td><td>%1</td></tr>").arg(si.max_player_count - si.private_slots());
     server_info += tr("<tr class=\"line1\"><td>Total slots</td><td>%1</td></tr>").arg(si.max_player_count);
+    QString version = si.game_type == "q3urt42" ? "4.2" : "4.1";
+    server_info += tr("<tr class=\"line2\"><td>Game version</td><td>%1</td></tr>").arg(version);
     
     if ( !si.forbidden_gears().empty() )
     {
@@ -324,20 +326,30 @@ QString server_info_manager::make_status(const server_info& si) const
     return status_str;
 }
 
+bool playerInfoLessThan(const player_info& pi1, const player_info& pi2)
+{
+    return pi1.nick_name() < pi2.nick_name();
+}
+
 QString server_info_manager::make_players(const server_info& si) const
 {
     LOG_HARD << "creating players template";
     LOG_EXIT_HARD << "completed";
-    const player_info_list& pil = si.players;
+    player_info_list pil = si.players;
 
     QString players;
 
     if ( pil.size() > 0 )
     {
+//        players += tr("<hr>%1 players:<table width=100%>"
+//                     "<tr class=\"header\"><td>Nick%2</td><td>Ping%3</td><td>Score%4</td></tr>")
+//                .arg( pil.size() ).arg(sort_by_name_tag_c).arg(sort_by_ping_tag_c).arg(sort_by_score_tag_c);
         players += tr("<hr>%1 players:<table width=100%>"
-                     "<tr class=\"header\"><td>Nick%2</td><td>Ping%3</td><td>Score%4</td></tr>")
-                .arg( pil.size() ).arg(sort_by_name_tag_c).arg(sort_by_ping_tag_c).arg(sort_by_score_tag_c);
+                      "<tr class=\"header\"><td>Nick</td><td>Ping</td><td>Score</td></tr>")
+                .arg( pil.size() );
         int i = 0;
+
+        qSort(pil.begin(), pil.end(), &playerInfoLessThan);
         foreach (const player_info& pi, pil)
         {
             QString player = QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
@@ -442,6 +454,13 @@ void server_info_manager::regenerate_sortings()
 void server_info_manager::regenerate_friends(const server_info& si)
 {
     player_info_list plist = si.players;
+
+    // remove color tags
+    BOOST_FOREACH (player_info& pi, plist)
+    {
+        pi.set_nick_name(q3stripcolor(pi.nick_name()));
+    }
+
     LOG_HARD << "players count: " << plist.size();
 
     QTextCursor cursor( browser_->document() );
