@@ -185,7 +185,7 @@ void launch_settings_form::x_check()
         tr( "X session autodetection" ),
         ( p_->ui.separate_x_check->isChecked() )
             ? tr( "Another X session started succesfully" )
-            : tr( "Another X session failed" )
+            : tr( "Another X session failed.\n\nHint: check that the suid bit is enabled on your Xorg binary." )
     );
 }
 
