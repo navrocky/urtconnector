@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>404</width>
-    <height>348</height>
+    <height>352</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -229,6 +229,21 @@
    <header location="global">common/qbuttonlineedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>holiday_check</tabstop>
+  <tabstop>hide_mainwindow_check</tabstop>
+  <tabstop>language_box</tabstop>
+  <tabstop>style_box</tabstop>
+  <tabstop>group_clipboard_watch</tabstop>
+  <tabstop>clip_regexp_edit</tabstop>
+  <tabstop>clip_host_spin</tabstop>
+  <tabstop>clip_port_spin</tabstop>
+  <tabstop>clip_password_spin</tabstop>
+  <tabstop>style_sheet_file_edit</tabstop>
+  <tabstop>style_sheet_refresh_button</tabstop>
+  <tabstop>play_btn</tabstop>
+  <tabstop>notify_sound_edit</tabstop>
+ </tabstops>
  <resources>
   <include location="../images.qrc"/>
  </resources>

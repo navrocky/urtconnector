@@ -159,6 +159,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>binary_edit</tabstop>
+  <tabstop>select_bin_button</tabstop>
+  <tabstop>adv_cmd_box</tabstop>
+  <tabstop>adv_cmd_edit</tabstop>
+  <tabstop>insert_file_button</tabstop>
+  <tabstop>adv_cmd_preview_edit</tabstop>
+ </tabstops>
  <resources>
   <include location="../images.qrc"/>
  </resources>

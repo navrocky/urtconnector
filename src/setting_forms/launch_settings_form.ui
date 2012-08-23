@@ -6,53 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>404</width>
-    <height>184</height>
+    <width>448</width>
+    <height>245</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QTabWidget" name="tab_widget">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>UrT 4.1</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="launch_opts_panel" name="urt41_panel" native="true"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>UrT 4.2</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="launch_opts_panel" name="urt42_panel" native="true"/>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
-   <item>
+  <layout class="QFormLayout" name="formLayout_2">
+   <item row="2" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QCheckBox" name="separate_x_check">
        <property name="text">
         <string>Launch UrbanTerror in separate X session</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="x_check_button">
+       <property name="text">
+        <string>Autodetect</string>
        </property>
       </widget>
      </item>
@@ -69,23 +43,42 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="x_check_button">
-       <property name="text">
-        <string>Autodetect</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
-   <item>
+   <item row="3" column="0" colspan="2">
     <widget class="QCheckBox" name="update_server_check">
      <property name="text">
       <string>Check server status before connect</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="after_launch_combo">
+     <item>
+      <property name="text">
+       <string>Do nothing</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Hide main window</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Quit program</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>After launch</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2">
     <widget class="QGroupBox" name="mumble_overlay_group">
      <property name="title">
       <string>Use mumble overlay</string>
@@ -125,18 +118,45 @@
      </layout>
     </widget>
    </item>
-   <item>
-    <spacer name="verticalSpacer_3">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="multiple_launch_check">
+     <property name="text">
+      <string>Allow to launch multiple games</string>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>3</height>
-      </size>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QTabWidget" name="tab_widget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-    </spacer>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>UrT 4.1</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="launch_opts_panel" name="urt41_panel" native="true"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>UrT 4.2</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="launch_opts_panel" name="urt42_panel" native="true"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -153,6 +173,8 @@
   <tabstop>separate_x_check</tabstop>
   <tabstop>x_check_button</tabstop>
   <tabstop>update_server_check</tabstop>
+  <tabstop>multiple_launch_check</tabstop>
+  <tabstop>after_launch_combo</tabstop>
   <tabstop>mumble_overlay_group</tabstop>
   <tabstop>mumble_bin_edit</tabstop>
   <tabstop>select_mumble_bin_button</tabstop>

@@ -168,6 +168,17 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>center_current_row_check</tabstop>
+  <tabstop>clear_offline_check</tabstop>
+  <tabstop>maxsim_spin</tabstop>
+  <tabstop>retry_spin</tabstop>
+  <tabstop>timeout_spin</tabstop>
+  <tabstop>series_timeout_spin</tabstop>
+  <tabstop>qstat_master_edit</tabstop>
+  <tabstop>geoip_database_edit</tabstop>
+  <tabstop>geoip_database_choose_button</tabstop>
+ </tabstops>
  <resources>
   <include location="../images.qrc"/>
  </resources>

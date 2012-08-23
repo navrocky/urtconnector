@@ -14,6 +14,13 @@ class QTranslator;
 #define SOUND_FILE URT_DATADIR"sounds/notify1.ogg"
 #endif
 
+enum after_launch_t
+{
+    al_none = 0,
+    al_hide = 1,
+    al_quit = 2
+};
+
 #define APP_SETTINGS \
         ((start_hidden, bool, false)) \
         ((use_adv_cmd_line, bool, false)) \
@@ -38,7 +45,10 @@ class QTranslator;
         ((use_mumble_overlay, bool, false)) \
         ((mumble_overlay_bin, QString, QString("/usr/bin/mumble-overlay"))) \
         ((style_sheet_file, QString, QString())) \
-        ((notification_sound, QString, QString(SOUND_FILE)))
+        ((notification_sound, QString, QString(SOUND_FILE))) \
+        ((multiple_launch, bool, false)) \
+        ((after_launch_action, int, 0))
+
 SETTINGS_GENERATE_CLASS(app_settings, APP_SETTINGS)
 
 bool is_christmas_mode();
