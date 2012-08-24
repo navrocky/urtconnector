@@ -644,7 +644,15 @@ void main_window::connect_to_server(const server_id& id,
     l->set_separate_x(as.separate_xsession());
     l->set_mumble_overlay(as.use_mumble_overlay());
     l->set_mumble_overlay_bin(as.mumble_overlay_bin());
+    l->set_detach(as.multiple_launch() || as.after_launch_action() == al_quit);
     l->launch();
+
+    switch (as.after_launch_action())
+    {
+        case al_none: break;
+        case al_hide: hide(); break;
+        case al_quit: quit_action(); break;
+    }
 }
 
 void main_window::connect_selected()

@@ -33,13 +33,15 @@ launch_settings_form::launch_settings_form(QWidget* parent, Qt::WindowFlags f)
     connect(p_->ui.urt41_panel, SIGNAL(changed()), SIGNAL(changed()));
     connect(p_->ui.urt42_panel, SIGNAL(changed()), SIGNAL(changed()));
 
-    connect( p_->ui.x_check_button,           SIGNAL(clicked()),                 this, SLOT( x_check() ));
-    connect( p_->ui.select_mumble_bin_button, SIGNAL(clicked()),                 this, SLOT( choose_mumble_bin() ));
+    connect( p_->ui.x_check_button, SIGNAL(clicked()), this, SLOT( x_check() ));
+    connect( p_->ui.select_mumble_bin_button, SIGNAL(clicked()), this, SLOT( choose_mumble_bin() ));
 
-    connect( p_->ui.separate_x_check,     SIGNAL(stateChanged(int)),             this, SLOT( int_changed() ) );
-    connect( p_->ui.update_server_check,  SIGNAL(stateChanged(int)),             this, SLOT( int_changed() ) );
-    connect( p_->ui.mumble_overlay_group, SIGNAL(toggled(bool)),                 this, SLOT( int_changed() ) );
-    connect( p_->ui.mumble_bin_edit,      SIGNAL(textChanged(QString)),          this, SLOT( int_changed() ) );
+    connect( p_->ui.separate_x_check, SIGNAL(stateChanged(int)), this, SLOT( int_changed() ) );
+    connect( p_->ui.update_server_check, SIGNAL(stateChanged(int)), this, SLOT( int_changed() ) );
+    connect( p_->ui.multiple_launch_check, SIGNAL(stateChanged(int)), this, SLOT( int_changed() ) );
+    connect( p_->ui.after_launch_combo, SIGNAL(currentIndexChanged(int)), this, SLOT( int_changed() ) );
+    connect( p_->ui.mumble_overlay_group, SIGNAL(toggled(bool)), this, SLOT( int_changed() ) );
+    connect( p_->ui.mumble_bin_edit, SIGNAL(textChanged(QString)), this, SLOT( int_changed() ) );
 
 #ifndef Q_OS_UNIX
     p_->ui.separate_x_check->setVisible(false);
@@ -78,6 +80,8 @@ void launch_settings_form::update_preferences()
     p41->set_use_adv_cmd_line( as.use_adv_cmd_line() );
     p42->set_use_adv_cmd_line( as.use_adv_cmd_line_42() );
     p_->ui.update_server_check->setChecked( as.update_before_connect() );
+    p_->ui.multiple_launch_check->setChecked( as.multiple_launch() );
+    p_->ui.after_launch_combo->setCurrentIndex( as.after_launch_action() );
 #if defined(Q_OS_UNIX)
     p_->ui.separate_x_check->setChecked( as.separate_xsession() );
     p41->set_separate_xsession( as.separate_xsession() );
@@ -107,6 +111,8 @@ void launch_settings_form::accept()
     as.adv_cmd_line_set( p41->adv_cmd_line() );
     as.adv_cmd_line_42_set( p42->adv_cmd_line() );
     as.update_before_connect_set(p_->ui.update_server_check->isChecked());
+    as.multiple_launch_set(p_->ui.multiple_launch_check->isChecked());
+    as.after_launch_action_set(p_->ui.after_launch_combo->currentIndex());
 #if defined(Q_OS_UNIX)
     as.separate_xsession_set( p_->ui.separate_x_check->isChecked() );
     as.use_mumble_overlay_set(p_->ui.mumble_overlay_group->isChecked());
@@ -131,6 +137,8 @@ void launch_settings_form::reset_defaults()
     as.adv_cmd_line_reset();
     as.adv_cmd_line_42_reset();
     as.update_before_connect_reset();
+    as.multiple_launch_reset();
+    as.after_launch_action_reset();
 #if defined(Q_OS_UNIX)
     as.separate_xsession_reset();
     as.use_mumble_overlay_reset();
@@ -177,7 +185,7 @@ void launch_settings_form::x_check()
         tr( "X session autodetection" ),
         ( p_->ui.separate_x_check->isChecked() )
             ? tr( "Another X session started succesfully" )
-            : tr( "Another X session failed" )
+            : tr( "Another X session failed.\n\nHint: check that the suid bit is enabled on your Xorg binary." )
     );
 }
 
