@@ -47,7 +47,8 @@ enum after_launch_t
         ((style_sheet_file, QString, QString())) \
         ((notification_sound, QString, QString(SOUND_FILE))) \
         ((multiple_launch, bool, false)) \
-        ((after_launch_action, int, 0))
+        ((after_launch_action, int, 0)) \
+        ((install_id, QString, QString()))
 
 SETTINGS_GENERATE_CLASS(app_settings, APP_SETTINGS)
 

@@ -96,6 +96,7 @@
 
 #include "main_window.h"
 #include "updater/update_task.h"
+#include "heartbeat.h"
 
 SYSLOG_MODULE(main_window)
 
@@ -282,12 +283,25 @@ main_window::main_window(QWidget *parent)
     update_actions();
     update_server_info();
 
-    setVisible( !(app_settings().start_hidden()) );
+    app_settings as;
+
+    setVisible( !(as.start_hidden()) );
 
     current_tab_changed();
 
     // launch tracking
     track_man_->start();
+
+    // initialize installation id
+    if (as.install_id().isEmpty())
+    {
+        QUuid id = QUuid::createUuid();
+        as.install_id_set(id.toString());
+    }
+
+    // hearbeat
+    heartbeat *hb = new heartbeat(this);
+    hb->exec();
 }
 
 main_window::~main_window()
