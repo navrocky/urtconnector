@@ -455,6 +455,26 @@ syncro_manager::Object syncro_manager::attach(const QString& name, const Getter&
     manager_options().objects_set((manager_options().objects().toSet() << name).toList());
     
     object_attached(*it);
+    
+    base_settings::qsettings_p settings = base_settings().get_settings(manager_options::uid());
+    settings_group gr(settings, "objetcs/" + name);
+    QStringList binded = settings->value("binded", QStringList()).toStringList();
+    BOOST_FOREACH(QString st_name, binded) {
+        
+        Storage st;
+        BOOST_FOREACH(Storage storage, storages()) {
+            if (this->name(storage) == st_name)
+            {
+                st = storage;
+            }
+        }
+        
+        if (st.get())
+        {
+            bind(*it, st);
+        }
+    }
+    
     return *it;
 }
 
