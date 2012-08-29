@@ -65,6 +65,8 @@ std::list<std::pair<QString, QString> > make_list()
 {
     std::list<std::pair<QString, QString> > ret;
     ret.push_back(std::make_pair(app_settings::uid(), "start_hidden"));
+    ret.push_back(std::make_pair(app_settings::uid(), "use_holiday_mode"));
+    ret.push_back(std::make_pair(app_settings::uid(), "country_name"));
     return ret;
 }
 

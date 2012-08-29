@@ -96,6 +96,7 @@
 
 #include "main_window.h"
 #include "updater/update_task.h"
+#include "heartbeat.h"
 
 #include "remote/sync_settings_form.h"
 #include "remote/settings.h"
@@ -295,7 +296,9 @@ main_window::main_window(QWidget *parent)
     update_actions();
     update_server_info();
 
-    setVisible( !(app_settings().start_hidden()) );
+    app_settings as;
+
+    setVisible( !(as.start_hidden()) );
 
     current_tab_changed();
 
@@ -306,6 +309,17 @@ main_window::main_window(QWidget *parent)
     remote::syncro_manager::Getter g = boost::bind(&profile::get_group);
     remote::syncro_manager::Setter s = boost::bind(&profile::set_group, _1);
     sync_man_->attach("profile", g, s, "profile", QIcon("icons:user-identity.png"));
+
+    // initialize installation id
+    if (as.install_id().isEmpty())
+    {
+        QUuid id = QUuid::createUuid();
+        as.install_id_set(id.toString());
+    }
+
+    // hearbeat
+    heartbeat *hb = new heartbeat(this);
+    hb->exec();
 }
 
 main_window::~main_window()

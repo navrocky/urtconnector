@@ -452,6 +452,8 @@ syncro_manager::Object syncro_manager::attach(const QString& name, const Getter&
 
     it = p_->obj_list.insert(Object(new object(g, s, name, desc, icon))).first;
 
+    manager_options().objects_set((manager_options().objects().toSet() << name).toList());
+    
     object_attached(*it);
     return *it;
 }
@@ -460,6 +462,11 @@ void syncro_manager::detach(const Object& obj)
 {
     unbind(obj);
     p_->obj_list.erase(obj);
+    
+    QStringList objects = manager_options().objects();
+    objects.removeAll(obj->name());
+    manager_options().objects_set(objects);
+    
     object_detached(obj);
 }
 
@@ -470,6 +477,14 @@ void syncro_manager::bind(const Object& obj, const Storage& storage)
     std::tr1::tie(it, inserted) = p_->obj_data.insert(Pimpl::objects_data(obj, storage));
     
     THROW_IF_EQUAL(inserted, false, "This already binded to this storage");
+    
+    base_settings::qsettings_p settings = base_settings().get_settings(manager_options::uid());
+    settings_group gr(settings, "objetcs/" + obj->name());
+    
+    QStringList binded = settings->value("binded", QStringList()).toStringList();
+    binded = (binded.toSet() << name(storage)).toList();
+    settings->setValue("binded", binded);
+        
 
     LOG_DEBUG << "object '%1' binded to '%2'", obj->name(), p_->st_find<Storage>(storage)->service->caption();
     emit object_changed(obj);    
@@ -480,16 +495,27 @@ void syncro_manager::unbind(const Object& obj)
     boost::erase(p_->obj_data.get<Object>(),
         make_iterator_range(p_->obj_data.get<Object>().equal_range(obj)));
 
+    base_settings::qsettings_p settings = base_settings().get_settings(manager_options::uid());
+    settings->remove("objetcs/" + obj->name());
+    
     emit object_changed(obj);
 }
 
 
 void syncro_manager::unbind(const Storage& storage)
 {
+    const QString storage_name = name(storage);
     boost::erase(p_->obj_data.get<Storage>(),
         make_iterator_range(p_->obj_data.get<Storage>().equal_range(storage)));
 
+    base_settings::qsettings_p settings = base_settings().get_settings(manager_options::uid());
+    
     BOOST_FOREACH(const Object& object, p_->objects(storage)) {
+        settings_group gr(settings, "objetcs/" + object->name());
+        QStringList binded = settings->value("binded", QStringList()).toStringList();
+        binded.removeAll(storage_name);
+        settings->setValue("binded", binded);
+        
         emit object_changed(object);
     }
 }
@@ -497,6 +523,14 @@ void syncro_manager::unbind(const Storage& storage)
 void syncro_manager::unbind(const remote::syncro_manager::Object& obj, const remote::syncro_manager::Storage& storage)
 {
     Pimpl::obj_iterator<Pimpl::objects_data>::type it = p_->obj_find(Pimpl::objects_data(obj, storage));
+    
+    base_settings::qsettings_p settings = base_settings().get_settings(manager_options::uid());
+    settings_group gr(settings, "objetcs/" + obj->name());
+    
+    QStringList binded = settings->value("binded", QStringList()).toStringList();
+    binded.removeAll(name(storage));
+    settings->setValue("binded", binded);
+    
     p_->obj_data.get<Pimpl::objects_data>().erase(it);
     
     emit object_changed(obj);

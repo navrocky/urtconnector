@@ -9,7 +9,8 @@
 
 
 #define MANAGER_OPTIONS \
-    (( storages, QStringList, QStringList() ))
+    (( storages, QStringList, QStringList() )) \
+    (( objects, QStringList, QStringList() ))
 
 SETTINGS_GENERATE_CLASS(manager_options_base, MANAGER_OPTIONS);
 
