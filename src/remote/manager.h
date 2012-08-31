@@ -35,7 +35,7 @@ public:
     typedef boost::shared_ptr<const remote::service> Service;
     
     /*! Type of access key to existing storage */
-    typedef boost::shared_ptr<const storage> Storage;
+    typedef boost::shared_ptr<const remote::storage> Storage;
 
     typedef std::set<Storage> Storages; 
     
@@ -58,9 +58,13 @@ public:
 
     /*! create new instance of storage provided by \p service */
     Storage create(const Service& service, const QString& name, const QVariantMap& settings, QString storage_uid = QString());
-    
+
+	/*! discard storage storage */
     void remove(const Storage& storage);
-    
+
+	/*! get name of the storage */
+	QString name(const Storage& storage) const;
+	
     /*! \brief get settings associated wth storage
      *  generic settings can be accessed directly: \example settings.value("storage_name").
      *  instance settings gropped in "data" group: \example settings.value("data/location").
@@ -91,20 +95,20 @@ public:
     void unbind(const Object& subject, const Storage& storage);
     
     
-    
+
+	/*! start syncronization */
+    void sync(const Object& obj);
+
+	/*! replace contents of object with remote one */
     void get(const Object& obj);
 
+	/*! replace contents of remote object with local one */
     void put(const Object& obj);
-    
-    /*! start syncronization */
-    void sync(const Object& obj);
-    
     
 
     /*! restore state of manager from config*/
     void load();
 
-    QString name(const Storage& storage) const;
 
    
 Q_SIGNALS:
@@ -133,44 +137,7 @@ private:
     std::auto_ptr<Pimpl> p_;
     
 
-    //TODO move to cpp and redesign
-
-  /*  struct sync_task {
-        
-        sync_task(
-            const Object& obj,
-            const Storages& st,
-            const remote::group& gr)
-        : object(obj), storages(st), group(gr), entries(gr.entries())
-        {}
-
-        bool operator<(const sync_task& other) const { return object < other.object; }
-        bool operator==(const sync_task& other) const { return object == other.object; }
-        
-        Storage current_storage() { 
-            if (storages.empty()) throw std::runtime_error("no storages binded with this object");
-            return *storages.begin();
-        }
-        
-        Object object;
-        Storages storages;
-        remote::group group;
-        remote::group::Entries entries;
-        remote:: action* action;
-    };
-    
-    std::list<sync_task> tasks_;
-    
-    template <typename Predicat>
-    sync_task& get_task(const Predicat& p) {
-        std::list<sync_task>::iterator it = std::find_if(tasks_.begin(), tasks_.end(), p);
-        if (it == tasks_.end())
-            throw std::runtime_error("no such task");
-        
-        return *it;
-    }*/
-    
-    class task;
+	class task;
     struct task_factory;
     class get_task;
     class put_task;

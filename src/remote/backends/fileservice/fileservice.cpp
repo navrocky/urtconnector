@@ -33,7 +33,6 @@ struct fileaction : remote::action {
             case read:
                 data_ = file.readAll();
                 status_ |= Loaded;
-                std::cerr << "LOADED: " << data_.constData() << std::endl;
                 emit loaded(from_json(data_));
                 break;
             case write:

@@ -1,18 +1,8 @@
 
 #include <iostream>
 
-
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
-#include <boost/iterator/transform_iterator.hpp>
-#include <boost/multi_index/mem_fun.hpp>
-#include <boost/multi_index/member.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-#include <boost/multi_index_container.hpp>
-
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
-#include <boost/multi_index/hashed_index.hpp>
 
 #include <QDir>
 #include <QFileInfo>
@@ -20,25 +10,18 @@
 #include <QSettings>
 #include <QUuid>
 
-#include "backends/gdocs/gdocs.h"
-#include "backends/fileservice/fileservice.h"
-
-#include "manager.h"
-#include "task.h"
-
-#include "settings/settings.h"
-#include "settings.h"
-
-#include "storage.h"
-
 #include "cl/syslog/syslog.h"
 #include "common/qt_syslog.h"
 
+#include "settings/settings.h"
 
-using namespace std;
-using namespace boost;
+#include "manager.h"
+#include "manager_impl.h"
+#include "task.h"
+#include "settings.h"
 
-using namespace boost::multi_index;
+#include "backends/gdocs/gdocs.h"
+#include "backends/fileservice/fileservice.h"
 
 static const QString s_service_tag = "storage_service";
 static const QString s_uuid_tag = "storage_uuid";
@@ -70,205 +53,11 @@ inline T& cast(const boost::shared_ptr<const T>& ptr) {
 }
 
     
-template<class KeyExtractor1,class KeyExtractor2>
-struct key_from_key
-{
-public:
-    typedef typename KeyExtractor1::result_type result_type;
-
-    key_from_key(
-        const KeyExtractor1& key1_ = KeyExtractor1(),
-        const KeyExtractor2& key2_ = KeyExtractor2()):
-        key1(key1_),key2(key2_)
-    {}
-
-    template<typename Arg>
-    result_type operator()(Arg& arg)const
-    {
-        return key1(key2(arg));
-    }
-
-private:
-    KeyExtractor1 key1;
-    KeyExtractor2 key2;
-};
-
-
-struct syncro_manager::Pimpl {
-
-    typedef std::set<Service> Services;
-    typedef std::set<Storage> Storages;
-    typedef std::set<Object>  Objects;
-
-    struct storage_data {
-        const Service service;
-        const Storage storage;
-        const QString storage_uid;
-
-        storage_data(Service se, Storage st, const QString& uid)
-            : service(se), storage(st), storage_uid(uid){}
-        
-        bool operator == (const storage_data& other) const {
-            return storage == other.storage;
-        }
-    };    
-
-    struct objects_data {
-        Object object;
-        Storage storage;
-        
-        objects_data(Object o, Storage st) : object(o), storage(st) {}
-        
-        bool operator == (const objects_data& other) const {
-            return object == other.object && storage == other.storage;
-        }
-    };   
-
-    struct hash {
-        std::size_t operator()(storage_data const& data) const {
-            return 
-                reinterpret_cast<int>(data.service.get()) << 8 |
-                reinterpret_cast<int>(data.storage.get()); 
-        }
-        
-        std::size_t operator()(objects_data const& data) const {
-            return 
-                reinterpret_cast<int>(data.object.get()) << 8 |
-                reinterpret_cast<int>(data.storage.get()); 
-        }
-    };
-
-    typedef multi_index_container<
-        storage_data,
-        indexed_by<
-            ordered_unique<
-                tag<Storage>, BOOST_MULTI_INDEX_MEMBER(storage_data, const Storage, storage)
-            >,
-            ordered_non_unique<
-                tag<Service>, BOOST_MULTI_INDEX_MEMBER(storage_data, const Service, service)
-            >,
-            ordered_non_unique<
-                tag<QString>,
-                key_from_key<
-                    BOOST_MULTI_INDEX_CONST_MEM_FUN(remote::service, const QString&, caption),
-                    BOOST_MULTI_INDEX_MEMBER(storage_data, const Service, service)
-                >
-            >            
-        >
-    > StorageData;
-
-    typedef multi_index_container<
-        objects_data,
-        indexed_by<
-            ordered_non_unique<
-                tag<Object>, BOOST_MULTI_INDEX_MEMBER(objects_data, Object, object)
-            >,
-            ordered_non_unique<
-                tag<Storage>, BOOST_MULTI_INDEX_MEMBER(objects_data, Storage, storage)
-            >,
-            ordered_non_unique<
-                tag<QString>,
-                key_from_key<
-                    BOOST_MULTI_INDEX_CONST_MEM_FUN(syncro_manager::object, const QString&, name),
-                    BOOST_MULTI_INDEX_MEMBER(objects_data, Object, object)
-                >
-            >,
-            hashed_unique<
-                tag<objects_data>,
-                identity<objects_data>,
-                hash
-            >              
-        >
-    > ObjectsData;
-
-    Services srv_list;
-    Objects obj_list;
-
-    StorageData st_data;     
-    ObjectsData obj_data;
-
-    /*! metafunction to get iterator type*/
-    template <typename Tag>
-    struct st_iterator {
-        typedef typename StorageData::index<Tag>::type::iterator type;
-    };
-
-    /*! metafunction to get iterator type*/
-    template <typename Tag>
-    struct obj_iterator {
-        typedef typename ObjectsData::index<Tag>::type::iterator type;
-    };
-
-    //  aliases
-
-    template <typename Tag>
-    typename st_iterator<Tag>::type st_begin() { return st_data.get<Tag>().begin(); }
-
-    template <typename Tag>
-    typename st_iterator<Tag>::type st_end() { return st_data.get<Tag>().end(); }
-
-    template <typename Tag>
-    typename st_iterator<Tag>::type st_find(const Tag& key) { return st_data.get<Tag>().find(key); }
-
-    template <typename Tag>
-    typename obj_iterator<Tag>::type obj_begin() { return obj_data.get<Tag>().begin(); }
-
-    template <typename Tag>
-    typename obj_iterator<Tag>::type obj_end() { return obj_data.get<Tag>().end(); }
-
-    template <typename Tag>
-    typename obj_iterator<Tag>::type obj_find(const Tag& key) { return obj_data.get<Tag>().find(key); }
-
-    template <typename Tag>
-    Services services(const Tag& key) const {
-        return Services (
-            make_transform_iterator(st_data.get<Tag>().lower_bound(key), boost::bind(&storage_data::service, _1)),
-            make_transform_iterator(st_data.get<Tag>().upper_bound(key), boost::bind(&storage_data::service, _1))
-        );
-    }
-
-    Storages storages() const {
-        return Storages(
-            make_transform_iterator(st_data.begin(), boost::bind(&storage_data::storage, _1)),
-            make_transform_iterator(st_data.end(), boost::bind(&storage_data::storage, _1))
-        );
-    }
-
-    template <typename Tag>
-    Storages storages(const Tag& key) const {
-        return Storages(
-            make_transform_iterator(st_data.get<Tag>().lower_bound(key), boost::bind(&storage_data::storage, _1)),
-            make_transform_iterator(st_data.get<Tag>().upper_bound(key), boost::bind(&storage_data::storage, _1))
-        );
-    }
-
-    Storages storages(const Object& obj) const {
-        return Storages(
-            make_transform_iterator(obj_data.get<Object>().lower_bound(obj), boost::bind(&objects_data::storage, _1)),
-            make_transform_iterator(obj_data.get<Object>().upper_bound(obj), boost::bind(&objects_data::storage, _1))
-        );
-    }
-
-    std::set<Object> objects(const Storage& storage) const {
-        return std::set<Object>(
-            boost::make_transform_iterator(obj_data.get<Storage>().lower_bound(storage), boost::bind(&objects_data::object, _1)),
-            boost::make_transform_iterator(obj_data.get<Storage>().upper_bound(storage), boost::bind(&objects_data::object, _1))
-        );
-    }
-
-    /*! UID to access "services" group of syncro_manager settings */
-    QString services_uid;
-
-    typedef std::map<Object, boost::shared_ptr<task> > Tasks;
-    Tasks active;
-};
-
-
-
 QString con_str(const QString& str1, const QString& str2) {
     return str1 + "-" + str2;
 }
 
+//FIXME remove from there
 struct gdocs_service: public service {
 
     gdocs_service()
@@ -285,25 +74,6 @@ struct gdocs_service: public service {
 
     std::auto_ptr<QVariantMap> configure(const QVariantMap& settings) const{}
 };
-
-///another service for testings
-struct gdocs_service2: public service {
-
-    gdocs_service2()
-        : service("gdocs_testings", "gdocs service2")
-    {}
-    
-    service::Storage do_create(const boost::shared_ptr<QSettings>& settings) const {
-        if (!settings->contains("mail") || !settings->contains("password"))
-            throw std::runtime_error("settings not valid");
-            
-        service::Storage s = service::Storage(new gdocs( settings->value("mail").toString(), settings->value("password").toString(), "urt" ));
-        return s;
-    }
-
-    std::auto_ptr<QVariantMap> configure(const QVariantMap& settings) const{}
-};
-
 
 syncro_manager::syncro_manager()
     : p_(new Pimpl)
@@ -325,10 +95,6 @@ void syncro_manager::register_service(const Service& srv)
 
     const QString service_uid = uuid(srv);
     const QString storage_list_uid = st_list_uid(service_uid);
-
-//     base_settings::qsettings_p services = base_settings().get_settings(p_->services_uid);
-//     services->setValue("array", "123");
-//     base_settings().register_file(service_uid, QFileInfo(services->fileName()).absoluteDir().absolutePath() + "/services/" + srv->caption() + ".ini", false);
 
     base_settings().register_sub_group(service_uid, srv->caption(), p_->services_uid);
     base_settings().register_sub_group(storage_list_uid, s_storages, service_uid);
