@@ -161,12 +161,12 @@ private:
     
     friend class syncro_manager;
 
-    object(const Getter& getter, const Setter& setter, const QString& name, const QString& desc, const QIcon& icon)
+    object(const syncro_manager::Getter& getter, const syncro_manager::Setter& setter, const QString& name, const QString& desc, const QIcon& icon)
         : getter_(getter), setter_(setter), name_(name), description_(desc), icon_(icon) {}
     
 private:
-    Getter getter_;
-    Setter setter_;
+    syncro_manager::Getter getter_;
+    syncro_manager::Setter setter_;
     
     QIcon icon_;
     QString name_;
