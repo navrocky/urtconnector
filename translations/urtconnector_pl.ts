@@ -147,6 +147,19 @@
     </message>
 </context>
 <context>
+    <name>Notificator</name>
+    <message>
+        <location filename="../src/common/notificator.cpp" line="38"/>
+        <source>Copy to the clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/notificator.cpp" line="40"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QJson::ParserRunnable</name>
     <message>
         <location filename="../src/3rdparty/qjson/parserrunnable.cpp" line="64"/>
@@ -188,98 +201,103 @@
         <translation type="unfinished">Portu musi być w zakresie 0-65335</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="23"/>
+        <location filename="../src/common/server_info.cpp" line="21"/>
         <source>Free For All</source>
         <translation type="unfinished">Free For All</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="24"/>
+        <location filename="../src/common/server_info.cpp" line="22"/>
+        <source>Last Man Standing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/server_info.cpp" line="23"/>
         <source>Team DeathMatch</source>
         <translation type="unfinished">Team DeathMatch</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="25"/>
+        <location filename="../src/common/server_info.cpp" line="24"/>
         <source>Team Survivor</source>
         <translation type="unfinished">Team Survivor</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="26"/>
+        <location filename="../src/common/server_info.cpp" line="25"/>
         <source>Follow The Leader</source>
         <translation type="unfinished">Follow The Leader</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="27"/>
+        <location filename="../src/common/server_info.cpp" line="26"/>
         <source>Capture And Hold</source>
         <translation type="unfinished">Capture And Hold</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="28"/>
+        <location filename="../src/common/server_info.cpp" line="27"/>
         <source>Capture The Flag</source>
         <translation type="unfinished">Capture The Flag</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="29"/>
+        <location filename="../src/common/server_info.cpp" line="28"/>
         <source>Bomb Mode</source>
         <translation type="unfinished">Bomb Mode</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="31"/>
-        <location filename="../src/common/server_info.cpp" line="49"/>
+        <location filename="../src/common/server_info.cpp" line="30"/>
+        <location filename="../src/common/server_info.cpp" line="48"/>
         <source>Unknown</source>
         <translation type="unfinished">Nieznany</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="42"/>
+        <location filename="../src/common/server_info.cpp" line="41"/>
         <source>Updating</source>
         <translation type="unfinished">Aktualizacja</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="46"/>
+        <location filename="../src/common/server_info.cpp" line="45"/>
         <source>Offline</source>
         <translation type="unfinished">Offline</translation>
     </message>
     <message>
-        <location filename="../src/common/server_info.cpp" line="47"/>
+        <location filename="../src/common/server_info.cpp" line="46"/>
         <source>Online</source>
         <translation type="unfinished">Online</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="251"/>
+        <location filename="../src/common/tools.cpp" line="253"/>
         <source>Grenades</source>
         <translation type="unfinished">Granaty</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="252"/>
+        <location filename="../src/common/tools.cpp" line="254"/>
         <source>Snipers</source>
         <translation type="unfinished">Snajperki</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="253"/>
+        <location filename="../src/common/tools.cpp" line="255"/>
         <source>Spas</source>
         <translation type="unfinished">SPAS</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="254"/>
+        <location filename="../src/common/tools.cpp" line="256"/>
         <source>Pistols</source>
         <translation type="unfinished">Pistolety</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="255"/>
+        <location filename="../src/common/tools.cpp" line="257"/>
         <source>Automatic</source>
         <translation type="unfinished">Automaty</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="256"/>
+        <location filename="../src/common/tools.cpp" line="258"/>
         <source>Negev</source>
         <translation type="unfinished">Negev</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="288"/>
+        <location filename="../src/common/tools.cpp" line="290"/>
         <source>File &quot;%1&quot; does not exists</source>
         <translation type="unfinished">Plik &quot;%1&quot; nie istnieje</translation>
     </message>
     <message>
-        <location filename="../src/common/tools.cpp" line="291"/>
+        <location filename="../src/common/tools.cpp" line="293"/>
         <source>Cannot open file &quot;%1&quot; to read</source>
         <translation type="unfinished">Nie mogę czytać z pliku &quot;%1&quot;</translation>
     </message>
@@ -334,9 +352,13 @@
         <translation type="unfinished">Znajduje serwer z twoimi znajomymi.</translation>
     </message>
     <message>
-        <location filename="../src/filters/game_type_filter.cpp" line="16"/>
         <source>Game mode filter</source>
-        <translation type="unfinished">Filtr według tryby gry</translation>
+        <translation type="obsolete">Filtr według tryby gry</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/game_type_filter.cpp" line="16"/>
+        <source>Game mode</source>
+        <translation type="unfinished">Tryb gry</translation>
     </message>
     <message>
         <location filename="../src/filters/game_type_filter.cpp" line="17"/>
@@ -530,6 +552,26 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
         <location filename="../src/tracking/conditions/timer_condition.cpp" line="17"/>
         <source>Actions activates by timer</source>
         <translation type="unfinished">Akcje uruchamiane według czasu</translation>
+    </message>
+    <message>
+        <location filename="../src/filters/game_version_filter.cpp" line="22"/>
+        <source>Game version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/game_version_filter.cpp" line="23"/>
+        <source>Hides all servers thats don&apos;s match selected game version.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/minimum_empty_slots_filter.cpp" line="18"/>
+        <source>Minimum empty slots</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/filters/minimum_empty_slots_filter.cpp" line="19"/>
+        <source>Shows servers with a specified minimum number of empty slots.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -853,32 +895,17 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
 <context>
     <name>config_wizard</name>
     <message>
-        <location filename="../src/config_wizard.cpp" line="33"/>
-        <source>qstat executable missing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/config_wizard.cpp" line="33"/>
-        <source>No qstat(quakestat) executable found, please select executable manually</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/config_wizard.cpp" line="35"/>
-        <source>Please select qstat(quakestat) executeable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/config_wizard.cpp" line="54"/>
+        <location filename="../src/config_wizard.cpp" line="22"/>
         <source>UrbanTerror executable missing</source>
         <translation type="unfinished">Plik wykonywalny gry nie znaleziony</translation>
     </message>
     <message>
-        <location filename="../src/config_wizard.cpp" line="54"/>
+        <location filename="../src/config_wizard.cpp" line="22"/>
         <source>No UrbanTerror executable found, please select executable manually</source>
         <translation type="unfinished">Nie znaleziono pliku wykonywalnego gry, proszę podaj jego lokalizację</translation>
     </message>
     <message>
-        <location filename="../src/config_wizard.cpp" line="56"/>
+        <location filename="../src/config_wizard.cpp" line="24"/>
         <source>Please select UrbanTerror executeable</source>
         <translation type="unfinished">Wybierz lokalizację pliku wykonywalnego gry</translation>
     </message>
@@ -1229,7 +1256,7 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
 <context>
     <name>job_t</name>
     <message>
-        <location filename="../src/jobs/job.cpp" line="41"/>
+        <location filename="../src/jobs/job.cpp" line="49"/>
         <source>Can&apos;t wait a one job twice</source>
         <translation type="unfinished">Nie mogę czekać na dwa takie same zadania</translation>
     </message>
@@ -1237,7 +1264,7 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
 <context>
     <name>job_update_from_master</name>
     <message>
-        <location filename="../src/job_update_from_master.cpp" line="9"/>
+        <location filename="../src/job_update_from_master.cpp" line="17"/>
         <source>Update from master server</source>
         <translation type="unfinished">Uaktualnij z Master Server</translation>
     </message>
@@ -1245,7 +1272,7 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
 <context>
     <name>job_update_selected</name>
     <message>
-        <location filename="../src/job_update_selected.cpp" line="10"/>
+        <location filename="../src/job_update_selected.cpp" line="18"/>
         <source>Update selected servers</source>
         <translation type="unfinished">Uaktualnij wybrane serwery</translation>
     </message>
@@ -1269,6 +1296,70 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
     </message>
 </context>
 <context>
+    <name>launch_opts_panel</name>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.ui" line="26"/>
+        <source>UrbanTerror binary file name with path</source>
+        <translation type="unfinished">Ścieżka do pliku wykonywalnego Urban Terror</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.ui" line="41"/>
+        <source>Choose UrbanTerror binary file</source>
+        <translation type="unfinished">Wybierz plik wykonywalny</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.ui" line="44"/>
+        <source>0</source>
+        <translation type="unfinished">0</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.ui" line="64"/>
+        <source>Advanced launch command</source>
+        <translation type="unfinished">Zaawansowane opcje uruchamiania</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.ui" line="111"/>
+        <source>Insert file path</source>
+        <translation type="unfinished">Wstaw ścieżkę pliku</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.ui" line="138"/>
+        <location filename="../src/setting_forms/launch_opts_panel.ui" line="150"/>
+        <source>Command line preview</source>
+        <translation type="unfinished">Podgląd linii poleceń</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.cpp" line="27"/>
+        <source>&lt;b&gt;%bin%&lt;/b&gt; - UrbanTerror binary path&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - player name&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - password&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - hostname or ip and port&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - RCON password</source>
+        <translation type="unfinished">&lt;b&gt;%bin%&lt;/b&gt; - ścieżka do pliku wykonywalnego gry&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - nick gracza&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - hasło&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - host/IP oraz port&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - hasło RCON</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.cpp" line="101"/>
+        <source>Urban Terror executable</source>
+        <translation type="unfinished">Plik wykonywalny gry</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.cpp" line="102"/>
+        <source>Executables (*.i386 *.x86_64 *.exe);;All Files (*)</source>
+        <translation type="unfinished">Pliki wykonywalne (*.i386 *.x86_64 *.exe);;Wszystkie pliki (*)</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.cpp" line="112"/>
+        <source>Select file to insert</source>
+        <translation type="unfinished">Wybierz plik</translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_opts_panel.cpp" line="113"/>
+        <source>All Files (*)</source>
+        <translation type="unfinished">Wszystkie pliki (*)</translation>
+    </message>
+</context>
+<context>
     <name>launch_settings_form</name>
     <message>
         <location filename="../src/setting_forms/launch_settings_form.ui" line="14"/>
@@ -1276,127 +1367,156 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="26"/>
         <source>UrbanTerror binary file name with path</source>
-        <translation type="unfinished">Ścieżka do pliku wykonywalnego Urban Terror</translation>
+        <translation type="obsolete">Ścieżka do pliku wykonywalnego Urban Terror</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="35"/>
         <source>Choose UrbanTerror binary file</source>
-        <translation type="unfinished">Wybierz plik wykonywalny</translation>
+        <translation type="obsolete">Wybierz plik wykonywalny</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="38"/>
         <source>0</source>
         <translatorcomment>What is this?</translatorcomment>
-        <translation type="unfinished">0</translation>
+        <translation type="obsolete">0</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="58"/>
         <source>Advanced launch command</source>
-        <translation type="unfinished">Zaawansowane opcje uruchamiania</translation>
+        <translation type="obsolete">Zaawansowane opcje uruchamiania</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="99"/>
         <source>Insert file path</source>
-        <translation type="unfinished">Wstaw ścieżkę pliku</translation>
+        <translation type="obsolete">Wstaw ścieżkę pliku</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="126"/>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="132"/>
         <source>Command line preview</source>
-        <translation type="unfinished">Podgląd linii poleceń</translation>
+        <translation type="obsolete">Podgląd linii poleceń</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="147"/>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="22"/>
         <source>Launch UrbanTerror in separate X session</source>
         <translation type="unfinished">Uruchom Urban Terror w osobnej sesji X</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="167"/>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="29"/>
         <source>Autodetect</source>
         <translation type="unfinished">Autowykrycie</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="176"/>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="51"/>
         <source>Check server status before connect</source>
         <translation type="unfinished">Sprawdzaj status serwera przed połączeniem</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="183"/>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="59"/>
+        <source>Do nothing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="64"/>
+        <source>Hide main window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="69"/>
+        <source>Quit program</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="77"/>
+        <source>After launch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="84"/>
         <source>Use mumble overlay</source>
         <translation type="unfinished">Użyj mumble overlay</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="192"/>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="96"/>
         <source>Binary</source>
         <translation type="unfinished">Binarka</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.ui" line="204"/>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="108"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="23"/>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="124"/>
+        <source>Allow to launch multiple games</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="135"/>
+        <source>UrT 4.1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.ui" line="148"/>
+        <source>UrT 4.2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="24"/>
         <source>Launch</source>
         <translation type="unfinished">Uruchom</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="30"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="31"/>
         <source>UrbanTerror launch settings</source>
         <translation type="unfinished">Ustawienia uruchamiana UrT</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="45"/>
         <source>&lt;b&gt;%bin%&lt;/b&gt; - UrbanTerror binary path&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - player name&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - password&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - hostname or ip and port&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - RCON password</source>
-        <translation type="unfinished">&lt;b&gt;%bin%&lt;/b&gt; - ścieżka do pliku wykonywalnego gry&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - nick gracza&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - hasło&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - host/IP oraz port&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - hasło RCON</translation>
+        <translation type="obsolete">&lt;b&gt;%bin%&lt;/b&gt; - ścieżka do pliku wykonywalnego gry&lt;br&gt;&lt;b&gt;%name%&lt;/b&gt; - nick gracza&lt;br&gt;&lt;b&gt;%pwd%&lt;/b&gt; - hasło&lt;br&gt;&lt;b&gt;%addr%&lt;/b&gt; - host/IP oraz port&lt;br&gt;&lt;b&gt;%rcon%&lt;/b&gt; - hasło RCON</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="120"/>
         <source>Urban Terror executable</source>
-        <translation type="unfinished">Plik wykonywalny gry</translation>
+        <translation type="obsolete">Plik wykonywalny gry</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="121"/>
         <source>Executables (*.i386 *.x86_64 *.exe);;All Files (*)</source>
-        <translation type="unfinished">Pliki wykonywalne (*.i386 *.x86_64 *.exe);;Wszystkie pliki (*)</translation>
+        <translation type="obsolete">Pliki wykonywalne (*.i386 *.x86_64 *.exe);;Wszystkie pliki (*)</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="130"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="153"/>
         <source>mumble-overlay binary</source>
         <translation type="unfinished">Binarka mumble-overlay</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="131"/>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="141"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="154"/>
         <source>All Files (*)</source>
         <translation type="unfinished">Wszystkie pliki (*)</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="140"/>
         <source>Select file to insert</source>
-        <translation type="unfinished">Wybierz plik</translation>
+        <translation type="obsolete">Wybierz plik</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="186"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="176"/>
         <source>This may take about 30 seconds</source>
         <translation type="unfinished">To może potrwać około 30 sekund</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="195"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="185"/>
         <source>X session autodetection</source>
         <translation type="unfinished">Autodetekcja sesji X</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="197"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="187"/>
         <source>Another X session started succesfully</source>
         <translation type="unfinished">Dodatkowa sesja X uruchomiona pomyślnie</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/launch_settings_form.cpp" line="198"/>
+        <location filename="../src/setting_forms/launch_settings_form.cpp" line="188"/>
+        <source>Another X session failed.
+
+Hint: check that the suid bit is enabled on your Xorg binary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Another X session failed</source>
-        <translation type="unfinished">Dodatkowa sesja X niedostępna</translation>
+        <translation type="obsolete">Dodatkowa sesja X niedostępna</translation>
     </message>
 </context>
 <context>
@@ -1420,37 +1540,37 @@ Jeśli użytkownik wybierze &quot;Nie&quot; to wykonywanie następujących zada�
 <context>
     <name>main_window</name>
     <message>
-        <location filename="../src/main_window.cpp" line="156"/>
+        <location filename="../src/main_window.cpp" line="158"/>
         <source>Current tab toolbar</source>
         <translation type="unfinished">Obecny pasek narzędziowy</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="169"/>
+        <location filename="../src/main_window.cpp" line="171"/>
         <source>Enable anticheat</source>
         <translation type="unfinished">Włącz AntiCheat</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="173"/>
+        <location filename="../src/main_window.cpp" line="175"/>
         <source>Configure anticheat</source>
         <translation type="unfinished">Konfiguruj AntiCheat</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="177"/>
+        <location filename="../src/main_window.cpp" line="179"/>
         <source>Copy server info to clipboard</source>
         <translation type="unfinished">Skopiuj adres serwera do schowka</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="207"/>
+        <location filename="../src/main_window.cpp" line="209"/>
         <source>Click to show/hide UrTConnector or middle click to quick launch</source>
         <translation type="unfinished">Kliknij aby pokazać/ukryć UrTConnector lub naciśnij środkowy przycisk myszy aby wykonać szybkie połączenie</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="302"/>
+        <location filename="../src/main_window.cpp" line="317"/>
         <source>Server info catched</source>
         <translation type="unfinished">Przechwycono informacje o serwerze</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="303"/>
+        <location filename="../src/main_window.cpp" line="318"/>
         <source>Address: %1
 Password: %2
 
@@ -1461,87 +1581,140 @@ Hasło: %2
 Kliknij na tę wiadomość aby uruchomić UrTConnector.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="323"/>
+        <location filename="../src/main_window.cpp" line="338"/>
         <source>Options</source>
         <translation type="unfinished">Opcje</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="439"/>
+        <location filename="../src/main_window.cpp" line="454"/>
         <source>Game is launched already</source>
         <translation type="unfinished">Gra już jest uruchomiona</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="450"/>
+        <location filename="../src/main_window.cpp" line="465"/>
         <source>Update server info and launch a game</source>
         <translation type="unfinished">Uaktualnij informacje o serwerze i uruchom grę</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="475"/>
-        <location filename="../src/main_window.cpp" line="500"/>
+        <location filename="../src/main_window.cpp" line="490"/>
+        <location filename="../src/main_window.cpp" line="515"/>
         <source>Connecting to the server</source>
         <translation type="unfinished">Łączenie z serwerem</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="477"/>
+        <location filename="../src/main_window.cpp" line="492"/>
         <source>Server is full.</source>
         <translation type="unfinished">Serwer jest pełny.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="478"/>
+        <location filename="../src/main_window.cpp" line="493"/>
         <source>Would you like to wait until there will be empty slots or to connect right now?</source>
         <translation type="unfinished">Chesz poczekać na wolny slot czy połączyć się teraz?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="480"/>
+        <location filename="../src/main_window.cpp" line="495"/>
         <source>Wait for empty slots</source>
         <translation type="unfinished">Czekaj na wolny slot</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="482"/>
+        <location filename="../src/main_window.cpp" line="497"/>
+        <location filename="../src/main_window.cpp" line="521"/>
         <source>Connect right now</source>
         <translation type="unfinished">Połącz teraz</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="501"/>
+        <location filename="../src/main_window.cpp" line="517"/>
+        <source>Server is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="518"/>
+        <source>Do you want to wait when someone appear on this server or to connect right now?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="519"/>
+        <source>Wait for someone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="602"/>
+        <source>UrbanTerror %1 executable missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="603"/>
+        <source>No UrbanTerror %1 executable found, please select executable manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="606"/>
+        <source>Please select UrbanTerror %1 executable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="612"/>
+        <location filename="../src/main_window.cpp" line="617"/>
+        <source>Error</source>
+        <translation type="unfinished">Błąd</translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="612"/>
+        <source>File %1 doesn&apos;t exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="617"/>
+        <source>File %1 doesn&apos;t executable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="965"/>
+        <source>Connect to %1 if someone appeared</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/main_window.cpp" line="999"/>
+        <source>On the server &lt;b&gt;%server&lt;/b&gt; someone appeared.&lt;br&gt;&lt;br&gt;Do you wish to connect him?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Server is empty.
 
 Do you want to continue connecting?</source>
-        <translation type="unfinished">Serwer jest pusty.
+        <translation type="obsolete">Serwer jest pusty.
 
 Czy chcesz kontynować łączenie?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="516"/>
+        <location filename="../src/main_window.cpp" line="544"/>
         <source>This server require the password</source>
         <translation type="unfinished">Ten serwer wymaga hasła</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="517"/>
+        <location filename="../src/main_window.cpp" line="545"/>
         <source>Enter the password</source>
         <translation type="unfinished">Podaj hasło</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="565"/>
         <source>UrbanTerror executable missing</source>
-        <translation type="unfinished">Plik wykonywalny gry nie znaleziony</translation>
+        <translation type="obsolete">Plik wykonywalny gry nie znaleziony</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="565"/>
         <source>No UrbanTerror executable found, please select executable manually</source>
-        <translation type="unfinished">Nie znaleziono pliku wykonywalnego gry, proszę podaj jego lokalizację</translation>
+        <translation type="obsolete">Nie znaleziono pliku wykonywalnego gry, proszę podaj jego lokalizację</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="566"/>
         <source>Please select UrbanTerror executeable</source>
-        <translation type="unfinished">Wybierz lokalizację pliku wykonywalnego gry</translation>
+        <translation type="obsolete">Wybierz lokalizację pliku wykonywalnego gry</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="709"/>
+        <location filename="../src/main_window.cpp" line="777"/>
         <source>Quit</source>
         <translation type="unfinished">Wyjdź</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="709"/>
+        <location filename="../src/main_window.cpp" line="777"/>
         <source>The game is started at this moment.
 
 Kill the game and quit now?</source>
@@ -1550,34 +1723,43 @@ Kill the game and quit now?</source>
 Zamknąć ją i wyjść teraz?</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="755"/>
+        <location filename="../src/main_window.cpp" line="823"/>
         <source>RCon : %1</source>
         <translation type="unfinished">RCON : %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="791"/>
+        <location filename="../src/main_window.cpp" line="859"/>
         <source>The player&apos;s name must be defined in the quick launch window for the anti-cheat!</source>
         <translation type="unfinished">Nick gracza musi być podany w oknie szybkiego uruchamiania aby AntiCheat mógł działać!</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="797"/>
+        <location filename="../src/main_window.cpp" line="865"/>
         <source>Anticheat options</source>
         <translation type="unfinished">Opcje AntiCheat</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="842"/>
+        <location filename="../src/main_window.cpp" line="910"/>
         <source>Connect to %1</source>
         <translation type="unfinished">Połącz z %1</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="875"/>
+        <location filename="../src/main_window.cpp" line="943"/>
+        <location filename="../src/main_window.cpp" line="998"/>
         <source>Connect</source>
         <translation type="unfinished">Połącz</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="876"/>
+        <location filename="../src/main_window.cpp" line="944"/>
         <source>On the server &lt;b&gt;%server&lt;/b&gt; appeared empty slots.&lt;br&gt;&lt;br&gt;Do you wish to connect?</source>
         <translation type="unfinished">Na serwerze &lt;b&gt;%server&lt;/b&gt; zwolnił się slot.&lt;br&gt;&lt;br&gt;Chesz się połączyć?</translation>
+    </message>
+</context>
+<context>
+    <name>min_empty_slots_filter_quick_opt_widget</name>
+    <message>
+        <location filename="../src/filters/minimum_empty_slots_filter.cpp" line="103"/>
+        <source>Minimum empty slots on server</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1696,35 +1878,28 @@ Ustawić je?</translation>
 <context>
     <name>qstat_updater</name>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="204"/>
         <source>QStat failed to start. Check QStat binary path in options dialog.</source>
-        <translation type="unfinished">Nie można uruchomić QStat. Sprawdź ścieżkę do programu w opcjach.</translation>
+        <translation type="obsolete">Nie można uruchomić QStat. Sprawdź ścieżkę do programu w opcjach.</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="206"/>
         <source>QStat crashed</source>
-        <translation type="unfinished">QStat niespodziewanie zakończył działanie</translation>
+        <translation type="obsolete">QStat niespodziewanie zakończył działanie</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="208"/>
         <source>QStat timed out</source>
-        <translation type="unfinished">QStat nie odpowiada</translation>
+        <translation type="obsolete">QStat nie odpowiada</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="210"/>
         <source>QStat read error</source>
-        <translation type="unfinished">Błąd odczytu QStat</translation>
+        <translation type="obsolete">Błąd odczytu QStat</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="212"/>
         <source>QStat write error</source>
-        <translation type="unfinished">Błąd zapisu Qstat</translation>
+        <translation type="obsolete">Błąd zapisu Qstat</translation>
     </message>
     <message>
-        <location filename="../src/qstat_updater.cpp" line="214"/>
-        <location filename="../src/qstat_updater.cpp" line="216"/>
         <source>QStat unknown error</source>
-        <translation type="unfinished">Nieznany błąd QStat</translation>
+        <translation type="obsolete">Nieznany błąd QStat</translation>
     </message>
 </context>
 <context>
@@ -1834,62 +2009,67 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>server_info_manager</name>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="231"/>
+        <location filename="../src/server_info_manager.cpp" line="239"/>
         <source>* Unnamed *</source>
         <translation type="unfinished">* Nienazwany *</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="268"/>
+        <location filename="../src/server_info_manager.cpp" line="276"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Status&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="269"/>
+        <location filename="../src/server_info_manager.cpp" line="277"/>
         <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Game mode&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Tryb gry&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="270"/>
+        <location filename="../src/server_info_manager.cpp" line="278"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Map&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Mapa&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="271"/>
+        <location filename="../src/server_info_manager.cpp" line="279"/>
         <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="272"/>
+        <location filename="../src/server_info_manager.cpp" line="280"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Country&lt;/td&gt;&lt;td&gt;%1 %2&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Kraj&lt;/td&gt;&lt;td&gt;%1 %2&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="273"/>
+        <location filename="../src/server_info_manager.cpp" line="281"/>
         <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Public slots&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Sloty publiczne&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="274"/>
+        <location filename="../src/server_info_manager.cpp" line="282"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Total slots&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Slotów ogółem&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="283"/>
+        <location filename="../src/server_info_manager.cpp" line="284"/>
+        <source>&lt;tr class=&quot;line2&quot;&gt;&lt;td&gt;Game version&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/server_info_manager.cpp" line="293"/>
         <source>&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Forbidden weapons&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;tr class=&quot;line1&quot;&gt;&lt;td&gt;Niedozwolone bronie&lt;/td&gt;&lt;td&gt;%1&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="318"/>
+        <location filename="../src/server_info_manager.cpp" line="328"/>
         <source>Full</source>
         <translation type="unfinished">Pełny</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="333"/>
+        <location filename="../src/server_info_manager.cpp" line="351"/>
         <source>&lt;hr&gt;%1 players:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Nick&lt;/td&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;Score&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;hr&gt;%1 gracze:&lt;table width=100%&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Nick&lt;/td&gt;&lt;td&gt;Ping&lt;/td&gt;&lt;td&gt;Score&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../src/server_info_manager.cpp" line="379"/>
+        <location filename="../src/server_info_manager.cpp" line="400"/>
         <source>&lt;hr&gt;Extended info:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Key&lt;/td&gt;&lt;td&gt;Value&lt;/td&gt;&lt;/tr&gt;</source>
         <translation type="unfinished">&lt;hr&gt;Dodatkowe informacje:&lt;table width=100% class=&quot;props&quot;&gt;&lt;tr class=&quot;header&quot;&gt;&lt;td&gt;Ustawienie&lt;/td&gt;&lt;td&gt;Wartość&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
@@ -2374,65 +2554,78 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="22"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="25"/>
         <source>Centering on current server row during update</source>
         <translation type="unfinished">Wycentruj na aktualnej linii
  w czasie aktualizacji</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="29"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="32"/>
         <source>Clear offline servers after full refresh</source>
         <translation type="unfinished">Usuń serwery offline po pełnym odświeżeniu</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="36"/>
         <source>Maximum simultaneous queries</source>
-        <translation type="unfinished">Maksymalna jednoczesna ilość zapytań</translation>
+        <translation type="obsolete">Maksymalna jednoczesna ilość zapytań</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="59"/>
         <source>Number of retries</source>
-        <translation type="unfinished">Ilość ponownych prób</translation>
+        <translation type="obsolete">Ilość ponownych prób</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="66"/>
         <source>Interval between retries</source>
-        <translation type="unfinished">Czas pomiędzy ponowynymi próbami</translation>
+        <translation type="obsolete">Czas pomiędzy ponowynymi próbami</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="73"/>
         <source>Interval between master server retries</source>
-        <translation type="unfinished">Czas pomiędzy ponownymi
+        <translation type="obsolete">Czas pomiędzy ponownymi
  próbami Master Server</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="102"/>
         <source>QStat binary path</source>
-        <translation type="unfinished">Ścieżka do QStat</translation>
+        <translation type="obsolete">Ścieżka do QStat</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="111"/>
         <source>Choose QStat binary file</source>
-        <translation type="unfinished">Wybierz plik wykonywalny QStat</translation>
+        <translation type="obsolete">Wybierz plik wykonywalny QStat</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="114"/>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="155"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="145"/>
         <source>Choose</source>
         <translation type="unfinished">Wybierz</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="128"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="118"/>
         <source>UrbanTerror master server</source>
         <translation type="unfinished">Adres Master Server </translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="140"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="39"/>
+        <source>Maximum simultaneous queries (0 - unlimited)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="59"/>
+        <source>Number of query retries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="76"/>
+        <source>Query timeout (sec)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="109"/>
+        <source>Master reply series timeout (sec)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="130"/>
         <source>GeoIP database file</source>
         <translation type="unfinished">Plik danych GeoIP</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.ui" line="152"/>
+        <location filename="../src/setting_forms/update_settings_form.ui" line="142"/>
         <source>Choose GeoIP database file</source>
         <translation type="unfinished">Wybierz plik danych GeoIP</translation>
     </message>
@@ -2447,24 +2640,59 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Ustawienia aktualizacji listy serwerów</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.cpp" line="101"/>
         <source>QStat binary</source>
-        <translation type="unfinished">Plik wykonywalny QStat</translation>
+        <translation type="obsolete">Plik wykonywalny QStat</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.cpp" line="102"/>
         <source>Executables (*);;All Files (*)</source>
-        <translation type="unfinished">Pliki wykonywalne (*);;Wszystkie pliki (*)</translation>
+        <translation type="obsolete">Pliki wykonywalne (*);;Wszystkie pliki (*)</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.cpp" line="111"/>
+        <location filename="../src/setting_forms/update_settings_form.cpp" line="96"/>
         <source>GeoIP database</source>
         <translation type="unfinished">Baza danych GeoIP</translation>
     </message>
     <message>
-        <location filename="../src/setting_forms/update_settings_form.cpp" line="112"/>
+        <location filename="../src/setting_forms/update_settings_form.cpp" line="97"/>
         <source>DataBase (*.dat);;All Files (*)</source>
         <translation type="unfinished">Bazy danych (*.dat);;Wszystkie pliki (*)</translation>
+    </message>
+</context>
+<context>
+    <name>urt_get_server_info</name>
+    <message>
+        <location filename="../src/server_query/urt_query.cpp" line="524"/>
+        <source>Query server info timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>urt_get_server_list</name>
+    <message>
+        <location filename="../src/server_query/urt_query.cpp" line="475"/>
+        <source>Timeout while query master</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>urt_get_server_status</name>
+    <message>
+        <location filename="../src/server_query/urt_query.cpp" line="593"/>
+        <source>Query server status timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>urt_query</name>
+    <message>
+        <location filename="../src/server_query/urt_query.cpp" line="170"/>
+        <source>Host &quot;%1&quot; lookup failed: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/server_query/urt_query.cpp" line="176"/>
+        <source>Host &quot;%1&quot; lookup failed: no any ip</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
