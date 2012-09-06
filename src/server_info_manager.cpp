@@ -33,7 +33,7 @@ const QString sort_by_score_tag_c = "%SORT_BY_SCORE%";
 
 const char* player_property_c = "player";
 
-SYSLOG_MODULE(server_info_manager);
+SYSLOG_MODULE(server_info_manager)
 
 using namespace boost;
 
