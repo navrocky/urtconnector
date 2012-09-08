@@ -79,7 +79,6 @@ Section "UrT Connector"
   File "${DIR_BIN}\urtconnector.exe"
   File "${DIR_TRANS}\urtconnector_ru.qm"
   
-  File "qstat.exe"
   File "${DIR_SRC}\GeoIP.dat"
   File "QtCore4.dll"
   File "QtGui4.dll"
@@ -106,8 +105,10 @@ Section "UrT Connector"
   File "qsvg4.dll"
   SetOutPath "$INSTDIR\sounds"
   File "${DIR_SRC}\sounds\notify1.wav"
-  ;File "${DIR_SRC}\sounds\notify2.ogg"
-  ;File "${DIR_SRC}\sounds\notify3.ogg"
+  File "${DIR_SRC}\sounds\notify2.ogg"
+  File "${DIR_SRC}\sounds\notify3.ogg"
+  SetOutPath "$INSTDIR\phonon_backend"
+  File "phonon_ds94.dll"
 
 SectionEnd
 
