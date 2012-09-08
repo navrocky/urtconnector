@@ -32,6 +32,15 @@ set(HEADERS
     ${PUBLIC_HEADERS}
     detail/connector.h
     detail/views.h
+    detail/delegate.h
+    detail/base_view.h
+    detail/connector.h
+    detail/delegate.h
+    detail/kpage_view.h
+    detail/list_view.h
+    detail/plain_view.h
+    detail/tab_view.h
+    detail/tree_view.h
 )
 
 set(MOC_HEADERS
@@ -55,7 +64,7 @@ set(IFACES
 qt4_wrap_cpp(SOURCES ${MOC_HEADERS})
 qt4_wrap_ui(SOURCES ${IFACES})
 
-add_library(${TARGET} STATIC ${SOURCES})
+add_library(${TARGET} STATIC ${HEADERS} ${SOURCES})
 
 set_target_properties(${TARGET} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set_target_properties(${TARGET} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")

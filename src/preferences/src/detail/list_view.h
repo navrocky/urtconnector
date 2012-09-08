@@ -91,10 +91,15 @@ protected:
         QBoxLayout* pages_box = new QBoxLayout( QBoxLayout::TopToBottom );
         pages_box->setContentsMargins( margins() );
         
-        ui.list     = new QListWidget();
-        ui.header   = new QLabel();
-        ui.icon     = new QLabel();
-        ui.pages    = new QStackedWidget();
+        ui.list     = new QListWidget(tw);
+
+        ui.header   = new QLabel(tw);
+        QFont fnt = ui.header->font();
+        fnt.setBold(true);
+        ui.header->setFont(fnt);
+
+        ui.icon     = new QLabel(tw);
+        ui.pages    = new QStackedWidget(tw);
 
         ui.icon->setFixedSize( icon_size() );
 
