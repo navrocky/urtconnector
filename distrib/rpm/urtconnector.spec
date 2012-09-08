@@ -1,5 +1,5 @@
 %define name urtconnector
-%define version 0.8.1
+%define version 0.9.0
 
 Summary: Advanced Urban Terror launcher
 Name: %{name}
