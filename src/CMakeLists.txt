@@ -14,6 +14,7 @@ endif()
 
 if (UNIX)
     find_package(X11)
+    find_package(Threads)
 endif()
 
 set(Boost_USE_MULTITHREADED ON)
@@ -147,7 +148,13 @@ qt4_wrap_ui(CL_SOURCES ${CL_IFACES})
 qt4_add_resources(CL_SOURCES ${CL_RESOURCES})
 
 add_executable(${TARGET} WIN32 ${CL_HEADERS} ${CL_SOURCES})
-target_link_libraries(${TARGET} ${QT_LIBRARIES} ${Boost_LIBRARIES} ${X11_LIBRARIES} ${CL_DEPS})
+target_link_libraries(${TARGET}
+    ${QT_LIBRARIES}
+    ${Boost_LIBRARIES}
+    ${X11_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${CL_DEPS}
+)
 
 install(TARGETS ${TARGET} RUNTIME DESTINATION bin)
 install(FILES icons/urtconnector.png DESTINATION share/icons)
