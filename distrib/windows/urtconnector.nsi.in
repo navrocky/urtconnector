@@ -78,6 +78,7 @@ Section "UrT Connector"
   SetOutPath "$INSTDIR"
   File "${DIR_BIN}\urtconnector.exe"
   File "${DIR_TRANS}\urtconnector_ru.qm"
+  File "${DIR_TRANS}\urtconnector_pl.qm"
   
   File "${DIR_SRC}\GeoIP.dat"
   File "QtCore4.dll"
