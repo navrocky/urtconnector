@@ -29,6 +29,10 @@ public:
     void set_use_mumble_overlay(bool);
     void set_mumble_overlay_bin(const QString&);
 
+    void set_new_client(bool);
+    QString client_version() const;
+    void set_client_version(const QString&);
+
 signals:
     void changed();
 
@@ -41,9 +45,10 @@ private slots:
 private:
     Ui::launch_opts_panel *ui;
     bool lock_change_;
-    bool separate_xsession;
-    bool use_mumble_overlay;
-    QString mumble_overlay_bin;
+    bool separate_xsession_;
+    bool use_mumble_overlay_;
+    bool new_client_;
+    QString mumble_overlay_bin_;
 };
 
 #endif // LAUNCH_OPTS_PANEL_H

@@ -2,6 +2,7 @@
 #define	FILTERED_TAB_H
 
 #include <QPointer>
+#include <QTime>
 
 #include <filters/pointers.h>
 
@@ -47,6 +48,8 @@ public:
                  bool complex_filter,
                  QWidget* parent);
 
+    void refilter();
+
 public slots:
     virtual void save_state();
     virtual void load_state();
@@ -73,6 +76,9 @@ private:
     QAction* show_filter_action_;
     filtered_tab_settings fs_;
     bool complex_filter_;
+    mutable QTime option_check_time_;
+    mutable bool options_valid_;
+    mutable QString client_version_;
 };
 
 

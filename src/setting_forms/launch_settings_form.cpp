@@ -60,6 +60,7 @@ void launch_settings_form::int_changed()
     p42->set_separate_xsession(p_->ui.separate_x_check->isChecked());
     p42->set_use_mumble_overlay(p_->ui.mumble_overlay_group->isChecked());
     p42->set_mumble_overlay_bin(p_->ui.mumble_bin_edit->text());
+    p42->set_new_client(true);
     if (!lock_change_)
         emit changed();
 }
@@ -79,6 +80,7 @@ void launch_settings_form::update_preferences()
     p42->set_adv_cmd_line( as.adv_cmd_line_42() );
     p41->set_use_adv_cmd_line( as.use_adv_cmd_line() );
     p42->set_use_adv_cmd_line( as.use_adv_cmd_line_42() );
+    p42->set_client_version( as.client_version() );
     p_->ui.update_server_check->setChecked( as.update_before_connect() );
     p_->ui.multiple_launch_check->setChecked( as.multiple_launch() );
     p_->ui.after_launch_combo->setCurrentIndex( as.after_launch_action() );
@@ -110,6 +112,7 @@ void launch_settings_form::accept()
     as.use_adv_cmd_line_42_set( p42->use_adv_cmd_line() );
     as.adv_cmd_line_set( p41->adv_cmd_line() );
     as.adv_cmd_line_42_set( p42->adv_cmd_line() );
+    as.client_version_set( p42->client_version() );
     as.update_before_connect_set(p_->ui.update_server_check->isChecked());
     as.multiple_launch_set(p_->ui.multiple_launch_check->isChecked());
     as.after_launch_action_set(p_->ui.after_launch_combo->currentIndex());
@@ -136,6 +139,7 @@ void launch_settings_form::reset_defaults()
     as.use_adv_cmd_line_42_reset();
     as.adv_cmd_line_reset();
     as.adv_cmd_line_42_reset();
+    as.client_version_reset();
     as.update_before_connect_reset();
     as.multiple_launch_reset();
     as.after_launch_action_reset();
