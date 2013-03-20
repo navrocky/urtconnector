@@ -52,10 +52,14 @@ public:
     
     /*! List of storages apropriate to this \p srv or \b All storages*/
     Storages storages(const Service& srv = Service()) const;
-    
+
+        /*! List of storages binded to this \p obj object*/
+    Storages storages(const Object& obj) const;
+
     /*! List of objects binded to this \p storage or \b All objects*/
     std::set<Object> objects(const Storage& storage = Storage()) const;
 
+    
     /*! create new instance of storage provided by \p service */
     Storage create(const Service& service, const QString& name, const QVariantMap& settings, QString storage_uid = QString());
 
@@ -94,8 +98,6 @@ public:
     
     void unbind(const Object& subject, const Storage& storage);
     
-    
-
 	/*! start syncronization */
     void sync(const Object& obj);
 

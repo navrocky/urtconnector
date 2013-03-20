@@ -638,7 +638,8 @@ void sync_settings_form2::do_export()
 void sync_settings_form2::do_sync()
 {
     BOOST_FOREACH(Object o, p_->sync_man->objects()) {
-        p_->sync_man->sync(o);
+        if (!p_->sync_man->storages(o).empty())
+            p_->sync_man->sync(o);
     }
 }
 

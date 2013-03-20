@@ -9,7 +9,7 @@ server_info::server_info()
 , mode(gm_none)
 , ping(0)
 , retries(0)
-, update_stamp_(1)
+, update_stamp_(0)
 {
 }
 

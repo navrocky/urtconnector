@@ -194,6 +194,10 @@ main_window::main_window(QWidget *parent)
     ui_->toolBar->addAction(anticheat_enabled_action_);
     ui_->toolBar->addAction(copy_info_action_);
 
+    sync_action_ = new QAction(QIcon("icons:edit-copy.png"), tr("Sync"), this);
+    connect(sync_action_, SIGNAL(triggered()), SLOT(sync()));
+    ui_->toolBar->addAction(sync_action_);
+    
     que_ = new job_queue(this);
     job_monitor* jm = new job_monitor(que_, this);
     ui_->status_bar->addPermanentWidget(jm);
@@ -902,6 +906,14 @@ void main_window::add_to_friend( const player_info& player )
     if (d.exec() != QDialog::Accepted)
         return;
     friends_.add(fr);
+}
+
+void main_window::sync()
+{
+    BOOST_FOREACH(remote::syncro_manager::Object o, sync_man_->objects()) {
+        if (!sync_man_->storages(o).empty())
+            sync_man_->sync(o);
+    }
 }
 
 void main_window::copy_info()

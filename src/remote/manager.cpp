@@ -124,6 +124,12 @@ syncro_manager::Pimpl::Storages syncro_manager::storages(const Service& srv) con
         return p_->storages();
 }
 
+syncro_manager::Storages syncro_manager::storages(const syncro_manager::Object& obj) const
+{
+    return p_->storages(obj);
+}
+
+
 std::set<syncro_manager::Object> syncro_manager::objects(const Storage& storage) const
 {
     if (storage)

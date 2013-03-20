@@ -85,6 +85,7 @@ private slots:
 
     void save_bookmarks();
     void add_to_friend( const player_info& player );
+    void sync();
 
 private:
     void load_all_at_start();
@@ -130,6 +131,7 @@ private:
     QAction* anticheat_enabled_action_;
     QAction* anticheat_open_action_;
     QAction* anticheat_configure_action_;
+    QAction* sync_action_;
     QPointer<QProcess> ac_proc_;
     QAccumulatingConnection* server_info_updater_;
     QToolBar* tab_toolbar_;
