@@ -62,6 +62,7 @@ struct syncro_manager::get_task : public syncro_manager::task {
 //             << " TIME: " << obj.entries().begin()->sync_stamp().toString().toStdString() << std::endl;
         
         entries = remote::merge(entries, obj.entries());
+        std::cerr << "loaded_one entries:" << entries.size() << std::endl;
         
 //         std::cerr << "MERGED: key:" << entries.begin()->sync_id().toStdString()
 //             << " TIME: " << entries.begin()->sync_stamp().toString().toStdString() << std::endl;
@@ -221,12 +222,12 @@ struct syncro_manager::sync_task : public syncro_manager::task {
             Q_ASSERT(gt->status() == Finished);
             
             remote::group::Entries entries = gt->entries;
-            remote::group::Entries non_deleted;
-
-            std::remove_copy_if(entries.begin(), entries.end(), std::inserter(non_deleted, non_deleted.end()),
-                boost::bind(&remote::intermediate::is_deleted, _1));
-
-            entries.swap(non_deleted);
+//             remote::group::Entries non_deleted;
+// 
+//             std::remove_copy_if(entries.begin(), entries.end(), std::inserter(non_deleted, non_deleted.end()),
+//                 boost::bind(&remote::intermediate::is_deleted, _1));
+// 
+//             entries.swap(non_deleted);
             
             pt = new put_task(gt->obj, storages, remote::group(gt->group.type(), entries));
             connect(pt, SIGNAL(error(QString)), SLOT(error_one(QString)));

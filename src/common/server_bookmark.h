@@ -70,6 +70,7 @@ public:
         set_rcon_password( data["rcon_password"].toString() );
         set_ref_password( data["ref_password"].toString() );
         set_sync_stamp( data[remote::syncable::stamp_key].toDateTime() );
+        if (data[syncable::deleted_key].toBool()) set_deleted();
     }
 
 private:

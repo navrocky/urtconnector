@@ -624,14 +624,16 @@ void sync_settings_form2::unbindall()
 void sync_settings_form2::do_import()
 {
     BOOST_FOREACH(Object o, p_->sync_man->objects()) {
-        p_->sync_man->get(o);
+        if (!p_->sync_man->storages(o).empty())
+            p_->sync_man->get(o);
     }
 }
 
 void sync_settings_form2::do_export()
 {
     BOOST_FOREACH(Object o, p_->sync_man->objects()) {
-        p_->sync_man->put(o);
+        if (!p_->sync_man->storages(o).empty())
+            p_->sync_man->put(o);
     }
 }
 
