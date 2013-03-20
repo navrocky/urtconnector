@@ -115,6 +115,7 @@ private:
     widgets_by_block_t widgets_;
 
     Q3ColorMap html_colors_;
+    Q3ColorMap dark_html_colors_;
     
     rcon_connection* rcon_;
     sorting_mode_t sorting_mode_;

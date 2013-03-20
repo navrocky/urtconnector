@@ -367,6 +367,10 @@ void main_window::show_options()
 
     d.exec();
 
+    all_list_->refilter();
+    fav_list_->refilter();
+    history_list_->refilter();
+
     update_geoip_database();
     history_list_->set_group_mode(as.history_grouping());
 }

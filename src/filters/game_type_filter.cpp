@@ -113,6 +113,7 @@ game_type_filter_quick_opt_widget::game_type_filter_quick_opt_widget(filter_p f,
     add_item(combo_, server_info::gm_capture_the_flag);
     add_item(combo_, server_info::gm_follow_the_leader);
     add_item(combo_, server_info::gm_capture_and_hold);
+    add_item(combo_, server_info::gm_last_man_standing);
 
     connect(f.get(), SIGNAL(changed_signal()), SLOT(filter_changed()));
     filter_changed();

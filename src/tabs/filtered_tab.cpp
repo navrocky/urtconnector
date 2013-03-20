@@ -18,7 +18,9 @@
 #include <filters/ping_filter.h>
 #include <filters/weapon_filter.h>
 #include <filters/game_type_filter.h>
+#include <filters/game_version_filter.h>
 
+#include "../app_options.h"
 
 #include "filtered_tab.h"
 
@@ -55,6 +57,7 @@ filtered_tab::filtered_tab(tab_settings_p st,
 , filters_(new filter_list(ctx.filter_factory()))
 , fs_(settings())
 , complex_filter_(complex_filter)
+, options_valid_(false)
 {
     load_filter();
 
@@ -100,6 +103,12 @@ filtered_tab::filtered_tab(tab_settings_p st,
 
     connect(show_filter_action_, SIGNAL(triggered(bool)), filter_widget_, SLOT(setVisible(bool)));
     connect(filter_widget_, SIGNAL(visibilityChanged(bool)), show_filter_action_, SLOT(setChecked(bool)));
+    option_check_time_.start();
+}
+
+void filtered_tab::refilter()
+{
+    filter_changed();
 }
 
 void filtered_tab::update_toolbar_filter()
@@ -221,6 +230,11 @@ void filtered_tab::default_filter_initialization()
         cf->add_filter(f);
         gt = dynamic_cast<game_type_filter*> (f.get());
         gt->set_mode(server_info::gm_capture_the_flag);
+
+        f = filters()->create_by_class_id(game_version_filter_class::get_id());
+        f->set_name(f->get_class()->caption());
+        f->set_enabled(false);
+        cf->add_filter(f);
     }
 }
 
@@ -250,6 +264,29 @@ void filtered_tab::filter_changed()
 bool filtered_tab::filtrate(const server_info& si) const
 {
     filter_context ctx(false, context().friends());
+
+    // update options
+    if (!options_valid_ || option_check_time_.elapsed() > 1000)
+    {
+        app_settings as;
+        client_version_ = as.client_version();
+
+        option_check_time_.restart();
+        options_valid_ = true;
+    }
+
+    // check for game version
+    if (!client_version_.isEmpty() && si.game_type == "q3urt42")
+    {
+        server_info::info_t::const_iterator it = si.info.find(QString("g_modversion"));
+        if (it != si.info.end())
+        {
+            QString version = it->second;
+            if (version != client_version_)
+                return false;
+        }
+    }
+
     return filters_->filtrate(si, ctx);
 }
 

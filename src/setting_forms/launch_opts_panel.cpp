@@ -1,6 +1,7 @@
 #include "launch_opts_panel.h"
 
 #include <QFileDialog>
+#include <QComboBox>
 #include <launcher/launcher.h>
 #include <common/scoped_tools.h>
 
@@ -11,8 +12,8 @@ launch_opts_panel::launch_opts_panel(QWidget *parent)
     , ui(new Ui::launch_opts_panel)
     , lock_change_(false)
 #ifdef Q_OS_UNIX
-    , separate_xsession(false)
-    , use_mumble_overlay(false)
+    , separate_xsession_(false)
+    , use_mumble_overlay_(false)
 #endif
 {
     ui->setupUi(this);
@@ -23,6 +24,7 @@ launch_opts_panel::launch_opts_panel(QWidget *parent)
     connect( ui->binary_edit,          SIGNAL(textChanged(QString)),      this, SLOT( int_changed() ) );
     connect( ui->adv_cmd_box,          SIGNAL(clicked(bool)),             this, SLOT( int_changed() ) );
     connect( ui->adv_cmd_edit,         SIGNAL(textChanged(QString)),      this, SLOT( int_changed() ) );
+    connect( ui->client_version_combo, SIGNAL(currentIndexChanged(int)),  this, SLOT( int_changed() ) );
 
     ui->adv_cmd_help_label->setText(tr(
         "<b>%bin%</b> - UrbanTerror binary path<br>"
@@ -31,6 +33,7 @@ launch_opts_panel::launch_opts_panel(QWidget *parent)
         "<b>%addr%</b> - hostname or ip and port<br>"
         "<b>%rcon%</b> - RCON password"
     ));
+    set_new_client(false);
 }
 
 launch_opts_panel::~launch_opts_panel()
@@ -73,26 +76,58 @@ void launch_opts_panel::set_use_adv_cmd_line(bool val)
 
 void launch_opts_panel::set_separate_xsession(bool val)
 {
-    if (separate_xsession == val)
+    if (separate_xsession_ == val)
         return;
-    separate_xsession = val;
+    separate_xsession_ = val;
     update_launch_string();
 }
 
 void launch_opts_panel::set_use_mumble_overlay(bool val)
 {
-    if (use_mumble_overlay == val)
+    if (use_mumble_overlay_ == val)
         return;
-    use_mumble_overlay = val;
+    use_mumble_overlay_ = val;
     update_launch_string();
 }
 
 void launch_opts_panel::set_mumble_overlay_bin(const QString & val)
 {
-    if (mumble_overlay_bin == val)
+    if (mumble_overlay_bin_ == val)
         return;
-    mumble_overlay_bin = val;
+    mumble_overlay_bin_ = val;
     update_launch_string();
+}
+
+void launch_opts_panel::set_new_client(bool val)
+{
+    ui->client_version_label->setVisible(val);
+    ui->client_version_combo->setVisible(val);
+
+    if (val)
+    {
+        QComboBox* combo = ui->client_version_combo;
+        for (int i = 1; i < 99; i++)
+        {
+            QString s = QString("4.2.%1").arg(i, 3, 10, QChar('0'));
+            combo->addItem(s, s);
+        }
+    }
+}
+
+QString launch_opts_panel::client_version() const
+{
+    QComboBox* combo = ui->client_version_combo;
+    QString s = combo->itemData(combo->currentIndex()).toString();
+    return s;
+}
+
+void launch_opts_panel::set_client_version(const QString& s)
+{
+    QComboBox* combo = ui->client_version_combo;
+    int i = 0;
+    if (!s.isEmpty())
+        i = combo->findData(s);
+    combo->setCurrentIndex(i);
 }
 
 void launch_opts_panel::choose_binary()
@@ -127,12 +162,12 @@ void launch_opts_panel::update_launch_string()
     l.set_referee("referee_pAsSwOrD");
 
 #ifdef Q_OS_UNIX
-    l.set_mumble_overlay(use_mumble_overlay);
-    l.set_mumble_overlay_bin(mumble_overlay_bin);
+    l.set_mumble_overlay(use_mumble_overlay_);
+    l.set_mumble_overlay_bin(mumble_overlay_bin_);
     QString ls = l.launch_string(ui->adv_cmd_box->isChecked(),
                                  ui->adv_cmd_edit->text(),
                                  ui->binary_edit->text(),
-                                 separate_xsession );
+                                 separate_xsession_ );
 #else
     QString ls = l.launch_string(ui->adv_cmd_box->isChecked(),
                                  ui->adv_cmd_edit->text(),

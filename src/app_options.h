@@ -32,6 +32,7 @@ enum after_launch_t
         ((separate_xsession, bool, true)) \
         ((binary_path, QString, QString())) \
         ((binary_path_42, QString, QString())) \
+        ((client_version, QString, QString())) \
         ((geoip_database, QString, QString(URT_DATADIR"GeoIP.dat"))) \
         ((center_current_row, bool, true)) \
         ((keep_history, bool, true)) \

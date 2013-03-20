@@ -33,7 +33,7 @@ const QString sort_by_score_tag_c = "%SORT_BY_SCORE%";
 
 const char* player_property_c = "player";
 
-SYSLOG_MODULE(server_info_manager);
+SYSLOG_MODULE(server_info_manager)
 
 using namespace boost;
 
@@ -90,6 +90,7 @@ server_info_manager::server_info_manager( QWidget* parent )
     , rcon_( new rcon_connection( server_id(), "", this ) )
     , browser_( new QTextBrowser(this) )
     , html_colors_( default_colors() )
+    , dark_html_colors_( html_colors_ )
     , sorting_mode_(sm_nickname)
 {
     //Registering our-handler to make QTextBrowser widget-embeddable
@@ -106,9 +107,12 @@ server_info_manager::server_info_manager( QWidget* parent )
     browser_->setOpenExternalLinks(true);
     
     BOOST_FOREACH( Q3ColorMap::value_type& p, html_colors_ )
-        p.second = p.second.lighter();
+            p.second = p.second.lighter();
+    BOOST_FOREACH( Q3ColorMap::value_type& p, dark_html_colors_ )
+            p.second = p.second.darker();
 
     html_colors_[Q3DefaultColor] = palette().color(QPalette::Text);
+    dark_html_colors_[Q3DefaultColor] = palette().color(QPalette::Text);
     
     connect( this, SIGNAL(kick_player(const player_info&)), rcon_, SLOT(kick_player(const player_info&)) );
     connect( this, SIGNAL(change_map(const QString&)),      rcon_, SLOT(set_map(const QString&)) );
@@ -354,7 +358,7 @@ QString server_info_manager::make_players(const server_info& si) const
         {
             QString player = QString("<tr class=\"line%1\"><td>%2%3</td><td>%4</td><td>%5</td></tr>")
                 .arg( i % 2 + 1 )
-                .arg( q3coloring(pi.nick_name(), html_colors_) )
+                .arg( q3coloring(pi.nick_name(), dark_html_colors_) )
                 .arg( player_tag_c.arg( toplainhtml( pi.nick_name() ) ) )
                 .arg( pi.ping() )
                 .arg( pi.score() );
