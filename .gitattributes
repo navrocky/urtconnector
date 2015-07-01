@@ -1,0 +1,12 @@
+* text=auto !eol
+/BuildService.wiki -text
+/CompilllerStatistics.wiki -text
+/Download.wiki -text
+/HowToStartGameInSecondXServer.wiki -text
+/MacOSBuild.wiki -text
+/ProjectArtwork.wiki -text
+/ScreenShots.wiki -text
+/WhatsNew.wiki -text
+/WindowsBuildHowTo.wiki -text
+/plans.wiki -text
+/whatCanItDo.wiki -text
